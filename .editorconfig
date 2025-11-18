@@ -1,0 +1,14 @@
+
+[*]
+
+# Microsoft .NET properties
+csharp_indent_braces = false
+csharp_new_line_before_open_brace = none
+csharp_new_line_before_else = false
+
+# ReSharper properties
+csharp_blank_lines_around_single_line_invocable = 1
+csharp_insert_final_newline = true
+default_private_modifier = explicit
+instance_members_qualify_declared_in = 
+place_expr_method_on_single_line = true

@@ -1,0 +1,29 @@
+﻿# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Bb]uild*/
+[Oo]bj/
+[Ll]ogs/
+[Mm]emoryCaptures/
+[Uu]serSettings/
+
+# Rider / IDE
+.vs/
+.idea/
+*.sln
+*.csproj
+*.user
+*.userprefs
+*.unityproj
+*.suo
+*.tmp
+*.sln.iml
+
+# Cache
+[Aa]rtifacts/
+Assets/AssetStoreTools*
+*.unitypackage
+
+# OS
+.DS_Store
+Thumbs.db
