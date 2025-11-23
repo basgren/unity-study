@@ -17,11 +17,11 @@ TagManager:
   - Background
   - 
   - 
+  - DynamicObjects
   - 
   - 
   - 
-  - 
-  - 
+  - Ground
   - 
   - 
   - 
@@ -43,4 +43,10 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 3456662067
+    locked: 0
+  - name: DynamicObjects
+    uniqueID: 1982840949
     locked: 0
