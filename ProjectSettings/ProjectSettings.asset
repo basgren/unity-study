@@ -682,6 +682,6 @@ PlayerSettings:
   projectName: PlatformStudy 2025-11-19_00-46-44
   organizationId: bas-gren-gmail-com
   cloudEnabled: 0
-  enableNativePlatformBackendsForNewInputSystem: 0
-  disableOldInputManagerSupport: 0
+  enableNativePlatformBackendsForNewInputSystem: 1
+  disableOldInputManagerSupport: 1
   legacyClampBlendShapeWeights: 0
