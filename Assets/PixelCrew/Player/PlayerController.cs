@@ -20,9 +20,20 @@ namespace PixelCrew.Player {
         private InputActions input;
         private Rigidbody2D rigidBody;
         private BoxCollider2D boxCollider;
-        private bool isJumping = false;
         private GroundChecker groundChecker;
+        
+        // TODO: move it to some global game state object.
+        // TODO: rework interaction with coins. Currently we have to set which method to call in editor, which
+        //   doesn't allow to provide extra parameters. While implementing something like CollectibleComponent
+        //   with required collider, which provides collectible ID will allow to pass it to player and player
+        //   could decide what to do with it and update game state accordingly.
+        private int coins = 0;
 
+        public void AddCoin() {
+            coins++;
+            Debug.Log($"Added coin. Current coins: {coins}");
+        }
+        
         private void Awake() {
             input = new InputActions();
             Actions = input.Player;
