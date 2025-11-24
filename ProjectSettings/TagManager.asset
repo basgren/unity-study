@@ -13,15 +13,15 @@ TagManager:
   - UI
   - 
   - 
-  - 
   - Background
-  - 
-  - 
-  - DynamicObjects
-  - 
-  - 
-  - 
+  - Player
   - Ground
+  - DynamicObjects
+  - Decor
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -38,15 +38,27 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Background
+  - name: BackgroundFar
     uniqueID: 2075469121
+    locked: 0
+  - name: BackgroundMid
+    uniqueID: 1871527445
     locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Characters
+    uniqueID: 4163825915
+    locked: 0
   - name: Ground
     uniqueID: 3456662067
     locked: 0
-  - name: DynamicObjects
+  - name: PropsFront
     uniqueID: 1982840949
+    locked: 0
+  - name: DecorFront
+    uniqueID: 765679513
+    locked: 0
+  - name: UI
+    uniqueID: 41811083
     locked: 0
