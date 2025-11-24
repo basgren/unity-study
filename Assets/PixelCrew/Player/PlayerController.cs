@@ -1,10 +1,11 @@
 ﻿using System;
+using Core.Collectables;
+using PixelCrew.Collectibles;
 using UnityEngine;
-using UnityEngine.Android;
 using Utils;
 
 namespace PixelCrew.Player {
-    public class PlayerController : MonoBehaviour {
+    public class PlayerController : MonoBehaviour, ICollectableReceiver<CollectableId> {
         [SerializeField]
         private float speed = 2f; // Run speed
 
@@ -23,16 +24,7 @@ namespace PixelCrew.Player {
         private GroundChecker groundChecker;
         
         // TODO: move it to some global game state object.
-        // TODO: rework interaction with coins. Currently we have to set which method to call in editor, which
-        //   doesn't allow to provide extra parameters. While implementing something like CollectibleComponent
-        //   with required collider, which provides collectible ID will allow to pass it to player and player
-        //   could decide what to do with it and update game state accordingly.
-        private int coins = 0;
-
-        public void AddCoin() {
-            coins++;
-            Debug.Log($"Added coin. Current coins: {coins}");
-        }
+        private int coinsValue = 0;
         
         private void Awake() {
             input = new InputActions();
@@ -71,7 +63,7 @@ namespace PixelCrew.Player {
             
             // We won't use InputSystem events, as order of their invocation is not guaranteed, but
             // in case we want to check button combinations, it's easier to check them manually.
-            // Using events are better for UI controls.
+            // Using events is better for UI controls.
             CheckGround();
 
             CheckJump();
@@ -98,6 +90,26 @@ namespace PixelCrew.Player {
                 // rigidBody.AddForce(Vector2.up * jumpForce,  ForceMode2D.Impulse);
                 rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpSpeed);
             }
+        }
+        
+        public void OnCollected(CollectableId itemId, float value) {
+            switch (itemId) {
+                case CollectableId.Coin:
+                    AddCoin(value);
+                    break;
+                
+                case CollectableId.Health:
+                    Debug.Log($"Player: Collected {value} health");
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(itemId), itemId, null);
+            }
+        }
+        
+        private void AddCoin(float amount = 1f) {
+            coinsValue += (int) amount; 
+            Debug.Log($"Added coin. Current value: {coinsValue}");
         }
         
         // ------------------- GIZMOS -------------------
