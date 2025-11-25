@@ -5,6 +5,17 @@ using UnityEngine;
 using Utils;
 
 namespace PixelCrew.Player {
+    public static class HeroAnimationKeys {
+        public static readonly int IsGrounded = Animator.StringToHash("isGrounded");
+        public static readonly int IsRunning = Animator.StringToHash("isRunning");
+        public static readonly int VelocityY = Animator.StringToHash("velocityY");
+        public static readonly int OnJump = Animator.StringToHash("onJump");
+    }
+    
+    
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(Animator))]
     public class PlayerController : MonoBehaviour, ICollectableReceiver<CollectableId> {
         [SerializeField]
         private float speed = 2f; // Run speed
@@ -32,8 +43,10 @@ namespace PixelCrew.Player {
         private InputActions input;
         private Rigidbody2D rigidBody;
         private BoxCollider2D boxCollider;
+        private Animator animator;
         private GroundChecker groundChecker;
         private float coyoteTimer = 0;
+        private bool isJumped = false;
         
         // TODO: move it to some global game state object.
         private int coinsValue = 0;
@@ -44,6 +57,7 @@ namespace PixelCrew.Player {
             
             rigidBody = GetComponent<Rigidbody2D>();
             boxCollider = GetComponent<BoxCollider2D>();
+            animator = GetComponent<Animator>();
             groundChecker = new GroundChecker(boxCollider, groundLayer);
         }
 
@@ -80,6 +94,9 @@ namespace PixelCrew.Player {
 
             CheckJump();
             CheckHorizontalMovement();
+
+            // Update animator at the end, when player state is updated.
+            UpdateAnimator();
         }
 
         private void CheckGround() {
@@ -96,22 +113,38 @@ namespace PixelCrew.Player {
 
             var horzSpeed = Math.Sign(dir.x) * speed;
             rigidBody.velocity = new Vector2(horzSpeed, rigidBody.velocity.y);
+
+            if (horzSpeed > 0) {
+                transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
+            } else if (horzSpeed < 0) {
+                transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
+            }
         }
         
         private void CheckJump() {
+            isJumped = false;
             // TODO: implement input buffering for jump
             var isJumpPressed = Actions.Jump.WasPerformedThisFrame();
 
             if (isJumpPressed && CanJump()) {
-                // rigidBody.AddForce(Vector2.up * jumpForce,  ForceMode2D.Impulse);
-                rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpSpeed);
+                Jump();
             }
             
             coyoteTimer -= Time.deltaTime;
         }
 
+        private void Jump() {
+            // rigidBody.AddForce(Vector2.up * jumpForce,  ForceMode2D.Impulse);
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpSpeed);
+            isJumped = true;
+        }
+
         private bool CanJump() {
             return IsGrounded || coyoteTimer > 0;
+        }
+
+        private bool IsRunning() {
+            return Math.Abs(rigidBody.velocity.x) > 0.01f;
         }
         
         public void OnCollected(CollectableId itemId, float value) {
@@ -132,6 +165,26 @@ namespace PixelCrew.Player {
         private void AddCoin(float amount = 1f) {
             coinsValue += (int) amount; 
             Debug.Log($"Added coin. Current value: {coinsValue}");
+        }
+        
+        private void UpdateAnimator() {
+            animator.SetBool(HeroAnimationKeys.IsGrounded, IsGrounded);
+            animator.SetBool(HeroAnimationKeys.IsRunning, IsRunning());
+
+            if (isJumped) {
+                // We're jumping on trigger, not using velocityY comparison, as we may have moving platforms,
+                // in this case Y speed may be > 0, while the player is still on the ground.
+                animator.SetTrigger(HeroAnimationKeys.OnJump);                
+            }
+            
+            var velocityY = rigidBody.velocity.y;
+            
+            // Adjustments to compensate for floating point precision errors and physics jitter.
+            if (Math.Abs(velocityY) < 0.001f) {
+                velocityY = 0;
+            }
+            
+            animator.SetFloat(HeroAnimationKeys.VelocityY, velocityY);
         }
         
         // ------------------- GIZMOS -------------------

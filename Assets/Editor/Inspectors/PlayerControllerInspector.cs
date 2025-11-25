@@ -9,11 +9,13 @@ namespace Editor.Inspectors {
             if (Application.isPlaying) {
                 var player = (PlayerController)target;
 
-                EditorGUILayout.LabelField("Input.Move", player.Actions.Move.ReadValue<Vector2>().ToString());
-                EditorGUILayout.Space();
+                if (player != null) {
+                    EditorGUILayout.LabelField("Input.Move", player.Actions.Move.ReadValue<Vector2>().ToString());
+                    EditorGUILayout.Space();
                 
-                EditorGUILayout.LabelField("isGrounded", player.IsGrounded.ToString());
-                EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("isGrounded", player.IsGrounded.ToString());
+                    EditorGUILayout.Space();                    
+                }
             }
             
             DrawDefaultInspector();
