@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Utils {
     public class GroundChecker {
         public bool IsGrounded { get; private set; }
+        public bool WasGroundedLastFrame { get; private set; }
         public float RayLength { get; }
         public Vector2 RayDirection { get; }
         
@@ -39,6 +40,8 @@ namespace Utils {
         /// of every frame before checking input.
         /// </summary>
         public void Update() {
+            WasGroundedLastFrame = IsGrounded;
+            
             Bounds bounds = myCollider.bounds;
             float delta = bounds.size.x / (rayCount - 1);
 

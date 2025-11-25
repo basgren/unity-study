@@ -9,8 +9,6 @@ namespace Background {
         Bounds cloudBounds;
 
         private Renderer backgroundRenderer;
-        float leftEdge;
-        float rightEdge;
 
         private void Awake() {
             cloudRenderer = GetComponent<SpriteRenderer>();
@@ -24,17 +22,14 @@ namespace Background {
             }
         }
 
-        private void Start() {
-            var bgBounds = backgroundRenderer.bounds;
-            leftEdge = bgBounds.min.x;
-            rightEdge = bgBounds.max.x;
-        }
-
         void Update() {
             transform.Translate(Vector3.right * (moveSpeed * Time.deltaTime));
 
+            var bgBounds = backgroundRenderer.bounds;
             var bounds = cloudRenderer.bounds;
             var width = cloudBounds.size.x;
+            var leftEdge = bgBounds.min.x;
+            var rightEdge = bgBounds.max.x;
 
             if (moveSpeed > 0f && bounds.min.x > rightEdge) {
                 transform.position = new Vector3(leftEdge - width, transform.position.y, transform.position.z);

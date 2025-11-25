@@ -9,11 +9,22 @@ namespace PixelCrew.Player {
         [SerializeField]
         private float speed = 2f; // Run speed
 
-        [SerializeField]
-        private float jumpSpeed = 15f;
-        
+        /// <summary>
+        /// Layers, which collisions should be checked to detect if player stands on ground.
+        /// </summary>
         [SerializeField]
         private LayerMask groundLayer;
+        
+        
+        [Header( "Jump" )]
+        [SerializeField]
+        private float jumpSpeed = 15f;
+
+        /// <summary>
+        /// Time in seconds during which the player can jump after falling down.
+        /// </summary>
+        [SerializeField]
+        private float coyoteJumpTime = 0.1f;
 
         public InputActions.PlayerActions Actions { get; private set; }
         public bool IsGrounded { get; private set; }
@@ -22,6 +33,7 @@ namespace PixelCrew.Player {
         private Rigidbody2D rigidBody;
         private BoxCollider2D boxCollider;
         private GroundChecker groundChecker;
+        private float coyoteTimer = 0;
         
         // TODO: move it to some global game state object.
         private int coinsValue = 0;
@@ -73,6 +85,10 @@ namespace PixelCrew.Player {
         private void CheckGround() {
             groundChecker.Update();
             IsGrounded = groundChecker.IsGrounded;
+
+            if (!IsGrounded && groundChecker.WasGroundedLastFrame) {
+                coyoteTimer = coyoteJumpTime;
+            }
         }
 
         private void CheckHorizontalMovement() {
@@ -86,10 +102,16 @@ namespace PixelCrew.Player {
             // TODO: implement input buffering for jump
             var isJumpPressed = Actions.Jump.WasPerformedThisFrame();
 
-            if (IsGrounded && isJumpPressed) {
+            if (isJumpPressed && CanJump()) {
                 // rigidBody.AddForce(Vector2.up * jumpForce,  ForceMode2D.Impulse);
                 rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpSpeed);
             }
+            
+            coyoteTimer -= Time.deltaTime;
+        }
+
+        private bool CanJump() {
+            return IsGrounded || coyoteTimer > 0;
         }
         
         public void OnCollected(CollectableId itemId, float value) {
