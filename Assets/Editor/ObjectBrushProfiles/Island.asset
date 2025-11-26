@@ -28,6 +28,9 @@ MonoBehaviour:
     items:
     - {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1, type: 3}
     - {fileID: 7731894230931129541, guid: 6c68941588b8e714ebb69081c50949f6, type: 3}
+    - {fileID: 6962210594222472352, guid: 945f32d2ac1420c48a5dba3686e2e2ea, type: 3}
+    - {fileID: 150401592496661720, guid: 7c8336203ccf34c40ab8531105aa6856, type: 3}
+    - {fileID: 6984090045565500871, guid: 6627cbd6a3380434cbb44a7cc67d9860, type: 3}
   - name: Dynamic
     items:
     - {fileID: 3090776278357301044, guid: a3a751dd178ec0d48951dcdb7d8cd024, type: 3}
