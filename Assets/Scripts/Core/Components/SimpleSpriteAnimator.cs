@@ -11,7 +11,10 @@ namespace Core.Components {
         private bool loop = true;
         
         [SerializeField]
-        private bool destroyOnComplete = false;
+        private bool randomStartFrame;
+        
+        [SerializeField]
+        private bool destroyOnComplete;
 
         [SerializeField]
         private Sprite[] sprites;
@@ -27,14 +30,21 @@ namespace Core.Components {
         private int currentFrameIndex = 0;
         private float timer = 0;
         private float frameDuration;
+        
+        private int startFrameIndex = 0;
 
         void Awake() {
             spriteRenderer = GetComponent<SpriteRenderer>();
-            SetSprite(0);
         }
 
         void OnEnable() {
             frameDuration = 1f / frameRate;
+            
+            if (randomStartFrame) {
+                startFrameIndex = Random.Range(0, sprites.Length);
+            }
+            
+            SetSprite(startFrameIndex);
         }
 
         void Update() {
@@ -53,7 +63,6 @@ namespace Core.Components {
             var nextSpriteIndex = (currentFrameIndex + 1) % sprites.Length;
 
             if (!loop && nextSpriteIndex == 0) {
-                Debug.Log("Animation finished");
                 onComplete.Invoke();
                 enabled = false;
 
