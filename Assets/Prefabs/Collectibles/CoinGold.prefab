@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7731894230931129529}
   - component: {fileID: 7731894230931129528}
   - component: {fileID: 7731894230931129531}
+  - component: {fileID: 5639423512461712479}
   m_Layer: 0
   m_Name: CoinGold
   m_TagString: Untagged
@@ -85,8 +86,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1982840949
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 6582046967323461550, guid: 69f461687aecaab419a5f65e878f8508,
     type: 3}
@@ -115,3 +116,28 @@ MonoBehaviour:
   itemId: 0
   value: 10
   collectorTag: Player
+  pickupAnimationPrefab: {fileID: 5701283640780159239, guid: 42a5b7ee89073fc47a0917151fcc5ce9,
+    type: 3}
+--- !u!114 &5639423512461712479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7731894230931129541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 900cb3891a554b044a051941d85232e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frameRate: 10
+  loop: 1
+  destroyOnComplete: 0
+  sprites:
+  - {fileID: 6582046967323461550, guid: 69f461687aecaab419a5f65e878f8508, type: 3}
+  - {fileID: 1942777921290549423, guid: 69f461687aecaab419a5f65e878f8508, type: 3}
+  - {fileID: 8793606821965667882, guid: 69f461687aecaab419a5f65e878f8508, type: 3}
+  - {fileID: 3444832735345940322, guid: 69f461687aecaab419a5f65e878f8508, type: 3}
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []

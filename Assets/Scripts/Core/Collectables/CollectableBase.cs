@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core.Components;
+using UnityEngine;
 
 namespace Core.Collectables {
     /// <summary>
@@ -27,12 +28,15 @@ namespace Core.Collectables {
         /// </summary>
         [SerializeField]
         private float value = 1f;
-        
+
         /// <summary>
         /// Tag of the collector that can collect this item.
         /// </summary>
         [SerializeField]
         private string collectorTag;
+
+        [SerializeField]
+        private SimpleSpriteAnimator pickupAnimationPrefab;
 
         private void OnTriggerEnter2D(Collider2D other) {
             if (!other.CompareTag(collectorTag)) {
@@ -48,6 +52,16 @@ namespace Core.Collectables {
 
         protected virtual void OnCollected(ICollectableReceiver<TItemId> receiver) {
             receiver.OnCollected(itemId, value);
+
+            if (pickupAnimationPrefab != null) {
+                Instantiate(
+                    pickupAnimationPrefab,
+                    transform.position,
+                    Quaternion.identity,
+                    transform.parent
+                );
+            }
+            
             Destroy(gameObject);
         }
     }

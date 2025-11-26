@@ -12,3 +12,4 @@ csharp_insert_final_newline = true
 default_private_modifier = explicit
 instance_members_qualify_declared_in = 
 place_expr_method_on_single_line = true
+place_attribute_on_same_line = false
