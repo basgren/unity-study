@@ -1,4 +1,5 @@
 ﻿using System;
+using Components;
 using Core.Collectables;
 using PixelCrew.Collectibles;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace PixelCrew.Player {
         public static readonly int IsRunning = Animator.StringToHash("isRunning");
         public static readonly int VelocityY = Animator.StringToHash("velocityY");
         public static readonly int OnJump = Animator.StringToHash("onJump");
+        public static readonly int OnHit = Animator.StringToHash("onHit");
     }
     
     
@@ -43,7 +45,10 @@ namespace PixelCrew.Player {
         private InputActions input;
         private Rigidbody2D rigidBody;
         private BoxCollider2D boxCollider;
+        private Damageable damageable;
         private Animator animator;
+        
+        
         private GroundChecker groundChecker;
         private float coyoteTimer = 0;
         private bool isJumped = false;
@@ -59,6 +64,7 @@ namespace PixelCrew.Player {
             boxCollider = GetComponent<BoxCollider2D>();
             animator = GetComponent<Animator>();
             groundChecker = new GroundChecker(boxCollider, groundLayer);
+            damageable = GetComponent<Damageable>();
         }
 
         private void OnEnable() {
@@ -155,6 +161,7 @@ namespace PixelCrew.Player {
                 
                 case CollectableId.Health:
                     Debug.Log($"Player: Collected {value} health");
+                    damageable.AddHealth(value);
                     break;
                 
                 default:
@@ -185,6 +192,10 @@ namespace PixelCrew.Player {
             }
             
             animator.SetFloat(HeroAnimationKeys.VelocityY, velocityY);
+
+            if (damageable.IsHitThisFrame) {
+                animator.SetTrigger(HeroAnimationKeys.OnHit);
+            }
         }
         
         // ------------------- GIZMOS -------------------

@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemId: 1
-  value: 1
+  value: 10
   collectorTag: Player
   pickupAnimationPrefab: {fileID: 796917972093813461, guid: c96a27591483fd44f9339f3b0a0a2c4d,
     type: 3}
