@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 7744628555186531147}
   - component: {fileID: 8862937049985137850}
   - component: {fileID: 4275245437763844609}
+  - component: {fileID: 711908704433443735}
+  - component: {fileID: 5324404524698164522}
   m_Layer: 0
   m_Name: Helm
   m_TagString: Untagged
@@ -119,3 +121,43 @@ CircleCollider2D:
   m_Offset: {x: -0.016559958, y: 0.515625}
   serializedVersion: 2
   m_Radius: 0.2749282
+--- !u!114 &711908704433443735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703046495728465378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b2930c926af743498994e5567b157f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionCollider: {fileID: 4275245437763844609}
+  switchable: {fileID: 0}
+  onSwitch:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5324404524698164522}
+        m_MethodName: OnInteract
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5324404524698164522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703046495728465378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b346f99970f84e6f8d57e2b406be5f14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

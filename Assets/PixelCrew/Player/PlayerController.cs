@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Components;
+using Components.Interaction;
 using Core.Collectables;
 using PixelCrew.Collectibles;
 using UnityEngine;
@@ -13,8 +15,7 @@ namespace PixelCrew.Player {
         public static readonly int OnJump = Animator.StringToHash("onJump");
         public static readonly int OnHit = Animator.StringToHash("onHit");
     }
-    
-    
+
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Animator))]
@@ -27,9 +28,8 @@ namespace PixelCrew.Player {
         /// </summary>
         [SerializeField]
         private LayerMask groundLayer;
-        
-        
-        [Header( "Jump" )]
+
+        [Header("Jump")]
         [SerializeField]
         private float jumpSpeed = 15f;
 
@@ -47,19 +47,22 @@ namespace PixelCrew.Player {
         private BoxCollider2D boxCollider;
         private Damageable damageable;
         private Animator animator;
-        
-        
+
         private GroundChecker groundChecker;
         private float coyoteTimer = 0;
         private bool isJumped = false;
-        
+
         // TODO: move it to some global game state object.
         private int coinsValue = 0;
         
+        // List of all interactable components which are currently available for interaction.
+        private readonly List<InteractableBase> availableInteractables = new List<InteractableBase>();
+        private InteractableBase closestInteractable;
+
         private void Awake() {
             input = new InputActions();
             Actions = input.Player;
-            
+
             rigidBody = GetComponent<Rigidbody2D>();
             boxCollider = GetComponent<BoxCollider2D>();
             animator = GetComponent<Animator>();
@@ -92,7 +95,7 @@ namespace PixelCrew.Player {
             // Corgi engine doesn't use physics for player and updates player coords manually (applying
             // gravity, etc) to be more responsive and have more control over movements (while I'm not
             // sure about physics for other draggable objects).
-            
+
             // We won't use InputSystem events, as order of their invocation is not guaranteed, but
             // in case we want to check button combinations, it's easier to check them manually.
             // Using events is better for UI controls.
@@ -100,6 +103,7 @@ namespace PixelCrew.Player {
 
             CheckJump();
             CheckHorizontalMovement();
+            CheckInteraction();
 
             // Update animator at the end, when player state is updated.
             UpdateAnimator();
@@ -126,7 +130,7 @@ namespace PixelCrew.Player {
                 transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
             }
         }
-        
+
         private void CheckJump() {
             isJumped = false;
             // TODO: implement input buffering for jump
@@ -135,7 +139,7 @@ namespace PixelCrew.Player {
             if (isJumpPressed && CanJump()) {
                 Jump();
             }
-            
+
             coyoteTimer -= Time.deltaTime;
         }
 
@@ -152,27 +156,29 @@ namespace PixelCrew.Player {
         private bool IsRunning() {
             return Math.Abs(rigidBody.velocity.x) > 0.01f;
         }
-        
+
         public void OnCollected(CollectableId itemId, float value) {
             switch (itemId) {
                 case CollectableId.Coin:
                     AddCoin(value);
                     break;
-                
+
                 case CollectableId.Health:
                     Debug.Log($"Player: Collected {value} health");
                     damageable.AddHealth(value);
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(itemId), itemId, null);
             }
         }
-        
+
         private void AddCoin(float amount = 1f) {
-            coinsValue += (int) amount; 
+            coinsValue += (int)amount;
             Debug.Log($"Added coin. Current value: {coinsValue}");
         }
+
+        #region Animator
         
         private void UpdateAnimator() {
             animator.SetBool(HeroAnimationKeys.IsGrounded, IsGrounded);
@@ -181,16 +187,16 @@ namespace PixelCrew.Player {
             if (isJumped) {
                 // We're jumping on trigger, not using velocityY comparison, as we may have moving platforms,
                 // in this case Y speed may be > 0, while the player is still on the ground.
-                animator.SetTrigger(HeroAnimationKeys.OnJump);                
+                animator.SetTrigger(HeroAnimationKeys.OnJump);
             }
-            
+
             var velocityY = rigidBody.velocity.y;
-            
+
             // Adjustments to compensate for floating point precision errors and physics jitter.
             if (Math.Abs(velocityY) < 0.001f) {
                 velocityY = 0;
             }
-            
+
             animator.SetFloat(HeroAnimationKeys.VelocityY, velocityY);
 
             if (damageable.IsHitThisFrame) {
@@ -198,6 +204,55 @@ namespace PixelCrew.Player {
             }
         }
         
+        #endregion
+
+        #region Interaction
+        
+        private void CheckInteraction() {
+            if (!Actions.Interact.WasPerformedThisFrame() || availableInteractables.Count == 0) {
+                return;
+            }
+            
+            var closest = GetClosestInteractable();
+            if (closest != null) {
+                closest.Interact();
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D other) {
+            if (!other.TryGetComponent<InteractableBase>(out var interactable)) {
+                return;
+            }
+
+            availableInteractables.Add(interactable);
+
+            UpdateClosestInteractable(true);
+        }
+
+        private void OnTriggerExit2D(Collider2D other) {
+            if (other.TryGetComponent<InteractableBase>(out var interactable)) {
+                availableInteractables.Remove(interactable);
+                interactable.IsHovered = false;
+                
+                // If there were several interactables, we should update the closest one after we remove
+                // the one for which we exited trigger.
+                UpdateClosestInteractable(true);
+            }
+        }
+        
+        private InteractableBase GetClosestInteractable() {
+            return Geometry.FindClosest(availableInteractables, transform.position);
+        }
+
+        private void UpdateClosestInteractable(bool isHovered) {
+            var closest = GetClosestInteractable();
+            if (closest != null) {
+                closest.IsHovered = isHovered;
+            }
+        }
+
+        #endregion
+
         // ------------------- GIZMOS -------------------
 
         private void OnDrawGizmosSelected() {
