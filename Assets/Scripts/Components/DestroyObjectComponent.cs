@@ -2,8 +2,15 @@
 
 namespace Components {
     public class DestroyObjectComponent : MonoBehaviour {
-        [SerializeField] private GameObject objectToDestroy;
+        [SerializeField]
+        private GameObject objectToDestroy;
 
-        public void DestroyObject() => Destroy(objectToDestroy);
+        public void DestroySelf() => Destroy(gameObject);
+
+        public void DestroyObject() {
+            if (objectToDestroy != null) {
+                Destroy(objectToDestroy);
+            }
+        }
     }
 }

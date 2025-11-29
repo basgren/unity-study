@@ -5,6 +5,7 @@ using Components.Interaction;
 using Core.Collectables;
 using PixelCrew.Collectibles;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
 
 namespace PixelCrew.Player {
@@ -38,6 +39,10 @@ namespace PixelCrew.Player {
         /// </summary>
         [SerializeField]
         private float coyoteJumpTime = 0.1f;
+
+        [Header("Effects")]
+        [SerializeField]
+        private SpawnComponent runDustSpawner;
 
         public InputActions.PlayerActions Actions { get; private set; }
         public bool IsGrounded { get; private set; }
@@ -201,6 +206,12 @@ namespace PixelCrew.Player {
 
             if (damageable.IsHitThisFrame) {
                 animator.SetTrigger(HeroAnimationKeys.OnHit);
+            }
+        }
+
+        public void SpawnRunDust() {
+            if (Math.Abs(rigidBody.velocity.x) > 1f) {
+                runDustSpawner.Spawn();                
             }
         }
         
