@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Core.Services;
 using UnityEngine;
 
 namespace Core.Collectables
@@ -14,7 +14,7 @@ namespace Core.Collectables
         
         void Start() {
             if (effect != null) {
-                instance = Instantiate(effect, transform.position, Quaternion.identity);
+                instance = G.Spawner.SpawnVfx(effect, transform.position);
             }
         }
 

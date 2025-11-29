@@ -15,6 +15,11 @@ namespace Utils {
 
         public readonly int rayCount;
         
+        /// <summary>
+        /// Returns true when player became grounded in this frame.
+        /// </summary>
+        public bool JustLanded => IsGrounded && !WasGroundedLastFrame;
+        
         private RaycastHit2D[] rayHits;
 
         private readonly BoxCollider2D myCollider;

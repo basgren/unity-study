@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Components;
+using Core.Services;
 using UnityEngine;
 
 namespace Core.Collectables {
@@ -102,13 +103,9 @@ namespace Core.Collectables {
             receiver.OnCollected(itemId, value);
 
             if (pickupAnimationPrefab != null) {
-                // TODO: [BG] Again - think about some service which should create all effects in separate objects.
-                //   These effects should be completely decoupled from the collectable object and not created in root
-                //   to void hierarchy pollution and make debug easier.
-                Instantiate(
+                G.Spawner.SpawnVfx(
                     pickupAnimationPrefab,
-                    transform.position,
-                    Quaternion.identity
+                    transform.position
                 );
             }
 

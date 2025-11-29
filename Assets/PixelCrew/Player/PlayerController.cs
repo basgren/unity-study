@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Components;
 using Components.Interaction;
 using Core.Collectables;
+using Core.Services;
 using PixelCrew.Collectibles;
 using UnityEngine;
 using Utils;
@@ -20,6 +21,9 @@ namespace PixelCrew.Player {
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Animator))]
     public class PlayerController : MonoBehaviour, ICollectableReceiver<CollectableId> {
+        private const string DustPositionObjectName = "DustSpawnPoint";
+        private const float MinFallHeightForDustEffect = 3f;
+
         [SerializeField]
         private float speed = 2f; // Run speed
 
@@ -41,7 +45,13 @@ namespace PixelCrew.Player {
 
         [Header("Effects")]
         [SerializeField]
-        private SpawnComponent runDustSpawner;
+        private GameObject runDustPrefab;
+
+        [SerializeField]
+        private GameObject jumpDustPrefab;
+
+        [SerializeField]
+        private GameObject groundDustPrefab;
 
         public InputActions.PlayerActions Actions { get; private set; }
         public bool IsGrounded { get; private set; }
@@ -59,10 +69,17 @@ namespace PixelCrew.Player {
 
         // TODO: move it to some global game state object.
         private int coinsValue;
-        
+
         // List of all interactable components which are currently available for interaction.
         private readonly List<InteractableBase> availableInteractables = new List<InteractableBase>();
         private InteractableBase closestInteractable;
+
+        private Transform dustSpawnPoint;
+
+        // Distance from the max height achieved by player to the point where player landed.
+        // Calculated on the first frame when player lands.
+        private float fallHeight;
+        private float maxYPositionInAir;
 
         private void Awake() {
             input = new InputActions();
@@ -74,6 +91,8 @@ namespace PixelCrew.Player {
             groundChecker = new GroundChecker(boxCollider, groundLayer);
             damageable = GetComponent<Damageable>();
             lootDropper = GetComponent<LootDropper>();
+
+            dustSpawnPoint = transform.Find(DustPositionObjectName);
         }
 
         private void OnEnable() {
@@ -119,9 +138,27 @@ namespace PixelCrew.Player {
             groundChecker.Update();
             IsGrounded = groundChecker.IsGrounded;
 
-            if (!IsGrounded && groundChecker.WasGroundedLastFrame) {
-                coyoteTimer = coyoteJumpTime;
+            if (!IsGrounded) {
+                if (groundChecker.WasGroundedLastFrame) {
+                    coyoteTimer = coyoteJumpTime;
+                    maxYPositionInAir = transform.position.y;
+                } else {
+                    // Still falling
+                    maxYPositionInAir = Mathf.Max(maxYPositionInAir, transform.position.y);
+                }
             }
+
+            if (groundChecker.JustLanded) {
+                fallHeight = maxYPositionInAir - transform.position.y;
+                
+                if (fallHeight > MinFallHeightForDustEffect) {
+                    SpawnLandingDust();
+                }
+            }
+        }
+
+        private void SpawnLandingDust() {
+            G.Spawner.SpawnVfx(groundDustPrefab, dustSpawnPoint.position);
         }
 
         private void CheckHorizontalMovement() {
@@ -150,9 +187,9 @@ namespace PixelCrew.Player {
         }
 
         private void Jump() {
-            // rigidBody.AddForce(Vector2.up * jumpForce,  ForceMode2D.Impulse);
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpSpeed);
             isJumped = true;
+            G.Spawner.SpawnVfx(jumpDustPrefab, dustSpawnPoint.position);
         }
 
         private bool CanJump() {
@@ -189,7 +226,7 @@ namespace PixelCrew.Player {
         }
 
         #region Animator
-        
+
         private void UpdateAnimator() {
             animator.SetBool(HeroAnimationKeys.IsGrounded, IsGrounded);
             animator.SetBool(HeroAnimationKeys.IsRunning, IsRunning());
@@ -216,19 +253,19 @@ namespace PixelCrew.Player {
 
         public void SpawnRunDust() {
             if (Math.Abs(rigidBody.velocity.x) > 1f) {
-                runDustSpawner.Spawn();                
+                G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
             }
         }
-        
+
         #endregion
 
         #region Interaction
-        
+
         private void CheckInteraction() {
             if (!Actions.Interact.WasPerformedThisFrame() || availableInteractables.Count == 0) {
                 return;
             }
-            
+
             var closest = GetClosestInteractable();
             if (closest != null) {
                 closest.Interact();
@@ -249,13 +286,13 @@ namespace PixelCrew.Player {
             if (other.TryGetComponent<InteractableBase>(out var interactable)) {
                 availableInteractables.Remove(interactable);
                 interactable.IsHovered = false;
-                
+
                 // If there were several interactables, we should update the closest one after we remove
                 // the one for which we exited trigger.
                 UpdateClosestInteractable(true);
             }
         }
-        
+
         private InteractableBase GetClosestInteractable() {
             return Geometry.FindClosest(availableInteractables, transform.position);
         }
@@ -274,7 +311,7 @@ namespace PixelCrew.Player {
             lootDropper.DropLoot(count);
             RemoveCoins(count);
         }
-        
+
         // ------------------- GIZMOS -------------------
 
         private void OnDrawGizmosSelected() {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Services;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -16,7 +17,7 @@ public class LootDropper : MonoBehaviour {
 
     public void DropLoot(int count = 1) {
         for (int i = count; i > 0; i--) {
-            var instance = Instantiate(lootPrefab, transform.position, Quaternion.identity);
+            var instance = G.Spawner.SpawnCollectible(lootPrefab, transform.position);
 
             var rigidBody = instance.GetComponent<Rigidbody2D>();
 
