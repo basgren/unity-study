@@ -62,6 +62,9 @@ TagManager:
   - name: Hazards
     uniqueID: 4078578919
     locked: 0
+  - name: Effects
+    uniqueID: 4273102561
+    locked: 0
   - name: DecorFront
     uniqueID: 765679513
     locked: 0

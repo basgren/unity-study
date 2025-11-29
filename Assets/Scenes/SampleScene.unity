@@ -1154,7 +1154,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.35903692, y: -1.1780002, z: -10}
+  m_LocalPosition: {x: -0.35632372, y: -1.1779892, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1978780106}
@@ -3135,7 +3135,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 765679513
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -4652,6 +4652,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3a751dd178ec0d48951dcdb7d8cd024, type: 3}
+--- !u!1 &1944159313 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6962210594222472352, guid: 945f32d2ac1420c48a5dba3686e2e2ea,
+    type: 3}
+  m_PrefabInstance: {fileID: 6962210593508774066}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1944159319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944159313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19a0a9000b8e99245b4e13c0a8ca2cb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effect: {fileID: 4461717866713813597, guid: dae7ee856d7223e47baf675d0d15b465, type: 3}
 --- !u!4 &1944173004 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8852871639174661363, guid: 1767eec503b79f84181a5e8e0e86f9a1,

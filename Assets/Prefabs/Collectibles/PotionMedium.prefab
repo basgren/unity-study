@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8627555916114116127}
   - component: {fileID: 1573324403474841558}
   - component: {fileID: 7765873954680754581}
+  - component: {fileID: 2084914030319342589}
   m_Layer: 0
   m_Name: PotionMedium
   m_TagString: Untagged
@@ -72,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1982840949
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 3714227102187029162, guid: 36c22f769dd237e4788473af3a44d2ec,
     type: 3}
@@ -162,3 +163,16 @@ MonoBehaviour:
   amplitude: 0.1
   initialPhase: 0
   randomInitialPhase: 1
+--- !u!114 &2084914030319342589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150401592496661720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19a0a9000b8e99245b4e13c0a8ca2cb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effect: {fileID: 4461717866713813597, guid: cd2c96694605b21429bcee4e6536a736, type: 3}
