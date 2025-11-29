@@ -18,8 +18,8 @@ TagManager:
   - Ground
   - DynamicObjects
   - Decor
-  - 
-  - 
+  - PickupTrigger
+  - PickupSolid
   - 
   - 
   - 
@@ -61,6 +61,9 @@ TagManager:
     locked: 0
   - name: Hazards
     uniqueID: 4078578919
+    locked: 0
+  - name: Loot
+    uniqueID: 364604425
     locked: 0
   - name: Effects
     uniqueID: 4273102561

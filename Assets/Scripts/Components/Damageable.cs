@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Components {
     [RequireComponent(typeof(Collider2D))]
@@ -21,6 +22,9 @@ namespace Components {
 
         [SerializeField]
         private float knockbackForce = 13f;
+
+        [SerializeField]
+        private UnityEvent onHit;
         
         // TODO: implement simple FSM for easier state management and automatic transitions.
         
@@ -101,6 +105,8 @@ namespace Components {
             currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
             IsHitThisFrame = true;
             invulnerabilityTimer = invulnerabilityTime;
+            
+            onHit?.Invoke();
 
             if (currentHealth <= 0) {
                 Die();

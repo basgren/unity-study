@@ -5,7 +5,6 @@ using Components.Interaction;
 using Core.Collectables;
 using PixelCrew.Collectibles;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 
 namespace PixelCrew.Player {
@@ -52,13 +51,14 @@ namespace PixelCrew.Player {
         private BoxCollider2D boxCollider;
         private Damageable damageable;
         private Animator animator;
+        private LootDropper lootDropper;
 
         private GroundChecker groundChecker;
-        private float coyoteTimer = 0;
-        private bool isJumped = false;
+        private float coyoteTimer;
+        private bool isJumped;
 
         // TODO: move it to some global game state object.
-        private int coinsValue = 0;
+        private int coinsValue;
         
         // List of all interactable components which are currently available for interaction.
         private readonly List<InteractableBase> availableInteractables = new List<InteractableBase>();
@@ -73,6 +73,7 @@ namespace PixelCrew.Player {
             animator = GetComponent<Animator>();
             groundChecker = new GroundChecker(boxCollider, groundLayer);
             damageable = GetComponent<Damageable>();
+            lootDropper = GetComponent<LootDropper>();
         }
 
         private void OnEnable() {
@@ -165,7 +166,7 @@ namespace PixelCrew.Player {
         public void OnCollected(CollectableId itemId, float value) {
             switch (itemId) {
                 case CollectableId.Coin:
-                    AddCoin(value);
+                    AddCoins((int)value);
                     break;
 
                 case CollectableId.Health:
@@ -178,9 +179,13 @@ namespace PixelCrew.Player {
             }
         }
 
-        private void AddCoin(float amount = 1f) {
-            coinsValue += (int)amount;
+        private void AddCoins(int amount = 1) {
+            coinsValue += amount;
             Debug.Log($"Added coin. Current value: {coinsValue}");
+        }
+
+        private void RemoveCoins(int amount = 1) {
+            coinsValue = Math.Max(0, coinsValue - amount);
         }
 
         #region Animator
@@ -264,6 +269,12 @@ namespace PixelCrew.Player {
 
         #endregion
 
+        public void DropCoins() {
+            var count = Math.Min(5, coinsValue);
+            lootDropper.DropLoot(count);
+            RemoveCoins(count);
+        }
+        
         // ------------------- GIZMOS -------------------
 
         private void OnDrawGizmosSelected() {

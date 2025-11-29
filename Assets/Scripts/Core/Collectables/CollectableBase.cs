@@ -1,4 +1,5 @@
-﻿using Core.Components;
+﻿using System;
+using Core.Components;
 using UnityEngine;
 
 namespace Core.Collectables {
@@ -38,31 +39,84 @@ namespace Core.Collectables {
         [SerializeField]
         private SimpleSpriteAnimator pickupAnimationPrefab;
 
+        public event Action OnCollected;
+        
+        private bool canCollect = true;
+        
+        /// <summary>
+        /// Time after which collectable can be collected again.
+        /// </summary>
+        private readonly float cannotCollectTime = 1f; 
+        private float cannotCollectTimer;
+
+        /// <summary>
+        /// Should be called for collectables dropped by a player (collector), so they can't be collected immediately,
+        /// and will be collected only after they leave player's trigger area.
+        /// </summary>
+        public void BlockUntilCollectorExit() {
+            canCollect = false;
+            cannotCollectTimer = cannotCollectTime;
+        }
+        
+        private void Update() {
+            if (cannotCollectTimer > 0) {
+                cannotCollectTimer -= Time.deltaTime;
+
+                if (cannotCollectTimer <= 0) {
+                    canCollect = true;
+                }
+            }
+        }
+
         private void OnTriggerEnter2D(Collider2D other) {
+            TryCollect(other);
+        }
+        
+        private void OnTriggerStay2D(Collider2D other) {
+            // For cases when coin drop followed player trajectory and player is still inside trigger area.
+            // In this case collection will be allowed by timeout.
+            TryCollect(other);
+        }
+
+        private void OnTriggerExit2D(Collider2D other) {
             if (!other.CompareTag(collectorTag)) {
+                return;
+            }
+
+            canCollect = true;
+        }
+        
+        private void TryCollect(Collider2D other) {
+            if (!other.CompareTag(collectorTag) || !canCollect) {
                 return;
             }
 
             ICollectableReceiver<TItemId> receiver = other.gameObject.GetComponent<ICollectableReceiver<TItemId>>();
 
             if (receiver != null) {
-                OnCollected(receiver);
+                Collect(receiver);
             }
         }
 
-        protected virtual void OnCollected(ICollectableReceiver<TItemId> receiver) {
+        private void Collect(ICollectableReceiver<TItemId> receiver) {
             receiver.OnCollected(itemId, value);
 
             if (pickupAnimationPrefab != null) {
+                // TODO: [BG] Again - think about some service which should create all effects in separate objects.
+                //   These effects should be completely decoupled from the collectable object and not created in root
+                //   to void hierarchy pollution and make debug easier.
                 Instantiate(
                     pickupAnimationPrefab,
                     transform.position,
-                    Quaternion.identity,
-                    transform.parent
+                    Quaternion.identity
                 );
             }
-            
+
             Destroy(gameObject);
+
+            // Call at the very end to apply all effects, as this object may belong to the
+            // parent object which could be destroyed in this event.
+            OnCollected?.Invoke();
         }
     }
 }

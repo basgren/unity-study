@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4915699577960438699}
-  - component: {fileID: 4915699577960438692}
   - component: {fileID: 4915699577960438693}
   - component: {fileID: 4915699577960438698}
   - component: {fileID: 1558590608608574814}
-  m_Layer: 0
+  - component: {fileID: 4915699577960438692}
+  m_Layer: 13
   m_Name: CoinSilver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,22 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &4915699577960438692
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4915699577960438696}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.01, y: 0.01}
-  serializedVersion: 2
-  m_Radius: 0.21
 --- !u!212 &4915699577960438693
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -86,8 +70,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1982840949
-  m_SortingLayer: 3
+  m_SortingLayerID: 364604425
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: -2322180950842035098, guid: 69f461687aecaab419a5f65e878f8508,
     type: 3}
@@ -132,6 +116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   frameRate: 10
   loop: 1
+  randomStartFrame: 0
   destroyOnComplete: 0
   sprites:
   - {fileID: -2322180950842035098, guid: 69f461687aecaab419a5f65e878f8508, type: 3}
@@ -141,3 +126,19 @@ MonoBehaviour:
   onComplete:
     m_PersistentCalls:
       m_Calls: []
+--- !u!58 &4915699577960438692
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4915699577960438696}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.018281952, y: 0.02300965}
+  serializedVersion: 2
+  m_Radius: 0.2312916

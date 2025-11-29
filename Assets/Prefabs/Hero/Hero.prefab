@@ -60,6 +60,7 @@ GameObject:
   - component: {fileID: 3756431542319373570}
   - component: {fileID: 7955825364520398428}
   - component: {fileID: 5533741506947918789}
+  - component: {fileID: 649388069741242861}
   m_Layer: 9
   m_Name: Hero
   m_TagString: Player
@@ -234,3 +235,33 @@ MonoBehaviour:
   invulnerabilityTime: 2
   hasKnockback: 1
   knockbackForce: 9
+  onHit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3756431542319373571}
+        m_MethodName: DropCoins
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &649388069741242861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3756431542319373574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62684d56dc67f6c42862656659c4a483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootPrefab: {fileID: 389717885744418158, guid: a442b7edb1b27fb4b86fd21d80bffed8,
+    type: 3}
+  initialSpeed: 10
+  randomDirection: 1

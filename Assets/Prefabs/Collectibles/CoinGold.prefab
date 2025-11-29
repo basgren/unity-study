@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7731894230931129528}
   - component: {fileID: 7731894230931129531}
   - component: {fileID: 5639423512461712479}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: CoinGold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,8 +86,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1982840949
-  m_SortingLayer: 3
+  m_SortingLayerID: 364604425
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 6582046967323461550, guid: 69f461687aecaab419a5f65e878f8508,
     type: 3}
@@ -132,6 +132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   frameRate: 10
   loop: 1
+  randomStartFrame: 0
   destroyOnComplete: 0
   sprites:
   - {fileID: 6582046967323461550, guid: 69f461687aecaab419a5f65e878f8508, type: 3}
