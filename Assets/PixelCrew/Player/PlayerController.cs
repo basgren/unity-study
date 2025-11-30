@@ -22,7 +22,7 @@ namespace PixelCrew.Player {
     [RequireComponent(typeof(Animator))]
     public class PlayerController : MonoBehaviour, ICollectableReceiver<CollectableId> {
         private const string DustPositionObjectName = "DustSpawnPoint";
-        private const float MinFallHeightForDustEffect = 3f;
+        private const float MinFallHeightForDustEffect = 2.8f;
 
         [SerializeField]
         private float speed = 2f; // Run speed
@@ -199,6 +199,7 @@ namespace PixelCrew.Player {
                 jumpSustainTimer = jumpSustainTime;
                 isJumped = true;
                 ConsumeJumpBuffer();
+                G.Spawner.SpawnVfx(jumpDustPrefab, dustSpawnPoint.position);
             } else if (isSustainingJump) {
                 Jump();
             }
@@ -282,7 +283,10 @@ namespace PixelCrew.Player {
 
         public void SpawnRunDust() {
             if (Math.Abs(rigidBody.velocity.x) > 1f) {
-                G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
+                var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
+                
+                // Make sure the spawned object is directed in the same direction as target object.
+                instance.transform.localScale = dustSpawnPoint.lossyScale;
             }
         }
 
