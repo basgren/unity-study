@@ -1439,7 +1439,7 @@ GameObject:
   m_Component:
   - component: {fileID: 624160142}
   m_Layer: 0
-  m_Name: Effects
+  m_Name: VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7604,6 +7604,49 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6916280508629022628}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2118745930
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2118745932}
+  - component: {fileID: 2118745931}
+  m_Layer: 0
+  m_Name: System
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2118745931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118745930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7dd6c190917404196d20e9556c90da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2118745932
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118745930}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.2966202, y: -0.2054944, z: -1.5110519}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2121118772 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3090776278357301051, guid: a3a751dd178ec0d48951dcdb7d8cd024,
@@ -8192,7 +8235,7 @@ PrefabInstance:
     - target: {fileID: 5533741506947918789, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: currentHealth
-      value: 50
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9002533303501141659, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}

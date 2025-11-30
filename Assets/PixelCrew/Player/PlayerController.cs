@@ -76,11 +76,6 @@ namespace PixelCrew.Player {
 
         private Transform dustSpawnPoint;
 
-        // Distance from the max height achieved by player to the point where player landed.
-        // Calculated on the first frame when player lands.
-        private float fallHeight;
-        private float maxYPositionInAir;
-
         private void Awake() {
             input = new InputActions();
             Actions = input.Player;
@@ -138,20 +133,12 @@ namespace PixelCrew.Player {
             groundChecker.Update();
             IsGrounded = groundChecker.IsGrounded;
 
-            if (!IsGrounded) {
-                if (groundChecker.WasGroundedLastFrame) {
-                    coyoteTimer = coyoteJumpTime;
-                    maxYPositionInAir = transform.position.y;
-                } else {
-                    // Still falling
-                    maxYPositionInAir = Mathf.Max(maxYPositionInAir, transform.position.y);
-                }
+            if (groundChecker.IsJumpedThisFrame) {
+                coyoteTimer = coyoteJumpTime;
             }
 
-            if (groundChecker.JustLanded) {
-                fallHeight = maxYPositionInAir - transform.position.y;
-                
-                if (fallHeight > MinFallHeightForDustEffect) {
+            if (groundChecker.IsLandedThisFrame) {
+                if (groundChecker.FallHeight > MinFallHeightForDustEffect) {
                     SpawnLandingDust();
                 }
             }
@@ -319,7 +306,7 @@ namespace PixelCrew.Player {
                 return;
             }
 
-            for (var i = 0; i < groundChecker.rayCount; i++) {
+            for (var i = 0; i < groundChecker.RayCount; i++) {
                 Gizmos.color = groundChecker.HasRayCollision(i)
                     ? Color.green
                     : Color.red;
