@@ -76,6 +76,10 @@ namespace PixelCrew.Player {
 
         private Transform dustSpawnPoint;
 
+        private readonly float jumpInputBufferTime = 0.1f;
+        private float jumpInputBufferTimer;
+        private bool isJumpPressedBuffer;
+
         private void Awake() {
             input = new InputActions();
             Actions = input.Player;
@@ -133,7 +137,7 @@ namespace PixelCrew.Player {
             groundChecker.Update();
             IsGrounded = groundChecker.IsGrounded;
 
-            if (groundChecker.IsJumpedThisFrame) {
+            if (groundChecker.IsLeftGroundThisFrame) {
                 coyoteTimer = coyoteJumpTime;
             }
 
@@ -163,10 +167,20 @@ namespace PixelCrew.Player {
 
         private void CheckJump() {
             isJumped = false;
-            // TODO: implement input buffering for jump
+            
             var isJumpPressed = Actions.Jump.WasPerformedThisFrame();
 
-            if (isJumpPressed && CanJump()) {
+            if (isJumpPressed) {
+                jumpInputBufferTimer = jumpInputBufferTime;
+                isJumpPressedBuffer = true;
+            } else {
+                jumpInputBufferTimer -= Time.deltaTime;
+                if (jumpInputBufferTimer <= 0) {
+                    isJumpPressedBuffer = false;
+                }
+            }
+
+            if (isJumpPressedBuffer && CanJump()) {
                 Jump();
             }
 
@@ -175,8 +189,14 @@ namespace PixelCrew.Player {
 
         private void Jump() {
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpSpeed);
+            ConsumeJumpBuffer();
             isJumped = true;
             G.Spawner.SpawnVfx(jumpDustPrefab, dustSpawnPoint.position);
+        }
+
+        private void ConsumeJumpBuffer() {
+            jumpInputBufferTimer = 0;
+            isJumpPressedBuffer = false;
         }
 
         private bool CanJump() {

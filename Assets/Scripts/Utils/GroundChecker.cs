@@ -37,9 +37,9 @@ namespace Utils {
         public bool IsLandedThisFrame => IsGrounded && !WasGroundedLastFrame;
         
         /// <summary>
-        /// Returns true when player became ungrounded this frame.
+        /// Returns true when player became ungrounded this frame (jumped, fell off the ground, etc).
         /// </summary>
-        public bool IsJumpedThisFrame => !IsGrounded && WasGroundedLastFrame;
+        public bool IsLeftGroundThisFrame => !IsGrounded && WasGroundedLastFrame;
         
         /// <summary>
         /// Returns the height the player felt from. This should be checked only when
@@ -111,7 +111,7 @@ namespace Utils {
             // Update fall height
             var y = bounds.min.y;
             
-            if (IsJumpedThisFrame) {
+            if (IsLeftGroundThisFrame) {
                 fallUpperPosY = y;
                 fallLowerPosY = y;
             } else if (IsLandedThisFrame) {
