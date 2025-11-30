@@ -36,6 +36,9 @@ namespace PixelCrew.Player {
         [Header("Jump")]
         [SerializeField]
         private float jumpSpeed = 15f;
+        
+        [SerializeField]
+        private float jumpSustainTime = 0.2f;
 
         /// <summary>
         /// Time in seconds during which the player can jump after falling down.
@@ -66,6 +69,7 @@ namespace PixelCrew.Player {
         private GroundChecker groundChecker;
         private float coyoteTimer;
         private bool isJumped;
+        private float jumpSustainTimer;
 
         // TODO: move it to some global game state object.
         private int coinsValue;
@@ -166,9 +170,12 @@ namespace PixelCrew.Player {
         }
 
         private void CheckJump() {
+            // TODO: [BG] implement bounce off when player hits the ceiling with head. We should stop
+            //   sustaining in this case.
             isJumped = false;
             
             var isJumpPressed = Actions.Jump.WasPerformedThisFrame();
+            var isJumpReleased = Actions.Jump.WasReleasedThisFrame();
 
             if (isJumpPressed) {
                 jumpInputBufferTimer = jumpInputBufferTime;
@@ -180,18 +187,33 @@ namespace PixelCrew.Player {
                 }
             }
 
+            if (isJumpReleased) {
+                jumpSustainTimer = 0;
+            }
+
+            var isSustainingJump = jumpSustainTimer > 0;
+
             if (isJumpPressedBuffer && CanJump()) {
+                Jump();
+
+                jumpSustainTimer = jumpSustainTime;
+                isJumped = true;
+                ConsumeJumpBuffer();
+            } else if (isSustainingJump) {
                 Jump();
             }
 
-            coyoteTimer -= Time.deltaTime;
+            if (coyoteTimer > 0) {
+                coyoteTimer -= Time.deltaTime;
+            }
+
+            if (jumpSustainTimer > 0) {
+                jumpSustainTimer -= Time.deltaTime;
+            }
         }
 
         private void Jump() {
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpSpeed);
-            ConsumeJumpBuffer();
-            isJumped = true;
-            G.Spawner.SpawnVfx(jumpDustPrefab, dustSpawnPoint.position);
         }
 
         private void ConsumeJumpBuffer() {

@@ -149,7 +149,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 3072
-  jumpSpeed: 11
+  jumpSpeed: 7
+  jumpSustainTime: 0.25
   coyoteJumpTime: 0.1
   runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
     type: 3}
