@@ -193,7 +193,7 @@ namespace System
                 {
                     ""name"": """",
                     ""id"": ""50c4bad3-d32b-41d8-ae77-30c09d027276"",
-                    ""path"": ""<Keyboard>/f"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",

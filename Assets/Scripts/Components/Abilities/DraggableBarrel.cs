@@ -1,0 +1,94 @@
+﻿using System;
+using Components.Collisions;
+using UnityEngine;
+using Utils;
+
+namespace Components.Abilities {
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(GroundChecker))]
+    public class DraggableBarrel : MonoBehaviour {
+        [SerializeField]
+        private float jointUpBreakForce = 2500f;
+
+        public Rigidbody2D Body { get; private set; }
+        public BoxCollider2D Collider { get; private set; }
+
+        public float ReactiveForceOnBreak { get; private set; }
+        public float ReactiveTorqueOnBreak { get; private set; }
+
+        public bool IsGrounded => groundCheckComponent.IsGrounded;
+
+        RigidbodyConstraints2D freeConstraints;
+        RigidbodyConstraints2D lockedConstraints;
+        SpriteRenderer spriteRenderer;
+        
+        private GroundCheckComponent groundCheckComponent;
+        private bool isDragged;
+        
+        // Joint between lower and upper barrels
+        private FixedJoint2D barrelJoint;
+
+        private void Awake() {
+            Body = GetComponent<Rigidbody2D>();
+            Collider = GetComponent<BoxCollider2D>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            groundCheckComponent = GetComponent<GroundCheckComponent>();
+
+            freeConstraints = RigidbodyConstraints2D.FreezeRotation;
+            lockedConstraints = freeConstraints | RigidbodyConstraints2D.FreezePositionX;
+
+            Body.constraints = lockedConstraints;
+        }
+
+        public void SetDragged(bool dragged) {
+            if (dragged == isDragged) {
+                return;
+            }
+            
+            isDragged = dragged;
+            
+            if (dragged) {
+                Body.constraints = freeConstraints;
+                spriteRenderer.color = Color.yellow;
+            } else {
+                spriteRenderer.color = Color.white;
+                Body.constraints = lockedConstraints;
+                Body.velocity = new Vector2(0f, Body.velocity.y);
+            }
+        }
+
+        public void ConnectToDraggable(DraggableBarrel otherDraggable) {
+            Debug.Log("Creating joint between barrels");
+            barrelJoint = gameObject.AddComponent<FixedJoint2D>();
+            barrelJoint.connectedBody = otherDraggable.Body;
+            barrelJoint.enableCollision = true;
+
+            // For now this value is ok to keep stacked barrels together and to break it
+            // if upper barrel runs into an obstacle, while lower one is still dragged. 
+            barrelJoint.breakForce = jointUpBreakForce;
+
+            ReactiveForceOnBreak = -1f;
+            ReactiveTorqueOnBreak = -1f;
+        }
+
+        public void DisconnectFromDraggable() {
+            if (barrelJoint) {
+                Destroy(barrelJoint);
+            }
+
+            barrelJoint = null;
+        }
+
+        private void OnJointBreak2D(Joint2D brokenJoint) {
+            barrelJoint = null;
+
+            // Just for debug. In case we change movement parameters, we might need to tune break forces,
+            // and to do that we should know reaction force when the link with the top barrel is broken.
+            // These values are be displayed in inspector for DraggableBarrel component.
+            ReactiveForceOnBreak = brokenJoint.reactionForce.magnitude;
+            ReactiveTorqueOnBreak = brokenJoint.reactionTorque;
+        }
+    }
+}

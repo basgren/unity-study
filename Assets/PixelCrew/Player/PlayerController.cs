@@ -137,6 +137,17 @@ namespace PixelCrew.Player {
             UpdateAnimator();
         }
 
+        bool dragStarted;
+        public void SetDragMode(bool dragging, float speedMultiplier) {
+            if (dragging) {
+                dragStarted = true;
+                // currentMoveSpeed = baseMoveSpeed * speedMultiplier;
+            } else {
+                dragStarted = false;
+                // currentMoveSpeed = baseMoveSpeed;
+            }
+        }
+        
         private void CheckGround() {
             groundChecker.Update();
             IsGrounded = groundChecker.IsGrounded;
@@ -348,18 +359,7 @@ namespace PixelCrew.Player {
         // ------------------- GIZMOS -------------------
 
         private void OnDrawGizmosSelected() {
-            if (groundChecker == null) {
-                return;
-            }
-
-            for (var i = 0; i < groundChecker.RayCount; i++) {
-                Gizmos.color = groundChecker.HasRayCollision(i)
-                    ? Color.green
-                    : Color.red;
-
-                Vector2 rayOrigin = groundChecker.RayOrigins[i];
-                Gizmos.DrawLine(rayOrigin, rayOrigin + groundChecker.RayLength * groundChecker.RayDirection);
-            }
+            GroundCheckerUtils.DrawGroundCheckerGizmos(groundChecker);
         }
     }
 }
