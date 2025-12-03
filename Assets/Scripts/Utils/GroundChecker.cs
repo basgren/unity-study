@@ -79,7 +79,7 @@ namespace Utils {
             // Buffer for all hits
             hitsBuffer = new RaycastHit2D[8];
 
-            RayLength = AllConst.UnitsPerPixel * 0.8f; // a bit less than pixel to avoid preliminary collisions
+            RayLength = AllConst.PixelSize * 0.8f; // a bit less than pixel to avoid preliminary collisions
             RayDirection = Vector2.down;
 
             // Настраиваем фильтр один раз
@@ -99,7 +99,7 @@ namespace Utils {
             // raycast shows that object is not grounded, but object hangs in the air like it was grounded.
             // This is usually when object is in the air, but very close to ground edge, so
             // we do side raycasts half-pixel from center to reduce this error. 
-            float adjustment = AllConst.UnitsPerPixel;
+            float adjustment = AllConst.PixelSize;
             WasGroundedLastFrame = IsGrounded;
 
             Bounds bounds = myCollider.bounds;

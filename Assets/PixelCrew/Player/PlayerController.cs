@@ -25,7 +25,7 @@ namespace PixelCrew.Player {
         private const float MinFallHeightForDustEffect = 2.8f;
 
         [SerializeField]
-        private float speed = 2f; // Run speed
+        private float moveSpeed = 5f; // Run speed
 
         /// <summary>
         /// Layers, which collisions should be checked to detect if player stands on ground.
@@ -36,7 +36,7 @@ namespace PixelCrew.Player {
         [Header("Jump")]
         [SerializeField]
         private float jumpSpeed = 15f;
-        
+
         [SerializeField]
         private float jumpSustainTime = 0.2f;
 
@@ -60,8 +60,8 @@ namespace PixelCrew.Player {
         public bool IsGrounded { get; private set; }
 
         private InputActions input;
-        private Rigidbody2D rigidBody;
-        private BoxCollider2D boxCollider;
+        private Rigidbody2D rb;
+        private BoxCollider2D myCollider;
         private Damageable damageable;
         private Animator animator;
         private LootDropper lootDropper;
@@ -84,14 +84,16 @@ namespace PixelCrew.Player {
         private float jumpInputBufferTimer;
         private bool isJumpPressedBuffer;
 
+        private bool dragStarted;
+
         private void Awake() {
             input = new InputActions();
             Actions = input.Player;
 
-            rigidBody = GetComponent<Rigidbody2D>();
-            boxCollider = GetComponent<BoxCollider2D>();
+            rb = GetComponent<Rigidbody2D>();
+            myCollider = GetComponent<BoxCollider2D>();
             animator = GetComponent<Animator>();
-            groundChecker = new GroundChecker(boxCollider, groundLayer);
+            groundChecker = new GroundChecker(myCollider, groundLayer);
             damageable = GetComponent<Damageable>();
             lootDropper = GetComponent<LootDropper>();
 
@@ -137,8 +139,8 @@ namespace PixelCrew.Player {
             UpdateAnimator();
         }
 
-        bool dragStarted;
         public void SetDragMode(bool dragging, float speedMultiplier) {
+            // TODO: [BG] we'll need this flag later for animations
             if (dragging) {
                 dragStarted = true;
                 // currentMoveSpeed = baseMoveSpeed * speedMultiplier;
@@ -147,7 +149,7 @@ namespace PixelCrew.Player {
                 // currentMoveSpeed = baseMoveSpeed;
             }
         }
-        
+
         private void CheckGround() {
             groundChecker.Update();
             IsGrounded = groundChecker.IsGrounded;
@@ -170,8 +172,8 @@ namespace PixelCrew.Player {
         private void CheckHorizontalMovement() {
             Vector2 dir = Actions.Move.ReadValue<Vector2>().normalized;
 
-            var horzSpeed = Math.Sign(dir.x) * speed;
-            rigidBody.velocity = new Vector2(horzSpeed, rigidBody.velocity.y);
+            var horzSpeed = Math.Sign(dir.x) * moveSpeed;
+            rb.velocity = new Vector2(horzSpeed, rb.velocity.y);
 
             if (horzSpeed > 0) {
                 transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
@@ -184,7 +186,7 @@ namespace PixelCrew.Player {
             // TODO: [BG] implement bounce off when player hits the ceiling with head. We should stop
             //   sustaining in this case.
             isJumped = false;
-            
+
             var isJumpPressed = Actions.Jump.WasPerformedThisFrame();
             var isJumpReleased = Actions.Jump.WasReleasedThisFrame();
 
@@ -225,7 +227,7 @@ namespace PixelCrew.Player {
         }
 
         private void Jump() {
-            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpSpeed);
+            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
         }
 
         private void ConsumeJumpBuffer() {
@@ -238,7 +240,7 @@ namespace PixelCrew.Player {
         }
 
         private bool IsRunning() {
-            return Math.Abs(rigidBody.velocity.x) > 0.01f;
+            return Math.Abs(rb.velocity.x) > 0.01f;
         }
 
         public void OnCollected(CollectableId itemId, float value) {
@@ -278,7 +280,7 @@ namespace PixelCrew.Player {
                 animator.SetTrigger(HeroAnimationKeys.OnJump);
             }
 
-            var velocityY = rigidBody.velocity.y;
+            var velocityY = rb.velocity.y;
 
             // Adjustments to compensate for floating point precision errors and physics jitter.
             if (Math.Abs(velocityY) < 0.001f) {
@@ -293,9 +295,9 @@ namespace PixelCrew.Player {
         }
 
         public void SpawnRunDust() {
-            if (Math.Abs(rigidBody.velocity.x) > 1f) {
+            if (Math.Abs(rb.velocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
-                
+
                 // Make sure the spawned object is directed in the same direction as target object.
                 instance.transform.localScale = dustSpawnPoint.lossyScale;
             }
