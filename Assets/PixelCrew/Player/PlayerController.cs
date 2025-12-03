@@ -67,6 +67,7 @@ namespace PixelCrew.Player {
         private LootDropper lootDropper;
 
         private GroundChecker groundChecker;
+        private CeilingChecker ceilingChecker;
         private float coyoteTimer;
         private bool isJumped;
         private float jumpSustainTimer;
@@ -94,6 +95,7 @@ namespace PixelCrew.Player {
             myCollider = GetComponent<BoxCollider2D>();
             animator = GetComponent<Animator>();
             groundChecker = new GroundChecker(myCollider, groundLayer);
+            ceilingChecker = new CeilingChecker(myCollider, groundLayer);
             damageable = GetComponent<Damageable>();
             lootDropper = GetComponent<LootDropper>();
 
@@ -114,17 +116,17 @@ namespace PixelCrew.Player {
 
         void Update() {
             // TODO: investigate proper solution for reading input and reacting on them. Main points:
-            // * inputs are checked before `Update` event (while it may be configured to be checked
-            //   in `FixedUpdate`, but usually `Update` is called more frequently)
-            // * `FixedUpdate` is usually called with lower frequency that `Update`, so there may be
-            //    input loss, if we check input on `FixedUpdate`: https://docs.unity3d.com/6000.2/Documentation/Manual/fixed-updates.html
-            // * physics, including velocity and forces, should be applied in `FixedUpdate`
-            // So now for simplicity we'll do everything in `Update`, as in `FixedUpdate` input loss
-            // occurs for jump, for example, as it uses `WasPerformedThisFrame` action method.
-            // But better solution should be considered for precise platforming. For example,
-            // Corgi engine doesn't use physics for player and updates player coords manually (applying
-            // gravity, etc) to be more responsive and have more control over movements (while I'm not
-            // sure about physics for other draggable objects).
+            //   * inputs are checked before `Update` event (while it may be configured to be checked
+            //     in `FixedUpdate`, but usually `Update` is called more frequently)
+            //   * `FixedUpdate` is usually called with lower frequency that `Update`, so there may be
+            //      input loss, if we check input on `FixedUpdate`: https://docs.unity3d.com/6000.2/Documentation/Manual/fixed-updates.html
+            //   * physics, including velocity and forces, should be applied in `FixedUpdate`
+            //   So now for simplicity we'll do everything in `Update`, as in `FixedUpdate` input loss
+            //   occurs for jump, for example, as it uses `WasPerformedThisFrame` action method.
+            //   But better solution should be considered for precise platforming. For example,
+            //   Corgi engine doesn't use physics for player and updates player coords manually (applying
+            //   gravity, etc) to be more responsive and have more control over movements (while I'm not
+            //   sure about physics for other draggable objects).
 
             // We won't use InputSystem events, as order of their invocation is not guaranteed, but
             // in case we want to check button combinations, it's easier to check them manually.
@@ -152,6 +154,7 @@ namespace PixelCrew.Player {
 
         private void CheckGround() {
             groundChecker.Update();
+            ceilingChecker.Update();
             IsGrounded = groundChecker.IsGrounded;
 
             if (groundChecker.IsLeftGroundThisFrame) {
@@ -183,8 +186,6 @@ namespace PixelCrew.Player {
         }
 
         private void CheckJump() {
-            // TODO: [BG] implement bounce off when player hits the ceiling with head. We should stop
-            //   sustaining in this case.
             isJumped = false;
 
             var isJumpPressed = Actions.Jump.WasPerformedThisFrame();
@@ -200,7 +201,7 @@ namespace PixelCrew.Player {
                 }
             }
 
-            if (isJumpReleased) {
+            if (isJumpReleased || ceilingChecker.HasCollision) {
                 jumpSustainTimer = 0;
             }
 
