@@ -1,8 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Utils {
+    public enum Direction2D {
+        Up,
+        Down,
+        Left,
+        Right
+    }
+
     public static class Geometry {
+        public static Vector2 GetDirVector(Direction2D dir) {
+            switch (dir) {
+                case Direction2D.Up: return Vector2.up;
+                case Direction2D.Down: return Vector2.down;
+                case Direction2D.Left: return Vector2.left;
+                default: return Vector2.right;
+            }
+        }
+
         public static T FindClosest<T>(IEnumerable<T> items, Vector3 origin)
             where T : MonoBehaviour {
             T closest = null;

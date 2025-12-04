@@ -25,6 +25,7 @@ namespace Components.Abilities {
         SpriteRenderer spriteRenderer;
         
         private GroundCheckComponent groundCheckComponent;
+        private MultiRayCaster topRayCaster;
         private bool isDragged;
         
         // Joint between lower and upper barrels
@@ -38,8 +39,16 @@ namespace Components.Abilities {
 
             freeConstraints = RigidbodyConstraints2D.FreezeRotation;
             lockedConstraints = freeConstraints | RigidbodyConstraints2D.FreezePositionX;
+            
+            topRayCaster = new MultiRayCaster(Collider, groundCheckComponent.groundLayerMask)
+                .WithDirection(Direction2D.Up)
+                .WithRayCount(3);
 
             Body.constraints = lockedConstraints;
+        }
+
+        void FixedUpdate() {
+            topRayCaster.Update();
         }
 
         public void SetDragged(bool dragged) {
@@ -89,6 +98,10 @@ namespace Components.Abilities {
             // These values are be displayed in inspector for DraggableBarrel component.
             ReactiveForceOnBreak = brokenJoint.reactionForce.magnitude;
             ReactiveTorqueOnBreak = brokenJoint.reactionTorque;
+        }
+
+        private void OnDrawGizmosSelected() {
+            topRayCaster.DrawGizmos();
         }
     }
 }

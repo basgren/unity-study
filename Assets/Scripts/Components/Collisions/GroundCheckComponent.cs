@@ -1,11 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Utils;
 
 namespace Components.Collisions {
     public class GroundCheckComponent: MonoBehaviour {
         [SerializeField]
-        private LayerMask groundLayerMask;
+        public LayerMask groundLayerMask;
         
         [SerializeField]
         private int raysCount = 3;
