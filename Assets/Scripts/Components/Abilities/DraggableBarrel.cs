@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Components.Collisions;
 using UnityEngine;
 using Utils;
@@ -25,6 +26,7 @@ namespace Components.Abilities {
         SpriteRenderer spriteRenderer;
         
         private GroundCheckComponent groundCheckComponent;
+        private BarrelHighlighter highlighter;
         private MultiRayCaster topRayCaster;
         private bool isDragged;
         
@@ -36,6 +38,7 @@ namespace Components.Abilities {
             Collider = GetComponent<BoxCollider2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             groundCheckComponent = GetComponent<GroundCheckComponent>();
+            highlighter = GetComponent<BarrelHighlighter>();
 
             freeConstraints = RigidbodyConstraints2D.FreezeRotation;
             lockedConstraints = freeConstraints | RigidbodyConstraints2D.FreezePositionX;
@@ -60,12 +63,14 @@ namespace Components.Abilities {
             
             if (dragged) {
                 Body.constraints = freeConstraints;
-                spriteRenderer.color = Color.yellow;
             } else {
-                spriteRenderer.color = Color.white;
                 Body.constraints = lockedConstraints;
                 Body.velocity = new Vector2(0f, Body.velocity.y);
             }
+        }
+
+        public void SetHighlighted(BarrelHighlightMode mode) {
+            highlighter.SetHighlighted(mode);
         }
 
         public void ConnectToDraggable(DraggableBarrel otherDraggable) {
@@ -88,6 +93,10 @@ namespace Components.Abilities {
             }
 
             barrelJoint = null;
+        }
+
+        public List<T> GetDraggablesAbove<T>() where T : DraggableBarrel {
+            return topRayCaster.GetHitComponents<T>();
         }
 
         private void OnJointBreak2D(Joint2D brokenJoint) {

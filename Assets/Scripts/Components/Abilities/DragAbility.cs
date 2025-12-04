@@ -1,4 +1,7 @@
-﻿using PixelCrew.Player;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using PixelCrew.Player;
 using UnityEngine;
 
 namespace Components.Abilities {
@@ -27,6 +30,10 @@ namespace Components.Abilities {
         private FixedJoint2D dragJoint;
         private DraggableBarrel draggedBottom;
         private DraggableBarrel draggedTop;
+                
+        private DraggableBarrel highlightedBarrel;
+        private List<DraggableBarrel> barrelsOnTopHighlighted;
+        private const int MaxBarrelsOnTop = 1; 
 
         private void Awake() {
             player = GetComponent<PlayerController>();
@@ -40,43 +47,64 @@ namespace Components.Abilities {
             if (draggedBottom != null) {
                 bool isInteractReleased = player.Actions.Interact.WasReleasedThisFrame();
                 bool isJumpPressed = player.Actions.Jump.WasPressedThisFrame();
-                
+
                 if (isInteractReleased || isJumpPressed || !player.IsGrounded || !draggedBottom.IsGrounded) {
                     StopDragging();
                 }
             } else {
+                DraggableBarrel baseBarrel = GetBarrelAtInteractPoint();
+
+                if (highlightedBarrel != baseBarrel) {
+                    if (highlightedBarrel != null) {
+                        highlightedBarrel?.SetHighlighted(BarrelHighlightMode.None);
+                        highlightedBarrel = null;
+                    }
+                    
+                    if (baseBarrel != null) {
+                        highlightedBarrel = baseBarrel;
+                        baseBarrel.SetHighlighted(BarrelHighlightMode.Hover);
+                    }
+                }
+                
                 bool interactWasPressed = player.Actions.Interact.WasPressedThisFrame();
 
                 if (interactWasPressed && player.IsGrounded) {
                     TryStartDragging();
+                    highlightedBarrel = null;
                 }
             }
         }
         
+        // very dirty code, as just a proof of concept
         private void TryStartDragging() {
-            DraggableBarrel baseBarrel = TryGrabBarrel();
+            DraggableBarrel baseBarrel = GetBarrelAtInteractPoint();
 
             if (baseBarrel == null) {
                 return;
             }
 
-            // Считаем бочки над той, за которую он ухватился
-            int aboveCount = CountBarrelsAbove(baseBarrel, out var immediateTop);
+            int aboveCountSorted = CountBarrelsAboveSorted(baseBarrel, out var topBarrelsSorted);
 
-            // ЕСЛИ НАД НЕЙ БОЛЬШЕ ОДНОЙ БОЧКИ — НЕ ДАЁМ ПЕРЕТАСКИВАТЬ
-            if (aboveCount > 1) {
-                return;
+            barrelsOnTopHighlighted = topBarrelsSorted;
+            draggedBottom = baseBarrel;
+            draggedTop = topBarrelsSorted.Count > 0 ? topBarrelsSorted[0] : null;
+            
+            draggedBottom.SetHighlighted(BarrelHighlightMode.Interact);
+            if (aboveCountSorted <= MaxBarrelsOnTop) {
+                draggedBottom.SetDragged(true);
             }
 
-            // Всё ок: либо одиночная бочка, либо стек не выше 2 (base + immediateTop)
-            draggedBottom = baseBarrel;
-            draggedTop = immediateTop;
-
-            draggedBottom.SetDragged(true);
-            
             if (draggedTop != null) {
-                draggedTop.SetDragged(true);
+                draggedTop.SetHighlighted(BarrelHighlightMode.Interact);
                 draggedBottom.ConnectToDraggable(draggedTop);
+
+                if (aboveCountSorted <= MaxBarrelsOnTop) {
+                    draggedTop.SetDragged(true);                    
+                }
+            }
+
+            for (int i = 1; i < barrelsOnTopHighlighted.Count; i++) {
+                barrelsOnTopHighlighted[i].SetHighlighted(BarrelHighlightMode.Alert);
             }
 
             dragJoint = gameObject.AddComponent<FixedJoint2D>();
@@ -86,7 +114,7 @@ namespace Components.Abilities {
             player.SetDragMode(true, dragSpeedMultiplier);
         }
 
-        private DraggableBarrel TryGrabBarrel() {
+        private DraggableBarrel GetBarrelAtInteractPoint() {
             Collider2D hit = Physics2D.OverlapCircle(
                 interactPoint.position,
                 interactRadius,
@@ -102,7 +130,7 @@ namespace Components.Abilities {
             if (barrel == null || !barrel.IsGrounded) {
                 return null;
             }
-            
+
             return barrel;
         }
 
@@ -114,6 +142,7 @@ namespace Components.Abilities {
 
             if (draggedBottom != null) {
                 draggedBottom.SetDragged(false);
+                draggedBottom.SetHighlighted(BarrelHighlightMode.None);
                 draggedBottom.DisconnectFromDraggable();
                 draggedBottom = null;
             }
@@ -123,50 +152,55 @@ namespace Components.Abilities {
                 draggedTop = null;
             }
 
+            foreach (var barrel in barrelsOnTopHighlighted) {
+                barrel.SetHighlighted(BarrelHighlightMode.None);
+            }
+            
+            barrelsOnTopHighlighted.Clear();
+
             if (player != null) {
                 player.SetDragMode(false, 1f);
             }
         }
+        
+        // Returns the number of barrels above up to 2nd level. Also returns a sorted array of barrels above
+        // baseBarrel. The first element is the nearest one. Max 2 levels checked,
+        // so all barrels in the output array starting from index 1 are preventing dragging. 
+        private int CountBarrelsAboveSorted(
+            DraggableBarrel baseBarrel,
+            out List<DraggableBarrel> topBarrelsSorted,
+            int maxLevels = 2
+        ) {
+            var result = new HashSet<DraggableBarrel>();
 
-        private int CountBarrelsAbove(DraggableBarrel baseBarrel, out DraggableBarrel immediateTop) {
-            Bounds b = baseBarrel.Collider.bounds;
+            Queue<DraggableBarrel> queue = new Queue<DraggableBarrel>();
+            queue.Enqueue(baseBarrel);
+            var level = 0;
 
-            // Окно над бочкой — ищем всех, кто реально выше
-            Vector2 center = new Vector2(b.center.x, b.max.y + 0.05f);
-            Vector2 size = new Vector2(b.size.x * 0.9f, b.size.y * 2f);
+            while (queue.Count > 0 && level < maxLevels) {
+                var barrel = queue.Dequeue();
+                var barrelsOnTop = barrel.GetDraggablesAbove<DraggableBarrel>();
 
-            Collider2D[] hits = Physics2D.OverlapBoxAll(center, size, 0f, barrelLayer);
-
-            int count = 0;
-            DraggableBarrel nearest = null;
-            float nearestBottomY = float.MaxValue;
-
-            foreach (Collider2D hit in hits) {
-                if (hit == baseBarrel.Collider) {
-                    continue;
+                foreach (var barrelOnTop in barrelsOnTop) {
+                    queue.Enqueue(barrelOnTop);
+                    result.Add(barrelOnTop);
                 }
 
-                DraggableBarrel other = hit.GetComponent<DraggableBarrel>();
-                if (other == null) {
-                    continue;
-                }
-
-                Bounds ob = other.Collider.bounds;
-
-                // "Выше" — если нижняя грань >= верхней грани базовой
-                if (ob.min.y >= b.max.y - 0.01f) {
-                    count++;
-
-                    // ищем самую нижнюю из верхних (то есть ближайшую к базовой)
-                    if (ob.min.y < nearestBottomY) {
-                        nearestBottomY = ob.min.y;
-                        nearest = other;
-                    }
-                }
+                level++;
             }
 
-            immediateTop = nearest;
-            return count;
+            List<DraggableBarrel> barrels = result.ToList();
+
+            barrels.Sort((barr1, barr2) => {
+                var dist1 = (barr1.transform.position - interactPoint.transform.position).sqrMagnitude;
+                var dist2 = (barr2.transform.position - interactPoint.transform.position).sqrMagnitude;
+
+                return dist1.CompareTo(dist2);
+            });
+
+            topBarrelsSorted = barrels;
+
+            return barrels.Count;
         }
 
         private void OnDrawGizmosSelected() {

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Utils {
@@ -40,6 +42,7 @@ namespace Utils {
         private readonly BoxCollider2D myCollider;
         private RaycastHit2D[] rayHits;
         private RaycastHit2D[][] hitsBuffer;
+        private int[] hitCounts;
         private ContactFilter2D contactFilter;
         private Vector2 rayDirVector;
         private Collider2D[] excludedColliders;
@@ -64,18 +67,17 @@ namespace Utils {
         /// </summary>
         public void Update() {
             HadCollisionLastFrame = HasCollision;
-
-            Bounds bounds = myCollider.bounds;
-            Vector2 delta = GetRayGap();
+            Vector2 rayGap = GetRayGap();
 
             bool hasHit = false;
 
             for (int i = 0; i < RayCount; i++) {
-                Vector2 origin = GetRayOrigin(i, delta);
+                Vector2 origin = GetRayOrigin(i, rayGap);
                 RayOrigins[i] = origin;
 
                 // Take all hits, not only the first one 
                 int hitCount = Physics2D.Raycast(origin, rayDirVector, contactFilter, hitsBuffer[i], RayLength);
+                hitCounts[i] = hitCount;
 
                 RaycastHit2D chosenHit = default;
                 bool foundValidHit = false;
@@ -83,17 +85,11 @@ namespace Utils {
                 for (int j = 0; j < hitCount; j++) {
                     RaycastHit2D h = hitsBuffer[i][j];
 
-                    if (h.collider == null || h.collider == myCollider) {
-                        continue;
+                    if (CanCollideWith(h.collider)) {
+                        chosenHit = h;
+                        foundValidHit = true;
+                        break;
                     }
-
-                    if (excludedColliders != null && Array.IndexOf(excludedColliders, h.collider) != -1) {
-                        continue;
-                    }
-
-                    chosenHit = h;
-                    foundValidHit = true;
-                    break;
                 }
 
                 rayHits[i] = chosenHit;
@@ -106,6 +102,28 @@ namespace Utils {
             HasCollision = hasHit;
         }
 
+        public List<T> GetHitComponents<T>() where T : Component {
+            var result = new HashSet<T>();
+
+            for (int rayIndex = 0; rayIndex < RayCount; rayIndex++) {
+                int count = hitCounts[rayIndex];
+
+                for (int i = 0; i < count; i++) {
+                    RaycastHit2D hit = hitsBuffer[rayIndex][i];
+
+                    if (!CanCollideWith(hit.collider)) {
+                        continue;
+                    }
+
+                    if (hit.collider.TryGetComponent<T>(out var component)) {
+                        result.Add(component);
+                    }
+                }
+            }
+
+            return result.ToList();
+        }
+
         public void DrawGizmos() {
             for (var i = 0; i < RayCount; i++) {
                 Gizmos.color = HasRayCollision(i) ? Color.red : Color.green;
@@ -113,6 +131,18 @@ namespace Utils {
                 Vector2 rayOrigin = RayOrigins[i];
                 Gizmos.DrawLine(rayOrigin, rayOrigin + RayLength * rayDirVector);
             }
+        }
+
+        private bool CanCollideWith(Collider2D collider) {
+            if (collider == null || collider == myCollider) {
+                return false;
+            }
+
+            if (excludedColliders != null && Array.IndexOf(excludedColliders, collider) != -1) {
+                return false;
+            }
+
+            return true;
         }
 
         private Vector2 GetRayOrigin(int rayIndex, Vector2 rayGap) {
@@ -166,6 +196,7 @@ namespace Utils {
             RayOrigins = new Vector2[rayCount];
             rayHits = new RaycastHit2D[rayCount];
             hitsBuffer = new RaycastHit2D[rayCount][];
+            hitCounts = new int[rayCount];
 
             for (int i = 0; i < rayCount; i++) {
                 hitsBuffer[i] = new RaycastHit2D[MaxCollisionsPerRay];
