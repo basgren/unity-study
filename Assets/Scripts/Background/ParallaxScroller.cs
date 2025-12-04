@@ -18,6 +18,7 @@ namespace Background {
             brain = Camera.main.GetComponent<CinemachineBrain>();
             cam = brain.transform;
 
+            transform.position = new Vector3(cam.position.x, cam.position.y, transform.position.z);
             startPos = transform.position;
             camStartPos = cam.position;
 
