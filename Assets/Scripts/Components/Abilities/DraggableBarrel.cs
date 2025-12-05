@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Components.Collisions;
 using UnityEngine;
 using Utils;
@@ -7,7 +6,6 @@ using Utils;
 namespace Components.Abilities {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
-    [RequireComponent(typeof(SpriteRenderer))]
     [RequireComponent(typeof(GroundChecker))]
     public class DraggableBarrel : MonoBehaviour {
         [SerializeField]
@@ -23,8 +21,12 @@ namespace Components.Abilities {
 
         RigidbodyConstraints2D freeConstraints;
         RigidbodyConstraints2D lockedConstraints;
-        SpriteRenderer spriteRenderer;
         
+        // Additional capsule collider on top, height about 1.5 pixels just to make rounded
+        // corners of barrel, so it will reduce cheance of collidint when dragging barrel on
+        // top or a line of barrels (or sometimes player is stuck too when we have only
+        // rectangular colliders).
+        private CapsuleCollider2D smoothTopColider;
         private GroundCheckComponent groundCheckComponent;
         private BarrelHighlighter highlighter;
         private MultiRayCaster topRayCaster;
@@ -36,9 +38,9 @@ namespace Components.Abilities {
         private void Awake() {
             Body = GetComponent<Rigidbody2D>();
             Collider = GetComponent<BoxCollider2D>();
-            spriteRenderer = GetComponent<SpriteRenderer>();
             groundCheckComponent = GetComponent<GroundCheckComponent>();
             highlighter = GetComponent<BarrelHighlighter>();
+            smoothTopColider = GetComponent<CapsuleCollider2D>();
 
             freeConstraints = RigidbodyConstraints2D.FreezeRotation;
             lockedConstraints = freeConstraints | RigidbodyConstraints2D.FreezePositionX;
@@ -46,6 +48,12 @@ namespace Components.Abilities {
             topRayCaster = new MultiRayCaster(Collider, groundCheckComponent.groundLayerMask)
                 .WithDirection(Direction2D.Up)
                 .WithRayCount(3);
+
+            if (smoothTopColider != null) {
+                topRayCaster
+                    .ExcludeColliders(smoothTopColider)
+                    .WithRayLength(1.5f * AllConst.PixelSize);
+            }
 
             Body.constraints = lockedConstraints;
         }
@@ -110,7 +118,7 @@ namespace Components.Abilities {
         }
 
         private void OnDrawGizmosSelected() {
-            topRayCaster.DrawGizmos();
+            topRayCaster?.DrawGizmos();
         }
     }
 }
