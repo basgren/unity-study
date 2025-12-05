@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -96,7 +99,7 @@ namespace Editor.ObjectBrush {
 
             [NonSerialized]
             public bool IsExpanded = true;
-            
+
             [NonSerialized]
             public bool propertiesExpanded = true;
         }
@@ -141,6 +144,12 @@ namespace Editor.ObjectBrush {
         [SerializeField]
         private bool brushFoldout = true;
 
+        [SerializeField]
+        private bool categoryOverviewFoldout = true;
+
+        [NonSerialized]
+        private ReorderableList categoryOverviewList;
+
         private GameObject previewInstance;
         private GameObject previewSource;
 
@@ -153,6 +162,7 @@ namespace Editor.ObjectBrush {
 
         private void OnEnable() {
             SceneView.duringSceneGui += OnSceneGUI;
+            EditorSceneManager.activeSceneChangedInEditMode += OnActiveSceneChanged;
 
             if (categories == null) {
                 categories = new List<PaletteCategory>();
@@ -165,12 +175,20 @@ namespace Editor.ObjectBrush {
             selectedCategoryIndex = Mathf.Clamp(selectedCategoryIndex, 0, categories.Count - 1);
 
             for (int i = 0; i < categories.Count; i++) {
-                EnsureReorderableList(categories[i], i);
+                EnsureReorderableList(categories[i]);
             }
+
+            // Подгружаем родителей для текущей сцены
+            LoadSceneParentSettingsForCurrentScene();
         }
 
+        private void OnActiveSceneChanged(Scene oldScene, Scene newScene) {
+            LoadSceneParentSettings(newScene);
+        }
+        
         private void OnDisable() {
             SceneView.duringSceneGui -= OnSceneGUI;
+            EditorSceneManager.activeSceneChangedInEditMode -= OnActiveSceneChanged;
             brushEnabled = false;
             DestroyPreviewInstance();
         }
@@ -184,9 +202,164 @@ namespace Editor.ObjectBrush {
             EditorGUILayout.Space();
             DrawFilterAndCategoriesHeaderGUI();
             EditorGUILayout.Space(2f);
+            DrawCategoryOverviewGUI();
+            
+            EditorGUILayout.Space(4f);
+            EditorGUILayout.LabelField(GUIContent.none, GUI.skin.horizontalSlider);
+            EditorGUILayout.Space(2f);
+            
             DrawCategoriesAndPalettesGUI();
         }
 
+        private ObjectBrushSceneSettings LoadOrCreateSceneSettingsAsset(bool createIfNotFound) {
+            string assetPath = ObjectBrushSceneSettings.DefaultAssetPath;
+
+            ObjectBrushSceneSettings settings =
+                AssetDatabase.LoadAssetAtPath<ObjectBrushSceneSettings>(assetPath);
+
+            if (settings == null && createIfNotFound) {
+                // Гарантируем, что папка существует
+                string dir = Path.GetDirectoryName(assetPath);
+                if (!string.IsNullOrEmpty(dir) && !AssetDatabase.IsValidFolder(dir)) {
+                    string[] parts = dir.Replace("\\", "/").Split('/');
+                    string current = parts[0];
+                    for (int i = 1; i < parts.Length; i++) {
+                        string next = current + "/" + parts[i];
+                        if (!AssetDatabase.IsValidFolder(next)) {
+                            AssetDatabase.CreateFolder(current, parts[i]);
+                        }
+                        current = next;
+                    }
+                }
+
+                settings = ScriptableObject.CreateInstance<ObjectBrushSceneSettings>();
+                AssetDatabase.CreateAsset(settings, assetPath);
+                AssetDatabase.SaveAssets();
+            }
+
+            return settings;
+        }
+        
+        private static string GetHierarchyPath(Transform t) {
+            if (t == null) {
+                return null;
+            }
+
+            List<string> parts = new List<string>();
+            Transform current = t;
+            while (current != null) {
+                parts.Add(current.name);
+                current = current.parent;
+            }
+
+            parts.Reverse();
+            return string.Join("/", parts);
+        }
+
+        private static Transform FindTransformByPath(Scene scene, string path) {
+            if (string.IsNullOrEmpty(path)) {
+                return null;
+            }
+
+            string[] parts = path.Split('/');
+            if (parts.Length == 0) {
+                return null;
+            }
+
+            GameObject[] roots = scene.GetRootGameObjects();
+            GameObject rootGo = roots.FirstOrDefault(r => r.name == parts[0]);
+            if (rootGo == null) {
+                return null;
+            }
+
+            Transform current = rootGo.transform;
+            for (int i = 1; i < parts.Length; i++) {
+                current = current.Find(parts[i]);
+                if (current == null) {
+                    return null;
+                }
+            }
+
+            return current;
+        }
+        
+        private void SaveSceneParentSettingsForCurrentScene() {
+            Scene scene = SceneManager.GetActiveScene();
+            if (!scene.IsValid()) {
+                return;
+            }
+
+            ObjectBrushSceneSettings settings = LoadOrCreateSceneSettingsAsset(true);
+            if (settings == null) {
+                return;
+            }
+
+            string scenePath = scene.path;
+            SceneParentSettings sceneSettings =
+                settings.scenes.FirstOrDefault(s => s.scenePath == scenePath);
+
+            if (sceneSettings == null) {
+                sceneSettings = new SceneParentSettings {
+                    scenePath = scenePath
+                };
+                settings.scenes.Add(sceneSettings);
+            }
+
+            sceneSettings.categoryBindings.Clear();
+
+            foreach (PaletteCategory cat in categories) {
+                if (cat.defaultParent == null) {
+                    continue;
+                }
+
+                string parentPath = GetHierarchyPath(cat.defaultParent);
+                if (string.IsNullOrEmpty(parentPath)) {
+                    continue;
+                }
+
+                sceneSettings.categoryBindings.Add(new CategoryParentBinding {
+                    categoryName = cat.name,
+                    parentHierarchyPath = parentPath
+                });
+            }
+
+            EditorUtility.SetDirty(settings);
+            AssetDatabase.SaveAssets();
+        }
+        
+        private void LoadSceneParentSettingsForCurrentScene() {
+            Scene scene = SceneManager.GetActiveScene();
+            if (scene.IsValid()) {
+                LoadSceneParentSettings(scene);
+            }
+        }
+
+        private void LoadSceneParentSettings(Scene scene) {
+            ObjectBrushSceneSettings settings = LoadOrCreateSceneSettingsAsset(false);
+            if (settings == null) {
+                return; // ещё не создан
+            }
+
+            string scenePath = scene.path;
+            SceneParentSettings sceneSettings =
+                settings.scenes.FirstOrDefault(s => s.scenePath == scenePath);
+
+            if (sceneSettings == null) {
+                return;
+            }
+
+            foreach (CategoryParentBinding binding in sceneSettings.categoryBindings) {
+                PaletteCategory category =
+                    categories.FirstOrDefault(c => c.name == binding.categoryName);
+                if (category == null) {
+                    continue;
+                }
+
+                Transform parent = FindTransformByPath(scene, binding.parentHierarchyPath);
+                category.defaultParent = parent;
+            }
+        }
+        
         // --- TOP BAR -------------------------------------------------------------
 
         private void DrawTopBarGUI() {
@@ -293,7 +466,7 @@ namespace Editor.ObjectBrush {
             selectedItemIndex = -1;
 
             for (int i = 0; i < categories.Count; i++) {
-                EnsureReorderableList(categories[i], i);
+                EnsureReorderableList(categories[i]);
             }
         }
 
@@ -351,7 +524,8 @@ namespace Editor.ObjectBrush {
                 EditorGUI.indentLevel++;
 
                 globalParent = (Transform)EditorGUILayout.ObjectField(
-                    new GUIContent("Global Parent", "Optional fallback parent used when category has no default parent."),
+                    new GUIContent("Global Parent",
+                        "Optional fallback parent used when category has no default parent."),
                     globalParent,
                     typeof(Transform),
                     true
@@ -407,7 +581,7 @@ namespace Editor.ObjectBrush {
                 categories.Add(cat);
                 selectedCategoryIndex = categories.Count - 1;
                 selectedItemIndex = -1;
-                EnsureReorderableList(cat, selectedCategoryIndex);
+                EnsureReorderableList(cat);
             }
 
             using (new EditorGUI.DisabledScope(categories.Count <= 1)) {
@@ -439,7 +613,7 @@ namespace Editor.ObjectBrush {
 
             for (int i = 0; i < categories.Count; i++) {
                 PaletteCategory category = categories[i];
-                EnsureReorderableList(category, i);
+                EnsureReorderableList(category);
 
                 var i1 = i;
                 category.IsExpanded = EditorGUILayout.BeginFoldoutHeaderGroup(
@@ -456,34 +630,7 @@ namespace Editor.ObjectBrush {
                 if (category.IsExpanded) {
                     EditorGUI.indentLevel++;
 
-                    // Обычный Foldout для настроек категории (НЕ header group)
-                    category.propertiesExpanded = EditorGUILayout.Foldout(
-                        category.propertiesExpanded,
-                        new GUIContent("Category Settings", "Name and default parent for this category."),
-                        true
-                    );
-
-                    if (category.propertiesExpanded) {
-                        EditorGUI.indentLevel++;
-
-                        category.name = EditorGUILayout.TextField(
-                            new GUIContent("Name", "Category name shown in the header."),
-                            category.name
-                        );
-
-                        category.defaultParent = (Transform)EditorGUILayout.ObjectField(
-                            new GUIContent("Default Parent", "Default parent for instantiated objects in this category."),
-                            category.defaultParent,
-                            typeof(Transform),
-                            true
-                        );
-
-                        EditorGUI.indentLevel--;
-                    }
-
-                    EditorGUILayout.Space(4f);
-
-                    // Строка: Items Count + Add Item
+                    // Items Count + Add Item
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField(
                         new GUIContent("Items: " + category.items.Count, "Number of prefabs in this category."),
@@ -503,7 +650,7 @@ namespace Editor.ObjectBrush {
 
                     EditorGUILayout.Space(3f);
 
-                    // Список элементов палитры
+                    // Palette elements
                     category.List.elementHeight = PaletteIconSize + 8f;
                     category.List.DoLayoutList();
 
@@ -517,7 +664,8 @@ namespace Editor.ObjectBrush {
             EditorGUILayout.EndScrollView();
         }
 
-        private void EnsureReorderableList(PaletteCategory category, int categoryIndex) {
+        private void EnsureReorderableList(PaletteCategory category)
+        {
             if (category.List != null) {
                 category.List.list = category.items;
                 return;
@@ -526,22 +674,34 @@ namespace Editor.ObjectBrush {
             category.List = new ReorderableList(
                 category.items,
                 typeof(GameObject),
-                true, // draggable
-                false, // display header (we draw our own)
-                false, // display add button
-                false // display remove button
-            ) {
-                drawElementCallback = (rect, index, isActive, isFocused) => {
+                true,
+                false,
+                false,
+                false
+            )
+            {
+                drawElementCallback = (rect, index, isActive, isFocused) =>
+                {
+                    int categoryIndex = categories.IndexOf(category);
+                    if (categoryIndex < 0) {
+                        return;
+                    }
+
                     DrawPaletteElement(category, categoryIndex, rect, index, isActive);
                 },
 
-                onSelectCallback = list => {
+                onSelectCallback = list =>
+                {
+                    int categoryIndex = categories.IndexOf(category);
+                    if (categoryIndex < 0) {
+                        return;
+                    }
+
                     selectedCategoryIndex = categoryIndex;
                     selectedItemIndex = list.index;
 
                     if (selectedItemIndex >= 0 && selectedItemIndex < category.items.Count) {
                         GameObject item = category.items[selectedItemIndex];
-
                         if (item != null) {
                             prefab = item;
                         }
@@ -770,6 +930,11 @@ namespace Editor.ObjectBrush {
             if (targetParent != null) {
                 instance.transform.SetParent(targetParent, true);
             }
+
+            string baseName = prefab.name;
+            int nextIndex = GetNextInstanceIndex(baseName, scene);
+
+            instance.name = $"{baseName}_{nextIndex}";
         }
 
         private void UpdatePreviewInstance(Vector3 pos) {
@@ -816,6 +981,174 @@ namespace Editor.ObjectBrush {
                 previewInstance = null;
                 previewSource = null;
             }
+        }
+
+        private void DrawCategoryOverviewGUI()
+        {
+            if (categories == null || categories.Count == 0) {
+                return;
+            }
+
+            categoryOverviewFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(
+                categoryOverviewFoldout,
+                new GUIContent(
+                    "Category Names & Parents",
+                    "Rename categories, assign default parents and reorder categories.\n" +
+                    "Order here matches the accordion below."
+                )
+            );
+
+            if (categoryOverviewFoldout) {
+                EditorGUI.indentLevel++;
+
+                // --- Информация о текущей сцене ------------------------------------
+                Scene scene = SceneManager.GetActiveScene();
+                string sceneDisplay = string.IsNullOrEmpty(scene.path)
+                    ? scene.name
+                    : $"{scene.name}  ({scene.path})";
+
+                EditorGUILayout.LabelField(
+                    new GUIContent(
+                        $"Parents for scene: {sceneDisplay}",
+                        "Scene whose hierarchy is used as a source for default parents."
+                    ),
+                    EditorStyles.miniLabel
+                );
+                EditorGUILayout.Space(2f);
+                // -------------------------------------------------------------------
+
+                EnsureCategoryOverviewList();
+                categoryOverviewList.DoLayoutList();
+
+                EditorGUI.indentLevel--;
+            }
+
+            EditorGUILayout.EndFoldoutHeaderGroup();
+        }
+
+        private void EnsureCategoryOverviewList() {
+            if (categoryOverviewList != null) {
+                categoryOverviewList.list = categories;
+                return;
+            }
+
+            categoryOverviewList = new ReorderableList(
+                categories,
+                typeof(PaletteCategory),
+                true, // draggable
+                false, // header (не нужен, у нас FoldoutHeaderGroup)
+                false, // add
+                false // remove
+            );
+
+            categoryOverviewList.elementHeight = EditorGUIUtility.singleLineHeight + 6f;
+
+            categoryOverviewList.drawElementCallback = (rect, index, isActive, isFocused) => {
+                if (index < 0 || index >= categories.Count) {
+                    return;
+                }
+
+                PaletteCategory cat = categories[index];
+
+                float padding = 3f;
+                rect.y += padding;
+                rect.height -= 2f * padding;
+
+                float nameWidth = rect.width * 0.4f;
+                float spacing = 6f;
+
+                Rect nameRect = new Rect(
+                    rect.x,
+                    rect.y,
+                    nameWidth,
+                    EditorGUIUtility.singleLineHeight
+                );
+
+                Rect parentRect = new Rect(
+                    nameRect.xMax + spacing,
+                    rect.y,
+                    rect.xMax - nameRect.xMax - spacing,
+                    EditorGUIUtility.singleLineHeight
+                );
+
+                EditorGUI.BeginChangeCheck();
+
+                string newName = EditorGUI.TextField(
+                    nameRect,
+                    cat.name
+                );
+
+                Transform newParent = (Transform)EditorGUI.ObjectField(
+                    parentRect,
+                    GUIContent.none,
+                    cat.defaultParent,
+                    typeof(Transform),
+                    true
+                );
+
+                if (EditorGUI.EndChangeCheck()) {
+                    cat.name = newName;
+                    cat.defaultParent = newParent;
+
+                    // Сохраняем привязки по сцене
+                    SaveSceneParentSettingsForCurrentScene();
+                }
+            };
+
+            categoryOverviewList.onSelectCallback = list => { selectedCategoryIndex = list.index; };
+
+            categoryOverviewList.onReorderCallback = list => {
+                selectedCategoryIndex = Mathf.Clamp(selectedCategoryIndex, 0, categories.Count - 1);
+            };
+        }
+
+        private int GetNextInstanceIndex(string baseName, Scene scene) {
+            int maxIndex = 0;
+
+            GameObject[] roots = scene.GetRootGameObjects();
+            Stack<Transform> stack = new Stack<Transform>();
+
+            for (int i = 0; i < roots.Length; i++) {
+                stack.Push(roots[i].transform);
+            }
+
+            while (stack.Count > 0) {
+                Transform t = stack.Pop();
+                GameObject go = t.gameObject;
+                string name = go.name;
+
+                if (!name.StartsWith(baseName, StringComparison.Ordinal)) {
+                    for (int i = 0; i < t.childCount; i++) {
+                        stack.Push(t.GetChild(i));
+                    }
+
+                    continue;
+                }
+
+                string suffix = name.Substring(baseName.Length);
+
+                // Supported options:
+                // "Barrel1" 
+                // "Barrel_1"
+                // "Barrel 1"
+                if (!string.IsNullOrEmpty(suffix) && (suffix[0] == '_' || suffix[0] == ' ')) {
+                    suffix = suffix.Substring(1);
+                }
+
+                if (!string.IsNullOrEmpty(suffix)) {
+                    if (int.TryParse(suffix, out int index)) {
+                        if (index > maxIndex) {
+                            maxIndex = index;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < t.childCount; i++) {
+                    stack.Push(t.GetChild(i));
+                }
+            }
+
+            return maxIndex + 1;
         }
     }
 }

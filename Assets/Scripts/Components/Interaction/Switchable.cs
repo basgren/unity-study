@@ -7,11 +7,12 @@ namespace Components.Interaction {
     public class OnSwitchChangeEvent : UnityEvent<bool> {}
     
     public class Switchable : MonoBehaviour {
+        [SerializeField]
+        private bool isActive;
         
         [SerializeField]
         private OnSwitchChangeEvent onChange;
-        
-        private bool isActive;
+
         public bool IsActive {
             get => isActive;
             set {

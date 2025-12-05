@@ -8,6 +8,9 @@ using PixelCrew.Collectibles;
 using UnityEngine;
 using Utils;
 
+// TODO: [BG] Implement one-time switch
+// TODO: [BG] Implement respawn on spike touch
+
 namespace PixelCrew.Player {
     public static class HeroAnimationKeys {
         public static readonly int IsGrounded = Animator.StringToHash("isGrounded");
@@ -85,7 +88,7 @@ namespace PixelCrew.Player {
         private float jumpInputBufferTimer;
         private bool isJumpPressedBuffer;
 
-        private bool dragStarted;
+        // private bool dragStarted;
 
         private void Awake() {
             input = new InputActions();
@@ -143,13 +146,13 @@ namespace PixelCrew.Player {
 
         public void SetDragMode(bool dragging, float speedMultiplier) {
             // TODO: [BG] we'll need this flag later for animations
-            if (dragging) {
-                dragStarted = true;
-                // currentMoveSpeed = baseMoveSpeed * speedMultiplier;
-            } else {
-                dragStarted = false;
-                // currentMoveSpeed = baseMoveSpeed;
-            }
+            // if (dragging) {
+            //     dragStarted = true;
+            //     // currentMoveSpeed = baseMoveSpeed * speedMultiplier;
+            // } else {
+            //     dragStarted = false;
+            //     // currentMoveSpeed = baseMoveSpeed;
+            // }
         }
 
         private void CheckGround() {

@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Components.Interaction {
     [RequireComponent(typeof(SpriteRenderer))]
     public class Switch : InteractableBase {
         [SerializeField]
-        private Switchable switchable;
+        private List<Switchable> switchables = new List<Switchable>();
         
         [SerializeField]
         private UnityEvent onSwitch;
@@ -19,8 +20,11 @@ namespace Components.Interaction {
 
         public override void Interact() {
             // TODO: [BG] Enhancements: don't allow activation while in progress.
-            if (switchable != null) {
-                switchable.Toggle();
+            if (switchables != null) {
+                foreach (var switchable in switchables) {
+                    switchable.Toggle();
+                }
+
                 onSwitch?.Invoke();
             }
         }
@@ -32,9 +36,12 @@ namespace Components.Interaction {
         }
 
         private void OnDrawGizmos() {
-            if (switchable != null) {
+            if (switchables != null) {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(transform.position, switchable.transform.position);                
+
+                foreach (var switchable in switchables) {
+                    Gizmos.DrawLine(transform.position, switchable.transform.position);                    
+                }
             }
         }
 
@@ -46,8 +53,8 @@ namespace Components.Interaction {
                 return;
             }
 
-            if (switchable == null) {
-                Debug.LogWarning($"Switch component: switchable is null on '{gameObject.name}'", this);
+            if (switchables.Count == 0) {
+                Debug.LogWarning($"Switch component: no switchables are connected with '{gameObject.name}'", this);
             }
         }
 #endif
