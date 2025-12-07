@@ -3,13 +3,27 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Components.Interaction {
+    public enum SwitchType {
+        MultipleUse,
+        SingleUse
+    }
+    
     [RequireComponent(typeof(SpriteRenderer))]
     public class Switch : InteractableBase {
         [SerializeField]
         private List<Switchable> switchables = new List<Switchable>();
         
         [SerializeField]
+        private SwitchType switchType = SwitchType.MultipleUse;
+        
+        [SerializeField]
         private UnityEvent onSwitch;
+
+        /// <summary>
+        /// Disables interaction with this switch.
+        /// </summary>
+        [SerializeField]
+        public bool isDisabled;
 
         private SpriteRenderer spriteRenderer;
 
@@ -19,6 +33,10 @@ namespace Components.Interaction {
         }
 
         public override void Interact() {
+            if (isDisabled) {
+                return;
+            }
+
             // TODO: [BG] Enhancements: don't allow activation while in progress.
             if (switchables != null) {
                 foreach (var switchable in switchables) {
@@ -26,13 +44,20 @@ namespace Components.Interaction {
                 }
 
                 onSwitch?.Invoke();
+
+                if (switchType == SwitchType.SingleUse) {
+                    isDisabled = true;
+                    IsHovered = false;
+                }
             }
         }
 
         protected override void OnHoveredChange(bool isHovered) {
             // TODO: [BG] implement better highlighting. Add some notification above. like button to press.
             // Very simple highlight - just for now.
-            spriteRenderer.color = isHovered ? Color.yellow : Color.white;
+            spriteRenderer.color = isHovered && !isDisabled
+                ? Color.yellow
+                : Color.white;
         }
 
         private void OnDrawGizmos() {
