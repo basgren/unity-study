@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bdd68025e917b74f8e5c4ce8cda87cb, type: 3}
+  m_Name: StoneWalls
+  m_EditorClassIdentifier: 
+  patternWidth: 3
+  patternHeight: 3
+  sprites:
+  - {fileID: 6107807120120028275, guid: 8b69a71f5e49c6c42910a5c9aaae7c90, type: 3}
+  - {fileID: 3092707892908900545, guid: 8b69a71f5e49c6c42910a5c9aaae7c90, type: 3}
+  - {fileID: -1596586348576047043, guid: 8b69a71f5e49c6c42910a5c9aaae7c90, type: 3}
+  - {fileID: -950218407943415406, guid: 8b69a71f5e49c6c42910a5c9aaae7c90, type: 3}
+  - {fileID: -5700259096059448634, guid: 8b69a71f5e49c6c42910a5c9aaae7c90, type: 3}
+  - {fileID: -4949133053799601490, guid: 8b69a71f5e49c6c42910a5c9aaae7c90, type: 3}
+  - {fileID: 6510640128938266130, guid: 8b69a71f5e49c6c42910a5c9aaae7c90, type: 3}
+  - {fileID: -5421155071613866214, guid: 8b69a71f5e49c6c42910a5c9aaae7c90, type: 3}
+  - {fileID: -3099075679081575789, guid: 8b69a71f5e49c6c42910a5c9aaae7c90, type: 3}
+  offsetX: 0
+  offsetY: 0
+  colliderType: 0
