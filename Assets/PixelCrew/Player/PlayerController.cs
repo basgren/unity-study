@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Components;
 using Components.Interaction;
 using Core.Collectables;
+using Core.Components;
 using Core.Services;
 using PixelCrew.Collectibles;
 using UnityEngine;
