@@ -54,6 +54,7 @@ namespace Utils {
 
         public float RayLength { get; }
         public Vector2 RayDirection { get; }
+        public bool IsAllGrounded { get; private set; }
 
         public readonly int RayCount;
 
@@ -106,6 +107,7 @@ namespace Utils {
             float delta = (bounds.size.x + adjustment) / (RayCount - 1);
 
             bool hasHit = false;
+            IsAllGrounded = true;
 
             for (int i = 0; i < RayCount; i++) {
                 Vector2 origin = new Vector2(
@@ -137,6 +139,8 @@ namespace Utils {
 
                 if (foundValidHit) {
                     hasHit = true;
+                } else {
+                    IsAllGrounded = false;
                 }
             }
 

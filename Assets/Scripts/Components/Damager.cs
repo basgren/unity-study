@@ -2,6 +2,11 @@ using Core.Extensions;
 using UnityEngine;
 
 namespace Components {
+    public enum DamagerType {
+        Simple,
+        RespawnOnContact // Hit and respawned in the latest safe position.
+    }
+    
     [RequireComponent(typeof(Collider2D))]
     public class Damager : MonoBehaviour {
         [Header("Damage")]
@@ -10,15 +15,20 @@ namespace Components {
 
         [SerializeField, Tooltip("Layers that can be damaged by this dealer.")]
         private LayerMask targetLayers;
+        
+        [SerializeField]
+        private DamagerType type = DamagerType.Simple;
 
-        private Collider2D myCollider;
+        public int Damage => damage;
+        public DamagerType Type => type; 
+        public Collider2D DamageCollider { get; private set; }
 
         private void Awake() {
-            myCollider = GetComponent<Collider2D>();
+            DamageCollider = GetComponent<Collider2D>();
         }
 
         private void Reset() {
-            myCollider.isTrigger = true;
+            DamageCollider.isTrigger = true;
         }
 
         private void OnValidate() {
@@ -50,7 +60,7 @@ namespace Components {
                 return;
             }
 
-            damageable.TryTakeDamage(damage, myCollider);
+            damageable.TryTakeDamage(this);
         }
     }
 }

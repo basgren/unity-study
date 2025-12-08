@@ -182,7 +182,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 3072
-  jumpSpeed: 7
+  jumpSpeed: 8
   jumpSustainTime: 0.25
   coyoteJumpTime: 0.1
   runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
@@ -278,8 +278,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3756431542319373571}
-        m_MethodName: DropCoins
-        m_Mode: 1
+        m_MethodName: OnAfterHit
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

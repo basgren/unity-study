@@ -3,6 +3,10 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Components {
+  
+    [Serializable]
+    public class OnHitEvent: UnityEvent<Damager> {}
+    
     [RequireComponent(typeof(Collider2D))]
     public class Damageable : MonoBehaviour {
         [Header("Health")]
@@ -24,7 +28,7 @@ namespace Components {
         private float knockbackForce = 13f;
 
         [SerializeField]
-        private UnityEvent onHit;
+        private OnHitEvent onHit;
         
         // TODO: implement simple FSM for easier state management and automatic transitions.
         
@@ -33,6 +37,11 @@ namespace Components {
         /// so check it earlier, i.e. in `Update()` method.
         /// </summary>
         public bool IsHitThisFrame { get; private set; }
+        
+        /// <summary>
+        /// Set to true if any damage should be ignored. For example, during cutscenes or death animation. 
+        /// </summary>
+        public bool IgnoreDamage { get; set; }
         
         private SpriteRenderer spriteRenderer;
         private float nextAllowedDamageTime;
@@ -53,6 +62,10 @@ namespace Components {
         
         private void LateUpdate() {
             IsHitThisFrame = false;
+
+            if (IgnoreDamage) {
+                invulnerabilityTimer = 0;
+            }
             
             if (invulnerabilityTimer > 0) {
                 invulnerabilityTimer -= Time.deltaTime;
@@ -74,16 +87,12 @@ namespace Components {
         /// <summary>
         /// Tries to apply damage, respecting the internal cooldown.
         /// </summary>
-        public void TryTakeDamage(int amount, Collider2D damager) {
-            if (amount <= 0 || isDead) {
+        public void TryTakeDamage(Damager damager) {
+            if (IgnoreDamage || damager.Damage <= 0 || isDead || IsInvulnerable()) {
                 return;
             }
 
-            if (IsInvulnerable()) {
-                return;
-            }
-
-            ApplyDamage(amount, damager);
+            ApplyDamage(damager);
         }
 
         public void AddHealth(float amount) {
@@ -97,22 +106,22 @@ namespace Components {
         /// <summary>
         /// Applies damage immediately and checks for death.
         /// </summary>
-        private void ApplyDamage(int amount, Collider2D damager) {
+        private void ApplyDamage(Damager damager) {
             if (isDead) {
                 return;
             }
 
-            currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
+            currentHealth = Mathf.Clamp(currentHealth - damager.Damage, 0, maxHealth);
             IsHitThisFrame = true;
             invulnerabilityTimer = invulnerabilityTime;
             
-            onHit?.Invoke();
+            onHit?.Invoke(damager);
 
             if (currentHealth <= 0) {
                 Die();
             } else {
                 if (hasKnockback) {
-                    ApplyKnockback(damager);
+                    ApplyKnockback(damager.DamageCollider);
                 }
             }
         }

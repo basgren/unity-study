@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Components;
 using Components.Interaction;
@@ -8,16 +9,17 @@ using PixelCrew.Collectibles;
 using UnityEngine;
 using Utils;
 
-// TODO: [BG] Implement one-time switch
 // TODO: [BG] Implement respawn on spike touch
 
 namespace PixelCrew.Player {
     public static class HeroAnimationKeys {
         public static readonly int IsGrounded = Animator.StringToHash("isGrounded");
         public static readonly int IsRunning = Animator.StringToHash("isRunning");
+        public static readonly int IsDead = Animator.StringToHash("isDead");
         public static readonly int VelocityY = Animator.StringToHash("velocityY");
         public static readonly int OnJump = Animator.StringToHash("onJump");
         public static readonly int OnHit = Animator.StringToHash("onHit");
+        public static readonly int OnDeath = Animator.StringToHash("onDeath");
     }
 
     [RequireComponent(typeof(Rigidbody2D))]
@@ -26,6 +28,7 @@ namespace PixelCrew.Player {
     public class PlayerController : MonoBehaviour, ICollectableReceiver<CollectableId> {
         private const string DustPositionObjectName = "DustSpawnPoint";
         private const float MinFallHeightForDustEffect = 2.8f;
+        private const float WaitBeforeRespawn = 1.5f;
 
         [SerializeField]
         private float moveSpeed = 5f; // Run speed
@@ -70,6 +73,7 @@ namespace PixelCrew.Player {
         private LootDropper lootDropper;
 
         private GroundChecker groundChecker;
+        private SafePointTracker safePointTracker;
         private CeilingChecker ceilingChecker;
         private float coyoteTimer;
         private bool isJumped;
@@ -88,6 +92,13 @@ namespace PixelCrew.Player {
         private float jumpInputBufferTimer;
         private bool isJumpPressedBuffer;
 
+        // TODO: [BG] Refactor - it's getting too many flags to manage. At the same time it would be nice to
+        //  keep animation state update in one place. Probably we could use FSM to store player's state and
+        //  sync animation with it.
+        // Flags to process animation state changes
+        private bool isDiedThisFrame;
+        private bool isDead;
+
         // private bool dragStarted;
 
         private void Awake() {
@@ -98,6 +109,7 @@ namespace PixelCrew.Player {
             myCollider = GetComponent<BoxCollider2D>();
             animator = GetComponent<Animator>();
             groundChecker = new GroundChecker(myCollider, groundLayer);
+            safePointTracker = new SafePointTracker();
             ceilingChecker = new CeilingChecker(myCollider, groundLayer);
             damageable = GetComponent<Damageable>();
             lootDropper = GetComponent<LootDropper>();
@@ -135,6 +147,7 @@ namespace PixelCrew.Player {
             // in case we want to check button combinations, it's easier to check them manually.
             // Using events is better for UI controls.
             CheckGround();
+            CheckSafePoint();
 
             CheckJump();
             CheckHorizontalMovement();
@@ -171,6 +184,15 @@ namespace PixelCrew.Player {
             }
         }
 
+        private void CheckSafePoint() {
+            // TODO: [BG] Make sure that player is not standing on barrels or other platforms
+            //   that are not completely stable (for example, moving platforms, disappearing platforms,
+            //   or one way platforms).
+            if (!isDead) {
+                safePointTracker.Update(groundChecker.IsAllGrounded, transform.position, rb.velocity, Time.deltaTime);                
+            }
+        }
+
         private void SpawnLandingDust() {
             G.Spawner.SpawnVfx(groundDustPrefab, dustSpawnPoint.position);
         }
@@ -188,6 +210,8 @@ namespace PixelCrew.Player {
             }
         }
 
+        #region Jump
+        
         private void CheckJump() {
             isJumped = false;
 
@@ -243,6 +267,8 @@ namespace PixelCrew.Player {
             return IsGrounded || coyoteTimer > 0;
         }
 
+        #endregion
+        
         private bool IsRunning() {
             return Math.Abs(rb.velocity.x) > 0.01f;
         }
@@ -296,6 +322,14 @@ namespace PixelCrew.Player {
             if (damageable.IsHitThisFrame) {
                 animator.SetTrigger(HeroAnimationKeys.OnHit);
             }
+            
+            if (isDiedThisFrame) {
+                animator.SetTrigger(HeroAnimationKeys.OnDeath);
+                // TODO: [BG] Actually should be reset somewhere else, not in this method, but not it's just for POC 
+                isDiedThisFrame = false;
+            }
+            
+            animator.SetBool(HeroAnimationKeys.IsDead, isDead);
         }
 
         public void SpawnRunDust() {
@@ -355,8 +389,35 @@ namespace PixelCrew.Player {
         }
 
         #endregion
+        
+        public void OnAfterHit(Damager damager) {
+            Debug.Log(">>> hit by damager" + damager);
+            DropCoins();
 
-        public void DropCoins() {
+            if (damager.Type == DamagerType.RespawnOnContact) {
+                ShowHitAndRespawnAtSafePoint();
+            }
+        }
+
+        private void ShowHitAndRespawnAtSafePoint() {
+            isDead = true;
+            isDiedThisFrame = true;
+            damageable.IgnoreDamage = true;
+            StartCoroutine(WaitAndRespawn(WaitBeforeRespawn));
+        }
+
+        private IEnumerator WaitAndRespawn(float seconds) {
+            yield return new WaitForSeconds(seconds);
+            RespawnAtSafePoint();
+        }
+        
+        private void RespawnAtSafePoint() {
+            isDead = false;
+            transform.position = safePointTracker.LastSafePosition;
+            damageable.IgnoreDamage = false;
+        }
+
+        private void DropCoins() {
             var count = Math.Min(5, coinsValue);
             lootDropper.DropLoot(count);
             RemoveCoins(count);
@@ -366,6 +427,11 @@ namespace PixelCrew.Player {
 
         private void OnDrawGizmosSelected() {
             GroundCheckerUtils.DrawGroundCheckerGizmos(groundChecker);
+
+            if (safePointTracker.HasSafePosition) {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawSphere(safePointTracker.LastSafePosition, 0.1f);
+            }
         }
     }
 }
