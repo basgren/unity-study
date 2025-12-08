@@ -400,6 +400,7 @@ namespace PixelCrew.Player {
         }
 
         private void ShowHitAndRespawnAtSafePoint() {
+            Actions.Disable();
             isDead = true;
             isDiedThisFrame = true;
             damageable.IgnoreDamage = true;
@@ -415,6 +416,7 @@ namespace PixelCrew.Player {
             isDead = false;
             transform.position = safePointTracker.LastSafePosition;
             damageable.IgnoreDamage = false;
+            Actions.Enable();
         }
 
         private void DropCoins() {
