@@ -417,7 +417,7 @@ namespace PixelCrew.Player {
         private void OnDrawGizmosSelected() {
             GroundCheckerUtils.DrawGroundCheckerGizmos(groundChecker);
 
-            if (safePointTracker.HasSafePosition) {
+            if (safePointTracker != null && safePointTracker.HasSafePosition) {
                 Gizmos.color = Color.blue;
                 Gizmos.DrawSphere(safePointTracker.LastSafePosition, 0.1f);
             }
