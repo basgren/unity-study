@@ -90,6 +90,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 389717885744418159}
     m_Modifications:
+    - target: {fileID: 1558590608608574814, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: randomStartFrame
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438692, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Enabled
