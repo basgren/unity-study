@@ -66,7 +66,6 @@ namespace PixelCrew.Player {
         public InputActions.PlayerActions Actions { get; private set; }
         public bool IsGrounded { get; private set; }
 
-        private InputActions input;
         private Rigidbody2D rb;
         private BoxCollider2D myCollider;
         private Damageable damageable;
@@ -103,8 +102,7 @@ namespace PixelCrew.Player {
         // private bool dragStarted;
 
         private void Awake() {
-            input = new InputActions();
-            Actions = input.Player;
+            Actions = G.Input.Player;
 
             rb = GetComponent<Rigidbody2D>();
             myCollider = GetComponent<BoxCollider2D>();
@@ -116,18 +114,6 @@ namespace PixelCrew.Player {
             lootDropper = GetComponent<LootDropper>();
 
             dustSpawnPoint = transform.Find(DustPositionObjectName);
-        }
-
-        private void OnEnable() {
-            Actions.Enable();
-        }
-
-        private void OnDisable() {
-            Actions.Disable();
-        }
-
-        private void OnDestroy() {
-            input.Dispose();
         }
 
         void Update() {

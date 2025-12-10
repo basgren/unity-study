@@ -33595,7 +33595,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 10
+    m_FontSize: 8
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 1
@@ -33606,7 +33606,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "A LEFT   \u2022   D RIGHT   \u2022   SPACE JUMP   \u2022   E USE"
+  m_Text: "A LEFT   \u2022   D RIGHT   \u2022   SPACE JUMP   \u2022   E USE   \u2022  
+    Esc QUIT"
 --- !u!222 &1513174740
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -74342,6 +74343,16 @@ PrefabInstance:
     - target: {fileID: 711908704433443735, guid: 1767eec503b79f84181a5e8e0e86f9a1,
         type: 3}
       propertyPath: switchable
+      value: 
+      objectReference: {fileID: 861357467}
+    - target: {fileID: 711908704433443735, guid: 1767eec503b79f84181a5e8e0e86f9a1,
+        type: 3}
+      propertyPath: switchables.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 711908704433443735, guid: 1767eec503b79f84181a5e8e0e86f9a1,
+        type: 3}
+      propertyPath: switchables.Array.data[0]
       value: 
       objectReference: {fileID: 861357467}
     - target: {fileID: 711908704433443735, guid: 1767eec503b79f84181a5e8e0e86f9a1,

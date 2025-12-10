@@ -43,8 +43,6 @@ namespace Utils {
                 groundedStableTime += deltaTime;
 
                 if (groundedStableTime >= minStableGroundTime) {
-                    float moveDir = 0f;
-
                     Vector2 safePos = position;
 
                     LastSafePosition = safePos;

@@ -10,6 +10,7 @@ namespace Core.Services {
             // DontDestroyOnLoad(gameObject); 
 
             G.Spawner = GetOrCreate<SpawnerService>("SpawnerService");
+            G.Input = GetOrCreate<InputService>("InputService");
             // G.Audio = GetOrCreate<AudioService>("AudioService");
         }
 
