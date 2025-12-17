@@ -42,12 +42,6 @@ namespace Utils {
         public bool IsLeftGroundThisFrame => !IsGrounded && WasGroundedLastFrame;
 
         /// <summary>
-        /// Returns the height the player fell from. This should be checked only when
-        /// <c>IsGrounded</c> or <c>IsLandedThisFrame</c> is true.
-        /// </summary>
-        public float FallHeight => fallUpperPosY - fallLowerPosY;
-
-        /// <summary>
         /// Stores rays origins after the most recent updates. Useful for drawing gizmos and debugging.
         /// </summary>
         public Vector2[] RayOrigins { get; }
@@ -62,9 +56,6 @@ namespace Utils {
         private readonly RaycastHit2D[] hitsBuffer;
         private readonly BoxCollider2D myCollider;
         private ContactFilter2D contactFilter;
-
-        private float fallUpperPosY;
-        private float fallLowerPosY;
 
         public GroundChecker(BoxCollider2D myCollider, LayerMask groundLayer, int rayCount = 3) {
             if (rayCount < 2) {
@@ -96,22 +87,17 @@ namespace Utils {
         /// Call this method at the beginning of every frame before checking input.
         /// </summary>
         public void Update() {
-            // Sometimes physics incorrectly counts `isGrounded` - the object already left ground,
-            // raycast shows that object is not grounded, but object hangs in the air like it was grounded.
-            // This is usually when object is in the air, but very close to ground edge, so
-            // we do side raycasts half-pixel from center to reduce this error. 
-            float adjustment = AllConst.PixelSize;
             WasGroundedLastFrame = IsGrounded;
 
             Bounds bounds = myCollider.bounds;
-            float delta = (bounds.size.x + adjustment) / (RayCount - 1);
+            float delta = bounds.size.x / (RayCount - 1);
 
             bool hasHit = false;
             IsAllGrounded = true;
 
             for (int i = 0; i < RayCount; i++) {
                 Vector2 origin = new Vector2(
-                    (bounds.min.x - adjustment * 0.5f) + delta * i,
+                    bounds.min.x + delta * i,
                     bounds.min.y
                 );
 
@@ -145,18 +131,6 @@ namespace Utils {
             }
 
             IsGrounded = hasHit;
-
-            // Update fall height
-            float y = bounds.min.y;
-
-            if (IsLeftGroundThisFrame) {
-                fallUpperPosY = y;
-                fallLowerPosY = y;
-            } else if (IsLandedThisFrame) {
-                fallLowerPosY = y;
-            } else if (!IsGrounded) {
-                fallUpperPosY = Mathf.Max(fallUpperPosY, y);
-            }
         }
 
         public bool HasRayCollision(int i) {

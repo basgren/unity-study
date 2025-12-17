@@ -66,6 +66,12 @@ namespace Utils {
         /// Call this method at the beginning of every frame before checking input.
         /// </summary>
         public void Update() {
+            // TODO: Sometimes physics incorrectly counts `isGrounded` - the object already left ground,
+            //   raycast shows that object is not grounded, but object hangs in the air like it was grounded.
+            //   This is usually when object is in the air, but very close to ground edge. We can't do raycasts
+            //   outside collider bounds to compensate it, as in this case jumping close to the wall will make
+            //   raycast to detect collision with wall, setting isGrounded to true.
+            
             HadCollisionLastFrame = HasCollision;
             Vector2 rayGap = GetRayGap();
 

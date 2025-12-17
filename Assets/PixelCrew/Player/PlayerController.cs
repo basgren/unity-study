@@ -10,8 +10,6 @@ using PixelCrew.Collectibles;
 using UnityEngine;
 using Utils;
 
-// TODO: [BG] Implement respawn on spike touch
-
 namespace PixelCrew.Player {
     public static class HeroAnimationKeys {
         public static readonly int IsGrounded = Animator.StringToHash("isGrounded");
@@ -65,6 +63,12 @@ namespace PixelCrew.Player {
 
         public InputActions.PlayerActions Actions { get; private set; }
         public bool IsGrounded { get; private set; }
+        
+        /// <summary>
+        /// Returns the height the player fell from. This should be checked only when
+        /// <c>IsGrounded</c> or <c>IsLandedThisFrame</c> is true.
+        /// </summary>
+        private float FallHeight => fallUpperPosY - fallLowerPosY;
 
         private Rigidbody2D rb;
         private BoxCollider2D myCollider;
@@ -99,7 +103,8 @@ namespace PixelCrew.Player {
         private bool isDiedThisFrame;
         private bool isDead;
 
-        // private bool dragStarted;
+        private float fallUpperPosY;
+        private float fallLowerPosY;
 
         private void Awake() {
             Actions = G.Input.Player;
@@ -134,6 +139,7 @@ namespace PixelCrew.Player {
             // in case we want to check button combinations, it's easier to check them manually.
             // Using events is better for UI controls.
             CheckGround();
+            
             CheckSafePoint();
 
             CheckJump();
@@ -158,6 +164,9 @@ namespace PixelCrew.Player {
         private void CheckGround() {
             groundChecker.Update();
             ceilingChecker.Update();
+            
+            UpdateFallHeight();
+            
             IsGrounded = groundChecker.IsGrounded;
 
             if (groundChecker.IsLeftGroundThisFrame) {
@@ -165,9 +174,22 @@ namespace PixelCrew.Player {
             }
 
             if (groundChecker.IsLandedThisFrame) {
-                if (groundChecker.FallHeight > MinFallHeightForDustEffect) {
+                if (FallHeight > MinFallHeightForDustEffect) {
                     SpawnLandingDust();
                 }
+            }
+        }
+        
+        private void UpdateFallHeight() {
+            float y = myCollider.bounds.min.y;
+
+            if (groundChecker.IsLeftGroundThisFrame) {
+                fallUpperPosY = y;
+                fallLowerPosY = y;
+            } else if (groundChecker.IsLandedThisFrame) {
+                fallLowerPosY = y;
+            } else if (!IsGrounded) {
+                fallUpperPosY = Mathf.Max(fallUpperPosY, y);
             }
         }
 
@@ -378,7 +400,6 @@ namespace PixelCrew.Player {
         #endregion
         
         public void OnAfterHit(Damager damager) {
-            Debug.Log(">>> hit by damager" + damager);
             DropCoins();
 
             if (damager.Type == DamagerType.RespawnOnContact) {
