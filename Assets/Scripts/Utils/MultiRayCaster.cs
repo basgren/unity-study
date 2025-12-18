@@ -38,6 +38,7 @@ namespace Utils {
         public Direction2D RayDirection { get; private set; }
         public float RayLength { get; private set; }
         public int RayCount { get; private set; }
+        public bool IsAllCollide { get; private set; }
 
         private readonly BoxCollider2D myCollider;
         private RaycastHit2D[] rayHits;
@@ -76,6 +77,7 @@ namespace Utils {
             Vector2 rayGap = GetRayGap();
 
             bool hasHit = false;
+            IsAllCollide = true;
 
             for (int i = 0; i < RayCount; i++) {
                 Vector2 origin = GetRayOrigin(i, rayGap);
@@ -102,6 +104,8 @@ namespace Utils {
 
                 if (foundValidHit) {
                     hasHit = true;
+                } else {
+                    IsAllCollide = false;
                 }
             }
 

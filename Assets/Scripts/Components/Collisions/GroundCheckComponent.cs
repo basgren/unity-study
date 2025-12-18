@@ -12,12 +12,14 @@ namespace Components.Collisions {
         [SerializeField]
         private BoxCollider2D bodyCollider;
         
-        public bool IsGrounded => groundChecker.IsGrounded;
+        public bool IsGrounded => groundChecker.HasCollision;
         
-        private GroundChecker groundChecker;
+        private MultiRayCaster groundChecker;
         
         private void Awake() {
-            groundChecker = new GroundChecker(bodyCollider, groundLayerMask, raysCount);
+            groundChecker = new MultiRayCaster(bodyCollider, groundLayerMask)
+                .WithRayCount(raysCount)
+                .WithDirection(Direction2D.Down);
         }
 
         private void Update() {
@@ -25,7 +27,7 @@ namespace Components.Collisions {
         }
 
         private void OnDrawGizmosSelected() {
-            GroundCheckerUtils.DrawGroundCheckerGizmos(groundChecker);
+            groundChecker?.DrawGizmos();
         }
     }
 }

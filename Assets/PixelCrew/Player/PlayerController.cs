@@ -76,9 +76,9 @@ namespace PixelCrew.Player {
         private Animator animator;
         private LootDropper lootDropper;
 
-        private GroundChecker groundChecker;
+        private MultiRayCaster groundChecker;
+        private MultiRayCaster ceilingChecker;
         private SafePointTracker safePointTracker;
-        private CeilingChecker ceilingChecker;
         private float coyoteTimer;
         private bool isJumped;
         private float jumpSustainTimer;
@@ -112,9 +112,14 @@ namespace PixelCrew.Player {
             rb = GetComponent<Rigidbody2D>();
             myCollider = GetComponent<BoxCollider2D>();
             animator = GetComponent<Animator>();
-            groundChecker = new GroundChecker(myCollider, groundLayer);
+            // groundChecker = new GroundChecker(myCollider, groundLayer);
+            groundChecker = new MultiRayCaster(myCollider, groundLayer)
+                .WithDirection(Direction2D.Down);
+            
+            ceilingChecker = new MultiRayCaster(myCollider, groundLayer)
+                .WithDirection(Direction2D.Up);
+            
             safePointTracker = new SafePointTracker();
-            ceilingChecker = new CeilingChecker(myCollider, groundLayer);
             damageable = GetComponent<Damageable>();
             lootDropper = GetComponent<LootDropper>();
 
@@ -167,13 +172,13 @@ namespace PixelCrew.Player {
             
             UpdateFallHeight();
             
-            IsGrounded = groundChecker.IsGrounded;
+            IsGrounded = groundChecker.HasCollision;
 
-            if (groundChecker.IsLeftGroundThisFrame) {
+            if (groundChecker.HasExitedCollisionThisFrame) {
                 coyoteTimer = coyoteJumpTime;
             }
 
-            if (groundChecker.IsLandedThisFrame) {
+            if (groundChecker.HasEnteredCollisionThisFrame) {
                 if (FallHeight > MinFallHeightForDustEffect) {
                     SpawnLandingDust();
                 }
@@ -183,10 +188,10 @@ namespace PixelCrew.Player {
         private void UpdateFallHeight() {
             float y = myCollider.bounds.min.y;
 
-            if (groundChecker.IsLeftGroundThisFrame) {
+            if (groundChecker.HasExitedCollisionThisFrame) {
                 fallUpperPosY = y;
                 fallLowerPosY = y;
-            } else if (groundChecker.IsLandedThisFrame) {
+            } else if (groundChecker.HasEnteredCollisionThisFrame) {
                 fallLowerPosY = y;
             } else if (!IsGrounded) {
                 fallUpperPosY = Mathf.Max(fallUpperPosY, y);
@@ -198,7 +203,7 @@ namespace PixelCrew.Player {
             //   that are not completely stable (for example, moving platforms, disappearing platforms,
             //   or one way platforms).
             if (!isDead) {
-                safePointTracker.Update(groundChecker.IsAllGrounded, transform.position, rb.velocity, Time.deltaTime);                
+                safePointTracker.Update(groundChecker.IsAllCollide, transform.position, rb.velocity, Time.deltaTime);                
             }
         }
 
@@ -436,7 +441,7 @@ namespace PixelCrew.Player {
         // ------------------- GIZMOS -------------------
 
         private void OnDrawGizmosSelected() {
-            GroundCheckerUtils.DrawGroundCheckerGizmos(groundChecker);
+            groundChecker?.DrawGizmos();
 
             if (safePointTracker != null && safePointTracker.HasSafePosition) {
                 Gizmos.color = Color.blue;
