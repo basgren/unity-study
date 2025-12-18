@@ -23,6 +23,12 @@ namespace Utils {
     /// all checks synchronously in `Update()` method.
     /// </summary>
     public class MultiRayCaster {
+        public static MultiRayCaster CreateGroundChecker(BoxCollider2D myCollider, LayerMask groundLayer) {
+            return new MultiRayCaster(myCollider, groundLayer)
+                .WithDirection(Direction2D.Down)
+                .WithAdjustment(AllConst.PixelSize);
+        }
+        
         private const int MaxCollisionsPerRay = 8;
 
         public bool HasCollision { get; private set; }
@@ -39,6 +45,7 @@ namespace Utils {
         public float RayLength { get; private set; }
         public int RayCount { get; private set; }
         public bool IsAllCollide { get; private set; }
+        public float Adjustment { get; private set; }
 
         private readonly BoxCollider2D myCollider;
         private RaycastHit2D[] rayHits;
@@ -67,12 +74,6 @@ namespace Utils {
         /// Call this method at the beginning of every frame before checking input.
         /// </summary>
         public void Update() {
-            // TODO: Sometimes physics incorrectly counts `isGrounded` - the object already left ground,
-            //   raycast shows that object is not grounded, but object hangs in the air like it was grounded.
-            //   This is usually when object is in the air, but very close to ground edge. We can't do raycasts
-            //   outside collider bounds to compensate it, as in this case jumping close to the wall will make
-            //   raycast to detect collision with wall, setting isGrounded to true.
-            
             HadCollisionLastFrame = HasCollision;
             Vector2 rayGap = GetRayGap();
 
@@ -158,22 +159,23 @@ namespace Utils {
         private Vector2 GetRayOrigin(int rayIndex, Vector2 rayGap) {
             var bounds = myCollider.bounds;
             Vector2 start;
+            float adjustment = Adjustment * 0.5f;
 
             switch (RayDirection) {
                 case Direction2D.Down:
-                    start = new Vector2(bounds.min.x, bounds.min.y);
+                    start = new Vector2(bounds.min.x - adjustment, bounds.min.y);
                     break;
 
                 case Direction2D.Up:
-                    start = new Vector2(bounds.min.x, bounds.max.y);
+                    start = new Vector2(bounds.min.x - adjustment, bounds.max.y);
                     break;
 
                 case Direction2D.Left:
-                    start = new Vector2(bounds.min.x, bounds.min.y);
+                    start = new Vector2(bounds.min.x, bounds.min.y - adjustment);
                     break;
 
                 default:
-                    start = new Vector2(bounds.max.x, bounds.min.y);
+                    start = new Vector2(bounds.max.x, bounds.min.y - adjustment);
                     break;
             }
 
@@ -184,10 +186,12 @@ namespace Utils {
             switch (RayDirection) {
                 case Direction2D.Down:
                 case Direction2D.Up:
-                    return Vector2.right * (myCollider.bounds.size.x / (RayCount - 1));
+                    float width = myCollider.bounds.size.x + Adjustment;
+                    return Vector2.right * (width / (RayCount - 1));
 
                 default:
-                    return Vector2.up * (myCollider.bounds.size.y / (RayCount - 1));
+                    float height = myCollider.bounds.size.y + Adjustment;
+                    return Vector2.up * (height / (RayCount - 1));
             }
         }
 
@@ -223,6 +227,24 @@ namespace Utils {
 
         public MultiRayCaster WithRayLength(float rayLength) {
             RayLength = rayLength;
+            return this;
+        }
+        
+        /// <summary>
+        /// Adjusts rays base by a given amount. For example, if set to 0.1, rays will be cast
+        /// from a zone, wider by 0.1 block (0.05 for each side).
+        /// </summary>
+        /// <param name="adjustment"></param>
+        /// <returns></returns>
+        public MultiRayCaster WithAdjustment(float adjustment) {
+            // TODO: Sometimes physics incorrectly counts `isGrounded` - the object already left ground,
+            //   raycast shows that object is not grounded, but object hangs in the air like it was grounded.
+            //   This is usually when object is in the air, but very close to ground edge. We can't do raycasts
+            //   outside collider bounds to compensate it, as in this case jumping close to the wall will make
+            //   raycast to detect collision with wall, setting isGrounded to true.
+            //   Not sure how to solve it. Probably, ignore built-in physics and use kinematic Rigidbody2D instead
+            //   with manual movement check.
+            Adjustment = adjustment;
             return this;
         }
 

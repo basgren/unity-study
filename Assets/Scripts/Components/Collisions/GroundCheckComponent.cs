@@ -17,16 +17,14 @@ namespace Components.Collisions {
         private MultiRayCaster groundChecker;
         
         private void Awake() {
-            groundChecker = new MultiRayCaster(bodyCollider, groundLayerMask)
-                .WithRayCount(raysCount)
-                .WithDirection(Direction2D.Down);
+            groundChecker = MultiRayCaster.CreateGroundChecker(bodyCollider, groundLayerMask);
         }
 
         private void Update() {
             groundChecker.Update();
         }
 
-        private void OnDrawGizmosSelected() {
+        private void OnDrawGizmos() {
             groundChecker?.DrawGizmos();
         }
     }

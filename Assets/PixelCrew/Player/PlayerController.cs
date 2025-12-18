@@ -112,10 +112,8 @@ namespace PixelCrew.Player {
             rb = GetComponent<Rigidbody2D>();
             myCollider = GetComponent<BoxCollider2D>();
             animator = GetComponent<Animator>();
-            // groundChecker = new GroundChecker(myCollider, groundLayer);
-            groundChecker = new MultiRayCaster(myCollider, groundLayer)
-                .WithDirection(Direction2D.Down);
-            
+            groundChecker = MultiRayCaster.CreateGroundChecker(myCollider, groundLayer)
+                .WithAdjustment(0f); // to prevent double jump when jumping along the wall 
             ceilingChecker = new MultiRayCaster(myCollider, groundLayer)
                 .WithDirection(Direction2D.Up);
             
@@ -442,6 +440,7 @@ namespace PixelCrew.Player {
 
         private void OnDrawGizmosSelected() {
             groundChecker?.DrawGizmos();
+            ceilingChecker?.DrawGizmos();
 
             if (safePointTracker != null && safePointTracker.HasSafePosition) {
                 Gizmos.color = Color.blue;
