@@ -8,6 +8,7 @@ using Core.Components;
 using Core.Services;
 using PixelCrew.Collectibles;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils;
 
 namespace PixelCrew.Player {
@@ -28,6 +29,7 @@ namespace PixelCrew.Player {
         private const string DustPositionObjectName = "DustSpawnPoint";
         private const float MinFallHeightForDustEffect = 2.8f;
         private const float WaitBeforeRespawn = 1.5f;
+        private const float WaitBeforeRestart = 2.5f;
 
         [SerializeField]
         private float moveSpeed = 5f; // Run speed
@@ -403,11 +405,25 @@ namespace PixelCrew.Player {
         #endregion
         
         public void OnAfterHit(Damager damager) {
+            Debug.Log($"Player: Hit by {damager.Type}. Health: {damageable.Health}");
             DropCoins();
 
+            if (damageable.IsDead) {
+                ShowHitAndRestartScene();
+                return;
+            }
+            
             if (damager.Type == DamagerType.RespawnOnContact) {
                 ShowHitAndRespawnAtSafePoint();
             }
+        }
+        
+        private void ShowHitAndRestartScene() {
+            Actions.Disable();
+            isDead = true;
+            isDiedThisFrame = true;
+            damageable.IgnoreDamage = true;
+            StartCoroutine(WaitAndRestart(WaitBeforeRestart));
         }
 
         private void ShowHitAndRespawnAtSafePoint() {
@@ -418,6 +434,17 @@ namespace PixelCrew.Player {
             StartCoroutine(WaitAndRespawn(WaitBeforeRespawn));
         }
 
+        private IEnumerator WaitAndRestart(float seconds) {
+            yield return new WaitForSeconds(seconds);
+            // TODO: [BG] Leave for refactor - move to some service like game manager.
+            //   player should not manage own death or even respawn. I should throw some message
+            //   and game manager should decide what to do.
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            isDead = false;
+            damageable.IgnoreDamage = false;
+            Actions.Enable();
+        }
+        
         private IEnumerator WaitAndRespawn(float seconds) {
             yield return new WaitForSeconds(seconds);
             RespawnAtSafePoint();

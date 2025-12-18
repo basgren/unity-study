@@ -42,14 +42,14 @@ namespace Components {
         /// Set to true if any damage should be ignored. For example, during cutscenes or death animation. 
         /// </summary>
         public bool IgnoreDamage { get; set; }
-        
+
+        public float Health => currentHealth;
+        public bool IsDead { get; private set; }
+
         private SpriteRenderer spriteRenderer;
         private float nextAllowedDamageTime;
         private Collider2D myCollider;
-        private bool isDead;
         private float invulnerabilityTimer;
-        
-        public event Action<Damageable> Died;
 
         private void Awake() {
             myCollider = GetComponent<Collider2D>();
@@ -88,7 +88,7 @@ namespace Components {
         /// Tries to apply damage, respecting the internal cooldown.
         /// </summary>
         public void TryTakeDamage(Damager damager) {
-            if (IgnoreDamage || damager.Damage <= 0 || isDead || IsInvulnerable()) {
+            if (IgnoreDamage || damager.Damage <= 0 || IsDead || IsInvulnerable()) {
                 return;
             }
 
@@ -107,23 +107,24 @@ namespace Components {
         /// Applies damage immediately and checks for death.
         /// </summary>
         private void ApplyDamage(Damager damager) {
-            if (isDead) {
+            if (IsDead) {
                 return;
             }
 
             currentHealth = Mathf.Clamp(currentHealth - damager.Damage, 0, maxHealth);
             IsHitThisFrame = true;
             invulnerabilityTimer = invulnerabilityTime;
-            
-            onHit?.Invoke(damager);
 
             if (currentHealth <= 0) {
-                Die();
+                IsDead = true;
             } else {
                 if (hasKnockback) {
                     ApplyKnockback(damager.DamageCollider);
                 }
             }
+            
+            // Call on hit at the end 
+            onHit?.Invoke(damager);
         }
 
         private void ApplyKnockback(Collider2D damagerCollider) {
@@ -132,12 +133,6 @@ namespace Components {
             Vector2 direction = (selfCenter - hitPoint).normalized;
 
             myCollider.attachedRigidbody.velocity = direction * knockbackForce;
-        }
-
-        private void Die() {
-            Debug.Log($"[Damageable] '{name}' died.");
-            isDead = true;
-            Died?.Invoke(this);
         }
     }
 }
