@@ -183,8 +183,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 3072
   jumpSpeed: 8
-  jumpSustainTime: 0.25
-  coyoteJumpTime: 0.1
+  jumpSustainTime: 0.26
+  coyoteJumpTime: 0.06
   runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
     type: 3}
   jumpDustPrefab: {fileID: 3098811724734425490, guid: 4b4d55e5d41acf745acbdd5c44a9e5d3,
