@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 namespace Core.Components {
     [RequireComponent(typeof(SpriteRenderer))]
@@ -9,10 +11,10 @@ namespace Core.Components {
 
         [SerializeField]
         private bool loop = true;
-        
+
         [SerializeField]
         private bool randomStartFrame;
-        
+
         [SerializeField]
         private bool destroyOnComplete;
 
@@ -30,7 +32,7 @@ namespace Core.Components {
         private int currentFrameIndex = 0;
         private float timer = 0;
         private float frameDuration;
-        
+
         private int startFrameIndex = 0;
 
         void Awake() {
@@ -39,11 +41,11 @@ namespace Core.Components {
 
         void OnEnable() {
             frameDuration = 1f / frameRate;
-            
+
             if (randomStartFrame) {
                 startFrameIndex = Random.Range(0, sprites.Length);
             }
-            
+
             SetSprite(startFrameIndex);
         }
 

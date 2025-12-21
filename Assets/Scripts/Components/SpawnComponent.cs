@@ -13,7 +13,7 @@ namespace Components {
         public void Spawn() {
             var instance = G.Spawner.SpawnVfx(prefab, target.position);
             
-            // Make sure the spawned object is directed in the same direction as target object.
+            // Make sure the spawned object is directed in the same direction as the target object.
             instance.transform.localScale = target.lossyScale;
         }
     }

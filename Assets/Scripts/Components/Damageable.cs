@@ -30,6 +30,9 @@ namespace Components {
         [SerializeField]
         private OnHitEvent onHit;
         
+        [SerializeField]
+        private OnHitEvent onDeath;
+        
         // TODO: implement simple FSM for easier state management and automatic transitions.
         
         /// <summary>
@@ -115,6 +118,8 @@ namespace Components {
             IsHitThisFrame = true;
             invulnerabilityTimer = invulnerabilityTime;
 
+            Debug.Log(">>> hit: " + damager.Damage + " health: " + currentHealth);
+
             if (currentHealth <= 0) {
                 IsDead = true;
             } else {
@@ -125,6 +130,10 @@ namespace Components {
             
             // Call on hit at the end 
             onHit?.Invoke(damager);
+            
+            if (IsDead) {
+                onDeath?.Invoke(damager);
+            }
         }
 
         private void ApplyKnockback(Collider2D damagerCollider) {

@@ -50,6 +50,9 @@ TagManager:
   - name: Interactables
     uniqueID: 1363457211
     locked: 0
+  - name: Debris
+    uniqueID: 1728649989
+    locked: 0
   - name: Characters
     uniqueID: 4163825915
     locked: 0

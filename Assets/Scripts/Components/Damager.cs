@@ -31,23 +31,7 @@ namespace Components {
             DamageCollider.isTrigger = true;
         }
 
-        private void OnValidate() {
-            if (damage <= 0) {
-                Debug.LogWarning($"[DamageDealer] Damage is zero or negative on '{name}'. It will not hurt anything.",
-                    this);
-            }
-
-            if (targetLayers == 0) {
-                Debug.LogWarning($"[DamageDealer] TargetLayers is empty on '{name}'. It will never hit any target.",
-                    this);
-            }
-        }
-
         private void OnTriggerEnter2D(Collider2D other) {
-            TryDamage(other);
-        }
-
-        private void OnTriggerStay2D(Collider2D other) {
             TryDamage(other);
         }
 
@@ -61,6 +45,18 @@ namespace Components {
             }
 
             damageable.TryTakeDamage(this);
+        }
+        
+        private void OnValidate() {
+            if (damage <= 0) {
+                Debug.LogWarning($"[DamageDealer] Damage is zero or negative on '{name}'. It will not hurt anything.",
+                    this);
+            }
+
+            if (targetLayers == 0) {
+                Debug.LogWarning($"[DamageDealer] TargetLayers is empty on '{name}'. It will never hit any target.",
+                    this);
+            }
         }
     }
 }

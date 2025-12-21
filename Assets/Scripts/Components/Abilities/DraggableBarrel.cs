@@ -7,6 +7,7 @@ namespace Components.Abilities {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(GroundCheckComponent))]
+    [RequireComponent(typeof(BarrelHighlighter))]
     public class DraggableBarrel : MonoBehaviour {
         [SerializeField]
         private float jointUpBreakForce = 2500f;
