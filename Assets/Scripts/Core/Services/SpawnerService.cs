@@ -32,8 +32,12 @@ namespace Core.Services {
             return Instantiate(prefab, position, Quaternion.identity, vfxContainer.transform);
         }
         
-        public GameObject SpawnVfx(GameObject prefab, Vector3 position) {
-            return Instantiate(prefab, position, Quaternion.identity, vfxContainer.transform);
+        public GameObject SpawnVfx(GameObject prefab, Vector3 position, Transform parent = null) {
+            if (parent == null) {
+                parent = vfxContainer.transform;
+            }
+
+            return Instantiate(prefab, position, Quaternion.identity, parent);
         }
 
         public T SpawnVfx<T>(T prefab, Vector3 position) where T : MonoBehaviour {

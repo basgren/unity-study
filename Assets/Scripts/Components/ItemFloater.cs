@@ -28,7 +28,7 @@ public class ItemFloater : MonoBehaviour {
     }
 
     void Update() {
-        var y = Mathf.Cos(time * Mathf.PI * 2.0f / period + initialPhase) * amplitude;
+        var y = Mathf.Sin(time * Mathf.PI * 2.0f / period + initialPhase) * amplitude;
         transform.position = initialPosition + new Vector3(0, y, 0);
         time += Time.deltaTime;
     }

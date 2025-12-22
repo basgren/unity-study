@@ -105,7 +105,6 @@ namespace Core.Components {
                 throw new IndexOutOfRangeException($"Clip index {clipIndex} is out of range for {gameObject.name}");
             }
 
-            Debug.Log("Setting clip: " + clips[clipIndex].Name);
             enabled = true;
             currentClip = clips[clipIndex];
             SetSprite(0);

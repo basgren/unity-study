@@ -7,6 +7,7 @@ using Core.Collectables;
 using Core.Components;
 using Core.Services;
 using PixelCrew.Collectibles;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
@@ -126,6 +127,7 @@ namespace PixelCrew.Player {
         private bool isAttackAnimationInitiated;
         private readonly float attackCooldownTime = 0.5f;
         private float attackCooldownTimer;
+        private bool isArmed;
 
         private void Awake() {
             Actions = G.Input.Player;
@@ -145,6 +147,11 @@ namespace PixelCrew.Player {
             lootDropper = GetComponent<LootDropper>();
 
             dustSpawnPoint = transform.Find(DustPositionObjectName);
+            UpdateAnimatorController();
+        }
+
+        private void UpdateAnimatorController() {
+            animator.runtimeAnimatorController = isArmed ? armedAnimator : unarmedAnimator;
         }
 
         void Update() {
@@ -205,7 +212,7 @@ namespace PixelCrew.Player {
         }
 
         private bool CanAttack() {
-            return !isAttacking && IsGrounded && attackCooldownTimer <= 0;
+            return isArmed && !isAttacking && IsGrounded && attackCooldownTimer <= 0;
         }
 
         /// <summary>
@@ -222,6 +229,11 @@ namespace PixelCrew.Player {
         /// </summary>
         private void CloseSwordDamageWindow() {
             swordAttackArea.SetActive(false);
+        }
+
+        private void FinishAttack() {
+            // Should be called at the very end, when sword swing effect is finished, so we can
+            // finish attack and allow player turning (we don't allow turning while attack is in progress).
             isAttacking = false;
             attackCooldownTimer = attackCooldownTime;
         }
@@ -290,10 +302,14 @@ namespace PixelCrew.Player {
             var horzSpeed = Math.Sign(dir.x) * moveSpeed;
             rb.velocity = new Vector2(horzSpeed, rb.velocity.y);
 
-            if (horzSpeed > 0) {
-                transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
-            } else if (horzSpeed < 0) {
-                transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
+            // Check `isAttacking` flag to prevent player from changing direction while attack effect is played,
+            // otherwise the effect will turn together with player.
+            if (!isAttacking) {
+                if (horzSpeed > 0) {
+                    transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
+                } else if (horzSpeed < 0) {
+                    transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
+                }    
             }
         }
 
@@ -369,6 +385,11 @@ namespace PixelCrew.Player {
                 case CollectableId.Health:
                     Debug.Log($"Player: Collected {value} health");
                     damageable.AddHealth(value);
+                    break;
+                
+                case CollectableId.Sword:
+                    isArmed = true;
+                    UpdateAnimatorController();
                     break;
 
                 default:
