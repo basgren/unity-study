@@ -67,6 +67,15 @@ namespace PixelCrew.Player {
         [Header("Attack")]
         [SerializeField]
         private GameObject swordAttackArea;
+        
+        [SerializeField]
+        private GameObject attack1EffectPrefab;
+        
+        [SerializeField]
+        private AnimatorController armedAnimator;
+        
+        [SerializeField]
+        private AnimatorController unarmedAnimator; 
 
         public InputActions.PlayerActions Actions { get; private set; }
         public bool IsGrounded { get; private set; }
@@ -188,6 +197,10 @@ namespace PixelCrew.Player {
             if (Actions.Attack.WasPerformedThisFrame() && CanAttack()) {
                 isAttacking = true; // will be used to prevent double attacks.
                 isAttackAnimationInitiated = true; // used just to trigger animation event.
+                
+                // Spawn effect as hero's child object, so even if player moves, it will move with player.
+                // But in this case we should prevent changing player direction until animation is finished.
+                G.Spawner.SpawnVfx(attack1EffectPrefab, swordAttackArea.transform.position, gameObject.transform);
             }
         }
 

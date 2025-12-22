@@ -71,7 +71,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2945355596670905074}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.62, y: -0.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3756431542319373569}
@@ -90,8 +90,8 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.48234573, y: -0.14345686}
-  m_Size: {x: 1.0187757, y: 0.36556146}
+  m_Offset: {x: -0.095218144, y: -0.077674195}
+  m_Size: {x: 1.1608113, y: 0.38111803}
   m_Direction: 1
 --- !u!114 &1925743917410454019
 MonoBehaviour:
@@ -221,7 +221,7 @@ SpriteRenderer:
   m_SortingLayerID: -131141381
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e3fc92f0ce5f800429c4baf82c95f49a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5473ceb38fa8fb542a9a472926d86000, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -258,6 +258,10 @@ MonoBehaviour:
   groundDustPrefab: {fileID: 1526976483526385961, guid: e10df518c928ddd409277f7fc43929e9,
     type: 3}
   swordAttackArea: {fileID: 2945355596670905074}
+  attack1EffectPrefab: {fileID: 2402171628047126032, guid: 7a5339c2656f44144aa22e3ff7ed2598,
+    type: 3}
+  armedAnimator: {fileID: 9100000, guid: 15452c8f5b5d1294aae1e2825f20f3fc, type: 2}
+  unarmedAnimator: {fileID: 9100000, guid: da7b63019bcab78479068d687e4267ef, type: 2}
 --- !u!61 &3756431542319373597
 BoxCollider2D:
   m_ObjectHideFlags: 0
