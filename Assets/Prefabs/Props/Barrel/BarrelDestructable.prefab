@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 2986219559809948904}
   - component: {fileID: 2986219559809948917}
   - component: {fileID: 2986219559809948916}
+  - component: {fileID: 7342184690546311500}
   m_Layer: 11
   m_Name: BarrelDestructable
   m_TagString: Untagged
@@ -254,6 +255,17 @@ MonoBehaviour:
           m_StringArgument: destroy
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7342184690546311500}
+        m_MethodName: DropLoot
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!50 &2986219559809948906
 Rigidbody2D:
   serializedVersion: 4
@@ -335,3 +347,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 2986219559809948898}
   prefab: {fileID: 5540822738990593286, guid: 1f1a50eb81225b44fb8a062bf9f4a619, type: 3}
+--- !u!114 &7342184690546311500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986219559809948899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62684d56dc67f6c42862656659c4a483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootPrefab: {fileID: 389717885744418158, guid: a442b7edb1b27fb4b86fd21d80bffed8,
+    type: 3}
+  initialSpeed: 5
+  speedRandomFactor: 0.5
+  randomDirection: 1
+  count: 5
