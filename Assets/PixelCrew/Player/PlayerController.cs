@@ -20,6 +20,7 @@ namespace PixelCrew.Player {
         public static readonly int OnJump = Animator.StringToHash("onJump");
         public static readonly int OnHit = Animator.StringToHash("onHit");
         public static readonly int OnDeath = Animator.StringToHash("onDeath");
+        public static readonly int OnAttack = Animator.StringToHash("onAttack");
     }
 
     [RequireComponent(typeof(Rigidbody2D))]
@@ -62,6 +63,10 @@ namespace PixelCrew.Player {
 
         [SerializeField]
         private GameObject groundDustPrefab;
+        
+        [Header("Attack")]
+        [SerializeField]
+        private GameObject swordAttackArea;
 
         public InputActions.PlayerActions Actions { get; private set; }
         public bool IsGrounded { get; private set; }
@@ -108,6 +113,11 @@ namespace PixelCrew.Player {
         private float fallUpperPosY;
         private float fallLowerPosY;
 
+        private bool isAttacking;
+        private bool isAttackAnimationInitiated;
+        private readonly float attackCooldownTime = 0.5f;
+        private float attackCooldownTimer;
+
         private void Awake() {
             Actions = G.Input.Player;
 
@@ -118,6 +128,8 @@ namespace PixelCrew.Player {
                 .WithAdjustment(0f); // to prevent double jump when jumping along the wall 
             ceilingChecker = new MultiRayCaster(myCollider, groundLayer)
                 .WithDirection(Direction2D.Up);
+
+            CloseSwordDamageWindow();
             
             safePointTracker = new SafePointTracker();
             damageable = GetComponent<Damageable>();
@@ -150,10 +162,58 @@ namespace PixelCrew.Player {
             CheckJump();
             CheckHorizontalMovement();
             CheckInteraction();
+            CheckAttack();
 
             // Update animator at the end, when player state is updated.
             UpdateAnimator();
         }
+
+        #region Attack
+        
+        /// <summary>
+        /// Currently attack is implemente in a vary simple way. Key is pressed - we activate damage window,
+        /// activate child object with collider and Damager components (DamageArea), it will hit everything once and
+        /// when animation is finished we deactivate damage window and deactivate DamageArea.
+        /// </summary>
+        private void CheckAttack() {
+            if (attackCooldownTimer > 0) {
+                attackCooldownTimer -= Time.deltaTime;
+            }
+            
+            // Things to consider: this method is very simple and relies on the fact that time between animation
+            // events of open and close damage window is longer than fixedDeltaTime, so at least one
+            // physics check iteration will be complete before DamageArea is deactivated. In case if damage
+            // window is shorter than fixedDeltaTime, more robust solution should be considered with
+            // activating/deactivating attack in FixedUpdate.
+            if (Actions.Attack.WasPerformedThisFrame() && CanAttack()) {
+                isAttacking = true; // will be used to prevent double attacks.
+                isAttackAnimationInitiated = true; // used just to trigger animation event.
+            }
+        }
+
+        private bool CanAttack() {
+            return !isAttacking && IsGrounded && attackCooldownTimer <= 0;
+        }
+
+        /// <summary>
+        /// Should be called from animation event to enable damage window (when actial hit starts).
+        /// </summary>
+        private void OpenSwordDamageWindow() {
+            // This will activate animation, and animation will call event which will close damage window
+            // and deactivate sword damage area. 
+            swordAttackArea.SetActive(true);
+        }
+        
+        /// <summary>
+        /// Should be called from animation event to disable damage window (when hit ends).
+        /// </summary>
+        private void CloseSwordDamageWindow() {
+            swordAttackArea.SetActive(false);
+            isAttacking = false;
+            attackCooldownTimer = attackCooldownTime;
+        }
+        
+        #endregion
 
         public void SetDragMode(bool dragging, float speedMultiplier) {
             // TODO: [BG] we'll need this flag later for animations
@@ -341,6 +401,11 @@ namespace PixelCrew.Player {
                 animator.SetTrigger(HeroAnimationKeys.OnDeath);
                 // TODO: [BG] Actually should be reset somewhere else, not in this method, but not it's just for POC 
                 isDiedThisFrame = false;
+            }
+
+            if (isAttackAnimationInitiated) {
+                animator.SetTrigger(HeroAnimationKeys.OnAttack);
+                isAttackAnimationInitiated = false;
             }
             
             animator.SetBool(HeroAnimationKeys.IsDead, isDead);

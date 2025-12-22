@@ -23754,7 +23754,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -216.41182, y: 76.36367, z: -10}
+  m_LocalPosition: {x: -216.40932, y: 76.36366, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1978780106}
@@ -33336,8 +33336,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "A LEFT   \u2022   D RIGHT   \u2022   SPACE JUMP   \u2022   E USE   \u2022  
-    Esc QUIT"
+  m_Text: "<- LEFT   \u2022   -> RIGHT   \u2022   Z/Space JUMP   \u2022   X ATTACK  
+    \u2022   V USE   \u2022   Esc QUIT"
 --- !u!222 &1513174740
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -74734,6 +74734,21 @@ PrefabInstance:
         type: 3}
       propertyPath: randomDirection
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2945355596670905074, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
+        type: 3}
+      propertyPath: m_Name
+      value: SwordAttackArea
+      objectReference: {fileID: 0}
+    - target: {fileID: 2945355596670905074, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2945355596670905074, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
+        type: 3}
+      propertyPath: m_TagString
+      value: AttackArea
       objectReference: {fileID: 0}
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}

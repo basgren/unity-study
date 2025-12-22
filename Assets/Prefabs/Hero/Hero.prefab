@@ -45,6 +45,71 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 8317873638873226756}
   prefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8, type: 3}
+--- !u!1 &2945355596670905074
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8493527304799831158}
+  - component: {fileID: 808513391657456749}
+  - component: {fileID: 1925743917410454019}
+  m_Layer: 9
+  m_Name: SwordAttackArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8493527304799831158
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2945355596670905074}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3756431542319373569}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &808513391657456749
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2945355596670905074}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.48234573, y: -0.14345686}
+  m_Size: {x: 1.0187757, y: 0.36556146}
+  m_Direction: 1
+--- !u!114 &1925743917410454019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2945355596670905074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd9a81366750d4c4686954634f7ca857, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  type: 1
 --- !u!1 &3208845069451795932
 GameObject:
   m_ObjectHideFlags: 0
@@ -113,6 +178,7 @@ Transform:
   m_Children:
   - {fileID: 8317873638873226756}
   - {fileID: 7929084326469066376}
+  - {fileID: 8493527304799831158}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -155,7 +221,7 @@ SpriteRenderer:
   m_SortingLayerID: -131141381
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 5473ceb38fa8fb542a9a472926d86000, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e3fc92f0ce5f800429c4baf82c95f49a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -191,6 +257,7 @@ MonoBehaviour:
     type: 3}
   groundDustPrefab: {fileID: 1526976483526385961, guid: e10df518c928ddd409277f7fc43929e9,
     type: 3}
+  swordAttackArea: {fileID: 2945355596670905074}
 --- !u!61 &3756431542319373597
 BoxCollider2D:
   m_ObjectHideFlags: 0

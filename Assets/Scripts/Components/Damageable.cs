@@ -90,12 +90,13 @@ namespace Components {
         /// <summary>
         /// Tries to apply damage, respecting the internal cooldown.
         /// </summary>
-        public void TryTakeDamage(Damager damager) {
+        public bool TryTakeDamage(Damager damager) {
             if (IgnoreDamage || damager.Damage <= 0 || IsDead || IsInvulnerable()) {
-                return;
+                return false;
             }
 
             ApplyDamage(damager);
+            return true;
         }
 
         public void AddHealth(float amount) {
