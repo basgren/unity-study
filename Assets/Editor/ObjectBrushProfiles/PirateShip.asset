@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ab4adf713d44b0db05c687da48c5b6c, type: 3}
+  m_Name: PirateShip
+  m_EditorClassIdentifier: 
+  categories:
+  - name: Decor
+    items:
+    - {fileID: 4831870020912455067, guid: 73531eca8a27da248ba967c13887b66f, type: 3}
+    - {fileID: 6780844285953749426, guid: 6499295865f73ee4b9fc9fa19f192492, type: 3}
+    - {fileID: 3249307541404638673, guid: e362d72617e75fc43a12c6b74a73073a, type: 3}
+    - {fileID: 3607130989769104517, guid: 5c3506384242be94ebc555f5df9b0545, type: 3}
+    - {fileID: 8217898056745424652, guid: 0e368d8a8cd031145bd6e1dcfe375514, type: 3}
+    - {fileID: 1157730111553634854, guid: 51674879610dd18479feecf827b78432, type: 3}
+    - {fileID: 6633848957812466428, guid: fe3c82cfaf548d24285d4e8157d9a79e, type: 3}
+    - {fileID: 2750014221959498638, guid: e270062d760f3b24a992779cc21b5bc0, type: 3}
+    - {fileID: 3170845397793251672, guid: 6bfb89752c2701442a94b505710d98d6, type: 3}
+    - {fileID: 1012684767289418787, guid: a165caa9ca2d62e449b54e2afffe7bfa, type: 3}
+    - {fileID: 6587901392235318308, guid: fde59bf797a785041b0a933f184748d8, type: 3}

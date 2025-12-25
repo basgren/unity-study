@@ -10,13 +10,16 @@ namespace Core.Components {
         private int frameRate = 10;
 
         [SerializeField]
+        private bool playOnStart = true;
+
+        [SerializeField]
         private bool randomStartFrame;
 
         [SerializeField]
         private bool destroyOnComplete;
 
         [SerializeField]
-        private StateAnimationClip[] clips; 
+        private StateAnimationClip[] clips;
 
         /// <summary>
         /// OnComplete is invoked when all frames have been played. ONLY for non-looped animations.
@@ -31,7 +34,8 @@ namespace Core.Components {
         private float timer;
         private float frameDuration;
 
-        private int startFrameIndex ;
+        private int startFrameIndex;
+        private bool isPlaying;
         
         private Sprite[] CurrentSprites => currentClip?.Sprites ?? Array.Empty<Sprite>();
 
@@ -51,10 +55,11 @@ namespace Core.Components {
             }
 
             SetSprite(startFrameIndex);
+            isPlaying = playOnStart;
         }
 
         void Update() {
-            if (CurrentSprites.Length == 0) {
+            if (CurrentSprites.Length == 0 || !isPlaying) {
                 return;
             }
 
@@ -98,6 +103,7 @@ namespace Core.Components {
 
             Debug.LogError($"Clip {clipName} not found in {gameObject.name}");
             enabled = false;
+            isPlaying = true;
         }
         
         private void SetClip(int clipIndex) {

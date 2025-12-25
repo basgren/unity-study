@@ -48,6 +48,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: DecorBack
+    uniqueID: 438517029
+    locked: 0
   - name: Interactables
     uniqueID: 1363457211
     locked: 0
