@@ -87,7 +87,7 @@ namespace Editor.Doors {
             }
 
             var currentSceneGuid = GetSceneGuid(scene.path);
-            
+
             for (var i = 0; i < doors.Count; i++) {
                 var door = doors[i];
                 if (door == null) {
@@ -105,11 +105,12 @@ namespace Editor.Doors {
                     errors.Add(new ValidationError($"Door '{door.DoorId}' has empty Target Door ID.", door));
                     continue;
                 }
-                
+
                 if (!string.IsNullOrWhiteSpace(currentSceneGuid) &&
                     string.Equals(link.TargetScene.SceneGuid, currentSceneGuid, StringComparison.Ordinal) &&
                     string.Equals(link.TargetDoorId, door.DoorId, StringComparison.Ordinal)) {
-                    errors.Add(new ValidationError($"Door '{door.DoorId}' points to itself. Self-links are not allowed.", door));
+                    errors.Add(new ValidationError(
+                        $"Door '{door.DoorId}' points to itself. Self-links are not allowed.", door));
                     continue;
                 }
 

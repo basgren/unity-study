@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 
 namespace Doors {
@@ -30,6 +31,14 @@ namespace Doors {
         /// </summary>
         public bool IsEmpty() {
             return string.IsNullOrWhiteSpace(sceneGuid);
+        }
+
+        public string GetSceneName() {
+            if (string.IsNullOrWhiteSpace(scenePath)) {
+                return string.Empty;
+            }
+
+            return Path.GetFileNameWithoutExtension(scenePath);
         }
 
 #if UNITY_EDITOR

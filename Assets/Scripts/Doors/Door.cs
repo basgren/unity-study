@@ -1,3 +1,4 @@
+using Components.Interaction;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -8,12 +9,15 @@ namespace Doors {
     /// A scene door that can transition the player to another scene/door.
     /// The door uses a stable string ID (DoorId) that is referenced by other doors.
     /// </summary>
-    public sealed class Door : MonoBehaviour {
+    public sealed class Door : InteractableBase {
         [SerializeField, HideInInspector]
         private string doorId;
 
         [SerializeField]
         private DoorLink link;
+        
+        [SerializeField]
+        private Transform entryPoint;
 
         /// <summary>
         /// Door identifier. Must be unique within a scene.
@@ -25,6 +29,21 @@ namespace Doors {
         /// Destination link for this door.
         /// </summary>
         public DoorLink Link => link;
+
+        public Vector3 GetEntryPosition() {
+            if (entryPoint != null) {
+                return entryPoint.position;
+            }
+
+            return transform.position;
+        }
+        
+        /// <summary>
+        /// Immediately loads target scene and teleports player there.
+        /// </summary>
+        public void TravelToTarget() {
+            DoorTravelService.Travel(this);
+        }
 
 #if UNITY_EDITOR
         private const int DefaultGeneratedLength = 5;

@@ -62,7 +62,6 @@ namespace Editor.Doors {
                     continue;
                 }
 
-                // Если хочешь валидировать только сохранённые сцены — можно тут пропускать scene.isDirty.
                 var errors = DoorValidator.ValidateScene(scene);
                 all.AddRange(errors);
             }

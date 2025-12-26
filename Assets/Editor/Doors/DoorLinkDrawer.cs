@@ -52,8 +52,6 @@ namespace Editor.Doors {
 
             var doors = SceneDoorCache.GetDoorsByGuid(sceneGuid);
             var currentTargetId = doorIdProp.stringValue;
-
-// Строим список, исключая self, если target scene == current scene.
             var names = new System.Collections.Generic.List<string>(doors.Length + 1);
             var values = new System.Collections.Generic.List<string>(doors.Length + 1);
 
@@ -65,7 +63,6 @@ namespace Editor.Doors {
             for (var i = 0; i < doors.Length; i++) {
                 var id = doors[i].DoorId;
 
-                // Исключаем "саму себя" только если целевая сцена совпадает с текущей сценой двери
                 if (!string.IsNullOrWhiteSpace(currentSceneGuid) &&
                     string.Equals(sceneGuid, currentSceneGuid, StringComparison.Ordinal) &&
                     !string.IsNullOrWhiteSpace(currentDoorId) &&

@@ -86,6 +86,9 @@ namespace Core.Components {
                     var currentClipIndex = Array.IndexOf(clips, currentClip);
                     SetClip((currentClipIndex + 1) % clips.Length);
                 }
+                
+                isPlaying = false;
+                enabled = false;
 
                 return;
             }
@@ -103,7 +106,6 @@ namespace Core.Components {
 
             Debug.LogError($"Clip {clipName} not found in {gameObject.name}");
             enabled = false;
-            isPlaying = true;
         }
         
         private void SetClip(int clipIndex) {
@@ -112,6 +114,7 @@ namespace Core.Components {
             }
 
             enabled = true;
+            isPlaying = true;
             currentClip = clips[clipIndex];
             SetSprite(0);
         }

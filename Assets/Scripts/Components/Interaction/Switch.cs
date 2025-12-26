@@ -32,7 +32,7 @@ namespace Components.Interaction {
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        public override void Interact() {
+        protected override void DoInteract() {
             if (isDisabled) {
                 return;
             }

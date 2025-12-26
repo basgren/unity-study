@@ -41,6 +41,10 @@ namespace Editor.Doors {
             if (string.IsNullOrWhiteSpace(sceneGuid)) {
                 return Array.Empty<DoorInfo>();
             }
+            
+            if (EditorApplication.isPlayingOrWillChangePlaymode) {
+                return Array.Empty<DoorInfo>();
+            }
 
             if (cache.TryGetValue(sceneGuid, out var entry)) {
                 if (EditorApplication.timeSinceStartup - entry.time < CacheTtlSeconds) {

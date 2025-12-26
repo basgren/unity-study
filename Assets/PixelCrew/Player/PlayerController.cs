@@ -184,6 +184,17 @@ namespace PixelCrew.Player {
             UpdateAnimator();
         }
 
+        public void TeleportTo(Vector3 targetPosition) {
+            transform.position = targetPosition;
+            // Reset fall height to prevent fall dust to appear when player is teleported to a lower position.
+            ResetFallHeight();
+        }
+
+        private void ResetFallHeight() {
+            fallUpperPosY = transform.position.y;
+            fallLowerPosY = transform.position.y;
+        }
+        
         #region Attack
         
         /// <summary>
