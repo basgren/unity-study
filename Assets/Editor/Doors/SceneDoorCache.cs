@@ -70,42 +70,29 @@ namespace Editor.Doors {
                 return Array.Empty<DoorInfo>();
             }
 
-            // Avoid closing a scene that was already loaded by the user/editor.
-            var already = SceneManager.GetSceneByPath(path);
-            var alreadyLoaded = already.IsValid() && already.isLoaded;
+            var list = new List<DoorInfo>();
 
-            var scene = alreadyLoaded ? already : EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
-            try {
-                var list = new List<DoorInfo>();
-
-                var roots = scene.GetRootGameObjects();
-                for (var i = 0; i < roots.Length; i++) {
-                    var doors = roots[i].GetComponentsInChildren<Door>(true);
-                    for (var j = 0; j < doors.Length; j++) {
-                        var door = doors[j];
-                        if (door == null) {
-                            continue;
-                        }
-
-                        var id = door.DoorId;
-                        var labelId = string.IsNullOrWhiteSpace(id) ? "<empty>" : id;
-
-                        // Flat list as requested: ID (ObjectName)
-                        var objName = door.gameObject != null ? door.gameObject.name : "<null>";
-                        var label = $"{labelId} ({objName})";
-
-                        list.Add(new DoorInfo(id, label));
+            DoorEditorUtils.ExecuteInScene(path, scene => {
+                var doors = DoorUtils.GetDoorsInScene(scene);
+                for (var i = 0; i < doors.Count; i++) {
+                    var door = doors[i];
+                    if (door == null) {
+                        continue;
                     }
-                }
 
-                list.Sort((a, b) => string.CompareOrdinal(a.DoorId, b.DoorId));
-                return list.ToArray();
-            }
-            finally {
-                if (!alreadyLoaded) {
-                    EditorSceneManager.CloseScene(scene, true);
+                    var id = door.DoorId;
+                    var labelId = string.IsNullOrWhiteSpace(id) ? "<empty>" : id;
+
+                    // Flat list as requested: ID (ObjectName)
+                    var objName = door.gameObject != null ? door.gameObject.name : "<null>";
+                    var label = $"{labelId} ({objName})";
+
+                    list.Add(new DoorInfo(id, label));
                 }
-            }
+            });
+
+            list.Sort((a, b) => string.CompareOrdinal(a.DoorId, b.DoorId));
+            return list.ToArray();
         }
     }
 }

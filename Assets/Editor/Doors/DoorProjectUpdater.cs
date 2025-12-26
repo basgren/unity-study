@@ -94,38 +94,35 @@ namespace Editor.Doors {
         private static int ReplaceInScene(UnityEngine.SceneManagement.Scene scene, string targetSceneGuid,
             string oldDoorId, string newDoorId) {
             var changed = 0;
-            var roots = scene.GetRootGameObjects();
+            var doors = DoorUtils.GetDoorsInScene(scene);
 
-            for (var i = 0; i < roots.Length; i++) {
-                var doors = roots[i].GetComponentsInChildren<Door>(true);
-                for (var j = 0; j < doors.Length; j++) {
-                    var door = doors[j];
-                    if (door == null) {
-                        continue;
-                    }
+            for (var i = 0; i < doors.Count; i++) {
+                var door = doors[i];
+                if (door == null) {
+                    continue;
+                }
 
-                    var so = new SerializedObject(door);
+                var so = new SerializedObject(door);
 
-                    var linkProp = so.FindProperty("link");
-                    if (linkProp == null) {
-                        continue;
-                    }
+                var linkProp = so.FindProperty("link");
+                if (linkProp == null) {
+                    continue;
+                }
 
-                    var sceneProp = linkProp.FindPropertyRelative("targetScene");
-                    var guidProp = sceneProp != null ? sceneProp.FindPropertyRelative("sceneGuid") : null;
-                    var idProp = linkProp.FindPropertyRelative("targetDoorId");
+                var sceneProp = linkProp.FindPropertyRelative("targetScene");
+                var guidProp = sceneProp != null ? sceneProp.FindPropertyRelative("sceneGuid") : null;
+                var idProp = linkProp.FindPropertyRelative("targetDoorId");
 
-                    if (guidProp == null || idProp == null) {
-                        continue;
-                    }
+                if (guidProp == null || idProp == null) {
+                    continue;
+                }
 
-                    if (guidProp.stringValue == targetSceneGuid && idProp.stringValue == oldDoorId) {
-                        so.Update();
-                        idProp.stringValue = newDoorId;
-                        so.ApplyModifiedPropertiesWithoutUndo();
-                        EditorUtility.SetDirty(door);
-                        changed++;
-                    }
+                if (guidProp.stringValue == targetSceneGuid && idProp.stringValue == oldDoorId) {
+                    so.Update();
+                    idProp.stringValue = newDoorId;
+                    so.ApplyModifiedPropertiesWithoutUndo();
+                    EditorUtility.SetDirty(door);
+                    changed++;
                 }
             }
 

@@ -36,10 +36,7 @@ namespace Editor.Doors {
             var currentSceneGuid = string.Empty;
 
             if (currentDoor != null && currentDoor.gameObject != null) {
-                var path = currentDoor.gameObject.scene.path;
-                if (!string.IsNullOrWhiteSpace(path)) {
-                    currentSceneGuid = AssetDatabase.AssetPathToGUID(path);
-                }
+                currentSceneGuid = DoorEditorUtils.GetSceneGuid(currentDoor.gameObject.scene.path);
             }
             
             if (string.IsNullOrWhiteSpace(sceneGuid)) {

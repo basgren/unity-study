@@ -16,7 +16,7 @@ namespace Doors {
 
             var currentScene = fromDoor.gameObject.scene;
             if (currentScene.name == targetSceneName) {
-                var targetDoor = FindDoorByIdInScene(currentScene, targetDoorId);
+                var targetDoor = DoorUtils.FindDoorByIdInScene(currentScene, targetDoorId);
                 TeleportPlayerToDoor(targetDoor);
                 return;
             }
@@ -37,26 +37,11 @@ namespace Doors {
                 return;
             }
 
-            var targetDoor = FindDoorByIdInScene(scene, pendingDoorId);
+            var targetDoor = DoorUtils.FindDoorByIdInScene(scene, pendingDoorId);
             TeleportPlayerToDoor(targetDoor);
 
             pendingSceneName = null;
             pendingDoorId = null;
-        }
-
-        private static Door FindDoorByIdInScene(Scene scene, string doorId) {
-            var roots = scene.GetRootGameObjects();
-            for (var i = 0; i < roots.Length; i++) {
-                var doors = roots[i].GetComponentsInChildren<Door>(true);
-                for (var j = 0; j < doors.Length; j++) {
-                    var d = doors[j];
-                    if (d.DoorId == doorId) {
-                        return d;
-                    }
-                }
-            }
-
-            return null;
         }
 
         private static void TeleportPlayerToDoor(Door targetDoor) {

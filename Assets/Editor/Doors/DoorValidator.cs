@@ -22,30 +22,20 @@ namespace Editor.Doors {
             }
         }
 
-        public static string GetSceneGuid(string scenePath) {
-            if (string.IsNullOrWhiteSpace(scenePath)) {
-                return string.Empty;
-            }
-
-            return AssetDatabase.AssetPathToGUID(scenePath);
-        }
 
         /// <summary>
         /// Checks that the given doorId is unique within the scene, excluding the specified door.
         /// </summary>
         public static bool IsDoorIdUniqueInScene(Scene scene, Door except, string doorId) {
-            var roots = scene.GetRootGameObjects();
-            for (var i = 0; i < roots.Length; i++) {
-                var doors = roots[i].GetComponentsInChildren<Door>(true);
-                for (var j = 0; j < doors.Length; j++) {
-                    var d = doors[j];
-                    if (d == null || d == except) {
-                        continue;
-                    }
+            var doors = DoorUtils.GetDoorsInScene(scene);
+            for (var i = 0; i < doors.Count; i++) {
+                var d = doors[i];
+                if (d == null || d == except) {
+                    continue;
+                }
 
-                    if (string.Equals(d.DoorId, doorId, StringComparison.Ordinal)) {
-                        return false;
-                    }
+                if (string.Equals(d.DoorId, doorId, StringComparison.Ordinal)) {
+                    return false;
                 }
             }
 
@@ -58,11 +48,7 @@ namespace Editor.Doors {
         public static List<ValidationError> ValidateScene(Scene scene) {
             var errors = new List<ValidationError>();
 
-            var doors = new List<Door>();
-            var roots = scene.GetRootGameObjects();
-            for (var i = 0; i < roots.Length; i++) {
-                doors.AddRange(roots[i].GetComponentsInChildren<Door>(true));
-            }
+            var doors = DoorUtils.GetDoorsInScene(scene);
 
             var map = new Dictionary<string, Door>(StringComparer.Ordinal);
             for (var i = 0; i < doors.Count; i++) {
@@ -86,7 +72,7 @@ namespace Editor.Doors {
                 }
             }
 
-            var currentSceneGuid = GetSceneGuid(scene.path);
+            var currentSceneGuid = DoorEditorUtils.GetSceneGuid(scene.path);
 
             for (var i = 0; i < doors.Count; i++) {
                 var door = doors[i];
@@ -135,29 +121,11 @@ namespace Editor.Doors {
         }
 
         private static bool SceneContainsDoorId(string scenePath, string doorId) {
-            var already = SceneManager.GetSceneByPath(scenePath);
-            var alreadyLoaded = already.IsValid() && already.isLoaded;
-
-            var scene = alreadyLoaded ? already : EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
-            try {
-                var roots = scene.GetRootGameObjects();
-                for (var i = 0; i < roots.Length; i++) {
-                    var doors = roots[i].GetComponentsInChildren<Door>(true);
-                    for (var j = 0; j < doors.Length; j++) {
-                        var d = doors[j];
-                        if (d != null && string.Equals(d.DoorId, doorId, StringComparison.Ordinal)) {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-            finally {
-                if (!alreadyLoaded) {
-                    EditorSceneManager.CloseScene(scene, true);
-                }
-            }
+            var result = false;
+            DoorEditorUtils.ExecuteInScene(scenePath, scene => {
+                result = DoorUtils.FindDoorByIdInScene(scene, doorId) != null;
+            });
+            return result;
         }
     }
 }

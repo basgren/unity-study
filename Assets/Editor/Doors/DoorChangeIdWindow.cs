@@ -81,7 +81,7 @@ namespace Editor.Doors {
                 return;
             }
 
-            var sceneGuid = DoorValidator.GetSceneGuid(scene.path);
+            var sceneGuid = DoorEditorUtils.GetSceneGuid(scene.path);
             if (string.IsNullOrWhiteSpace(sceneGuid)) {
                 EditorUtility.DisplayDialog("Error", "Failed to resolve scene GUID.", "OK");
                 return;

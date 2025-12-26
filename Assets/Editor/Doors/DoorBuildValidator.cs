@@ -3,8 +3,6 @@ using System.Text;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
 
 namespace Editor.Doors {
     /// <summary>
@@ -25,22 +23,13 @@ namespace Editor.Doors {
                     continue;
                 }
 
-                var already = SceneManager.GetSceneByPath(path);
-                var alreadyLoaded = already.IsValid() && already.isLoaded;
-
-                var scene = alreadyLoaded ? already : EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
-                try {
+                DoorEditorUtils.ExecuteInScene(path, scene => {
                     var errors = DoorValidator.ValidateScene(scene);
                     for (var e = 0; e < errors.Count; e++) {
                         errorCount++;
                         sb.AppendLine(errors[e].Message);
                     }
-                }
-                finally {
-                    if (!alreadyLoaded) {
-                        EditorSceneManager.CloseScene(scene, true);
-                    }
-                }
+                });
             }
 
             if (errorCount > 0) {
