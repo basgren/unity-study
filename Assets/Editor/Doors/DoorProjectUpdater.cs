@@ -2,6 +2,7 @@
 using Doors;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 namespace Editor.Doors {
     /// <summary>
@@ -17,8 +18,8 @@ namespace Editor.Doors {
         /// </summary>
         public static void ReplaceReferencesInOpenScenes(string targetSceneGuid, string oldDoorId, string newDoorId,
             ref int changedLinks) {
-            for (var i = 0; i < EditorSceneManager.sceneCount; i++) {
-                var scene = EditorSceneManager.GetSceneAt(i);
+            for (var i = 0; i < SceneManager.sceneCount; i++) {
+                var scene = SceneManager.GetSceneAt(i);
                 if (!scene.IsValid() || !scene.isLoaded) {
                     continue;
                 }
@@ -38,8 +39,8 @@ namespace Editor.Doors {
         public static void ReplaceReferencesInAllPrefabs(string targetSceneGuid, string oldDoorId, string newDoorId,
             ref int changedLinks) {
             var prefabGuids = AssetDatabase.FindAssets("t:Prefab");
-            for (var i = 0; i < prefabGuids.Length; i++) {
-                var path = AssetDatabase.GUIDToAssetPath(prefabGuids[i]);
+            foreach (var prefabGuid in prefabGuids) {
+                var path = AssetDatabase.GUIDToAssetPath(prefabGuid);
                 if (string.IsNullOrWhiteSpace(path)) {
                     continue;
                 }
@@ -49,8 +50,7 @@ namespace Editor.Doors {
                     var doors = root.GetComponentsInChildren<Door>(true);
                     var prefabChanged = 0;
 
-                    for (var j = 0; j < doors.Length; j++) {
-                        var door = doors[j];
+                    foreach (var door in doors) {
                         if (door == null) {
                             continue;
                         }
@@ -63,19 +63,22 @@ namespace Editor.Doors {
                         }
 
                         var sceneProp = linkProp.FindPropertyRelative("targetScene");
-                        var guidProp = sceneProp != null ? sceneProp.FindPropertyRelative("sceneGuid") : null;
+                        var guidProp = sceneProp?.FindPropertyRelative("sceneGuid");
                         var idProp = linkProp.FindPropertyRelative("targetDoorId");
 
-                        if (guidProp == null || idProp == null) {
+                        if (
+                            guidProp == null
+                            || guidProp.stringValue != targetSceneGuid
+                            || idProp == null
+                            || idProp.stringValue != oldDoorId
+                        ) {
                             continue;
                         }
 
-                        if (guidProp.stringValue == targetSceneGuid && idProp.stringValue == oldDoorId) {
-                            so.Update();
-                            idProp.stringValue = newDoorId;
-                            so.ApplyModifiedPropertiesWithoutUndo();
-                            prefabChanged++;
-                        }
+                        so.Update();
+                        idProp.stringValue = newDoorId;
+                        so.ApplyModifiedPropertiesWithoutUndo();
+                        prefabChanged++;
                     }
 
                     if (prefabChanged > 0) {
@@ -91,13 +94,16 @@ namespace Editor.Doors {
             AssetDatabase.SaveAssets();
         }
 
-        private static int ReplaceInScene(UnityEngine.SceneManagement.Scene scene, string targetSceneGuid,
-            string oldDoorId, string newDoorId) {
+        private static int ReplaceInScene(
+            Scene scene,
+            string targetSceneGuid,
+            string oldDoorId,
+            string newDoorId
+        ) {
             var changed = 0;
             var doors = DoorUtils.GetDoorsInScene(scene);
 
-            for (var i = 0; i < doors.Count; i++) {
-                var door = doors[i];
+            foreach (var door in doors) {
                 if (door == null) {
                     continue;
                 }
@@ -110,20 +116,23 @@ namespace Editor.Doors {
                 }
 
                 var sceneProp = linkProp.FindPropertyRelative("targetScene");
-                var guidProp = sceneProp != null ? sceneProp.FindPropertyRelative("sceneGuid") : null;
+                var guidProp = sceneProp?.FindPropertyRelative("sceneGuid");
                 var idProp = linkProp.FindPropertyRelative("targetDoorId");
 
-                if (guidProp == null || idProp == null) {
+                if (
+                    guidProp == null
+                    || guidProp.stringValue != targetSceneGuid
+                    || idProp == null
+                    || idProp.stringValue != oldDoorId
+                ) {
                     continue;
                 }
 
-                if (guidProp.stringValue == targetSceneGuid && idProp.stringValue == oldDoorId) {
-                    so.Update();
-                    idProp.stringValue = newDoorId;
-                    so.ApplyModifiedPropertiesWithoutUndo();
-                    EditorUtility.SetDirty(door);
-                    changed++;
-                }
+                so.Update();
+                idProp.stringValue = newDoorId;
+                so.ApplyModifiedPropertiesWithoutUndo();
+                EditorUtility.SetDirty(door);
+                changed++;
             }
 
             return changed;

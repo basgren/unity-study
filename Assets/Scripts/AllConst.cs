@@ -39,4 +39,8 @@ public static class AllConst {
     /// This value should be set to every Cinamachine Virtual Camera's Orthographic Size property.
     /// </summary>
     public static readonly float OrthographicSize = ReferenceResolution.y * 0.5f / PixelsPerUnit;
+    
+    public const string EntryPointName = "EntryPoint";
+    public const string CanvasesName = "SysCanvases";
+    public const string FadeOverlayName = "FadeOverlay";
 }

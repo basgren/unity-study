@@ -7,16 +7,18 @@ namespace Core.Services {
     /// </summary>
     public class SystemInitializer : MonoBehaviour {
         private void Awake() {
-            // DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject); 
 
             G.Spawner = GetOrCreate<SpawnerService>("SpawnerService");
             G.Input = GetOrCreate<InputService>("InputService");
+            G.Screen = GetOrCreate<ScreenService>("ScreenService");
             // G.Audio = GetOrCreate<AudioService>("AudioService");
         }
 
         private T GetOrCreate<T>(string serviceName) where T : MonoBehaviour {
             T svc = GetComponentInChildren<T>();
             if (svc != null) {
+                
                 return svc;
             }
 

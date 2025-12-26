@@ -148,6 +148,7 @@ namespace PixelCrew.Player {
 
             dustSpawnPoint = transform.Find(DustPositionObjectName);
             UpdateAnimatorController();
+            ResetFallHeight();
         }
 
         private void UpdateAnimatorController() {

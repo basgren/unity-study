@@ -10,8 +10,8 @@ namespace Core.Services {
         private GameObject propsContainer;
 
         private void Awake() {
-            vfxContainer = GetOrCreate(VfxParentName);
-            propsContainer = GetOrCreate(PropsParentName);
+            vfxContainer = SceneUtils.GetOrCreateObject(VfxParentName);
+            propsContainer = SceneUtils.GetOrCreateObject(PropsParentName);
         }
 
         public GameObject Spawn(GameObject prefab, Vector3 position) {
@@ -42,10 +42,6 @@ namespace Core.Services {
 
         public T SpawnVfx<T>(T prefab, Vector3 position) where T : MonoBehaviour {
             return Instantiate(prefab, position, Quaternion.identity, vfxContainer.transform);
-        }
-
-        private GameObject GetOrCreate(string gameObjectName) {
-            return GameObject.Find(gameObjectName) ?? new GameObject(gameObjectName);
         }
     }
 }

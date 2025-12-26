@@ -8,5 +8,6 @@
     public static class G {
         public static SpawnerService Spawner { get; internal set; }
         public static InputService Input { get; internal set; }
+        public static ScreenService Screen { get; internal set; }
     }
 }

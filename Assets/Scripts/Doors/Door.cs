@@ -1,5 +1,6 @@
 using Components.Interaction;
 using UnityEngine;
+using UnityEngine.Events;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -18,6 +19,9 @@ namespace Doors {
         
         [SerializeField]
         private Transform entryPoint;
+        
+        [SerializeField]
+        private UnityEvent onEntered;
 
         /// <summary>
         /// Door identifier. Must be unique within a scene.
@@ -43,6 +47,13 @@ namespace Doors {
         /// </summary>
         public void TravelToTarget() {
             DoorTravelService.Travel(this);
+        }
+
+        /// <summary>
+        /// Call this method from outer handlers when player has entered the door (close animation will be played).
+        /// </summary>
+        public void NotifyEntered() {
+            onEntered?.Invoke();
         }
 
 #if UNITY_EDITOR
