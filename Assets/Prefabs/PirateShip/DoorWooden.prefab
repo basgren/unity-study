@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1012684767289418786}
   - component: {fileID: 1012684767289418784}
   - component: {fileID: 1012684767289418785}
+  - component: {fileID: -6453643495484219292}
   m_Layer: 12
   m_Name: DoorWooden
   m_TagString: Untagged
@@ -126,3 +127,21 @@ MonoBehaviour:
   onComplete:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-6453643495484219292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012684767289418787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1675a322af23c7444a3f8f9ca39cc1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doorId: 
+  link:
+    targetScene:
+      sceneGuid: 
+      scenePath: 
+    targetDoorId: 
