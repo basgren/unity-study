@@ -57,6 +57,9 @@ TagManager:
   - name: Debris
     uniqueID: 1728649989
     locked: 0
+  - name: PropsBack
+    uniqueID: 3718119167
+    locked: 0
   - name: Characters
     uniqueID: 4163825915
     locked: 0

@@ -125,7 +125,7 @@ namespace PixelCrew.Player {
 
         private bool isAttacking;
         private bool isAttackAnimationInitiated;
-        private readonly float attackCooldownTime = 0.5f;
+        private readonly float attackCooldownTime = 0.3f;
         private float attackCooldownTimer;
         private bool isArmed;
         
@@ -249,6 +249,11 @@ namespace PixelCrew.Player {
             swordAttackArea.SetActive(true);
         }
         
+        public void CancelAttack() {
+            CloseSwordDamageWindow();
+            FinishAttack();
+        }
+        
         /// <summary>
         /// Should be called from animation event to disable damage window (when hit ends).
         /// </summary>
@@ -257,6 +262,10 @@ namespace PixelCrew.Player {
         }
 
         private void FinishAttack() {
+            if (!isAttacking) {
+                return;
+            }
+
             // Should be called at the very end, when sword swing effect is finished, so we can
             // finish attack and allow player turning (we don't allow turning while attack is in progress).
             isAttacking = false;
@@ -392,7 +401,8 @@ namespace PixelCrew.Player {
         }
 
         private bool CanJump() {
-            return IsGrounded || coyoteTimer > 0;
+            // Do not allow to jump if we're doing ground attack.
+            return (IsGrounded || coyoteTimer > 0) && !isAttacking;
         }
 
         #endregion
