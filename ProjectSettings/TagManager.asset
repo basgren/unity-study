@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - AttackArea
   layers:
   - Default
   - TransparentFX
@@ -47,8 +48,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: DecorBack
+    uniqueID: 438517029
+    locked: 0
   - name: Interactables
     uniqueID: 1363457211
+    locked: 0
+  - name: Debris
+    uniqueID: 1728649989
+    locked: 0
+  - name: PropsBack
+    uniqueID: 3718119167
     locked: 0
   - name: Characters
     uniqueID: 4163825915

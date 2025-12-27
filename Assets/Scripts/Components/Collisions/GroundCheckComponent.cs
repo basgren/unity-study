@@ -17,7 +17,8 @@ namespace Components.Collisions {
         private MultiRayCaster groundChecker;
         
         private void Awake() {
-            groundChecker = MultiRayCaster.CreateGroundChecker(bodyCollider, groundLayerMask);
+            groundChecker = MultiRayCaster.CreateGroundChecker(bodyCollider, groundLayerMask)
+                .WithRayCount(raysCount);
         }
 
         private void Update() {

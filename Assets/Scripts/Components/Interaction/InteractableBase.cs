@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace Components.Interaction {
     [RequireComponent(typeof(Collider2D))]
@@ -7,8 +8,12 @@ namespace Components.Interaction {
         /// Collider used to detect interaction. This may be separate colliders from the
         /// one used for collision detection. This collider is also forced to be a trigger.
         /// </summary>
+        [Header("Interactable")]
         [SerializeField]
         private Collider2D interactionCollider;
+
+        [SerializeField]
+        private UnityEvent onInteract;
 
         private bool isHovered;
         
@@ -26,7 +31,17 @@ namespace Components.Interaction {
             }
         }
 
-        public abstract void Interact();
+        public void Interact() {
+            onInteract?.Invoke();
+            DoInteract();
+        }
+
+        /// <summary>
+        /// Here interaction behavior should be implemented in descendant classes if needed.
+        /// </summary>
+        protected virtual void DoInteract() {
+            // Do nothing. Override in descendant classes to perform some action.
+        }
 
         protected virtual void Awake() {
             interactionCollider.isTrigger = true;

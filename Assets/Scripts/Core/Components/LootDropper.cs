@@ -18,10 +18,17 @@ namespace Core.Components {
         [SerializeField]
         private bool randomDirection;
 
+        [SerializeField]
+        private int count = 1;
+
         private readonly float angleSpread = 90f;
 
-        public void DropLoot(int count = 1) {
-            for (int i = count; i > 0; i--) {
+        public void DropLoot(int lootCount = 0) {
+            if (lootCount == 0) {
+                lootCount = count;
+            }
+            
+            for (int i = lootCount; i > 0; i--) {
                 var instance = G.Spawner.SpawnCollectible(lootPrefab, transform.position);
 
                 var rigidBody = instance.GetComponent<Rigidbody2D>();

@@ -25,3 +25,13 @@ MonoBehaviour:
       parentHierarchyPath: World/Hazards
     - categoryName: Interactive
       parentHierarchyPath: World/Interactive
+  - scenePath: Assets/Scenes/Level2.unity
+    categoryBindings:
+    - categoryName: Decor
+      parentHierarchyPath: World/Decor
+    - categoryName: Collectables
+      parentHierarchyPath: World/Props
+  - scenePath: Assets/Scenes/IntroLevel.unity
+    categoryBindings:
+    - categoryName: Collectables
+      parentHierarchyPath: World/Props

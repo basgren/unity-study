@@ -11,7 +11,7 @@ namespace Components {
     public class Damageable : MonoBehaviour {
         [Header("Health")]
         [SerializeField, Tooltip("Maximum health points this entity can have.")]
-        private float maxHealth = 5;
+        public float maxHealth = 5;
 
         [SerializeField, Tooltip("Current health points. If <= 0 at start, it will be initialized from maxHealth.")]
         private float currentHealth;
@@ -29,6 +29,9 @@ namespace Components {
 
         [SerializeField]
         private OnHitEvent onHit;
+        
+        [SerializeField]
+        private OnHitEvent onDeath;
         
         // TODO: implement simple FSM for easier state management and automatic transitions.
         
@@ -87,16 +90,21 @@ namespace Components {
         /// <summary>
         /// Tries to apply damage, respecting the internal cooldown.
         /// </summary>
-        public void TryTakeDamage(Damager damager) {
+        public bool TryTakeDamage(Damager damager) {
             if (IgnoreDamage || damager.Damage <= 0 || IsDead || IsInvulnerable()) {
-                return;
+                return false;
             }
 
             ApplyDamage(damager);
+            return true;
         }
 
         public void AddHealth(float amount) {
-            currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+            SetHealth(currentHealth + amount);
+        }
+
+        public void SetHealth(float amount) {
+            currentHealth = Mathf.Clamp(amount, 0, maxHealth);
         }
 
         private bool IsInvulnerable() {
@@ -115,6 +123,8 @@ namespace Components {
             IsHitThisFrame = true;
             invulnerabilityTimer = invulnerabilityTime;
 
+            Debug.Log(">>> hit: " + damager.Damage + " health: " + currentHealth);
+
             if (currentHealth <= 0) {
                 IsDead = true;
             } else {
@@ -125,6 +135,10 @@ namespace Components {
             
             // Call on hit at the end 
             onHit?.Invoke(damager);
+            
+            if (IsDead) {
+                onDeath?.Invoke(damager);
+            }
         }
 
         private void ApplyKnockback(Collider2D damagerCollider) {
