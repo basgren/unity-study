@@ -1,3 +1,4 @@
+using System;
 using Components.Interaction;
 using UnityEngine;
 using UnityEngine.Events;
@@ -54,6 +55,16 @@ namespace Doors {
         /// </summary>
         public void NotifyEntered() {
             onEntered?.Invoke();
+        }
+
+        private void OnDrawGizmos() {
+            // Draw gismos only for current room.
+            if (link.TargetDoorId != null && link.TargetScene.ScenePath == gameObject.scene.path) {
+                var targetDoor = DoorUtils.FindDoorByIdInScene(gameObject.scene, link.TargetDoorId);
+                Gizmos.color = new Color(0, 0, 1, 0.4f);
+                Gizmos.DrawLine(entryPoint.transform.position, targetDoor.entryPoint.transform.position);
+                Gizmos.DrawSphere(entryPoint.transform.position, 0.1f);
+            }
         }
 
 #if UNITY_EDITOR

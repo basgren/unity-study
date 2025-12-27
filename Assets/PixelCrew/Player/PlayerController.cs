@@ -6,8 +6,8 @@ using Components.Interaction;
 using Core.Collectables;
 using Core.Components;
 using Core.Services;
+using Game;
 using PixelCrew.Collectibles;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
@@ -73,10 +73,10 @@ namespace PixelCrew.Player {
         private GameObject attack1EffectPrefab;
         
         [SerializeField]
-        private AnimatorController armedAnimator;
+        private RuntimeAnimatorController armedAnimator;
         
         [SerializeField]
-        private AnimatorController unarmedAnimator; 
+        private RuntimeAnimatorController unarmedAnimator; 
 
         public InputActions.PlayerActions Actions { get; private set; }
         public bool IsGrounded { get; private set; }
@@ -128,9 +128,12 @@ namespace PixelCrew.Player {
         private readonly float attackCooldownTime = 0.5f;
         private float attackCooldownTimer;
         private bool isArmed;
+        
+        private PlayerState state;
 
         private void Awake() {
             Actions = G.Input.Player;
+            state = G.Game.PlayerState;
 
             rb = GetComponent<Rigidbody2D>();
             myCollider = GetComponent<BoxCollider2D>();
@@ -149,6 +152,16 @@ namespace PixelCrew.Player {
             dustSpawnPoint = transform.Find(DustPositionObjectName);
             UpdateAnimatorController();
             ResetFallHeight();
+
+            InitFromState(state);
+        }
+
+        private void InitFromState(PlayerState playerState) {
+            damageable.maxHealth = playerState.GetMaxHealth();
+            damageable.SetHealth(playerState.currentHealth);
+            coinsValue = playerState.coinsValue;
+            SetArmed(playerState.isArmed);
+            Debug.Log($"Initialized from state: {playerState}");
         }
 
         private void UpdateAnimatorController() {
@@ -400,8 +413,7 @@ namespace PixelCrew.Player {
                     break;
                 
                 case CollectableId.Sword:
-                    isArmed = true;
-                    UpdateAnimatorController();
+                    SetArmed(true);
                     break;
 
                 default:
@@ -409,17 +421,35 @@ namespace PixelCrew.Player {
             }
         }
 
+        private void SetArmed(bool newIsArmed) {
+            if (newIsArmed == isArmed) {
+                return;
+            }
+
+            isArmed = newIsArmed;
+            UpdateState();
+            UpdateAnimatorController();
+        }
+
         private void AddCoins(int amount = 1) {
             coinsValue += amount;
             Debug.Log($"Added coin. Current value: {coinsValue}");
+            UpdateState();
         }
 
         private void RemoveCoins(int amount = 1) {
             coinsValue = Math.Max(0, coinsValue - amount);
+            UpdateState();
         }
 
         #region Animator
 
+        private void UpdateState() {
+            state.currentHealth = damageable.Health;
+            state.coinsValue = coinsValue;
+            state.isArmed = isArmed;
+        }
+        
         private void UpdateAnimator() {
             animator.SetBool(HeroAnimationKeys.IsGrounded, IsGrounded);
             animator.SetBool(HeroAnimationKeys.IsRunning, IsRunning());
@@ -518,6 +548,7 @@ namespace PixelCrew.Player {
         public void OnAfterHit(Damager damager) {
             Debug.Log($"Player: Hit by {damager.Type}. Health: {damageable.Health}");
             DropCoins();
+            UpdateState();
 
             if (damageable.IsDead) {
                 ShowHitAndRestartScene();
@@ -528,7 +559,11 @@ namespace PixelCrew.Player {
                 ShowHitAndRespawnAtSafePoint();
             }
         }
-        
+
+        public void OnAfterDeath(Damager damager) {
+            
+        }
+
         private void ShowHitAndRestartScene() {
             Actions.Disable();
             isDead = true;

@@ -6,12 +6,27 @@ namespace Core.Services {
         private static readonly string VfxParentName = "VFX";
         private static readonly string PropsParentName = "Props";
 
-        private GameObject vfxContainer;
-        private GameObject propsContainer;
+        private GameObject vfxContainerCache;
+        private GameObject propsContainerCache;
 
-        private void Awake() {
-            vfxContainer = SceneUtils.GetOrCreateObject(VfxParentName);
-            propsContainer = SceneUtils.GetOrCreateObject(PropsParentName);
+        private GameObject VfxContainer {
+            get {
+                if (vfxContainerCache == null) {
+                    vfxContainerCache = SceneUtils.GetOrCreateObject(VfxParentName);
+                }
+                
+                return vfxContainerCache;
+            }
+        }
+        
+        private GameObject PropsContainer {
+            get {
+                if (propsContainerCache == null) {
+                    propsContainerCache = SceneUtils.GetOrCreateObject(PropsParentName);
+                }
+                
+                return propsContainerCache;
+            }
         }
 
         public GameObject Spawn(GameObject prefab, Vector3 position) {
@@ -19,7 +34,7 @@ namespace Core.Services {
         }
 
         public GameObject SpawnCollectible(GameObject prefab, Vector3 position) {
-            return Instantiate(prefab, position, Quaternion.identity, propsContainer.transform);
+            return Instantiate(prefab, position, Quaternion.identity, PropsContainer.transform);
         }
 
         /// <summary>
@@ -29,19 +44,19 @@ namespace Core.Services {
         /// <param name="position"></param>
         /// <returns></returns>
         public ParticleSystem SpawnVfx(ParticleSystem prefab, Vector3 position) {
-            return Instantiate(prefab, position, Quaternion.identity, vfxContainer.transform);
+            return Instantiate(prefab, position, Quaternion.identity, VfxContainer.transform);
         }
         
         public GameObject SpawnVfx(GameObject prefab, Vector3 position, Transform parent = null) {
             if (parent == null) {
-                parent = vfxContainer.transform;
+                parent = VfxContainer.transform;
             }
 
             return Instantiate(prefab, position, Quaternion.identity, parent);
         }
 
         public T SpawnVfx<T>(T prefab, Vector3 position) where T : MonoBehaviour {
-            return Instantiate(prefab, position, Quaternion.identity, vfxContainer.transform);
+            return Instantiate(prefab, position, Quaternion.identity, VfxContainer.transform);
         }
     }
 }

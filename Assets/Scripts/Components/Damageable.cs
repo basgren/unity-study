@@ -11,7 +11,7 @@ namespace Components {
     public class Damageable : MonoBehaviour {
         [Header("Health")]
         [SerializeField, Tooltip("Maximum health points this entity can have.")]
-        private float maxHealth = 5;
+        public float maxHealth = 5;
 
         [SerializeField, Tooltip("Current health points. If <= 0 at start, it will be initialized from maxHealth.")]
         private float currentHealth;
@@ -100,7 +100,11 @@ namespace Components {
         }
 
         public void AddHealth(float amount) {
-            currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+            SetHealth(currentHealth + amount);
+        }
+
+        public void SetHealth(float amount) {
+            currentHealth = Mathf.Clamp(amount, 0, maxHealth);
         }
 
         private bool IsInvulnerable() {

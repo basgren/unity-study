@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Prefabs;
+using UnityEngine;
 
 namespace Core.Services {
     /// <summary>
@@ -7,12 +8,26 @@ namespace Core.Services {
     /// </summary>
     public class SystemInitializer : MonoBehaviour {
         private void Awake() {
-            DontDestroyOnLoad(gameObject); 
-
+            if (HasExistingInitializers()) {
+                DestroyImmediate(gameObject);
+                return;
+            }
+            
+            DontDestroyOnLoad(gameObject);
+            
+            
+            
+            Debug.Log("Initializing Game Manager");
+            G.Game = GetOrCreate<GameManager>("GameManager");
             G.Spawner = GetOrCreate<SpawnerService>("SpawnerService");
             G.Input = GetOrCreate<InputService>("InputService");
             G.Screen = GetOrCreate<ScreenService>("ScreenService");
             // G.Audio = GetOrCreate<AudioService>("AudioService");
+
+            // TODO: [BG] think about better way to bind configs. bootstrap room?
+            var configs = GetComponent<ConfigsInitializer>();
+            G.Game.playerConfig = configs.PlayerConfig;
+            G.Game.Init();
         }
 
         private T GetOrCreate<T>(string serviceName) where T : MonoBehaviour {
@@ -25,6 +40,17 @@ namespace Core.Services {
             GameObject go = new GameObject(serviceName);
             go.transform.SetParent(transform);
             return go.AddComponent<T>();
+        }
+
+        private bool HasExistingInitializers() {
+            var inits = FindObjectsOfType<SystemInitializer>();
+            foreach (var sysInit in inits) {
+                if (sysInit != this) {
+                    return true;
+                }
+            }
+            
+            return false;
         }
     }
 }

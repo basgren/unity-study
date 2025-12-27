@@ -73,8 +73,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 364604425
-  m_SortingLayer: 6
+  m_SortingLayerID: 1363457211
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b0c0d27fbd7ab1f46851e59299f3b642, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -122,7 +122,7 @@ BoxCollider2D:
   m_Offset: {x: 0.026000977, y: -0.18939209}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0}
     oldSize: {x: 2, y: 1.09375}
     newSize: {x: 2, y: 1.09375}
     adaptiveTilingThreshold: 0.5
@@ -145,6 +145,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionCollider: {fileID: 7012586469692720898}
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
   switchables:
   - {fileID: 8713444622480048511}
   switchType: 1
@@ -208,3 +211,4 @@ MonoBehaviour:
   initialSpeed: 8
   speedRandomFactor: 0
   randomDirection: 1
+  count: 1

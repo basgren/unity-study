@@ -29,3 +29,9 @@ MonoBehaviour:
     categoryBindings:
     - categoryName: Decor
       parentHierarchyPath: World/Decor
+    - categoryName: Collectables
+      parentHierarchyPath: World/Props
+  - scenePath: Assets/Scenes/IntroLevel.unity
+    categoryBindings:
+    - categoryName: Collectables
+      parentHierarchyPath: World/Props
