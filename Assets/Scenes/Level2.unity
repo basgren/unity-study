@@ -775,7 +775,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -838305229
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -7859,7 +7859,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: link.targetDoorId
-      value: Door_East
+      value: Door_EastEntrance
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -10554,7 +10554,7 @@ TilemapRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 765679513
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}

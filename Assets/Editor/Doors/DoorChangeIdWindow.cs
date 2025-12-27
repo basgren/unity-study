@@ -12,6 +12,7 @@ namespace Editor.Doors {
     public sealed class DoorChangeIdWindow : EditorWindow {
         private Door door;
         private string newId;
+        private bool updateAllScenesOnDisk;
 
         public static void Show(Door door) {
             var w = CreateInstance<DoorChangeIdWindow>();
@@ -40,6 +41,20 @@ namespace Editor.Doors {
             EditorGUI.EndDisabledGroup();
 
             newId = EditorGUILayout.TextField("New ID", newId);
+
+            EditorGUILayout.Space();
+
+            updateAllScenesOnDisk = EditorGUILayout.ToggleLeft(
+                "Find and update references in ALL scenes of the project (auto-save those scenes)",
+                updateAllScenesOnDisk
+            );
+
+            if (updateAllScenesOnDisk) {
+                EditorGUILayout.HelpBox(
+                    "This may take time on large projects. Open scenes will NOT be auto-saved; they will only be marked dirty.",
+                    MessageType.Warning
+                );
+            }
 
             using (new EditorGUILayout.HorizontalScope()) {
                 if (GUILayout.Button("Random")) {
@@ -87,11 +102,23 @@ namespace Editor.Doors {
                 return;
             }
 
-            var changedScenes = 0;
-            var changedPrefabs = 0;
+            var changedOpenScenesLinks = 0;
+            var changedPrefabLinks = 0;
+            var changedDiskSceneLinks = 0;
+            var changedDiskScenes = 0;
 
-            DoorProjectUpdater.ReplaceReferencesInOpenScenes(sceneGuid, oldId, newId, ref changedScenes);
-            DoorProjectUpdater.ReplaceReferencesInAllPrefabs(sceneGuid, oldId, newId, ref changedPrefabs);
+            DoorProjectUpdater.ReplaceReferencesInOpenScenes(sceneGuid, oldId, newId, ref changedOpenScenesLinks);
+            DoorProjectUpdater.ReplaceReferencesInAllPrefabs(sceneGuid, oldId, newId, ref changedPrefabLinks);
+
+            if (updateAllScenesOnDisk) {
+                DoorProjectUpdater.ReplaceReferencesInAllScenesOnDisk(
+                    sceneGuid,
+                    oldId,
+                    newId,
+                    ref changedDiskSceneLinks,
+                    ref changedDiskScenes
+                );
+            }
 
             Undo.RecordObject(door, "Change Door ID");
             door.EditorSetDoorId(newId);
@@ -103,8 +130,11 @@ namespace Editor.Doors {
                 "Done",
                 $"Door ID changed: {oldId} -> {newId}\n" +
                 $"Updated references:\n" +
-                $"- Open scenes: {changedScenes} (scenes marked dirty)\n" +
-                $"- Prefabs: {changedPrefabs} (prefabs saved)",
+                $"- Open scenes: {changedOpenScenesLinks} (scenes marked dirty)\n" +
+                $"- Prefabs: {changedPrefabLinks} (prefabs saved)\n" +
+                (updateAllScenesOnDisk
+                    ? $"- Project scenes (auto-saved): {changedDiskSceneLinks} links in {changedDiskScenes} scenes\n"
+                    : string.Empty),
                 "OK"
             );
 

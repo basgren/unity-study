@@ -46997,7 +46997,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_East
+      value: Door_EastEntrance
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
