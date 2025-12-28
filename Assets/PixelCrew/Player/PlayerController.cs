@@ -139,9 +139,12 @@ namespace PixelCrew.Player {
             myCollider = GetComponent<BoxCollider2D>();
             animator = GetComponent<Animator>();
             groundChecker = MultiRayCaster.CreateGroundChecker(myCollider, groundLayer)
-                .WithAdjustment(0f); // to prevent double jump when jumping along the wall 
+                // Remove adjustment to prevent double jump when jumping along the wall
+                .WithAdjustment(0f); 
+            
             ceilingChecker = new MultiRayCaster(myCollider, groundLayer)
-                .WithDirection(Direction2D.Up);
+                .WithDirection(Direction2D.Up)
+                .WithIgnoreOneWayPlatforms();
 
             CloseSwordDamageWindow();
             

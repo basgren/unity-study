@@ -26,6 +26,7 @@ namespace Utils {
         public static MultiRayCaster CreateGroundChecker(BoxCollider2D myCollider, LayerMask groundLayer) {
             return new MultiRayCaster(myCollider, groundLayer)
                 .WithDirection(Direction2D.Down)
+                // Small adjustment is needed for barrels, otherwise they may incorrectly check collision.
                 .WithAdjustment(AllConst.PixelSize);
         }
         
@@ -46,6 +47,7 @@ namespace Utils {
         public int RayCount { get; private set; }
         public bool IsAllCollide { get; private set; }
         public float Adjustment { get; private set; }
+        public bool IgnoreOneWayPlatforms { get; private set; }
 
         private readonly BoxCollider2D myCollider;
         private RaycastHit2D[] rayHits;
@@ -153,6 +155,15 @@ namespace Utils {
                 return false;
             }
 
+            // Simple workaround to prevent ceiling check for one way platforms.
+            if (IgnoreOneWayPlatforms && RayDirection == Direction2D.Up) {
+                if (collider.TryGetComponent<PlatformEffector2D>(out var effector)) {
+                    if (effector.useOneWay) {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -250,6 +261,11 @@ namespace Utils {
 
         public MultiRayCaster ExcludeColliders(params Collider2D[] collider) {
             excludedColliders = collider;
+            return this;
+        }
+
+        public MultiRayCaster WithIgnoreOneWayPlatforms(bool ignore = true) {
+            IgnoreOneWayPlatforms = ignore;
             return this;
         }
 
