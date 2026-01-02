@@ -1,0 +1,195 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7760577832266162150
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3836093335436511521}
+  - component: {fileID: 1498803618385771875}
+  - component: {fileID: 8956914498756813358}
+  - component: {fileID: 1712269638782426260}
+  m_Layer: 0
+  m_Name: InfoBubble
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3836093335436511521
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7760577832266162150}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -213.843, y: 177.019, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1498803618385771875
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7760577832266162150}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -21864735
+  m_SortingLayer: 10
+  m_SortingOrder: 0
+  m_Sprite: {fileID: -7496652971160973759, guid: 4d3dd1cd9cbb4054eb68399b53838dd3,
+    type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.40625, y: 0.375}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &8956914498756813358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7760577832266162150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fdb43fb6e0c4b1bbfa67c522ab9e231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frameRate: 10
+  playOnStart: 1
+  randomStartFrame: 0
+  destroyOnComplete: 0
+  clips:
+  - name: ExclamationIn
+    sprites:
+    - {fileID: 5198499436242999864, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    - {fileID: 522628258772557294, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    - {fileID: -7496652971160973759, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    loop: 0
+    allowNextClip: 1
+    onComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  - name: ExclamationActive
+    sprites:
+    - {fileID: 522628258772557294, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    - {fileID: -7496652971160973759, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    loop: 1
+    allowNextClip: 0
+    onComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  - name: ExclamationOut
+    sprites:
+    - {fileID: -6673595046683207604, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    - {fileID: -3579443381493367830, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    loop: 0
+    allowNextClip: 0
+    onComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  - name: QuestionIn
+    sprites:
+    - {fileID: 7209094231601441018, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    - {fileID: -3312359432799530135, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    - {fileID: 6179275283875306209, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    loop: 0
+    allowNextClip: 0
+    onComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  - name: QuestionOut
+    sprites:
+    - {fileID: -2513143262151136179, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    - {fileID: -1825834460859757886, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    loop: 0
+    allowNextClip: 0
+    onComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  - name: DeadIn
+    sprites:
+    - {fileID: 7362565486409473159, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    - {fileID: -9019770505266381969, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    - {fileID: -4398029012377204575, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    loop: 0
+    allowNextClip: 0
+    onComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  - name: DeadOut
+    sprites:
+    - {fileID: -3763694910714217068, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    - {fileID: -5866972732137816325, guid: 4d3dd1cd9cbb4054eb68399b53838dd3, type: 3}
+    loop: 0
+    allowNextClip: 0
+    onComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  onComplete:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1712269638782426260}
+        m_MethodName: OnClipComplete
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1712269638782426260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7760577832266162150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0445e5ca33a97f846b70197597f912a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

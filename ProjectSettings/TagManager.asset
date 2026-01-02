@@ -15,15 +15,15 @@ TagManager:
   - 
   - 
   - Background
-  - Player
+  - PlayerSolid
   - Ground
   - DynamicObjects
   - Decor
   - PickupTrigger
   - PickupSolid
-  - 
-  - 
-  - 
+  - EnemiesSolid
+  - EnemyTriggers
+  - PlayerTriggers
   - 
   - 
   - 

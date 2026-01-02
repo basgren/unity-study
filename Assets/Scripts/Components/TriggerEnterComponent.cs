@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Components {
@@ -8,16 +9,19 @@ namespace Components {
         private string otherTag;
         
         [SerializeField]
-        private UnityEvent action;
+        private TriggerEnterEvent action;
         
         private void OnTriggerEnter2D(Collider2D other) {
             if (other.gameObject.CompareTag(otherTag)) {
                 if (action != null) {
-                    action.Invoke();
+                    action.Invoke(other.gameObject);
                 } else {
                     Debug.LogWarning("Action is not set");
                 }
             }
         }
     }
+    
+    [Serializable]
+    public class TriggerEnterEvent : UnityEvent<GameObject> {}
 }

@@ -49,6 +49,10 @@ namespace Components {
         private void OnTriggerEnter2D(Collider2D other) {
             TryDamage(other);
         }
+        
+        private void OnTriggerExit2D(Collider2D other) {
+            Debug.Log($"Trigger exit {other}");
+        }
 
         private void TryDamage(Collider2D other) {
             if (!targetLayers.Contains(other.gameObject)) {

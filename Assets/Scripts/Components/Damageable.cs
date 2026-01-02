@@ -64,6 +64,8 @@ namespace Components {
         }
         
         private void LateUpdate() {
+            // TODO: [BG] We also update animator in LateUpdate, so sometimes this update is called
+            //   before update of a character and it doesn't recognize hit. 
             IsHitThisFrame = false;
 
             if (IgnoreDamage) {
@@ -127,10 +129,11 @@ namespace Components {
 
             if (currentHealth <= 0) {
                 IsDead = true;
-            } else {
-                if (hasKnockback) {
-                    ApplyKnockback(damager.DamageCollider);
-                }
+            }
+            
+            if (hasKnockback) {
+                // TODO: [BG] Implement easing for knockback
+                ApplyKnockback(damager.DamageCollider);
             }
             
             // Call on hit at the end 

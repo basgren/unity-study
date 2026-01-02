@@ -8,39 +8,27 @@ using Core.Components;
 using Core.Services;
 using Game;
 using PixelCrew.Collectibles;
+using PixelCrew.Controllers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
 
 namespace PixelCrew.Player {
-    public static class HeroAnimationKeys {
-        public static readonly int IsGrounded = Animator.StringToHash("isGrounded");
-        public static readonly int IsRunning = Animator.StringToHash("isRunning");
+    public class HeroAnimationKeys: BaseCharacterAnimKeys {
         public static readonly int IsDead = Animator.StringToHash("isDead");
-        public static readonly int VelocityY = Animator.StringToHash("velocityY");
         public static readonly int OnJump = Animator.StringToHash("onJump");
         public static readonly int OnHit = Animator.StringToHash("onHit");
         public static readonly int OnDeath = Animator.StringToHash("onDeath");
         public static readonly int OnAttack = Animator.StringToHash("onAttack");
     }
-
-    [RequireComponent(typeof(Rigidbody2D))]
+    
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Animator))]
-    public class PlayerController : MonoBehaviour, ICollectableReceiver<CollectableId> {
+    public class PlayerController : BaseCharacterController, ICollectableReceiver<CollectableId> {
         private const string DustPositionObjectName = "DustSpawnPoint";
         private const float MinFallHeightForDustEffect = 2.8f;
         private const float WaitBeforeRespawn = 1.5f;
         private const float WaitBeforeRestart = 2.5f;
-
-        [SerializeField]
-        private float moveSpeed = 5f; // Run speed
-
-        /// <summary>
-        /// Layers, which collisions should be checked to detect if player stands on ground.
-        /// </summary>
-        [SerializeField]
-        private LayerMask groundLayer;
 
         [Header("Jump")]
         [SerializeField]
@@ -79,22 +67,11 @@ namespace PixelCrew.Player {
         private RuntimeAnimatorController unarmedAnimator; 
 
         public InputActions.PlayerActions Actions { get; private set; }
-        public bool IsGrounded { get; private set; }
-        
-        /// <summary>
-        /// Returns the height the player fell from. This should be checked only when
-        /// <c>IsGrounded</c> or <c>IsLandedThisFrame</c> is true.
-        /// </summary>
-        private float FallHeight => fallUpperPosY - fallLowerPosY;
 
-        private Rigidbody2D rb;
         private BoxCollider2D myCollider;
         private Damageable damageable;
-        private Animator animator;
         private LootDropper lootDropper;
 
-        private MultiRayCaster groundChecker;
-        private MultiRayCaster ceilingChecker;
         private SafePointTracker safePointTracker;
         private float coyoteTimer;
         private bool isJumped;
@@ -120,9 +97,6 @@ namespace PixelCrew.Player {
         private bool isDiedThisFrame;
         private bool isDead;
 
-        private float fallUpperPosY;
-        private float fallLowerPosY;
-
         private bool isAttacking;
         private bool isAttackAnimationInitiated;
         private readonly float attackCooldownTime = 0.3f;
@@ -131,20 +105,11 @@ namespace PixelCrew.Player {
         
         private PlayerState state;
 
-        private void Awake() {
+        protected override void Awake() {
+            base.Awake();
+
             Actions = G.Input.Player;
             state = G.Game.PlayerState;
-
-            rb = GetComponent<Rigidbody2D>();
-            myCollider = GetComponent<BoxCollider2D>();
-            animator = GetComponent<Animator>();
-            groundChecker = MultiRayCaster.CreateGroundChecker(myCollider, groundLayer)
-                // Remove adjustment to prevent double jump when jumping along the wall
-                .WithAdjustment(0f); 
-            
-            ceilingChecker = new MultiRayCaster(myCollider, groundLayer)
-                .WithDirection(Direction2D.Up)
-                .WithIgnoreOneWayPlatforms();
 
             CloseSwordDamageWindow();
             
@@ -154,7 +119,6 @@ namespace PixelCrew.Player {
 
             dustSpawnPoint = transform.Find(DustPositionObjectName);
             UpdateAnimatorController();
-            ResetFallHeight();
 
             InitFromState(state);
         }
@@ -168,10 +132,12 @@ namespace PixelCrew.Player {
         }
 
         private void UpdateAnimatorController() {
-            animator.runtimeAnimatorController = isArmed ? armedAnimator : unarmedAnimator;
+            MyAnimator.runtimeAnimatorController = isArmed ? armedAnimator : unarmedAnimator;
         }
 
-        void Update() {
+        protected override void Update() {
+            base.Update();
+
             // TODO: investigate proper solution for reading input and reacting on them. Main points:
             //   * inputs are checked before `Update` event (while it may be configured to be checked
             //     in `FixedUpdate`, but usually `Update` is called more frequently)
@@ -184,32 +150,13 @@ namespace PixelCrew.Player {
             //   Corgi engine doesn't use physics for player and updates player coords manually (applying
             //   gravity, etc) to be more responsive and have more control over movements (while I'm not
             //   sure about physics for other draggable objects).
-
-            // We won't use InputSystem events, as order of their invocation is not guaranteed, but
-            // in case we want to check button combinations, it's easier to check them manually.
-            // Using events is better for UI controls.
-            CheckGround();
-            
+          
             CheckSafePoint();
 
             CheckJump();
             CheckHorizontalMovement();
             CheckInteraction();
             CheckAttack();
-
-            // Update animator at the end, when player state is updated.
-            UpdateAnimator();
-        }
-
-        public void TeleportTo(Vector3 targetPosition) {
-            transform.position = targetPosition;
-            // Reset fall height to prevent fall dust to appear when player is teleported to a lower position.
-            ResetFallHeight();
-        }
-
-        private void ResetFallHeight() {
-            fallUpperPosY = transform.position.y;
-            fallLowerPosY = transform.position.y;
         }
         
         #region Attack
@@ -288,35 +235,17 @@ namespace PixelCrew.Player {
             // }
         }
 
-        private void CheckGround() {
-            groundChecker.Update();
-            ceilingChecker.Update();
+        protected override void CheckGround() {
+            base.CheckGround();
             
-            UpdateFallHeight();
-            
-            IsGrounded = groundChecker.HasCollision;
-
-            if (groundChecker.HasExitedCollisionThisFrame) {
+            if (GroundChecker.HasExitedCollisionThisFrame) {
                 coyoteTimer = coyoteJumpTime;
             }
 
-            if (groundChecker.HasEnteredCollisionThisFrame) {
+            if (GroundChecker.HasEnteredCollisionThisFrame) {
                 if (FallHeight > MinFallHeightForDustEffect) {
                     SpawnLandingDust();
                 }
-            }
-        }
-        
-        private void UpdateFallHeight() {
-            float y = myCollider.bounds.min.y;
-
-            if (groundChecker.HasExitedCollisionThisFrame) {
-                fallUpperPosY = y;
-                fallLowerPosY = y;
-            } else if (groundChecker.HasEnteredCollisionThisFrame) {
-                fallLowerPosY = y;
-            } else if (!IsGrounded) {
-                fallUpperPosY = Mathf.Max(fallUpperPosY, y);
             }
         }
 
@@ -325,7 +254,7 @@ namespace PixelCrew.Player {
             //   that are not completely stable (for example, moving platforms, disappearing platforms,
             //   or one way platforms).
             if (!isDead) {
-                safePointTracker.Update(groundChecker.IsAllCollide, transform.position, rb.velocity, Time.deltaTime);                
+                safePointTracker.Update(GroundChecker.IsAllCollide, transform.position, MyRigidbody.velocity, Time.deltaTime);                
             }
         }
 
@@ -336,18 +265,9 @@ namespace PixelCrew.Player {
         private void CheckHorizontalMovement() {
             Vector2 dir = Actions.Move.ReadValue<Vector2>().normalized;
 
-            var horzSpeed = Math.Sign(dir.x) * moveSpeed;
-            rb.velocity = new Vector2(horzSpeed, rb.velocity.y);
-
             // Check `isAttacking` flag to prevent player from changing direction while attack effect is played,
             // otherwise the effect will turn together with player.
-            if (!isAttacking) {
-                if (horzSpeed > 0) {
-                    transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
-                } else if (horzSpeed < 0) {
-                    transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
-                }    
-            }
+            SetDirection(dir, isAttacking);
         }
 
         #region Jump
@@ -368,7 +288,7 @@ namespace PixelCrew.Player {
                 }
             }
 
-            if (isJumpReleased || ceilingChecker.HasCollision) {
+            if (isJumpReleased || CeilingChecker.HasCollision) {
                 jumpSustainTimer = 0;
             }
 
@@ -395,7 +315,7 @@ namespace PixelCrew.Player {
         }
 
         private void Jump() {
-            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+            MyRigidbody.velocity = new Vector2(MyRigidbody.velocity.x, jumpSpeed);
         }
 
         private void ConsumeJumpBuffer() {
@@ -409,10 +329,6 @@ namespace PixelCrew.Player {
         }
 
         #endregion
-        
-        private bool IsRunning() {
-            return Math.Abs(rb.velocity.x) > 0.01f;
-        }
 
         public void OnCollected(CollectableId itemId, float value) {
             switch (itemId) {
@@ -463,45 +379,35 @@ namespace PixelCrew.Player {
             state.isArmed = isArmed;
         }
         
-        private void UpdateAnimator() {
-            animator.SetBool(HeroAnimationKeys.IsGrounded, IsGrounded);
-            animator.SetBool(HeroAnimationKeys.IsRunning, IsRunning());
+        protected override void UpdateAnimator() {
+            base.UpdateAnimator();
 
             if (isJumped) {
                 // We're jumping on trigger, not using velocityY comparison, as we may have moving platforms,
                 // in this case Y speed may be > 0, while the player is still on the ground.
-                animator.SetTrigger(HeroAnimationKeys.OnJump);
+                MyAnimator.SetTrigger(HeroAnimationKeys.OnJump);
             }
-
-            var velocityY = rb.velocity.y;
-
-            // Adjustments to compensate for floating point precision errors and physics jitter.
-            if (Math.Abs(velocityY) < 0.001f) {
-                velocityY = 0;
-            }
-
-            animator.SetFloat(HeroAnimationKeys.VelocityY, velocityY);
 
             if (damageable.IsHitThisFrame) {
-                animator.SetTrigger(HeroAnimationKeys.OnHit);
+                MyAnimator.SetTrigger(HeroAnimationKeys.OnHit);
             }
             
             if (isDiedThisFrame) {
-                animator.SetTrigger(HeroAnimationKeys.OnDeath);
+                MyAnimator.SetTrigger(HeroAnimationKeys.OnDeath);
                 // TODO: [BG] Actually should be reset somewhere else, not in this method, but not it's just for POC 
                 isDiedThisFrame = false;
             }
 
             if (isAttackAnimationInitiated) {
-                animator.SetTrigger(HeroAnimationKeys.OnAttack);
+                MyAnimator.SetTrigger(HeroAnimationKeys.OnAttack);
                 isAttackAnimationInitiated = false;
             }
             
-            animator.SetBool(HeroAnimationKeys.IsDead, isDead);
+            MyAnimator.SetBool(HeroAnimationKeys.IsDead, isDead);
         }
 
         public void SpawnRunDust() {
-            if (Math.Abs(rb.velocity.x) > 1f) {
+            if (Math.Abs(MyRigidbody.velocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
 
                 // Make sure the spawned object is directed in the same direction as target object.
@@ -561,6 +467,7 @@ namespace PixelCrew.Player {
         public void OnAfterHit(Damager damager) {
             Debug.Log($"Player: Hit by {damager.Type}. Health: {damageable.Health}");
             DropCoins();
+            CancelAttack();
             UpdateState();
 
             if (damageable.IsDead) {
@@ -624,9 +531,8 @@ namespace PixelCrew.Player {
 
         // ------------------- GIZMOS -------------------
 
-        private void OnDrawGizmosSelected() {
-            groundChecker?.DrawGizmos();
-            ceilingChecker?.DrawGizmos();
+        protected override void OnDrawGizmosSelected() {
+            base.OnDrawGizmosSelected();
 
             if (safePointTracker != null && safePointTracker.HasSafePosition) {
                 Gizmos.color = Color.blue;

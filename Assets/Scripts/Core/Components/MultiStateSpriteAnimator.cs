@@ -29,7 +29,8 @@ namespace Core.Components {
 
         private SpriteRenderer spriteRenderer;
 
-        private StateAnimationClip currentClip;
+        private int currentClipIndex;
+        private StateAnimationClip CurrentClip => clips.Length > 0 ? clips[currentClipIndex] : null;
         private int currentFrameIndex;
         private float timer;
         private float frameDuration;
@@ -37,7 +38,7 @@ namespace Core.Components {
         private int startFrameIndex;
         private bool isPlaying;
         
-        private Sprite[] CurrentSprites => currentClip?.Sprites ?? Array.Empty<Sprite>();
+        private Sprite[] CurrentSprites => CurrentClip?.Sprites ?? Array.Empty<Sprite>();
 
         void Awake() {
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -72,23 +73,23 @@ namespace Core.Components {
             timer -= frameDuration;
 
             var nextSpriteIndex = (currentFrameIndex + 1) % CurrentSprites.Length;
+            var clip = CurrentClip;
 
-            if (!currentClip.Loop && nextSpriteIndex == 0) {
-                enabled = currentClip.AllowNextClip;
-                currentClip.OnComplete?.Invoke();
+            if (!clip.Loop && nextSpriteIndex == 0) {
+                enabled = clip.AllowNextClip;
+                clip.OnComplete?.Invoke();
                 onComplete.Invoke();
 
                 if (destroyOnComplete) {
                     Destroy(gameObject);
                 }
 
-                if (currentClip.AllowNextClip) {
-                    var currentClipIndex = Array.IndexOf(clips, currentClip);
+                if (clip.AllowNextClip) {
                     SetClip((currentClipIndex + 1) % clips.Length);
+                } else {
+                    isPlaying = false;
+                    enabled = false;                    
                 }
-                
-                isPlaying = false;
-                enabled = false;
 
                 return;
             }
@@ -115,7 +116,7 @@ namespace Core.Components {
 
             enabled = true;
             isPlaying = true;
-            currentClip = clips[clipIndex];
+            currentClipIndex = clipIndex;
             SetSprite(0);
         }
         

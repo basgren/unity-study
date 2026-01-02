@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8317873638873226756}
   - component: {fileID: 9002533303501141659}
-  m_Layer: 9
+  m_Layer: 17
   m_Name: DustSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 8493527304799831158}
   - component: {fileID: 808513391657456749}
   - component: {fileID: 1925743917410454019}
-  m_Layer: 9
+  m_Layer: 17
   m_Name: SwordAttackArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ MonoBehaviour:
   damage: 1
   targetLayers:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 34816
   type: 1
 --- !u!1 &3208845069451795932
 GameObject:
@@ -119,7 +119,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7929084326469066376}
-  m_Layer: 9
+  m_Layer: 17
   m_Name: GrabPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -220,7 +220,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -131141381
   m_SortingLayer: 5
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: 5473ceb38fa8fb542a9a472926d86000, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -244,10 +244,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6953c59d3c030045828c0db95d3b260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
   groundLayer:
     serializedVersion: 2
     m_Bits: 3072
+  moveSpeed: 5
+  baseSpriteOrientation: 1
   jumpSpeed: 8
   jumpSustainTime: 0.26
   coyoteJumpTime: 0.06

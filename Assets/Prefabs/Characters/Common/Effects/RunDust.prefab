@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8215283007083111114}
   - component: {fileID: 8215283007083111115}
   m_Layer: 0
-  m_Name: HeroRunDust
+  m_Name: RunDust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

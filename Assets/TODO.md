@@ -19,3 +19,4 @@
   * OR at the moment the door is opened, check if player is still in the interaction area and if no - cancel transition.
 * DOORS: if pressing fast Use button, door will reset its animation. we should ignore Use presses until animation is
     finished (disable component?).
+* make coins collide with barrels when they are dropped.

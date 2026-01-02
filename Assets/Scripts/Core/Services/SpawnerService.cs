@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Prefabs.Effects.InfoBubble;
+using UnityEngine;
 
 namespace Core.Services {
     public class SpawnerService : MonoBehaviour {
@@ -9,6 +10,21 @@ namespace Core.Services {
         private GameObject vfxContainerCache;
         private GameObject propsContainerCache;
 
+        private static AssetRefs assetRefs;
+        private static AssetRefs Refs {
+            get {
+                if (assetRefs == null) {
+                    assetRefs = Resources.Load<AssetRefs>("AssetRefs");
+
+                    if (assetRefs == null) {
+                        Debug.LogError("AssetCatalog not found. Expected Resources/AssetCatalog.asset");
+                    }
+                }
+
+                return assetRefs;
+            }
+        }
+        
         private GameObject VfxContainer {
             get {
                 if (vfxContainerCache == null) {
@@ -29,8 +45,8 @@ namespace Core.Services {
             }
         }
 
-        public GameObject Spawn(GameObject prefab, Vector3 position) {
-            return Instantiate(prefab, position, Quaternion.identity);
+        public GameObject Spawn(GameObject prefab, Vector3 position, Transform parent = null) {
+            return Instantiate(prefab, position, Quaternion.identity, parent);
         }
 
         public GameObject SpawnCollectible(GameObject prefab, Vector3 position) {
@@ -57,6 +73,12 @@ namespace Core.Services {
 
         public T SpawnVfx<T>(T prefab, Vector3 position) where T : MonoBehaviour {
             return Instantiate(prefab, position, Quaternion.identity, VfxContainer.transform);
+        }
+
+        public void SpawnInfoBubble(InfoBubbleType type, Vector3 position, Transform parent = null, float delay = 1f) {
+            var instance = Spawn(Refs.InfoBubblePrefab, position, parent);
+            var infoBubble = instance.GetComponent<InfoBubble>();
+            infoBubble.ShowBubble(type, delay);
         }
     }
 }
