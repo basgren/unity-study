@@ -8,6 +8,7 @@ using Core.Components;
 using Core.Services;
 using Game;
 using PixelCrew.Collectibles;
+using PixelCrew.Controllers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
@@ -23,18 +24,14 @@ namespace PixelCrew.Player {
         public static readonly int OnDeath = Animator.StringToHash("onDeath");
         public static readonly int OnAttack = Animator.StringToHash("onAttack");
     }
-
-    [RequireComponent(typeof(Rigidbody2D))]
+    
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Animator))]
-    public class PlayerController : MonoBehaviour, ICollectableReceiver<CollectableId> {
+    public class PlayerController : BaseCharacterController, ICollectableReceiver<CollectableId> {
         private const string DustPositionObjectName = "DustSpawnPoint";
         private const float MinFallHeightForDustEffect = 2.8f;
         private const float WaitBeforeRespawn = 1.5f;
         private const float WaitBeforeRestart = 2.5f;
-
-        [SerializeField]
-        private float moveSpeed = 5f; // Run speed
 
         /// <summary>
         /// Layers, which collisions should be checked to detect if player stands on ground.
@@ -87,10 +84,8 @@ namespace PixelCrew.Player {
         /// </summary>
         private float FallHeight => fallUpperPosY - fallLowerPosY;
 
-        private Rigidbody2D rb;
         private BoxCollider2D myCollider;
         private Damageable damageable;
-        private Animator animator;
         private LootDropper lootDropper;
 
         private MultiRayCaster groundChecker;
@@ -131,13 +126,12 @@ namespace PixelCrew.Player {
         
         private PlayerState state;
 
-        private void Awake() {
+        protected override void Awake() {
+            base.Awake();
             Actions = G.Input.Player;
             state = G.Game.PlayerState;
-
-            rb = GetComponent<Rigidbody2D>();
+            
             myCollider = GetComponent<BoxCollider2D>();
-            animator = GetComponent<Animator>();
             groundChecker = MultiRayCaster.CreateGroundChecker(myCollider, groundLayer)
                 // Remove adjustment to prevent double jump when jumping along the wall
                 .WithAdjustment(0f); 
@@ -196,9 +190,6 @@ namespace PixelCrew.Player {
             CheckHorizontalMovement();
             CheckInteraction();
             CheckAttack();
-
-            // Update animator at the end, when player state is updated.
-            UpdateAnimator();
         }
 
         public void TeleportTo(Vector3 targetPosition) {
@@ -336,15 +327,14 @@ namespace PixelCrew.Player {
         private void CheckHorizontalMovement() {
             Vector2 dir = Actions.Move.ReadValue<Vector2>().normalized;
 
-            var horzSpeed = Math.Sign(dir.x) * moveSpeed;
-            rb.velocity = new Vector2(horzSpeed, rb.velocity.y);
+            var vx = rb.velocity.x;
 
             // Check `isAttacking` flag to prevent player from changing direction while attack effect is played,
             // otherwise the effect will turn together with player.
             if (!isAttacking) {
-                if (horzSpeed > 0) {
+                if (vx > 0) {
                     transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
-                } else if (horzSpeed < 0) {
+                } else if (vx < 0) {
                     transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
                 }    
             }
@@ -463,7 +453,7 @@ namespace PixelCrew.Player {
             state.isArmed = isArmed;
         }
         
-        private void UpdateAnimator() {
+        protected override void UpdateAnimator() {
             animator.SetBool(HeroAnimationKeys.IsGrounded, IsGrounded);
             animator.SetBool(HeroAnimationKeys.IsRunning, IsRunning());
 

@@ -10,13 +10,15 @@ GameObject:
   m_Component:
   - component: {fileID: 3756431542319373569}
   - component: {fileID: 3756431542319373568}
-  - component: {fileID: 3756431542319373571}
   - component: {fileID: 3756431542319373597}
   - component: {fileID: 3756431542319373570}
   - component: {fileID: 7955825364520398428}
+  - component: {fileID: -2964312382139753672}
+  - component: {fileID: 4897812281703601135}
   - component: {fileID: 5533741506947918789}
   - component: {fileID: 649388069741242861}
   - component: {fileID: 4568076159340871885}
+  - component: {fileID: 1260341882089066869}
   m_Layer: 9
   m_Name: Sharky
   m_TagString: Player
@@ -32,7 +34,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3756431542319373574}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.32, y: 0.09, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -88,36 +90,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3756431542319373571
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3756431542319373574}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6953c59d3c030045828c0db95d3b260, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 5
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 3072
-  jumpSpeed: 8
-  jumpSustainTime: 0.26
-  coyoteJumpTime: 0.06
-  runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
-    type: 3}
-  jumpDustPrefab: {fileID: 3098811724734425490, guid: 4b4d55e5d41acf745acbdd5c44a9e5d3,
-    type: 3}
-  groundDustPrefab: {fileID: 1526976483526385961, guid: e10df518c928ddd409277f7fc43929e9,
-    type: 3}
-  swordAttackArea: {fileID: 0}
-  attack1EffectPrefab: {fileID: 2402171628047126032, guid: 7a5339c2656f44144aa22e3ff7ed2598,
-    type: 3}
-  armedAnimator: {fileID: 9100000, guid: 15452c8f5b5d1294aae1e2825f20f3fc, type: 2}
-  unarmedAnimator: {fileID: 9100000, guid: da7b63019bcab78479068d687e4267ef, type: 2}
 --- !u!61 &3756431542319373597
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -184,6 +156,31 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-2964312382139753672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3756431542319373574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8522d1b7c4794da2944eee5eb389baf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+--- !u!114 &4897812281703601135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3756431542319373574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c550350fd454049a2e9106996fbbb4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5533741506947918789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,7 +201,7 @@ MonoBehaviour:
   onHit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3756431542319373571}
+      - m_Target: {fileID: 0}
         m_MethodName: OnAfterHit
         m_Mode: 0
         m_Arguments:
@@ -253,3 +250,16 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 3072
+--- !u!114 &1260341882089066869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3756431542319373574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47f57e1ee7e347bdb32754869e2a1b78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  points: []
