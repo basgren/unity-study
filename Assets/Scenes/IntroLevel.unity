@@ -54013,9 +54013,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1b0a85a7b314823a0d5da84a1700419, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keepWorldPosition: 1
-  anchoredPosition: {x: 0, y: 0, z: 0}
-  anchoredRotation: {x: 0, y: 0, z: 0, w: 1}
 --- !u!4 &1393098719
 Transform:
   m_ObjectHideFlags: 0
