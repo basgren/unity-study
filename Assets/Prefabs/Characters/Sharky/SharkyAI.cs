@@ -33,11 +33,9 @@ namespace Prefabs.Characters.Sharky {
         
         private IEnumerator Patrolling() {
             while (true) {
-                Debug.Log($">>> target: {path.GetTargetPosition()}");
                 var targetX = path.GetTargetPosition().x;
 
                 if (ReachedOrPassed(targetX)) {
-                    Debug.Log("PASSED");
                     path.NextTarget();
                 } else {
                     ctrl.SetDirection(GetDirectionTowards(targetX));                    

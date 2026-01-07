@@ -1,6 +1,6 @@
 ﻿using System;
+using Core.Services;
 using PixelCrew.Controllers;
-using PixelCrew.Player;
 using UnityEngine;
 
 namespace Prefabs.Characters.Sharky {
@@ -16,6 +16,21 @@ namespace Prefabs.Characters.Sharky {
             public static readonly int OnAttack = Animator.StringToHash("onAttack");
         }
         
+        private SharkyStateMachine stateMachine;
+
+        protected override void Awake() {
+            base.Awake();
+
+            stateMachine = G.StateMachines.Create<SharkyStateMachine>(this);
+            stateMachine.GoLater(2f, SharkyState.Patrol);
+        }
+
+        protected override void Update() {
+            base.Update();
+            
+            Debug.Log($"State: {stateMachine.State}");
+        }
+
         protected override void UpdateAnimator() {
             animator.SetBool(SharkyAnimKeys.IsRunning, IsRunning());
             var velocityY = rb.velocity.y;
@@ -25,7 +40,6 @@ namespace Prefabs.Characters.Sharky {
                 velocityY = 0;
             }
 
-            Debug.Log($"VelocityY: {velocityY}");
             animator.SetFloat(SharkyAnimKeys.VelocityY, velocityY);
         }
         

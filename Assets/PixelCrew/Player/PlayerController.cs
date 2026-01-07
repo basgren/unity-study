@@ -165,7 +165,9 @@ namespace PixelCrew.Player {
             animator.runtimeAnimatorController = isArmed ? armedAnimator : unarmedAnimator;
         }
 
-        void Update() {
+        protected override void Update() {
+            base.Update();
+
             // TODO: investigate proper solution for reading input and reacting on them. Main points:
             //   * inputs are checked before `Update` event (while it may be configured to be checked
             //     in `FixedUpdate`, but usually `Update` is called more frequently)
@@ -327,6 +329,8 @@ namespace PixelCrew.Player {
         private void CheckHorizontalMovement() {
             Vector2 dir = Actions.Move.ReadValue<Vector2>().normalized;
 
+            SetDirection(dir);
+            
             var vx = rb.velocity.x;
 
             // Check `isAttacking` flag to prevent player from changing direction while attack effect is played,

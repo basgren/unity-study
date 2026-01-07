@@ -14,14 +14,13 @@ namespace Core.Services {
             }
             
             DontDestroyOnLoad(gameObject);
-            
-            
-            
+
             Debug.Log("Initializing Game Manager");
             G.Game = GetOrCreate<GameManager>("GameManager");
             G.Spawner = GetOrCreate<SpawnerService>("SpawnerService");
             G.Input = GetOrCreate<InputService>("InputService");
             G.Screen = GetOrCreate<ScreenService>("ScreenService");
+            G.StateMachines = GetOrCreate<StateMachineService>("StateMachineService");
             // G.Audio = GetOrCreate<AudioService>("AudioService");
 
             // TODO: [BG] think about better way to bind configs. bootstrap room?

@@ -22,7 +22,6 @@ namespace Prefabs.Interactive.StoneDoor {
         }
 
         public void OnChangeState(bool isActive) {
-            Debug.Log(">>>> state changed to " + isActive);
             UpdateAnimator();
         }
 
