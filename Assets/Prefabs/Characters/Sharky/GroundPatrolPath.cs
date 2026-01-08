@@ -30,9 +30,9 @@ namespace Prefabs.Characters.Sharky {
         private void Awake() {
             ResetPoint();
         }
-        
-        public Vector2 GetTargetPosition() {
-            return points[currentTargetIndex].position;
+
+        public PatrolPoint GetTargetPoint() {
+            return points[currentTargetIndex];
         }
 
         public void NextTarget() {
@@ -101,6 +101,10 @@ namespace Prefabs.Characters.Sharky {
     [Serializable]
     public class PatrolPoint {
         public Vector2 position; // World-space
+        
+        /// <summary>
+        /// Delay associated with point. For example, character can make a delay before moving to another point.
+        /// </summary>
         public float delay;
 
         public PatrolPoint(Vector2 position, float delay = 0f) {

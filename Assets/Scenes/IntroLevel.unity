@@ -952,10 +952,10 @@ MonoBehaviour:
   startIndex: 1
   direction: 0
   points:
-  - position: {x: -220.74158, y: 72.23188}
-    delay: 0
-  - position: {x: -212.36032, y: 72.22375}
-    delay: 0
+  - position: {x: -217.9656, y: 72.357216}
+    delay: 4
+  - position: {x: -214.9572, y: 72.331184}
+    delay: 4
 --- !u!1001 &140264847
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -169,6 +169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  baseSpriteOrientation: 0
 --- !u!114 &4897812281703601135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,4 +263,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f57e1ee7e347bdb32754869e2a1b78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startIndex: 0
+  direction: 0
   points: []

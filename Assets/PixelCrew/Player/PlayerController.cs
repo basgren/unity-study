@@ -162,7 +162,7 @@ namespace PixelCrew.Player {
         }
 
         private void UpdateAnimatorController() {
-            animator.runtimeAnimatorController = isArmed ? armedAnimator : unarmedAnimator;
+            MyAnimator.runtimeAnimatorController = isArmed ? armedAnimator : unarmedAnimator;
         }
 
         protected override void Update() {
@@ -318,7 +318,7 @@ namespace PixelCrew.Player {
             //   that are not completely stable (for example, moving platforms, disappearing platforms,
             //   or one way platforms).
             if (!isDead) {
-                safePointTracker.Update(groundChecker.IsAllCollide, transform.position, rb.velocity, Time.deltaTime);                
+                safePointTracker.Update(groundChecker.IsAllCollide, transform.position, MyRigidbody.velocity, Time.deltaTime);                
             }
         }
 
@@ -329,19 +329,9 @@ namespace PixelCrew.Player {
         private void CheckHorizontalMovement() {
             Vector2 dir = Actions.Move.ReadValue<Vector2>().normalized;
 
-            SetDirection(dir);
-            
-            var vx = rb.velocity.x;
-
             // Check `isAttacking` flag to prevent player from changing direction while attack effect is played,
             // otherwise the effect will turn together with player.
-            if (!isAttacking) {
-                if (vx > 0) {
-                    transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
-                } else if (vx < 0) {
-                    transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
-                }    
-            }
+            SetDirection(dir, isAttacking);
         }
 
         #region Jump
@@ -389,7 +379,7 @@ namespace PixelCrew.Player {
         }
 
         private void Jump() {
-            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+            MyRigidbody.velocity = new Vector2(MyRigidbody.velocity.x, jumpSpeed);
         }
 
         private void ConsumeJumpBuffer() {
@@ -405,7 +395,7 @@ namespace PixelCrew.Player {
         #endregion
         
         private bool IsRunning() {
-            return Math.Abs(rb.velocity.x) > 0.01f;
+            return Math.Abs(MyRigidbody.velocity.x) > 0.01f;
         }
 
         public void OnCollected(CollectableId itemId, float value) {
@@ -458,44 +448,44 @@ namespace PixelCrew.Player {
         }
         
         protected override void UpdateAnimator() {
-            animator.SetBool(HeroAnimationKeys.IsGrounded, IsGrounded);
-            animator.SetBool(HeroAnimationKeys.IsRunning, IsRunning());
+            MyAnimator.SetBool(HeroAnimationKeys.IsGrounded, IsGrounded);
+            MyAnimator.SetBool(HeroAnimationKeys.IsRunning, IsRunning());
 
             if (isJumped) {
                 // We're jumping on trigger, not using velocityY comparison, as we may have moving platforms,
                 // in this case Y speed may be > 0, while the player is still on the ground.
-                animator.SetTrigger(HeroAnimationKeys.OnJump);
+                MyAnimator.SetTrigger(HeroAnimationKeys.OnJump);
             }
 
-            var velocityY = rb.velocity.y;
+            var velocityY = MyRigidbody.velocity.y;
 
             // Adjustments to compensate for floating point precision errors and physics jitter.
             if (Math.Abs(velocityY) < 0.001f) {
                 velocityY = 0;
             }
 
-            animator.SetFloat(HeroAnimationKeys.VelocityY, velocityY);
+            MyAnimator.SetFloat(HeroAnimationKeys.VelocityY, velocityY);
 
             if (damageable.IsHitThisFrame) {
-                animator.SetTrigger(HeroAnimationKeys.OnHit);
+                MyAnimator.SetTrigger(HeroAnimationKeys.OnHit);
             }
             
             if (isDiedThisFrame) {
-                animator.SetTrigger(HeroAnimationKeys.OnDeath);
+                MyAnimator.SetTrigger(HeroAnimationKeys.OnDeath);
                 // TODO: [BG] Actually should be reset somewhere else, not in this method, but not it's just for POC 
                 isDiedThisFrame = false;
             }
 
             if (isAttackAnimationInitiated) {
-                animator.SetTrigger(HeroAnimationKeys.OnAttack);
+                MyAnimator.SetTrigger(HeroAnimationKeys.OnAttack);
                 isAttackAnimationInitiated = false;
             }
             
-            animator.SetBool(HeroAnimationKeys.IsDead, isDead);
+            MyAnimator.SetBool(HeroAnimationKeys.IsDead, isDead);
         }
 
         public void SpawnRunDust() {
-            if (Math.Abs(rb.velocity.x) > 1f) {
+            if (Math.Abs(MyRigidbody.velocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
 
                 // Make sure the spawned object is directed in the same direction as target object.

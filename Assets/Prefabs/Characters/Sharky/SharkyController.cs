@@ -32,19 +32,19 @@ namespace Prefabs.Characters.Sharky {
         }
 
         protected override void UpdateAnimator() {
-            animator.SetBool(SharkyAnimKeys.IsRunning, IsRunning());
-            var velocityY = rb.velocity.y;
+            MyAnimator.SetBool(SharkyAnimKeys.IsRunning, IsRunning());
+            var velocityY = MyRigidbody.velocity.y;
             
             // Adjustments to compensate for floating point precision errors and physics jitter.
             if (Math.Abs(velocityY) < 0.001f) {
                 velocityY = 0;
             }
 
-            animator.SetFloat(SharkyAnimKeys.VelocityY, velocityY);
+            MyAnimator.SetFloat(SharkyAnimKeys.VelocityY, velocityY);
         }
         
         private bool IsRunning() {
-            return Math.Abs(rb.velocity.x) > 0.01f;
+            return Math.Abs(MyRigidbody.velocity.x) > 0.01f;
         }
     }
 }
