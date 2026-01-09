@@ -28,7 +28,7 @@ namespace Prefabs.Characters.Sharky {
         protected override void Update() {
             base.Update();
             
-            Debug.Log($"State: {stateMachine.State}");
+            // Debug.Log($"State: {stateMachine.State}");
         }
 
         protected override void UpdateAnimator() {
