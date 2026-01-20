@@ -2,6 +2,7 @@
 using Core.Components;
 using Core.Services;
 using UnityEngine;
+using Utils;
 
 namespace Core.Collectables {
     /// <summary>
@@ -43,30 +44,17 @@ namespace Core.Collectables {
         public event Action OnCollected;
         
         private bool canCollect = true;
-        
-        /// <summary>
-        /// Time after which collectable can be collected again.
-        /// </summary>
-        private readonly float cannotCollectTime = 1f; 
-        private float cannotCollectTimer;
 
         /// <summary>
         /// Should be called for collectables dropped by a player (collector), so they can't be collected immediately,
-        /// and will be collected only after they leave player's trigger area.
+        /// and will be collected only after they leave player's trigger area or on timeout.
         /// </summary>
         public void BlockUntilCollectorExit() {
             canCollect = false;
-            cannotCollectTimer = cannotCollectTime;
         }
-        
-        private void Update() {
-            if (cannotCollectTimer > 0) {
-                cannotCollectTimer -= Time.deltaTime;
 
-                if (cannotCollectTimer <= 0) {
-                    canCollect = true;
-                }
-            }
+        public void AllowCollection() {
+            canCollect = true;
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
@@ -80,7 +68,7 @@ namespace Core.Collectables {
         }
 
         private void OnTriggerExit2D(Collider2D other) {
-            if (!other.CompareTag(collectorTag)) {
+            if (canCollect || !other.CompareTag(collectorTag)) {
                 return;
             }
 

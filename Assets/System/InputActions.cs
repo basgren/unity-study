@@ -73,6 +73,15 @@ namespace System
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Throw"",
+                    ""type"": ""Button"",
+                    ""id"": ""189bd99a-dabc-4891-9477-a111e03f9fe8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -229,6 +238,28 @@ namespace System
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9bab5ca5-5d53-4b84-ae0b-0fab5016b9e7"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4d07f2ba-c8dd-44d6-8391-3cf0c00cd110"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -276,6 +307,7 @@ namespace System
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_Quit = m_Player.FindAction("Quit", throwIfNotFound: true);
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
+            m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         }
@@ -342,6 +374,7 @@ namespace System
         private readonly InputAction m_Player_Interact;
         private readonly InputAction m_Player_Quit;
         private readonly InputAction m_Player_Attack;
+        private readonly InputAction m_Player_Throw;
         public struct PlayerActions
         {
             private @InputActions m_Wrapper;
@@ -351,6 +384,7 @@ namespace System
             public InputAction @Interact => m_Wrapper.m_Player_Interact;
             public InputAction @Quit => m_Wrapper.m_Player_Quit;
             public InputAction @Attack => m_Wrapper.m_Player_Attack;
+            public InputAction @Throw => m_Wrapper.m_Player_Throw;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -375,6 +409,9 @@ namespace System
                     @Attack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
                     @Attack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
                     @Attack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
+                    @Throw.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnThrow;
+                    @Throw.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnThrow;
+                    @Throw.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnThrow;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -394,6 +431,9 @@ namespace System
                     @Attack.started += instance.OnAttack;
                     @Attack.performed += instance.OnAttack;
                     @Attack.canceled += instance.OnAttack;
+                    @Throw.started += instance.OnThrow;
+                    @Throw.performed += instance.OnThrow;
+                    @Throw.canceled += instance.OnThrow;
                 }
             }
         }
@@ -448,6 +488,7 @@ namespace System
             void OnInteract(InputAction.CallbackContext context);
             void OnQuit(InputAction.CallbackContext context);
             void OnAttack(InputAction.CallbackContext context);
+            void OnThrow(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {

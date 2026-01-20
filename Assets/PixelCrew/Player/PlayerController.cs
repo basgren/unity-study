@@ -14,18 +14,20 @@ using UnityEngine.SceneManagement;
 using Utils;
 
 namespace PixelCrew.Player {
-    public class HeroAnimationKeys: BaseCharacterAnimKeys {
+    public class HeroAnimKeys : BaseCharacterAnimKeys {
         public static readonly int IsDead = Animator.StringToHash("isDead");
         public static readonly int OnJump = Animator.StringToHash("onJump");
         public static readonly int OnHit = Animator.StringToHash("onHit");
         public static readonly int OnDeath = Animator.StringToHash("onDeath");
         public static readonly int OnAttack = Animator.StringToHash("onAttack");
+        public static readonly int OnThrowSword = Animator.StringToHash("onThrowSword");
     }
-    
+
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Animator))]
     public class PlayerController : BaseCharacterController, ICollectableReceiver<CollectableId> {
         private const string DustPositionObjectName = "DustSpawnPoint";
+        private const string SwordThrowPointObjectName = "SwordThrowPoint";
         private const float MinFallHeightForDustEffect = 2.8f;
         private const float WaitBeforeRespawn = 1.5f;
         private const float WaitBeforeRestart = 2.5f;
@@ -52,19 +54,19 @@ namespace PixelCrew.Player {
 
         [SerializeField]
         private GameObject groundDustPrefab;
-        
+
         [Header("Attack")]
         [SerializeField]
         private GameObject swordAttackArea;
-        
+
         [SerializeField]
         private GameObject attack1EffectPrefab;
-        
+
         [SerializeField]
         private RuntimeAnimatorController armedAnimator;
-        
+
         [SerializeField]
-        private RuntimeAnimatorController unarmedAnimator; 
+        private RuntimeAnimatorController unarmedAnimator;
 
         public InputActions.PlayerActions Actions { get; private set; }
 
@@ -101,8 +103,13 @@ namespace PixelCrew.Player {
         private bool isAttackAnimationInitiated;
         private readonly float attackCooldownTime = 0.3f;
         private float attackCooldownTimer;
-        private bool isArmed;
-        
+
+        private readonly TinyTimer throwCooldown = new TinyTimer(0.5f);
+        private Transform swordThrowPoint;
+        private SpawnComponent swordSpawner;
+        private int swordCount;
+        private bool IsArmed => swordCount > 0;
+
         private PlayerState state;
 
         protected override void Awake() {
@@ -112,12 +119,15 @@ namespace PixelCrew.Player {
             state = G.Game.PlayerState;
 
             CloseSwordDamageWindow();
-            
+
             safePointTracker = new SafePointTracker();
             damageable = GetComponent<Damageable>();
             lootDropper = GetComponent<LootDropper>();
 
             dustSpawnPoint = transform.Find(DustPositionObjectName);
+            swordThrowPoint = transform.Find(SwordThrowPointObjectName);
+            swordSpawner = swordThrowPoint.GetComponent<SpawnComponent>();
+
             UpdateAnimatorController();
 
             InitFromState(state);
@@ -127,16 +137,20 @@ namespace PixelCrew.Player {
             damageable.maxHealth = playerState.GetMaxHealth();
             damageable.SetHealth(playerState.currentHealth);
             coinsValue = playerState.coinsValue;
-            SetArmed(playerState.isArmed);
+
+            SetSwordCount(playerState.swordCount);
+            // SetArmed(playerState.isArmed);
             Debug.Log($"Initialized from state: {playerState}");
         }
 
         private void UpdateAnimatorController() {
-            MyAnimator.runtimeAnimatorController = isArmed ? armedAnimator : unarmedAnimator;
+            MyAnimator.runtimeAnimatorController = IsArmed ? armedAnimator : unarmedAnimator;
         }
 
         protected override void Update() {
             base.Update();
+
+            throwCooldown.Update(Time.deltaTime);
 
             // TODO: investigate proper solution for reading input and reacting on them. Main points:
             //   * inputs are checked before `Update` event (while it may be configured to be checked
@@ -150,17 +164,18 @@ namespace PixelCrew.Player {
             //   Corgi engine doesn't use physics for player and updates player coords manually (applying
             //   gravity, etc) to be more responsive and have more control over movements (while I'm not
             //   sure about physics for other draggable objects).
-          
+
             CheckSafePoint();
 
             CheckJump();
             CheckHorizontalMovement();
             CheckInteraction();
             CheckAttack();
+            CheckThrow();
         }
-        
+
         #region Attack
-        
+
         /// <summary>
         /// Currently attack is implemente in a vary simple way. Key is pressed - we activate damage window,
         /// activate child object with collider and Damager components (DamageArea), it will hit everything once and
@@ -170,7 +185,7 @@ namespace PixelCrew.Player {
             if (attackCooldownTimer > 0) {
                 attackCooldownTimer -= Time.deltaTime;
             }
-            
+
             // Things to consider: this method is very simple and relies on the fact that time between animation
             // events of open and close damage window is longer than fixedDeltaTime, so at least one
             // physics check iteration will be complete before DamageArea is deactivated. In case if damage
@@ -179,7 +194,7 @@ namespace PixelCrew.Player {
             if (Actions.Attack.WasPerformedThisFrame() && CanAttack()) {
                 isAttacking = true; // will be used to prevent double attacks.
                 isAttackAnimationInitiated = true; // used just to trigger animation event.
-                
+
                 // Spawn effect as hero's child object, so even if player moves, it will move with player.
                 // But in this case we should prevent changing player direction until animation is finished.
                 G.Spawner.SpawnVfx(attack1EffectPrefab, swordAttackArea.transform.position, gameObject.transform);
@@ -187,7 +202,7 @@ namespace PixelCrew.Player {
         }
 
         private bool CanAttack() {
-            return isArmed && !isAttacking && IsGrounded && attackCooldownTimer <= 0;
+            return IsArmed && !isAttacking && IsGrounded && attackCooldownTimer <= 0;
         }
 
         /// <summary>
@@ -198,12 +213,12 @@ namespace PixelCrew.Player {
             // and deactivate sword damage area. 
             swordAttackArea.SetActive(true);
         }
-        
+
         public void CancelAttack() {
             CloseSwordDamageWindow();
             FinishAttack();
         }
-        
+
         /// <summary>
         /// Should be called from animation event to disable damage window (when hit ends).
         /// </summary>
@@ -221,7 +236,32 @@ namespace PixelCrew.Player {
             isAttacking = false;
             attackCooldownTimer = attackCooldownTime;
         }
-        
+
+        #endregion
+
+        #region ThrowSword
+
+        private void CheckThrow() {
+            if (Actions.Throw.WasPerformedThisFrame() && CanThrow()) {
+                Debug.Log("Throwind sword anim!");
+                // Set animation trigger and in the middle it will call `ThrowSword` method.
+                MyAnimator.SetTrigger(HeroAnimKeys.OnThrowSword);
+                throwCooldown.Start();
+            }
+        }
+
+        private bool CanThrow() {
+            return IsArmed
+                   && throwCooldown.IsTimedOut
+                   && swordCount > 1; // Additional condition - don't allow throwing the last sword.
+        }
+
+        private void ThrowSword() {
+            swordSpawner.Spawn();
+            SetSwordCount(swordCount - 1);
+            Debug.Log($"Swords left: {swordCount}");
+        }
+
         #endregion
 
         public void SetDragMode(bool dragging, float speedMultiplier) {
@@ -237,7 +277,7 @@ namespace PixelCrew.Player {
 
         protected override void CheckGround() {
             base.CheckGround();
-            
+
             if (GroundChecker.HasExitedCollisionThisFrame) {
                 coyoteTimer = coyoteJumpTime;
             }
@@ -254,7 +294,8 @@ namespace PixelCrew.Player {
             //   that are not completely stable (for example, moving platforms, disappearing platforms,
             //   or one way platforms).
             if (!isDead) {
-                safePointTracker.Update(GroundChecker.IsAllCollide, transform.position, MyRigidbody.velocity, Time.deltaTime);                
+                safePointTracker.Update(GroundChecker.IsAllCollide, transform.position, MyRigidbody.velocity,
+                    Time.deltaTime);
             }
         }
 
@@ -271,7 +312,7 @@ namespace PixelCrew.Player {
         }
 
         #region Jump
-        
+
         private void CheckJump() {
             isJumped = false;
 
@@ -340,9 +381,9 @@ namespace PixelCrew.Player {
                     Debug.Log($"Player: Collected {value} health");
                     damageable.AddHealth(value);
                     break;
-                
+
                 case CollectableId.Sword:
-                    SetArmed(true);
+                    SetSwordCount(swordCount + 1);
                     break;
 
                 default:
@@ -350,12 +391,13 @@ namespace PixelCrew.Player {
             }
         }
 
-        private void SetArmed(bool newIsArmed) {
-            if (newIsArmed == isArmed) {
+        private void SetSwordCount(int count) {
+            if (swordCount == count || count < 0) {
                 return;
             }
 
-            isArmed = newIsArmed;
+            swordCount = count;
+
             UpdateState();
             UpdateAnimatorController();
         }
@@ -376,34 +418,34 @@ namespace PixelCrew.Player {
         private void UpdateState() {
             state.currentHealth = damageable.Health;
             state.coinsValue = coinsValue;
-            state.isArmed = isArmed;
+            state.swordCount = swordCount;
         }
-        
+
         protected override void UpdateAnimator() {
             base.UpdateAnimator();
 
             if (isJumped) {
                 // We're jumping on trigger, not using velocityY comparison, as we may have moving platforms,
                 // in this case Y speed may be > 0, while the player is still on the ground.
-                MyAnimator.SetTrigger(HeroAnimationKeys.OnJump);
+                MyAnimator.SetTrigger(HeroAnimKeys.OnJump);
             }
 
             if (damageable.IsHitThisFrame) {
-                MyAnimator.SetTrigger(HeroAnimationKeys.OnHit);
+                MyAnimator.SetTrigger(HeroAnimKeys.OnHit);
             }
-            
+
             if (isDiedThisFrame) {
-                MyAnimator.SetTrigger(HeroAnimationKeys.OnDeath);
+                MyAnimator.SetTrigger(HeroAnimKeys.OnDeath);
                 // TODO: [BG] Actually should be reset somewhere else, not in this method, but not it's just for POC 
                 isDiedThisFrame = false;
             }
 
             if (isAttackAnimationInitiated) {
-                MyAnimator.SetTrigger(HeroAnimationKeys.OnAttack);
+                MyAnimator.SetTrigger(HeroAnimKeys.OnAttack);
                 isAttackAnimationInitiated = false;
             }
-            
-            MyAnimator.SetBool(HeroAnimationKeys.IsDead, isDead);
+
+            MyAnimator.SetBool(HeroAnimKeys.IsDead, isDead);
         }
 
         public void SpawnRunDust() {
@@ -463,7 +505,7 @@ namespace PixelCrew.Player {
         }
 
         #endregion
-        
+
         public void OnAfterHit(Damager damager) {
             Debug.Log($"Player: Hit by {damager.Type}. Health: {damageable.Health}");
             DropCoins();
@@ -474,14 +516,13 @@ namespace PixelCrew.Player {
                 ShowHitAndRestartScene();
                 return;
             }
-            
+
             if (damager.Type == DamagerType.RespawnOnContact) {
                 ShowHitAndRespawnAtSafePoint();
             }
         }
 
         public void OnAfterDeath(Damager damager) {
-            
         }
 
         private void ShowHitAndRestartScene() {
@@ -510,12 +551,12 @@ namespace PixelCrew.Player {
             damageable.IgnoreDamage = false;
             Actions.Enable();
         }
-        
+
         private IEnumerator WaitAndRespawn(float seconds) {
             yield return new WaitForSeconds(seconds);
             RespawnAtSafePoint();
         }
-        
+
         private void RespawnAtSafePoint() {
             isDead = false;
             transform.position = safePointTracker.LastSafePosition;

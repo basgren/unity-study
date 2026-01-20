@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - AttackArea
+  - Enemy
+  - IgnoresProjectile
   layers:
   - Default
   - TransparentFX
@@ -24,7 +26,7 @@ TagManager:
   - EnemiesSolid
   - EnemyTriggers
   - PlayerTriggers
-  - 
+  - HitOnlyTargets
   - 
   - 
   - 

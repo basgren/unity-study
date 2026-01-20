@@ -5,7 +5,7 @@ namespace Game {
         public float baseMaxHealth;
         public float currentHealth;
         public int coinsValue = 0;
-        public bool isArmed = false;
+        public int swordCount = 0;
 
         public PlayerState(PlayerConfig config) {
             baseMaxHealth = config.baseMaxHealth;
