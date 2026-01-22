@@ -2,6 +2,9 @@
 using UnityEngine;
 
 namespace Core.Components.Collisions {
+    /// <summary>
+    /// Component that checks if the character is grounded using multiple raycasts.
+    /// </summary>
     public class GroundCheckComponent: MonoBehaviour {
         [SerializeField]
         public LayerMask groundLayerMask;

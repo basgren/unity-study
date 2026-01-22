@@ -2,6 +2,9 @@
 using UnityEngine;
 
 namespace Core.Components.Collisions {
+    /// <summary>
+    /// Checks for overlapping colliders within a circle and populates a list with the results.
+    /// </summary>
     public class CheckCircleOverlap : MonoBehaviour {
         [SerializeField]
         private Vector2 center;

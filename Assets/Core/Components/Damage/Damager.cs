@@ -27,12 +27,15 @@ namespace Core.Components.Damage {
 
         [SerializeField]
         private DamagerType type = DamagerType.Simple;
+        
+        [SerializeField]
+        private bool destroyOnContact;
 
         public int Damage => damage;
         public DamagerType Type => type;
         public Collider2D DamageCollider { get; private set; }
 
-        private HashSet<Damageable> damagedObjects = new HashSet<Damageable>();
+        private readonly HashSet<Damageable> damagedObjects = new HashSet<Damageable>();
 
         private void Awake() {
             DamageCollider = GetComponent<Collider2D>();
@@ -71,6 +74,9 @@ namespace Core.Components.Damage {
 
             if (type == DamagerType.SingleHit && isDamaged) {
                 damagedObjects.Add(damageable);
+                if (destroyOnContact) {
+                    Destroy(gameObject);
+                }
             }
         }
 

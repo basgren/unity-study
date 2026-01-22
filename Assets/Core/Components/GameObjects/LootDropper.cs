@@ -23,8 +23,8 @@ namespace Core.Components.GameObjects {
 
         private readonly float angleSpread = 90f;
 
-        public void DropLoot(int lootCount = 0) {
-            if (lootCount == 0) {
+        public void DropLoot(int lootCount = -1) {
+            if (lootCount < 0) {
                 lootCount = count;
             }
             

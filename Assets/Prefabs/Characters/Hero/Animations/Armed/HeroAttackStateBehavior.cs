@@ -1,4 +1,4 @@
-﻿using PixelCrew.Player;
+﻿using Game.Player;
 using UnityEngine;
 
 namespace Prefabs.Characters.Hero.Animations.Armed {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Core.Components.Damage;
 using Core.Services;
-using PixelCrew.Controllers;
+using Game.Controllers;
 using UnityEngine;
 
 namespace Prefabs.Characters.Sharky {
