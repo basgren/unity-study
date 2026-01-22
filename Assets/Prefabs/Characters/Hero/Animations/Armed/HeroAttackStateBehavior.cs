@@ -1,7 +1,7 @@
 ﻿using PixelCrew.Player;
 using UnityEngine;
 
-namespace Prefabs.Hero.Animations.Armed {
+namespace Prefabs.Characters.Hero.Animations.Armed {
     public class AttackStateBehavior : StateMachineBehaviour {
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             // We don't allow jumping when attack is in progress, but if player falls from the edge while

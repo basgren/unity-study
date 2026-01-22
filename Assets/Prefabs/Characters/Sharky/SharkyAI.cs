@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Core.Components;
+using Core.Components.Collisions;
 using Core.Services;
 using Prefabs.Effects.InfoBubble;
 using UnityEngine;

@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using Core.FSM;
+﻿using Core.FSM;
 using NUnit.Framework;
 
-namespace Tests {
+namespace Editor.Tests.FSM {
     public enum TestState {
         A, // Can go only to C
         B, // Initial state, can go to A and C

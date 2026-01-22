@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor {
+namespace Editor.SpriteValidator {
     /// <summary>
     /// Editor window for validating sprite assets against project-wide settings.
     /// Allows bulk validation and fixing of PPU, filter mode, and compression.

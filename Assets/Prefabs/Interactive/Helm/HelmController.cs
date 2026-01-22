@@ -1,4 +1,4 @@
-﻿using Components.Interaction;
+﻿using Core.Components.Interaction;
 using UnityEngine;
 
 namespace Prefabs.Interactive.Helm {

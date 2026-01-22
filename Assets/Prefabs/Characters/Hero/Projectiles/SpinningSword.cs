@@ -1,5 +1,5 @@
-﻿using Components;
-using Core.Extensions;
+﻿using Core.Components.Extensions;
+using Core.Components.GameObjects;
 using UnityEngine;
 
 namespace Prefabs.Characters.Hero.Projectiles {

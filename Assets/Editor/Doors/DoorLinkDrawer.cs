@@ -1,6 +1,6 @@
 #if UNITY_EDITOR
 using System;
-using Doors;
+using Game.Doors;
 using UnityEditor;
 using UnityEngine;
 

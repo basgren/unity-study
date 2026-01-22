@@ -1,4 +1,4 @@
-﻿using EditorOnly;
+﻿using Game.EditorOnly;
 using UnityEditor;
 using UnityEngine;
 
@@ -46,7 +46,7 @@ namespace Editor {
                 }
             }
 
-            return $"Note{(maxIndex + 1):D2}";
+            return $"Note{maxIndex + 1:D2}";
         }
 
         private static GameObject CreateNoteObject(string name, GameObject parent) {

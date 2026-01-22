@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Components;
+using Core.Components.GameObjects;
 using UnityEngine;
 
 namespace Prefabs.Props.Chest {

@@ -1,11 +1,11 @@
 ﻿using System;
-using Components;
+using Core.Components.Damage;
 using Core.Services;
 using PixelCrew.Controllers;
 using UnityEngine;
 
 namespace Prefabs.Characters.Sharky {
-    class SharkyAnimKeys : BaseCharacterAnimKeys {
+    internal abstract class SharkyAnimKeys : BaseCharacterAnimKeys {
         public static readonly int IsDead = Animator.StringToHash("isDead");
         public static readonly int OnJump = Animator.StringToHash("onJump");
         public static readonly int OnHit = Animator.StringToHash("onHit");

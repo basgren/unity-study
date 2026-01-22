@@ -1,4 +1,5 @@
 ﻿using Core.Components;
+using Core.Components.Animation;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace Editor {
     [CustomEditor(typeof(MultiStateSpriteAnimator))]
     public sealed class MultiStateSpriteAnimatorEditor : UnityEditor.Editor {
-        const float DragHandleWidth = 16f;
+        private const float DragHandleWidth = 16f;
         
         private SerializedProperty clipsProp;
         private ReorderableList clipsList;

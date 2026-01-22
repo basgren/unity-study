@@ -1,4 +1,4 @@
-﻿using Components.Abilities;
+﻿using Game.Components.Abilities;
 using UnityEditor;
 using UnityEngine;
 
