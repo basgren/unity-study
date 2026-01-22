@@ -8,11 +8,11 @@ using Core.Components.Interaction;
 using Core.Services;
 using Core.Utils;
 using Game.Configs;
-using PixelCrew.Controllers;
+using Game.Controllers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace PixelCrew.Player {
+namespace Game.Player {
     public class HeroAnimKeys : BaseCharacterAnimKeys {
         public static readonly int IsDead = Animator.StringToHash("isDead");
         public static readonly int OnJump = Animator.StringToHash("onJump");

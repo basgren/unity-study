@@ -65,6 +65,9 @@ TagManager:
   - name: Characters
     uniqueID: 4163825915
     locked: 0
+  - name: Projectiles
+    uniqueID: 2743389551
+    locked: 0
   - name: Ground
     uniqueID: 3456662067
     locked: 0

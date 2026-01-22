@@ -2,7 +2,7 @@
 using Core.Utils;
 using UnityEngine;
 
-namespace PixelCrew.Controllers {
+namespace Game.Controllers {
     public enum SpriteOrientation {
         Left,
         Right,

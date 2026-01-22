@@ -1,4 +1,4 @@
-﻿using PixelCrew.Player;
+﻿using Game.Player;
 using UnityEditor;
 using UnityEngine;
 

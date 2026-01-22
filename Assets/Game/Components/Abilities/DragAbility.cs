@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PixelCrew.Player;
+using Game.Player;
 using UnityEngine;
 
 namespace Game.Components.Abilities {

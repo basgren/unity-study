@@ -2,6 +2,9 @@
 using UnityEngine;
 
 namespace Core.Components.Collisions {
+    /// <summary>
+    /// Checks if a Collider2D is currently colliding with specified layers.
+    /// </summary>
     [RequireComponent(typeof(Collider2D))]
     public class LayerCheck : MonoBehaviour {
         [SerializeField]

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using Core.Services;
-using PixelCrew.Player;
+using Game.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

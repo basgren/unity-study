@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Core.Components.Collisions {
+    /// <summary>
+    /// Component that invokes a UnityEvent when a Collider2D enters its trigger.
+    /// Can be filtered by tag and layer.
+    /// </summary>
     [RequireComponent(typeof(Collider2D))]
     public class TriggerEnterComponent : MonoBehaviour {
         [SerializeField]
