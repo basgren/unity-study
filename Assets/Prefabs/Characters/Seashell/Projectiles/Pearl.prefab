@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 165663672088860253}
   - component: {fileID: 4340940114718700434}
   - component: {fileID: 5812571195813611755}
+  - component: {fileID: 3444645393942331741}
   m_Layer: 16
   m_Name: Pearl
   m_TagString: Untagged
@@ -123,7 +124,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &6115650811010290143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,6 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   invertDirection: 1
+  maxTravelDistance: 100
 --- !u!114 &165663672088860253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,6 +188,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 3444645393942331741}
+        m_MethodName: Spawn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5812571195813611755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,3 +212,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectToDestroy: {fileID: 0}
+--- !u!114 &3444645393942331741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6115650811010290137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8503ab7fb4bd43169af5886d821850db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 6115650811010290142}
+  prefab: {fileID: 5540822738990593286, guid: 0f217341c38f5324ea02ad04e54f6229, type: 3}
