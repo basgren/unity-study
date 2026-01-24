@@ -20,3 +20,5 @@
 * DOORS: if pressing fast Use button, door will reset its animation. we should ignore Use presses until animation is
     finished (disable component?).
 * make coins collide with barrels when they are dropped.
+* debris - enhance directoion calculation - if projectile met wall, debris should burst in the direction opposite
+    to wall.

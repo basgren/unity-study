@@ -175,9 +175,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 050bb7285e13a824d921a4b174bc3347, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSpeed: 3
+  minSpeed: 4
   maxSpeed: 5
-  directionDeviation: 100
+  directionDeviation: 180
   minRotation: 0
   maxRotation: 0
 --- !u!1 &5540822740193815206

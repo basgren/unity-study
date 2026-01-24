@@ -19,6 +19,13 @@ namespace Prefabs.Characters.Seashell {
         
         [SerializeField]
         private float biteCooldown = 3f;
+        
+        /// <summary>
+        /// Common cooldown, so after mob does any kind of attack, this amount of time should pass, otherwise
+        /// it will be to agressive. Shooting and biting as soon as shooting in progress. 
+        /// </summary>
+        [SerializeField]
+        private float commonCooldown = 1f;
 
         [SerializeField]
         private GameObject attackArea;
@@ -27,10 +34,12 @@ namespace Prefabs.Characters.Seashell {
 
         private TinyTimer shootCooldownTimer;
         private TinyTimer biteCooldownTimer;
+        private TinyTimer commonCooldownTimer;
 
         private void Awake() {
             shootCooldownTimer = new TinyTimer(shootCooldown);
             biteCooldownTimer = new TinyTimer(biteCooldown);
+            commonCooldownTimer = new TinyTimer(commonCooldown);
             
             anim = GetComponentInChildren<Animator>();
             
@@ -40,22 +49,24 @@ namespace Prefabs.Characters.Seashell {
         private void Update() {
             shootCooldownTimer.Update(Time.deltaTime);
             biteCooldownTimer.Update(Time.deltaTime);
+            commonCooldownTimer.Update(Time.deltaTime);
         }
 
         public bool CanShoot() {
-            return shootCooldownTimer.IsTimedOut;
+            return shootCooldownTimer.IsTimedOut && commonCooldownTimer.IsTimedOut;
         }
         
         public bool CanBite() {
-            return biteCooldownTimer.IsTimedOut;
+            return biteCooldownTimer.IsTimedOut && commonCooldownTimer.IsTimedOut;
         }
         
         public void Shoot() {
-            if (!shootCooldownTimer.IsTimedOut) {
+            if (!CanShoot()) {
                 return;
             }
 
             shootCooldownTimer.Start();
+            commonCooldownTimer.Start();
             anim.SetTrigger(SeashellAnimKeys.Fire);
         }
 
@@ -64,7 +75,12 @@ namespace Prefabs.Characters.Seashell {
         }
         
         public void Bite() {
+            if (!CanBite()) {
+                return;
+            }
+            
             biteCooldownTimer.Start();
+            commonCooldownTimer.Start();
             anim.SetTrigger(SeashellAnimKeys.Bite);
         }
 
