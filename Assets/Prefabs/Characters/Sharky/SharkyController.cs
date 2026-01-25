@@ -47,7 +47,6 @@ namespace Prefabs.Characters.Sharky {
         public bool IsDead => isDead;
 
         protected override void Awake() {
-            Debug.Log("Sharky awake");
             base.Awake();
 
             ai = GetComponent<SharkyAI>();

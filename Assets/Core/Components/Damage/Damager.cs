@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Components.Extensions;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Core.Components.Damage {
     public enum DamagerType {
@@ -31,6 +32,9 @@ namespace Core.Components.Damage {
         [SerializeField]
         private bool destroyOnContact;
 
+        [SerializeField]
+        private UnityEvent onDestroy;
+
         public int Damage => damage;
         public DamagerType Type => type;
         public Collider2D DamageCollider { get; private set; }
@@ -53,10 +57,6 @@ namespace Core.Components.Damage {
             TryDamage(other);
         }
 
-        private void OnTriggerExit2D(Collider2D other) {
-            Debug.Log($"Trigger exit {other}");
-        }
-
         private void TryDamage(Collider2D other) {
             if (!targetLayers.Contains(other.gameObject)) {
                 return;
@@ -76,6 +76,7 @@ namespace Core.Components.Damage {
                 damagedObjects.Add(damageable);
                 if (destroyOnContact) {
                     Destroy(gameObject);
+                    onDestroy?.Invoke();
                 }
             }
         }

@@ -8,8 +8,10 @@
   each scene.
 
 ## Hero
-* attacking and immediate jump breaks animation state and player stops turning in different directions and reacting
-  on Attack and Use keypresses.
+* Fix knockback on being hit. Currently horizontal knockback doesn't work, as horizontal direction is
+    set in every frame and is overridden by player keypress. What should be done: when player is hit,
+    take controls for some time (0.5 secs, for example) and apply knockback for this time. After that
+    time return control.
 
 ## Objects
 * Destructable barrels cannot be dragged in stack. They also don't have top capsule collider.
