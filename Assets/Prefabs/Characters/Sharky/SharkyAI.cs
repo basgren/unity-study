@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Core.Components;
 using Core.Components.Collisions;
 using Core.Services;
 using Prefabs.Effects.InfoBubble;
@@ -99,7 +98,6 @@ namespace Prefabs.Characters.Sharky {
 
         private IEnumerator Patrolling() {
             target = null;
-            Debug.Log(">>>> PATROLLING");
 
             while (true) {
                 var point = path.GetTargetPoint();
@@ -132,13 +130,11 @@ namespace Prefabs.Characters.Sharky {
         }
 
         private IEnumerator ChaseHero() {
-            Debug.Log(">>>> GO TO HERO");
             while (vision.IsColliding()) {
                 ctrl.SetDirection(GetDirectionTowards(target.transform.position));
                 yield return null;
             }
 
-            Debug.Log(">>> NOT COLLIDING");
             // TODO: [BG] make confused
             yield return new WaitForSeconds(confusionDelay);
             

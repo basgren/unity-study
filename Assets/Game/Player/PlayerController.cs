@@ -139,7 +139,7 @@ namespace Game.Player {
 
             SetSwordCount(playerState.swordCount);
             // SetArmed(playerState.isArmed);
-            Debug.Log($"Initialized from state: {playerState}");
+            // Debug.Log($"Initialized from state: {playerState}");
         }
 
         private void UpdateAnimatorController() {

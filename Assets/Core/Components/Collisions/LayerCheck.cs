@@ -37,11 +37,6 @@ namespace Core.Components.Collisions {
             }
 
             var hitCount = myCollider.OverlapCollider(filter, results);
-            
-            Debug.Log($">>> Hit Count: {hitCount}");
-            if (hitCount > 0) {
-                Debug.Log($">>> Hit {results.Count}: {results[0].name}");
-            }
 
             for (var i = 0; i < hitCount; i++) {
                 var other = results[i];

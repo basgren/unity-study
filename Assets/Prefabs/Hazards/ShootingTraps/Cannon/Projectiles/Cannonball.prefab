@@ -17,8 +17,9 @@ GameObject:
   - component: {fileID: 4340940114718700434}
   - component: {fileID: 5812571195813611755}
   - component: {fileID: 3444645393942331741}
+  - component: {fileID: 5406115858240138835}
   m_Layer: 16
-  m_Name: Pearl
+  m_Name: Cannonball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +33,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6115650811010290137}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -198.273, y: 180.264, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: -1551577745
   m_SortingLayer: 6
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d61a68b707a9dbe43ae4d0204133d252, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9e5fe1e59268cba488d0962f1c45b61d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -101,9 +102,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.012451172, y: 0.012458801}
+  m_Offset: {x: -0.014332041, y: -0.017025769}
   serializedVersion: 2
-  m_Radius: 0.091156006
+  m_Radius: 0.20681
 --- !u!50 &6115650811010290141
 Rigidbody2D:
   serializedVersion: 4
@@ -137,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca38a7bba1c0c824e9a47fd12782c4c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  linearSpeed: 7
+  linearSpeed: 10
   invertDirection: 1
   maxTravelDistance: 100
 --- !u!114 &165663672088860253
@@ -158,6 +159,20 @@ MonoBehaviour:
     m_Bits: 512
   type: 1
   destroyOnContact: 1
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5406115858240138835}
+        m_MethodName: Spawn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4340940114718700434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,6 +214,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 5406115858240138835}
+        m_MethodName: Spawn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5812571195813611755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,4 +251,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 6115650811010290142}
-  prefab: {fileID: 5540822738990593286, guid: 0f217341c38f5324ea02ad04e54f6229, type: 3}
+  prefab: {fileID: 5540822738990593286, guid: 8c416228a7d993444a61992d8cab98c0, type: 3}
+--- !u!114 &5406115858240138835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6115650811010290137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8503ab7fb4bd43169af5886d821850db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 6115650811010290142}
+  prefab: {fileID: 6115650811010290137, guid: d158a0fd6e26fae42a3fde695ae4b0a8, type: 3}
