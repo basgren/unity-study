@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: _SpitterTotem
+  m_Controller: {fileID: 9100000, guid: 76346516e0e6d3047b65a04f64fd4482, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 2f023eb82f71f804faec73b8a272cdfc, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 93cb06e19f3baef4c8f090005de26012, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: c51cdcd7953b04e4d88694435260f5bb, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: a38cda6dc2b0c49459e0a70d4838f02b, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 50cffba6fa290e941bdac788825a92fe, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 6391424a2a8cd9c4992a5e3e0402e0c9, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a660d3f9c9ac6374fa8e563ef9061b0c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 515c96c2c3ea2de488e3647a00a09fb9, type: 2}
