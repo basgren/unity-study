@@ -131,13 +131,13 @@ GameObject:
   - component: {fileID: 5960544006214852103}
   - component: {fileID: 3686630766524350598}
   - component: {fileID: 940639795744705811}
-  - component: {fileID: 8244888054476989502}
+  - component: {fileID: 2857925572712576905}
   - component: {fileID: 8791319469228297235}
   - component: {fileID: -1501557805108173141}
   - component: {fileID: -8922686484826777971}
   - component: {fileID: 1600101890110421964}
   m_Layer: 11
-  m_Name: BirdTotem
+  m_Name: BirdTotemTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -198,7 +198,7 @@ SpriteRenderer:
   m_SortingLayerID: -131141381
   m_SortingLayer: 5
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b0f4ce80ccac99b43a6a9c964977cf5d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8f9ad08e364f67148b86bca3e514ac80, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -219,7 +219,7 @@ Animator:
   m_GameObject: {fileID: 3664229136581394778}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 22100000, guid: 57e194aac4ea3fc4e93455d279ffa46f, type: 2}
+  m_Controller: {fileID: 22100000, guid: 976d5b42914899e49bddb69dd554cb9c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -254,7 +254,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.59929985, y: 0.6579075}
   m_EdgeRadius: 0
---- !u!50 &8244888054476989502
+--- !u!50 &2857925572712576905
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -315,7 +315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 3664229136581394779}
-  prefab: {fileID: 5540822738990593286, guid: f7982738dc4289340a562243ba02f936, type: 3}
+  prefab: {fileID: 5540822738990593286, guid: 88856fabca331ad47a0a79ac84d5b844, type: 3}
 --- !u!114 &1600101890110421964
 MonoBehaviour:
   m_ObjectHideFlags: 0

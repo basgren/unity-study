@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: _BirdTotemTop
+  m_Controller: {fileID: 9100000, guid: 76346516e0e6d3047b65a04f64fd4482, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 2f023eb82f71f804faec73b8a272cdfc, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: cc6803347906fcd4baf96a4e34687260, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: c51cdcd7953b04e4d88694435260f5bb, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 62232fa99c0d7f446a58bf48d25b6dcc, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 50cffba6fa290e941bdac788825a92fe, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 00efa1a123304684abbb16832f74da31, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a660d3f9c9ac6374fa8e563ef9061b0c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: ca8773234583134438842f33cce2353d, type: 2}
