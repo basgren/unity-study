@@ -99,7 +99,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3664229135569229142}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.603, y: 0.22, z: 0}
+  m_LocalPosition: {x: -0.603, y: 0.186, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3664229136581394779}
@@ -131,14 +131,14 @@ GameObject:
   - component: {fileID: 5960544006214852103}
   - component: {fileID: 3686630766524350598}
   - component: {fileID: 940639795744705811}
-  - component: {fileID: 7880488900188458357}
+  - component: {fileID: 134474138161013232}
   - component: {fileID: 8244888054476989502}
   - component: {fileID: 8791319469228297235}
   - component: {fileID: -1501557805108173141}
   - component: {fileID: -8922686484826777971}
   - component: {fileID: 1600101890110421964}
   m_Layer: 11
-  m_Name: BigMouthTopTotem
+  m_Name: SpitterTopTotem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -199,7 +199,7 @@ SpriteRenderer:
   m_SortingLayerID: -131141381
   m_SortingLayer: 5
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: eaa6376c220f0dc418c2392f7b5802a6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fa874369d8a0ed54a9c17b02063a1be3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -220,7 +220,7 @@ Animator:
   m_GameObject: {fileID: 3664229136581394778}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 22100000, guid: f0339bab750050c4ea2577c85328b211, type: 2}
+  m_Controller: {fileID: 22100000, guid: 8c86c14e07de569479f1ce4fc0fcef91, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -242,20 +242,20 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.00000086426735, y: 0.33671695}
+  m_Offset: {x: 0.00000086426735, y: 0.3367641}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.75, y: 1}
+    pivot: {x: 0.6, y: 0}
+    oldSize: {x: 0.9375, y: 1}
     newSize: {x: 1.5, y: 1.1875}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.59929985, y: 0.6398269}
+  m_Size: {x: 0.59929985, y: 0.6399212}
   m_EdgeRadius: 0
---- !u!70 &7880488900188458357
+--- !u!70 &134474138161013232
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -283,7 +283,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1000
+  m_Mass: 500
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -332,7 +332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 3664229136581394779}
-  prefab: {fileID: 5540822738990593286, guid: 20fa51b6a9d622b4b9abb0e2cf74c72a, type: 3}
+  prefab: {fileID: 5540822738990593286, guid: 85350df828d0ed44f88e1f85d13617a4, type: 3}
 --- !u!114 &1600101890110421964
 MonoBehaviour:
   m_ObjectHideFlags: 0

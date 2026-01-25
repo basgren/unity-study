@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca38a7bba1c0c824e9a47fd12782c4c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  linearSpeed: 1
+  linearSpeed: 7
   invertDirection: 1
   maxTravelDistance: 100
 --- !u!114 &165663672088860253
