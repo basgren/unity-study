@@ -55,7 +55,6 @@ namespace Prefabs.Characters.Common {
             }
             
             lifeTime += DeltaTime;
-            Debug.Log("Life time: " + lifeTime);
         }
 
         /// <summary>
