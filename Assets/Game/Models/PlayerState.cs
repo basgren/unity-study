@@ -1,9 +1,17 @@
-﻿namespace Game.Configs {
+﻿using System;
+using Core.Models.Inventory;
+using Game.Configs;
+using UnityEngine;
+
+namespace Game.Models {
+    [Serializable]
     public class PlayerState {
+        [SerializeField]
+        private Inventory inventory = new Inventory();
         public float baseMaxHealth;
         public float currentHealth;
-        public int coinsValue = 0;
-        public int swordCount = 0;
+        
+        public Inventory Inventory => inventory;
 
         public PlayerState(PlayerConfig config) {
             baseMaxHealth = config.baseMaxHealth;

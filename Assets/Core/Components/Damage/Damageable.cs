@@ -108,6 +108,7 @@ namespace Core.Components.Damage {
 
         public void SetHealth(float amount) {
             currentHealth = Mathf.Clamp(amount, 0, maxHealth);
+            Debug.Log($">>> health: {currentHealth}/{maxHealth}");
         }
 
         private bool IsInvulnerable() {
@@ -122,11 +123,9 @@ namespace Core.Components.Damage {
                 return;
             }
 
-            currentHealth = Mathf.Clamp(currentHealth - damager.Damage, 0, maxHealth);
+            SetHealth(currentHealth - damager.Damage);
             IsHitThisFrame = true;
             invulnerabilityTimer = invulnerabilityTime;
-
-            Debug.Log(">>> hit: " + damager.Damage + " health: " + currentHealth);
 
             if (currentHealth <= 0) {
                 IsDead = true;

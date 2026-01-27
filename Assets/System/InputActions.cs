@@ -82,6 +82,15 @@ namespace System
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""6a434f5d-532f-4f50-b588-076da5f5d156"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -260,6 +269,28 @@ namespace System
                     ""action"": ""Throw"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6f12804a-18a2-4eba-b3a9-8e5ac16128c6"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""UseItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b63bb589-830f-401e-9b3d-308b40fad6a7"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""UseItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -308,6 +339,7 @@ namespace System
             m_Player_Quit = m_Player.FindAction("Quit", throwIfNotFound: true);
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
+            m_Player_UseItem = m_Player.FindAction("UseItem", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         }
@@ -375,6 +407,7 @@ namespace System
         private readonly InputAction m_Player_Quit;
         private readonly InputAction m_Player_Attack;
         private readonly InputAction m_Player_Throw;
+        private readonly InputAction m_Player_UseItem;
         public struct PlayerActions
         {
             private @InputActions m_Wrapper;
@@ -385,6 +418,7 @@ namespace System
             public InputAction @Quit => m_Wrapper.m_Player_Quit;
             public InputAction @Attack => m_Wrapper.m_Player_Attack;
             public InputAction @Throw => m_Wrapper.m_Player_Throw;
+            public InputAction @UseItem => m_Wrapper.m_Player_UseItem;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -412,6 +446,9 @@ namespace System
                     @Throw.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnThrow;
                     @Throw.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnThrow;
                     @Throw.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnThrow;
+                    @UseItem.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUseItem;
+                    @UseItem.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUseItem;
+                    @UseItem.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUseItem;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -434,6 +471,9 @@ namespace System
                     @Throw.started += instance.OnThrow;
                     @Throw.performed += instance.OnThrow;
                     @Throw.canceled += instance.OnThrow;
+                    @UseItem.started += instance.OnUseItem;
+                    @UseItem.performed += instance.OnUseItem;
+                    @UseItem.canceled += instance.OnUseItem;
                 }
             }
         }
@@ -489,6 +529,7 @@ namespace System
             void OnQuit(InputAction.CallbackContext context);
             void OnAttack(InputAction.CallbackContext context);
             void OnThrow(InputAction.CallbackContext context);
+            void OnUseItem(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {
