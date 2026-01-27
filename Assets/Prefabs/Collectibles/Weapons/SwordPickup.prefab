@@ -73,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 364604425
-  m_SortingLayer: 9
+  m_SortingLayer: 10
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9f608f04cb89fb94693fa334f4a198fa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -158,7 +158,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8beee904748c4339aa7164694f5a4727, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemId: 2
+  itemId:
+    value: Sword
   value: 1
   collectorTag: Player
   pickupAnimationPrefab: {fileID: 796917972093813461, guid: c96a27591483fd44f9339f3b0a0a2c4d,

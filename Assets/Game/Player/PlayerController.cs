@@ -7,13 +7,14 @@ using Core.Components.GameObjects;
 using Core.Components.Interaction;
 using Core.Services;
 using Core.Utils;
-using Game.Configs;
 using Game.Controllers;
+using Game.Defs;
+using Game.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Game.Player {
-    public class HeroAnimKeys : BaseCharacterAnimKeys {
+    public abstract class HeroAnimKeys : BaseCharacterAnimKeys {
         public static readonly int IsDead = Animator.StringToHash("isDead");
         public static readonly int OnJump = Animator.StringToHash("onJump");
         public static readonly int OnHit = Animator.StringToHash("onHit");
@@ -24,7 +25,7 @@ namespace Game.Player {
 
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Animator))]
-    public class PlayerController : BaseCharacterController, ICollectableReceiver<CollectableId> {
+    public class PlayerController : BaseCharacterController, ICollectableReceiver<ItemId> {
         private const string DustPositionObjectName = "DustSpawnPoint";
         private const string SwordThrowPointObjectName = "SwordThrowPoint";
         private const float MinFallHeightForDustEffect = 2.8f;
@@ -78,9 +79,6 @@ namespace Game.Player {
         private bool isJumped;
         private float jumpSustainTimer;
 
-        // TODO: move it to some global game state object.
-        private int coinsValue;
-
         // List of all interactable components which are currently available for interaction.
         private readonly List<InteractableBase> availableInteractables = new List<InteractableBase>();
         private InteractableBase closestInteractable;
@@ -106,8 +104,9 @@ namespace Game.Player {
         private readonly TinyTimer throwCooldown = new TinyTimer(0.5f);
         private Transform swordThrowPoint;
         private SpawnComponent swordSpawner;
-        private int swordCount;
-        private bool IsArmed => swordCount > 0;
+        private int CoinsCount => state.Inventory.GetCount(ItemIds.Coin);
+        private int SwordCount => state.Inventory.GetCount(ItemIds.Sword);
+        private bool IsArmed => SwordCount > 0;
 
         private PlayerState state;
 
@@ -115,7 +114,7 @@ namespace Game.Player {
             base.Awake();
 
             Actions = G.Input.Player;
-            state = G.Game.PlayerState;
+            state = G.Game.playerState;
 
             CloseSwordDamageWindow();
 
@@ -135,11 +134,6 @@ namespace Game.Player {
         private void InitFromState(PlayerState playerState) {
             damageable.maxHealth = playerState.GetMaxHealth();
             damageable.SetHealth(playerState.currentHealth);
-            coinsValue = playerState.coinsValue;
-
-            SetSwordCount(playerState.swordCount);
-            // SetArmed(playerState.isArmed);
-            // Debug.Log($"Initialized from state: {playerState}");
         }
 
         private void UpdateAnimatorController() {
@@ -171,6 +165,18 @@ namespace Game.Player {
             CheckInteraction();
             CheckAttack();
             CheckThrow();
+            CheckItemUse();
+        }
+
+        private void CheckItemUse() {
+            if (Actions.UseItem.WasPerformedThisFrame()
+                && state.Inventory.GetCount(ItemIds.HealthPotionUsable) > 0) {
+                // TODO: [BG] Move health potions healing stats to some data section, so we can get actual
+                // healing value for it without hardcoding.
+                Debug.Log(">>> Healing +3 HP");
+                damageable.AddHealth(3f);
+                state.Inventory.Remove(ItemIds.HealthPotionUsable, 1);
+            }
         }
 
         #region Attack
@@ -252,13 +258,14 @@ namespace Game.Player {
         private bool CanThrow() {
             return IsArmed
                    && throwCooldown.IsTimedOut
-                   && swordCount > 1; // Additional condition - don't allow throwing the last sword.
+                   && SwordCount > 1; // Additional condition - don't allow throwing the last sword.
         }
 
         private void ThrowSword() {
             swordSpawner.Spawn();
-            SetSwordCount(swordCount - 1);
-            Debug.Log($"Swords left: {swordCount}");
+            state.Inventory.Remove(ItemIds.Sword, 1);
+            UpdateAnimatorController();
+            Debug.Log($"Swords left: {SwordCount}");
         }
 
         #endregion
@@ -370,54 +377,23 @@ namespace Game.Player {
 
         #endregion
 
-        public void OnCollected(CollectableId itemId, float value) {
-            switch (itemId) {
-                case CollectableId.Coin:
-                    AddCoins((int)value);
-                    break;
+        public void OnCollected(ItemId itemId, float value) {
+            if (itemId == ItemIds.HealthPotion) {
+                Debug.Log($"Player: Collected {value} health");
+                damageable.AddHealth(value);
+            } else {
+                state.Inventory.Add(itemId, (int)value);
 
-                case CollectableId.Health:
-                    Debug.Log($"Player: Collected {value} health");
-                    damageable.AddHealth(value);
-                    break;
-
-                case CollectableId.Sword:
-                    SetSwordCount(swordCount + 1);
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(itemId), itemId, null);
+                if (itemId == ItemIds.Sword) {
+                    UpdateAnimatorController();
+                }
             }
-        }
-
-        private void SetSwordCount(int count) {
-            if (swordCount == count || count < 0) {
-                return;
-            }
-
-            swordCount = count;
-
-            UpdateState();
-            UpdateAnimatorController();
-        }
-
-        private void AddCoins(int amount = 1) {
-            coinsValue += amount;
-            Debug.Log($"Added coin. Current value: {coinsValue}");
-            UpdateState();
-        }
-
-        private void RemoveCoins(int amount = 1) {
-            coinsValue = Math.Max(0, coinsValue - amount);
-            UpdateState();
         }
 
         #region Animator
 
         private void UpdateState() {
             state.currentHealth = damageable.Health;
-            state.coinsValue = coinsValue;
-            state.swordCount = swordCount;
         }
 
         protected override void UpdateAnimator() {
@@ -564,9 +540,9 @@ namespace Game.Player {
         }
 
         private void DropCoins() {
-            var count = Math.Min(5, coinsValue);
+            var count = Math.Min(5, CoinsCount);
             lootDropper.DropLoot(count);
-            RemoveCoins(count);
+            state.Inventory.Remove(ItemIds.Coin, count);
         }
 
         // ------------------- GIZMOS -------------------

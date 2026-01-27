@@ -1,18 +1,21 @@
 ﻿using Game;
 using Game.Configs;
+using Game.Models;
 using UnityEngine;
 
 namespace Core.Services {
     public class GameManager : MonoBehaviour {
         public PlayerConfig playerConfig;
-        public PlayerState PlayerState { get; private set; }
+
+        [SerializeField]
+        public PlayerState playerState;
 
         public void Init() {
             ResetPlayerState();
         }
         
         public void ResetPlayerState() {
-            PlayerState = new PlayerState(playerConfig);
+            playerState = new PlayerState(playerConfig);
         }
     }
 }

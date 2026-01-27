@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 364604425
-  m_SortingLayer: 6
+  m_SortingLayer: 10
   m_SortingOrder: 0
   m_Sprite: {fileID: -2322180950842035098, guid: 69f461687aecaab419a5f65e878f8508,
     type: 3}
@@ -97,7 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8beee904748c4339aa7164694f5a4727, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemId: 0
+  itemId:
+    value: Coin
   value: 1
   collectorTag: Player
   pickupAnimationPrefab: {fileID: 5701283640780159239, guid: 42a5b7ee89073fc47a0917151fcc5ce9,

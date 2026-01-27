@@ -1,10 +1,6 @@
-﻿namespace Core.Components.Collectables {
-    public enum CollectableId {
-        Coin,
-        Health,
-        Sword,
-    }
+﻿using Game.Models;
 
-    public class Collectable : CollectableBase<CollectableId> {
+namespace Core.Components.Collectables {
+    public class Collectable : CollectableBase<ItemId> {
     }
 }
