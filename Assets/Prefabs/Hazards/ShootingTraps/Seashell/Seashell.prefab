@@ -449,6 +449,8 @@ MonoBehaviour:
   biteCooldown: 3
   commonCooldown: 1
   attackArea: {fileID: 3664229135403683159}
+  shotSound: {fileID: 11400000, guid: a0bd1636ffacb39479f4d362d2cab1b2, type: 2}
+  biteSound: {fileID: 11400000, guid: b512e5fc92de2954f9f86aedb7d5315c, type: 2}
 --- !u!114 &66716327013474203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -508,6 +510,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  hitSound: {fileID: 11400000, guid: 092b99814347dd64da7db284656e8049, type: 2}
+  destroySound: {fileID: 11400000, guid: 595278f78f7fdce43a4828bf52b7532f, type: 2}
 --- !u!114 &-8922686484826777971
 MonoBehaviour:
   m_ObjectHideFlags: 0

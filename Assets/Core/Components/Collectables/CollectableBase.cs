@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Audio;
 using Core.Components.Animation;
 using Core.Services;
 using UnityEngine;
@@ -39,6 +40,9 @@ namespace Core.Components.Collectables {
 
         [SerializeField]
         private SimpleSpriteAnimator pickupAnimationPrefab;
+        
+        [SerializeField]
+        private AudioCue collectSound;
 
         public event Action OnCollected;
 
@@ -94,6 +98,10 @@ namespace Core.Components.Collectables {
                     pickupAnimationPrefab,
                     transform.position
                 );
+            }
+
+            if (collectSound != null) {
+                G.Audio.PlayAt(collectSound, transform.position);
             }
 
             Destroy(gameObject);

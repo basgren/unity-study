@@ -119,6 +119,7 @@ MonoBehaviour:
   collectorTag: Player
   pickupAnimationPrefab: {fileID: 5701283640780159239, guid: 42a5b7ee89073fc47a0917151fcc5ce9,
     type: 3}
+  collectSound: {fileID: 11400000, guid: 94c4b9b3f6d4c354a8f52b0cb5999af3, type: 2}
 --- !u!114 &5639423512461712479
 MonoBehaviour:
   m_ObjectHideFlags: 0

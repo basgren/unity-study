@@ -1,8 +1,10 @@
-﻿using Core.Components.GameObjects;
+﻿using Core.Audio;
+using Core.Components.GameObjects;
+using Core.Services;
 using Core.Utils;
 using UnityEngine;
 
-namespace Prefabs.Characters.Seashell {
+namespace Prefabs.Hazards.ShootingTraps.Seashell {
     internal abstract class SeashellAnimKeys {
         public static readonly int Fire = Animator.StringToHash("onFire");
         public static readonly int Bite = Animator.StringToHash("onBite");
@@ -29,6 +31,13 @@ namespace Prefabs.Characters.Seashell {
 
         [SerializeField]
         private GameObject attackArea;
+        
+        [Header("Sounds")]
+        [SerializeField]
+        private AudioCue shotSound;
+        
+        [SerializeField]
+        private AudioCue biteSound;
         
         private Animator anim;
 
@@ -68,6 +77,10 @@ namespace Prefabs.Characters.Seashell {
             shootCooldownTimer.Start();
             commonCooldownTimer.Start();
             anim.SetTrigger(SeashellAnimKeys.Fire);
+
+            if (shotSound != null) {
+                G.Audio.PlayAt(shotSound, transform.position);
+            }
         }
 
         public void SpawnProjectile() {
@@ -85,7 +98,8 @@ namespace Prefabs.Characters.Seashell {
         }
 
         public void OpenDamageWindow() {
-            attackArea.SetActive(true);            
+            attackArea.SetActive(true);
+            G.Audio.PlayAt(biteSound, transform.position);
         }
 
         public void CloseDamageWindow() {

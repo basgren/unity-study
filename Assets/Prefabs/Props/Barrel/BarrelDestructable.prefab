@@ -198,7 +198,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.014854431, y: 0.37517166}
+  m_Offset: {x: -0.014854431, y: 0.37550735}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.08121329}
@@ -209,7 +209,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.68019104, y: 0.751503}
+  m_Size: {x: 0.68019104, y: 0.7508316}
   m_EdgeRadius: 0
 --- !u!114 &2986219559809948908
 MonoBehaviour:
@@ -267,6 +267,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  hitSound: {fileID: 11400000, guid: 092b99814347dd64da7db284656e8049, type: 2}
+  destroySound: {fileID: 11400000, guid: 595278f78f7fdce43a4828bf52b7532f, type: 2}
 --- !u!50 &2986219559809948906
 Rigidbody2D:
   serializedVersion: 4
@@ -312,12 +314,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2986219559809948899}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 684bbba76c3d4047bae699cb5ffaea20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   jointUpBreakForce: 2500
+  draggingSound: {fileID: 11400000, guid: 1daf70a2c95dfb94cb49216889499ba9, type: 2}
+  fallSound: {fileID: 11400000, guid: 8bda5a0baa78a39478951fd0ff7f5928, type: 2}
 --- !u!114 &2986219559809948917
 MonoBehaviour:
   m_ObjectHideFlags: 0

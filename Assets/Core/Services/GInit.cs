@@ -1,4 +1,5 @@
-﻿using Game.Configs;
+﻿using Core.Audio;
+using Game.Configs;
 using UnityEngine;
 
 namespace Core.Services {
@@ -6,7 +7,7 @@ namespace Core.Services {
     /// This component should be added to the scene to initialize the system. It initializes
     /// global service class G.
     /// </summary>
-    public class SystemInitializer : MonoBehaviour {
+    public class GInit : MonoBehaviour {
         private void Awake() {
             if (HasExistingInitializers()) {
                 DestroyImmediate(gameObject);
@@ -21,7 +22,7 @@ namespace Core.Services {
             G.Input = GetOrCreate<InputService>("InputService");
             G.Screen = GetOrCreate<ScreenService>("ScreenService");
             G.StateMachines = GetOrCreate<StateMachineService>("StateMachineService");
-            // G.Audio = GetOrCreate<AudioService>("AudioService");
+            G.Audio = GetOrCreate<AudioService>("AudioService");
 
             // TODO: [BG] think about better way to bind configs. bootstrap room?
             var configs = GetComponent<ConfigsInitializer>();
@@ -42,7 +43,7 @@ namespace Core.Services {
         }
 
         private bool HasExistingInitializers() {
-            var inits = FindObjectsOfType<SystemInitializer>();
+            var inits = FindObjectsOfType<GInit>();
             foreach (var sysInit in inits) {
                 if (sysInit != this) {
                     return true;

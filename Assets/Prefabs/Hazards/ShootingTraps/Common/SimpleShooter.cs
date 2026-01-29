@@ -1,5 +1,7 @@
-﻿using Core.Components.Damage;
+﻿using Core.Audio;
+using Core.Components.Damage;
 using Core.Components.GameObjects;
+using Core.Services;
 using Core.Utils;
 using UnityEngine;
 
@@ -17,6 +19,10 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
 
         [SerializeField]
         private float shootCooldown = 2f;
+        
+        [Header("Sounds")]
+        [SerializeField]
+        private AudioCue shotSound;
         
         private Animator anim;
 
@@ -46,6 +52,10 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
 
             shootCooldownTimer.Start();
             anim.SetTrigger(SimpleShooterAnimKeys.Fire);
+            
+            if (shotSound != null) {
+                G.Audio.PlayAt(shotSound, transform.position);
+            }
         }
 
         public void SpawnProjectile() {

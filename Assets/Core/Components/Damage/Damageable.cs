@@ -1,4 +1,6 @@
 using System;
+using Core.Audio;
+using Core.Services;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -26,12 +28,19 @@ namespace Core.Components.Damage {
 
         [SerializeField]
         private float knockbackForce = 13f;
-
+        
         [SerializeField]
         private OnHitEvent onHit;
 
         [SerializeField]
         private OnHitEvent onDeath;
+        
+        [Header("Sounds")]
+        [SerializeField]
+        private AudioCue hitSound;
+        
+        [SerializeField]
+        private AudioCue destroySound;
 
         // TODO: implement simple FSM for easier state management and automatic transitions.
 
@@ -141,6 +150,14 @@ namespace Core.Components.Damage {
 
             if (IsDead) {
                 onDeath?.Invoke(damager);
+
+                if (destroySound != null) {
+                    G.Audio.PlayAt(destroySound, transform.position);
+                }
+            } else {
+                if (hitSound != null) {
+                    G.Audio.PlayAt(hitSound, transform.position);
+                }
             }
         }
 

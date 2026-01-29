@@ -1,11 +1,16 @@
-﻿using Core.Components.Extensions;
+﻿using Core.Audio;
+using Core.Components.Extensions;
 using Core.Components.GameObjects;
+using Core.Services;
 using UnityEngine;
 
 namespace Prefabs.Characters.Hero.Projectiles {
     public class SpinningSword : MonoBehaviour {
         [SerializeField]
         private LayerMask layers = ~0;
+        
+        [SerializeField]
+        private AudioCue embeddingSound;
 
         private SpawnComponent embeddedSwordSpawner;
 
@@ -18,6 +23,10 @@ namespace Prefabs.Characters.Hero.Projectiles {
             Debug.Log("collision: " + other.gameObject.name);
             if (!layers.Contains(other.gameObject) || other.CompareTag("IgnoresProjectile")) {
                 return;
+            }
+
+            if (embeddingSound != null) {
+                G.Audio.PlayAt(embeddingSound, transform.position);
             }
             
             var embedded = embeddedSwordSpawner.SpawnInstance();

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Core;
+using Core.Audio;
 using Core.Components.Collisions;
+using Core.Services;
 using Core.Utils;
 using UnityEngine;
 
@@ -12,6 +14,13 @@ namespace Game.Components.Abilities {
     public class DraggableBarrel : MonoBehaviour {
         [SerializeField]
         private float jointUpBreakForce = 2500f;
+
+        [Header("Sounds")]
+        [SerializeField]
+        private AudioCue draggingSound;
+        
+        [SerializeField]
+        private AudioCue fallSound;
 
         public Rigidbody2D Body { get; private set; }
         public BoxCollider2D Collider { get; private set; }
@@ -37,6 +46,8 @@ namespace Game.Components.Abilities {
         // Joint between lower and upper barrels
         private FixedJoint2D barrelJoint;
 
+        private IAudioLoopHandle dragSoundHandle;
+
         private void Awake() {
             Body = GetComponent<Rigidbody2D>();
             Collider = GetComponent<BoxCollider2D>();
@@ -58,6 +69,23 @@ namespace Game.Components.Abilities {
             }
 
             Body.constraints = lockedConstraints;
+        }
+
+        void Update() {
+            if (groundCheckComponent.IsGroundedThisFrame && fallSound != null && Body.velocity.y > -0.5f) {
+                G.Audio.PlayAt(fallSound, transform.position);
+            }
+
+            if (draggingSound != null) {
+                bool isMoving = Mathf.Abs(Body.velocity.x) > 0.0001f;
+                
+                if (isDragged && dragSoundHandle == null && isMoving) {
+                    dragSoundHandle = G.Audio.PlayLoopFollow(draggingSound, transform, is3D:true);
+                } else if ((!isDragged || !isMoving) && dragSoundHandle != null) {
+                    dragSoundHandle.Stop();
+                    dragSoundHandle = null;
+                }
+            }
         }
 
         void FixedUpdate() {

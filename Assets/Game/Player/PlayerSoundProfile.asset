@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c151de8375e345f29178779bc05ffb30, type: 3}
+  m_Name: PlayerSoundProfile
+  m_EditorClassIdentifier: 
+  moveSoundProfile: {fileID: 11400000, guid: 1b408a78d10211a42982ad7dd92765ed, type: 2}
+  attack: {fileID: 11400000, guid: 8d5677bd02479d745a419a375e4196de, type: 2}
+  hitSoundProfile: {fileID: 0}

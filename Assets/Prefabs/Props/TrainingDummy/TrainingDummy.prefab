@@ -168,6 +168,8 @@ MonoBehaviour:
   onDeath:
     m_PersistentCalls:
       m_Calls: []
+  hitSound: {fileID: 11400000, guid: 6126ab6b84b56f5488445f781a909f70, type: 2}
+  destroySound: {fileID: 0}
 --- !u!95 &4510978738050659988
 Animator:
   serializedVersion: 3

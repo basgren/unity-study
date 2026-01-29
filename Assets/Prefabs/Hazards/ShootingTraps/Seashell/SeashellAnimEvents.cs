@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Prefabs.Characters.Seashell {
+namespace Prefabs.Hazards.ShootingTraps.Seashell {
     public class SeashellAnimEvents: MonoBehaviour {
 
         private SeashellController ctrl;

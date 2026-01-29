@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4275245437763844609}
   - component: {fileID: 711908704433443735}
   - component: {fileID: 5324404524698164522}
+  - component: {fileID: -8958234560914074183}
   m_Layer: 0
   m_Name: Helm
   m_TagString: Untagged
@@ -72,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1363457211
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 5774581190672780694, guid: 2bfc930e2db1742baa532587a3dcc688,
     type: 3}
@@ -134,7 +135,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionCollider: {fileID: 4275245437763844609}
+  onInteract:
+    m_PersistentCalls:
+      m_Calls: []
   switchables: []
+  switchType: 0
   onSwitch:
     m_PersistentCalls:
       m_Calls:
@@ -149,6 +154,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: -8958234560914074183}
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activationDelay: 0.5
+  isDisabled: 0
 --- !u!114 &5324404524698164522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,3 +179,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b346f99970f84e6f8d57e2b406be5f14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-8958234560914074183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703046495728465378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a538b984a3bc4e4ba1230b4b831a85fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCue: {fileID: 11400000, guid: 260151be2d3e4034aae25827ff5cd1e9, type: 2}
+  cueRefs: []
+  playAs2D: 1

@@ -13,6 +13,9 @@
     take controls for some time (0.5 secs, for example) and apply knockback for this time. After that
     time return control.
 
+## Cannon
+* Add effect on fire
+
 ## Objects
 * Destructable barrels cannot be dragged in stack. They also don't have top capsule collider.
 * When player opens the door and runs away, when door open animation ends, player is still teleported to

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Audio;
 using Core.Components.Collectables;
 using Core.Components.Damage;
 using Core.Components.GameObjects;
@@ -73,6 +74,8 @@ namespace Game.Player {
         private BoxCollider2D myCollider;
         private Damageable damageable;
         private LootDropper lootDropper;
+        private PlaySfxOnCall playSfxOnCall;
+        private PlayerSoundProfile sounds;
 
         private SafePointTracker safePointTracker;
         private float coyoteTimer;
@@ -121,6 +124,8 @@ namespace Game.Player {
             safePointTracker = new SafePointTracker();
             damageable = GetComponent<Damageable>();
             lootDropper = GetComponent<LootDropper>();
+            playSfxOnCall = GetComponent<PlaySfxOnCall>();
+            sounds = GetComponent<PlayerSoundProfileLink>().Profile;
 
             dustSpawnPoint = transform.Find(DustPositionObjectName);
             swordThrowPoint = transform.Find(SwordThrowPointObjectName);
@@ -252,6 +257,7 @@ namespace Game.Player {
                 // Set animation trigger and in the middle it will call `ThrowSword` method.
                 MyAnimator.SetTrigger(HeroAnimKeys.OnThrowSword);
                 throwCooldown.Start();
+                G.Audio.Play2D(sounds.Attack.ThrowSword);
             }
         }
 
@@ -289,6 +295,15 @@ namespace Game.Player {
             }
 
             if (GroundChecker.HasEnteredCollisionThisFrame) {
+                Debug.Log(">>> landed" + MyRigidbody.velocity.y);
+                // TODO: [BG] Figure out why sound has delay. Seems this is because we're out of sync with
+                //   physics calculations. Probably CheckGround should be done on FixedUpdate.
+                // Minor adjustment, as by some reason when jumping on a higher platform lending speed
+                // may be something like 0.00015
+                if (MyRigidbody.velocity.y < 0.0005f) {
+                    playSfxOnCall.Play("landGrass");
+                }
+
                 if (FallHeight > MinFallHeightForDustEffect) {
                     SpawnLandingDust();
                 }
@@ -342,6 +357,7 @@ namespace Game.Player {
             var isSustainingJump = jumpSustainTimer > 0;
 
             if (isJumpPressedBuffer && CanJump()) {
+                playSfxOnCall.Play("jump");
                 Jump();
 
                 jumpSustainTimer = jumpSustainTime;
