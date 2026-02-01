@@ -75,6 +75,7 @@ namespace Game.Player {
         private Damageable damageable;
         private LootDropper lootDropper;
         private PlaySfxOnCall playSfxOnCall;
+        private PlayerSoundProfile sounds;
 
         private SafePointTracker safePointTracker;
         private float coyoteTimer;
@@ -124,6 +125,7 @@ namespace Game.Player {
             damageable = GetComponent<Damageable>();
             lootDropper = GetComponent<LootDropper>();
             playSfxOnCall = GetComponent<PlaySfxOnCall>();
+            sounds = GetComponent<PlayerSoundProfileLink>().Profile;
 
             dustSpawnPoint = transform.Find(DustPositionObjectName);
             swordThrowPoint = transform.Find(SwordThrowPointObjectName);
@@ -255,6 +257,7 @@ namespace Game.Player {
                 // Set animation trigger and in the middle it will call `ThrowSword` method.
                 MyAnimator.SetTrigger(HeroAnimKeys.OnThrowSword);
                 throwCooldown.Start();
+                G.Audio.Play2D(sounds.Attack.ThrowSword);
             }
         }
 

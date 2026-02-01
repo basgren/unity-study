@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PlayerSoundProfile
   m_EditorClassIdentifier: 
   moveSoundProfile: {fileID: 11400000, guid: 1b408a78d10211a42982ad7dd92765ed, type: 2}
-  attackSoundProfile: {fileID: 0}
+  attack: {fileID: 11400000, guid: 8d5677bd02479d745a419a375e4196de, type: 2}
   hitSoundProfile: {fileID: 0}

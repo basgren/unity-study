@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b188c172f33459faafc5fa729cdb132, type: 3}
-  m_Name: CoinPickupCue
+  m_Name: PotionPickupCue
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 3b8722825ee438a4aa41e92685c9d3d7, type: 3}
+  - {fileID: 8300000, guid: 8aeca67205119ee4bb8d88b088af11ac, type: 3}
   mixerGroup: {fileID: 0}
   volume: 0.25
   randomizePitch: 1

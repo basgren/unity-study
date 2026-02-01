@@ -259,3 +259,4 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 3072
+  embeddingSound: {fileID: 11400000, guid: c81198e742863244f97cd5715ac9ded0, type: 2}

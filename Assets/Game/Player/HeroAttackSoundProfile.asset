@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: HeroAttackSoundProfile
+  m_EditorClassIdentifier: Assembly-CSharp:Game.Audio:HeroAttackSoundProfile
+  attack: {fileID: 11400000, guid: 9d927e96cc874984aad80c84e9822565, type: 2}
+  throwSword: {fileID: 11400000, guid: 58f0c7530011c834f85bbd8b118dde39, type: 2}

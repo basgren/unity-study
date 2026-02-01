@@ -154,6 +154,7 @@ MonoBehaviour:
   collectorTag: Player
   pickupAnimationPrefab: {fileID: 796917972093813461, guid: c96a27591483fd44f9339f3b0a0a2c4d,
     type: 3}
+  collectSound: {fileID: 11400000, guid: fbfc1ea01f190bf469536537feb3abc6, type: 2}
 --- !u!114 &-7008421941165135147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17ff2d1d19781be4387c94942df6b4ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  embeddingSound: {fileID: 11400000, guid: c81198e742863244f97cd5715ac9ded0, type: 2}
 --- !u!114 &2948143335853842324
 MonoBehaviour:
   m_ObjectHideFlags: 0

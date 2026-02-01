@@ -8,13 +8,13 @@ namespace Game.Player {
         private MoveSoundProfile moveSoundProfile;
         
         [SerializeField]
-        private AttackSoundProfile attackSoundProfile;
+        private HeroAttackSoundProfile attack;
         
         [SerializeField]
         private HurtSoundProfile hitSoundProfile;
         
         public MoveSoundProfile MoveSoundProfile => moveSoundProfile;
-        public AttackSoundProfile AttackSoundProfile => attackSoundProfile;
+        public HeroAttackSoundProfile Attack => attack;
         public HurtSoundProfile HitSoundProfile => hitSoundProfile;
     }
 }

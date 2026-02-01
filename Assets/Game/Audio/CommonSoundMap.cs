@@ -18,12 +18,16 @@ namespace Game.Audio {
         public AudioCue Landing => landing;
     }
     
-    [CreateAssetMenu(fileName = "AttackSoundProfile", menuName = "Audio/Profiles/AttackSoundProfile")]
-    public class AttackSoundProfile : ScriptableObject {
+    [CreateAssetMenu(fileName = "HeroAttackSoundProfile", menuName = "Audio/Profiles/HeroAttackSoundProfile")]
+    public class HeroAttackSoundProfile : ScriptableObject {
         [SerializeField]
         private AudioCue attack;
         
+        [SerializeField]
+        private AudioCue throwSword;
+        
         public AudioCue Attack => attack;
+        public AudioCue ThrowSword => throwSword;
     }
     
     [CreateAssetMenu(fileName = "HurtSoundProfile", menuName = "Audio/Profiles/HurtSoundProfile")]
