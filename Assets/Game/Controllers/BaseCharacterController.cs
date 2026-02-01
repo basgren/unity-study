@@ -69,6 +69,10 @@ namespace Game.Controllers {
             // We won't use InputSystem events, as order of their invocation is not guaranteed, but
             // in case we want to check button combinations, it's easier to check them manually.
             // Using events is better for UI controls.
+            // CheckGround();
+        }
+
+        private void FixedUpdate() {
             CheckGround();
         }
 

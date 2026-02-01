@@ -1,15 +1,27 @@
-﻿using Core.Services;
+﻿using System;
+using System.Collections.Generic;
+using Core.Services;
 using UnityEngine;
 
 namespace Core.Audio {
+
+    [Serializable]
+    public class AudioCueRef {
+        public string id;
+        public AudioCue cue;
+    }
+
     /// <summary>
     /// Simple helper component that plays a configured AudioCue when asked.
     /// Useful for animation events, UI buttons, and simple triggers.
     /// </summary>
     public class PlaySfxOnCall : MonoBehaviour {
         [SerializeField]
-        private AudioCue cue;
+        private AudioCue defaultCue;
 
+        [SerializeField]
+        public AudioCueRef[] cueRefs;
+        
         [SerializeField]
         private bool playAs2D = true;
 
@@ -25,7 +37,9 @@ namespace Core.Audio {
         /// <summary>
         /// Plays the configured AudioCue through the audio service.
         /// </summary>
-        public void Play() {
+        public void Play(string cueName = "") {
+            var cue = GetCue(cueName);
+            
             if (audioService == null || cue == null) {
                 return;
             }
@@ -36,5 +50,17 @@ namespace Core.Audio {
                 audioService.PlayAt(cue, transform.position);
             }
         }
+
+        private AudioCue GetCue(string cueName) {
+            foreach (var c in cueRefs) {
+                if (c.id == cueName) {
+                    return c.cue;
+                }
+            }
+            
+            return defaultCue;
+        }
     }
+    
+    
 }

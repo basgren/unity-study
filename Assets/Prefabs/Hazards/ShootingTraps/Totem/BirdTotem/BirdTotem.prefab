@@ -378,3 +378,5 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  hitSound: {fileID: 11400000, guid: 5692a58f0658d94469b28ad02980d603, type: 2}
+  destroySound: {fileID: 11400000, guid: 595278f78f7fdce43a4828bf52b7532f, type: 2}

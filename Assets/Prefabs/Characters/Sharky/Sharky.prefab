@@ -411,6 +411,7 @@ MonoBehaviour:
   onDeath:
     m_PersistentCalls:
       m_Calls: []
+  hitSound: {fileID: 11400000, guid: c80017687a387af4b942fc9bc4d3d032, type: 2}
 --- !u!114 &649388069741242861
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -621,3 +622,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   type: 1
+  destroyOnContact: 0
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls: []
