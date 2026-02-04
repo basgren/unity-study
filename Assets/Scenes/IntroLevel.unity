@@ -1535,6 +1535,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jointUpBreakForce: 2500
+  draggingSound: {fileID: 0}
+  fallSound: {fileID: 0}
 --- !u!1001 &172661734
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -46036,7 +46038,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -203.25165, y: 75.19114, z: -10}
+  m_LocalPosition: {x: -208.36, y: 81.37, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1978780106}
@@ -53087,7 +53089,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1146752815}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -203.22, y: 71.21, z: -10}
+  m_LocalPosition: {x: -208.36, y: 81.37, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1708375818}
@@ -64764,6 +64766,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5052001190858341346, guid: de4bcf0bdcf849b4fa9025940c177b2a,
+        type: 3}
+      propertyPath: shotSound
+      value: 
+      objectReference: {fileID: 11400000, guid: a0bd1636ffacb39479f4d362d2cab1b2,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de4bcf0bdcf849b4fa9025940c177b2a, type: 3}
 --- !u!4 &1972813027 stripped
@@ -101527,12 +101535,12 @@ PrefabInstance:
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -201.2
+      value: -206.34
       objectReference: {fileID: 0}
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 173.86
+      value: 184.02
       objectReference: {fileID: 0}
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
@@ -101644,12 +101652,6 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4510978738050660008, guid: 1e5d1bc24318daa44bea7ac491aced74,
-        type: 3}
-      propertyPath: hitSound
-      value: 
-      objectReference: {fileID: 11400000, guid: 5692a58f0658d94469b28ad02980d603,
-        type: 2}
     - target: {fileID: 4510978738050660008, guid: 1e5d1bc24318daa44bea7ac491aced74,
         type: 3}
       propertyPath: onHit.m_PersistentCalls.m_Calls.Array.size

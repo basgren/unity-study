@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b188c172f33459faafc5fa729cdb132, type: 3}
-  m_Name: SwordEmbeddingCue
+  m_Name: BarrelFallCue
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 4d0542d3ccddbbc45a7534670030b28b, type: 3}
+  - {fileID: 8300000, guid: 868ae4fbe02f89e4e97eaa79847aeba0, type: 3}
   mixerGroup: {fileID: 0}
   volume: 0.5
   randomizePitch: 1
   pitchMin: 0.95
   pitchMax: 1.05
-  maxInstances: 5
-  cooldownSeconds: 0.02
-  spatialBlend: 0.5
+  maxInstances: 0
+  cooldownSeconds: 0
+  spatialBlend: 0.3
   minDistance: 5
   maxDistance: 30

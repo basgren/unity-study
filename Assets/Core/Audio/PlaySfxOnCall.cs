@@ -38,12 +38,15 @@ namespace Core.Audio {
         /// Plays the configured AudioCue through the audio service.
         /// </summary>
         public void Play(string cueName = "") {
+            Debug.Log("Playing: ");
             var cue = GetCue(cueName);
             
             if (audioService == null || cue == null) {
                 return;
             }
 
+            Debug.Log("Playing: ");
+            
             if (playAs2D) {
                 audioService.Play2D(cue);
             } else {

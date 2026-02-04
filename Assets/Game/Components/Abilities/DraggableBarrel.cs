@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Core;
+using Core.Audio;
 using Core.Components.Collisions;
+using Core.Services;
 using Core.Utils;
 using UnityEngine;
 
@@ -12,6 +14,13 @@ namespace Game.Components.Abilities {
     public class DraggableBarrel : MonoBehaviour {
         [SerializeField]
         private float jointUpBreakForce = 2500f;
+
+        [Header("Sounds")]
+        [SerializeField]
+        private AudioCue draggingSound;
+        
+        [SerializeField]
+        private AudioCue fallSound;
 
         public Rigidbody2D Body { get; private set; }
         public BoxCollider2D Collider { get; private set; }
@@ -58,6 +67,12 @@ namespace Game.Components.Abilities {
             }
 
             Body.constraints = lockedConstraints;
+        }
+
+        void Update() {
+            if (groundCheckComponent.IsGroundedThisFrame && fallSound != null) {
+                G.Audio.PlayAt(fallSound, transform.position);
+            }
         }
 
         void FixedUpdate() {

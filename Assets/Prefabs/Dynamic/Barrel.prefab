@@ -164,6 +164,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jointUpBreakForce: 2700
+  draggingSound: {fileID: 11400000, guid: 1daf70a2c95dfb94cb49216889499ba9, type: 2}
+  fallSound: {fileID: 11400000, guid: 8bda5a0baa78a39478951fd0ff7f5928, type: 2}
 --- !u!114 &2201018505660767380
 MonoBehaviour:
   m_ObjectHideFlags: 0

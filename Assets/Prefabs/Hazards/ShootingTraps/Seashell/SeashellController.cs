@@ -1,4 +1,6 @@
-﻿using Core.Components.GameObjects;
+﻿using Core.Audio;
+using Core.Components.GameObjects;
+using Core.Services;
 using Core.Utils;
 using UnityEngine;
 
@@ -29,6 +31,10 @@ namespace Prefabs.Characters.Seashell {
 
         [SerializeField]
         private GameObject attackArea;
+        
+        [Header("Sounds")]
+        [SerializeField]
+        private AudioCue shotSound; 
         
         private Animator anim;
 
@@ -68,6 +74,10 @@ namespace Prefabs.Characters.Seashell {
             shootCooldownTimer.Start();
             commonCooldownTimer.Start();
             anim.SetTrigger(SeashellAnimKeys.Fire);
+
+            if (shotSound != null) {
+                G.Audio.PlayAt(shotSound, transform.position);
+            }
         }
 
         public void SpawnProjectile() {

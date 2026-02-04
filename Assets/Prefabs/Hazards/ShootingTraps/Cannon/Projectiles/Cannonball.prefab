@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 5812571195813611755}
   - component: {fileID: 3444645393942331741}
   - component: {fileID: 5406115858240138835}
+  - component: {fileID: 1442960897613041939}
   m_Layer: 16
   m_Name: Cannonball
   m_TagString: Untagged
@@ -173,6 +174,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1442960897613041939}
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4340940114718700434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,6 +237,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1442960897613041939}
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5812571195813611755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,3 +289,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 6115650811010290142}
   prefab: {fileID: 6115650811010290137, guid: d158a0fd6e26fae42a3fde695ae4b0a8, type: 3}
+--- !u!114 &1442960897613041939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6115650811010290137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a538b984a3bc4e4ba1230b4b831a85fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCue: {fileID: 11400000, guid: 542e59bef885957428d6ededcbdfdc2f, type: 2}
+  cueRefs: []
+  playAs2D: 0

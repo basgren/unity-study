@@ -16,6 +16,7 @@ namespace Core.Components.Collisions {
         private BoxCollider2D bodyCollider;
         
         public bool IsGrounded => groundChecker.HasCollision;
+        public bool IsGroundedThisFrame => groundChecker.HasEnteredCollisionThisFrame;
         
         private MultiRayCaster groundChecker;
         

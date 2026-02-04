@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b188c172f33459faafc5fa729cdb132, type: 3}
-  m_Name: SwordEmbeddingCue
+  m_Name: CannonballExplosionCue
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 4d0542d3ccddbbc45a7534670030b28b, type: 3}
+  - {fileID: 8300000, guid: f216c78489b257649ae14c3f68ad01a6, type: 3}
   mixerGroup: {fileID: 0}
-  volume: 0.5
+  volume: 1
   randomizePitch: 1
-  pitchMin: 0.95
-  pitchMax: 1.05
-  maxInstances: 5
-  cooldownSeconds: 0.02
-  spatialBlend: 0.5
-  minDistance: 5
+  pitchMin: 0.9
+  pitchMax: 1.1
+  maxInstances: 0
+  cooldownSeconds: 0
+  spatialBlend: 0.4
+  minDistance: 10
   maxDistance: 30
