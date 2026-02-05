@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,6 +20,10 @@ namespace Core.Components.Interaction {
         [SerializeField]
         private UnityEvent onSwitch;
 
+        // TODO: [BG] Take care multiple activations, or activation when linked action isn't yet complete when there's a delay.
+        [SerializeField]
+        private float activationDelay;
+        
         /// <summary>
         /// Disables interaction with this switch.
         /// </summary>
@@ -26,6 +31,8 @@ namespace Core.Components.Interaction {
         public bool isDisabled;
 
         private SpriteRenderer spriteRenderer;
+        
+        private Coroutine activationCoroutine;
 
         protected override void Awake() {
             base.Awake();
@@ -39,11 +46,18 @@ namespace Core.Components.Interaction {
 
             // TODO: [BG] Enhancements: don't allow activation while in progress.
             if (switchables != null) {
-                foreach (var switchable in switchables) {
-                    switchable.Toggle();
-                }
-
                 onSwitch?.Invoke();
+
+                if (activationDelay > 0) {
+                    if (activationCoroutine != null) {
+                        StopCoroutine(activationCoroutine);
+                    }
+
+                    activationCoroutine = StartCoroutine(DoToggleDelayed());
+                } else {
+                    DoToggle();
+                }
+                
 
                 if (switchType == SwitchType.SingleUse) {
                     isDisabled = true;
@@ -51,6 +65,17 @@ namespace Core.Components.Interaction {
                 }
             }
         }
+
+        private void DoToggle() {
+            foreach (var switchable in switchables) {
+                switchable.Toggle();
+            }
+        }
+
+        private IEnumerator DoToggleDelayed() {
+            yield return new WaitForSeconds(activationDelay);
+            DoToggle();
+        } 
 
         protected override void OnHoveredChange(bool isHovered) {
             Debug.Log("Hovered change");

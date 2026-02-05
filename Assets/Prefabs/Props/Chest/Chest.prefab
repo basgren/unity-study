@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8713444622480048511}
   - component: {fileID: -3827372952802975972}
   - component: {fileID: 34929748563150667}
+  - component: {fileID: 7787529326033296552}
   m_Layer: 13
   m_Name: Chest
   m_TagString: Untagged
@@ -119,7 +120,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.026000977, y: -0.18939209}
+  m_Offset: {x: 0.026000977, y: 0.39980316}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -130,7 +131,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.7741394, y: 0.7149658}
+  m_Size: {x: 0.7741394, y: 0.74235535}
   m_EdgeRadius: 0
 --- !u!114 &7330393309906531144
 MonoBehaviour:
@@ -182,6 +183,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7787529326033296552}
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &-3827372952802975972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,3 +224,18 @@ MonoBehaviour:
   speedRandomFactor: 0
   randomDirection: 1
   count: 1
+--- !u!114 &7787529326033296552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7929554061555327308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a538b984a3bc4e4ba1230b4b831a85fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCue: {fileID: 11400000, guid: 58970485b1d1542468dd6eb1681c4018, type: 2}
+  cueRefs: []
+  playAs2D: 1

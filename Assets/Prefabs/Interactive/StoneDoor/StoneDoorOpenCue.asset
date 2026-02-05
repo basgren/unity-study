@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b188c172f33459faafc5fa729cdb132, type: 3}
-  m_Name: CoinPickupCue
+  m_Name: StoneDoorOpenCue
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 3b8722825ee438a4aa41e92685c9d3d7, type: 3}
+  - {fileID: 8300000, guid: c04964f62a85824459ce0bdd84a4b3b4, type: 3}
   mixerGroup: {fileID: 0}
-  volume: 0.25
+  volume: 0.4
   randomizePitch: 1
   pitchMin: 0.95
   pitchMax: 1.05
-  maxInstances: 10
-  cooldownSeconds: 0.02
-  spatialBlend: 0
-  minDistance: 1
-  maxDistance: 30
+  maxInstances: 0
+  cooldownSeconds: 0
+  spatialBlend: 0.4
+  minDistance: 5
+  maxDistance: 15
   forceMaxDistance: 0
