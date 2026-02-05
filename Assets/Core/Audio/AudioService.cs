@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Core.Audio {
@@ -26,6 +27,9 @@ namespace Core.Audio {
         private readonly Dictionary<AudioCue, int> playingCountByCue = new Dictionary<AudioCue, int>();
         private readonly Dictionary<AudioCue, float> lastPlayTimeByCue = new Dictionary<AudioCue, float>();
 
+        private AudioListener cachedListener;
+        private Transform cachedListenerTransform;
+        
         /// <summary>
         /// Initializes the pool root and pre-creates a set of AudioSources.
         /// </summary>
@@ -35,6 +39,12 @@ namespace Core.Audio {
             }
 
             WarmupPool();
+            
+            cachedListener = FindObjectOfType<AudioListener>();
+            
+            if (cachedListener != null) {
+                cachedListenerTransform = cachedListener.transform;
+            }
         }
 
         /// <summary>
@@ -60,7 +70,7 @@ namespace Core.Audio {
         /// This respects cooldown and max instances rules in the AudioCue.
         /// </summary>
         public void PlayAt(AudioCue cue, Vector3 worldPosition) {
-            if (!CanPlay(cue)) {
+            if (!PassesDistanceCulling(cue, worldPosition, hasWorldPosition: true) || !CanPlay(cue)) {
                 return;
             }
 
@@ -73,11 +83,88 @@ namespace Core.Audio {
             PlayInternal(source, cue);
         }
 
+        public IAudioLoopHandle PlayLoopAt(AudioCue cue, Vector3 worldPosition, bool is3D = true) {
+            // Обычно для лупа лучше НЕ применять cooldown, иначе после Stop/Start можно попасть в “тишину”.
+            if (!CanPlayLoop(cue)) {
+                return NullLoopHandle.Instance;
+            }
+
+            var source = GetSource();
+            if (source == null) {
+                return NullLoopHandle.Instance;
+            }
+
+            ConfigureSource(source, cue, is3D: is3D, worldPosition: worldPosition);
+            source.loop = true;
+
+            var tag = source.GetComponent<AudioSourceTag>();
+            if (tag == null) {
+                tag = source.gameObject.AddComponent<AudioSourceTag>();
+            }
+
+            tag.Cue = cue;
+            tag.IsLoop = true;
+            tag.Follow = null;
+
+            IncrementPlaying(cue);
+            // lastPlayTimeByCue можно обновлять или нет — но для loop чаще не надо.
+            source.Play();
+
+            return new AudioLoopHandle(this, source);
+        }
+
+        public IAudioLoopHandle PlayLoopFollow(AudioCue cue, Transform follow, bool is3D = true) {
+            if (follow == null) {
+                return PlayLoopAt(cue, Vector3.zero, is3D);
+            }
+
+            var handle = PlayLoopAt(cue, follow.position, is3D);
+
+            // привяжем follow, если успешно
+            var internalHandle = handle as AudioLoopHandle;
+            if (internalHandle != null && internalHandle.Source != null) {
+                var tag = internalHandle.Source.GetComponent<AudioSourceTag>();
+                if (tag != null) {
+                    tag.Follow = follow;
+                }
+            }
+
+            return handle;
+        }
+
         /// <summary>
         /// Reclaims finished AudioSources back into the pool.
         /// </summary>
         private void Update() {
+            UpdateLoopFollow();
             ReclaimFinishedSources();
+        }
+        
+        private void UpdateLoopFollow() {
+            if (busySources.Count == 0) {
+                return;
+            }
+
+            foreach (var src in busySources) {
+                if (src == null) {
+                    continue;
+                }
+
+                var tag = src.GetComponent<AudioSourceTag>();
+                if (tag == null) {
+                    continue;
+                }
+
+                if (!tag.IsLoop) {
+                    continue;
+                }
+
+                if (tag.Follow == null) {
+                    continue;
+                }
+
+                src.transform.position = tag.Follow.position;
+            }
         }
 
         /// <summary>
@@ -142,6 +229,26 @@ namespace Core.Audio {
             freeSources.Enqueue(source);
         }
 
+        private bool CanPlayLoop(AudioCue cue) {
+            if (cue == null) {
+                return false;
+            }
+
+            if (!cue.HasClips()) {
+                return false;
+            }
+
+            // Обычно: maxInstances уважать, cooldown — игнорировать для loop.
+            if (cue.MaxInstances > 0) {
+                playingCountByCue.TryGetValue(cue, out var count);
+                if (count >= cue.MaxInstances) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
         /// <summary>
         /// Finds AudioSources that finished playing and returns them to the pool.
         /// Also decrements per-cue instance counters.
@@ -235,6 +342,7 @@ namespace Core.Audio {
             source.volume = cue.Volume;
             source.pitch = cue.PickPitch();
             source.outputAudioMixerGroup = cue.MixerGroup;
+            source.loop = false;
 
             if (is3D) {
                 source.spatialBlend = Mathf.Clamp01(cue.SpatialBlend);
@@ -340,6 +448,138 @@ namespace Core.Audio {
             }
 
             tag.Cue = null;
+            tag.IsLoop = false;
+            tag.Follow = null;
+        }
+        
+        internal void StopLoopInternal(AudioSource source, float fadeOutSeconds) {
+            if (source == null) {
+                return;
+            }
+
+            if (!source.isPlaying) {
+                return;
+            }
+
+            if (fadeOutSeconds <= 0f) {
+                source.Stop();
+                return;
+            }
+
+            StartCoroutine(FadeOutAndStop(source, fadeOutSeconds));
+        }
+
+        private IEnumerator FadeOutAndStop(AudioSource source, float fadeOutSeconds) {
+            float startVolume = source.volume;
+            float t = 0f;
+
+            while (t < fadeOutSeconds) {
+                t += Time.unscaledDeltaTime;
+                float k = Mathf.Clamp01(t / fadeOutSeconds);
+                source.volume = Mathf.Lerp(startVolume, 0f, k);
+                yield return null;
+            }
+
+            source.Stop();
+            source.volume = startVolume;
+        }
+        
+        private bool PassesDistanceCulling(AudioCue cue, Vector3 worldPosition, bool hasWorldPosition) {
+            if (cue == null) {
+                return false;
+            }
+
+            if (!cue.ForceMaxDistance) {
+                return true;
+            }
+
+            if (cachedListenerTransform == null) {
+                // Fallback: if no listener found, do not cull.
+                return true;
+            }
+
+            // Если звук 2D и у него нет позиции (Play2D), то distance-culling бессмысленен.
+            // Но ты хочешь "учитывать расстояние даже в 2D" — значит нужен worldPosition.
+            if (!hasWorldPosition) {
+                return true;
+            }
+
+            var maxDist = cue.MaxDistance;
+            if (maxDist <= 0f) {
+                return true;
+            }
+
+            var delta = worldPosition - cachedListenerTransform.position;
+            // 2D игра: обычно достаточно XY. Если мир у тебя на Z=0, это ещё логичнее.
+            delta.z = 0f;
+
+            return delta.sqrMagnitude <= maxDist * maxDist;
+        }
+        
+        private sealed class AudioLoopHandle : IAudioLoopHandle {
+            private readonly AudioService service;
+            internal AudioSource Source { get; private set; }
+
+            public bool IsValid {
+                get { return service != null && Source != null; }
+            }
+
+            public AudioLoopHandle(AudioService service, AudioSource source) {
+                this.service = service;
+                Source = source;
+            }
+
+            public void Stop(float fadeOutSeconds = 0.05f) {
+                if (!IsValid) {
+                    return;
+                }
+
+                service.StopLoopInternal(Source, fadeOutSeconds);
+                // после Stop reclaim сам вернёт в pool и декрементнет счётчик
+                Source = null;
+            }
+
+            public void SetVolume(float volume) {
+                if (!IsValid) {
+                    return;
+                }
+
+                Source.volume = Mathf.Clamp01(volume);
+            }
+
+            public void SetPitch(float pitch) {
+                if (!IsValid) {
+                    return;
+                }
+
+                Source.pitch = Mathf.Clamp(pitch, -3f, 3f);
+            }
+
+            public void SetPosition(Vector3 worldPosition) {
+                if (!IsValid) {
+                    return;
+                }
+
+                var tag = Source.GetComponent<AudioSourceTag>();
+                if (tag != null) {
+                    tag.Follow = null;
+                }
+
+                Source.transform.position = worldPosition;
+            }
+        }
+
+        private sealed class NullLoopHandle : IAudioLoopHandle {
+            public static readonly NullLoopHandle Instance = new NullLoopHandle();
+
+            public bool IsValid {
+                get { return false; }
+            }
+
+            public void Stop(float fadeOutSeconds = 0.05f) { }
+            public void SetVolume(float volume) { }
+            public void SetPitch(float pitch) { }
+            public void SetPosition(Vector3 worldPosition) { }
         }
     }
 
@@ -349,6 +589,8 @@ namespace Core.Audio {
     /// </summary>
     public class AudioSourceTag : MonoBehaviour {
         public AudioCue Cue;
+        public bool IsLoop;
+        public Transform Follow;
     }
 
     /// <summary>

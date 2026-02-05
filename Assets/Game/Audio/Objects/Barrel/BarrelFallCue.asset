@@ -23,4 +23,5 @@ MonoBehaviour:
   cooldownSeconds: 0
   spatialBlend: 0.3
   minDistance: 5
-  maxDistance: 30
+  maxDistance: 10
+  forceMaxDistance: 1

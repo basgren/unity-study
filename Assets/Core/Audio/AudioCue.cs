@@ -55,6 +55,10 @@ namespace Core.Audio {
         [Min(0f)]
         [SerializeField]
         private float maxDistance = 30f;
+        
+        [Header("Distance Culling")]
+        [SerializeField]
+        private bool forceMaxDistance = false;
 
         /// <summary>
         /// Mixer group used to route this sound into an AudioMixer (optional).
@@ -105,6 +109,12 @@ namespace Core.Audio {
         /// Max distance for 3D attenuation (only used when playing in 3D).
         /// </summary>
         public float MaxDistance => maxDistance;
+        
+        /// <summary>
+        /// When set to true, MaxDistance will be used for all playbacks, even non-spatial. Works only
+        /// when sound is played using `PlayAt()` method.
+        /// </summary>
+        public bool ForceMaxDistance => forceMaxDistance;
         
         /// <summary>
         /// Picks one clip from the variations list.

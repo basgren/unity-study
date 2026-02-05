@@ -46,6 +46,8 @@ namespace Game.Components.Abilities {
         // Joint between lower and upper barrels
         private FixedJoint2D barrelJoint;
 
+        private IAudioLoopHandle dragSoundHandle;
+
         private void Awake() {
             Body = GetComponent<Rigidbody2D>();
             Collider = GetComponent<BoxCollider2D>();
@@ -70,8 +72,19 @@ namespace Game.Components.Abilities {
         }
 
         void Update() {
-            if (groundCheckComponent.IsGroundedThisFrame && fallSound != null) {
+            if (groundCheckComponent.IsGroundedThisFrame && fallSound != null && Body.velocity.y > -0.5f) {
                 G.Audio.PlayAt(fallSound, transform.position);
+            }
+
+            if (draggingSound != null) {
+                bool isMoving = Mathf.Abs(Body.velocity.x) > 0.0001f;
+                
+                if (isDragged && dragSoundHandle == null && isMoving) {
+                    dragSoundHandle = G.Audio.PlayLoopFollow(draggingSound, transform, is3D:true);
+                } else if ((!isDragged || !isMoving) && dragSoundHandle != null) {
+                    dragSoundHandle.Stop();
+                    dragSoundHandle = null;
+                }
             }
         }
 
