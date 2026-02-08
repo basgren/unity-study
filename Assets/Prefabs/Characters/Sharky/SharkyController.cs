@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Audio;
 using Core.Components.Damage;
 using Core.Services;
 using Game.Controllers;
@@ -26,6 +27,9 @@ namespace Prefabs.Characters.Sharky {
         [Header("Effects")]
         [SerializeField]
         private GameObject runDustPrefab;
+        
+        [SerializeField]
+        private AudioCue biteSound;
 
         private float attackCooldownTime = 2f;
 
@@ -116,6 +120,8 @@ namespace Prefabs.Characters.Sharky {
 
             Vector2 dir = Vector2.right * transform.lossyScale.x;
             MyRigidbody.velocity = dir * 1f + Vector2.up * 1f;
+            
+            G.Audio.PlayAt(biteSound, transform.position);
         }
 
         public void CloseDamageWindow() {

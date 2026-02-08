@@ -78,7 +78,6 @@ namespace Core.Components.Interaction {
         } 
 
         protected override void OnHoveredChange(bool isHovered) {
-            Debug.Log("Hovered change");
             // TODO: [BG] implement better highlighting. Add some notification above. like button to press.
             // Very simple highlight - just for now.
             spriteRenderer.color = isHovered && !isDisabled

@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b188c172f33459faafc5fa729cdb132, type: 3}
-  m_Name: SpitCue
+  m_Name: SharkyBiteCue
   m_EditorClassIdentifier: 
-  clips:
-  - {fileID: 8300000, guid: 79f857be7cf8eae478ef70d7f96527d7, type: 3}
+  clips: []
   mixerGroup: {fileID: 0}
   volume: 1
   randomizePitch: 1
-  pitchMin: 0.9
-  pitchMax: 1.1
+  pitchMin: 0.95
+  pitchMax: 1.05
   maxInstances: 0
   cooldownSeconds: 0
-  spatialBlend: 0.5
-  minDistance: 10
+  spatialBlend: 0
+  minDistance: 1
   maxDistance: 30
+  forceMaxDistance: 0

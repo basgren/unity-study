@@ -449,6 +449,8 @@ MonoBehaviour:
   biteCooldown: 3
   commonCooldown: 1
   attackArea: {fileID: 3664229135403683159}
+  shotSound: {fileID: 11400000, guid: a0bd1636ffacb39479f4d362d2cab1b2, type: 2}
+  biteSound: {fileID: 11400000, guid: b512e5fc92de2954f9f86aedb7d5315c, type: 2}
 --- !u!114 &66716327013474203
 MonoBehaviour:
   m_ObjectHideFlags: 0

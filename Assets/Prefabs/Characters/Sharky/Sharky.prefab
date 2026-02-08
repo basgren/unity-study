@@ -296,6 +296,7 @@ MonoBehaviour:
   damageAreaObject: {fileID: 8197654661664844220}
   runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
     type: 3}
+  biteSound: {fileID: 11400000, guid: 93cdb817b4550d34caaaa9d46929ad1f, type: 2}
 --- !u!114 &4897812281703601135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,6 +413,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hitSound: {fileID: 11400000, guid: c80017687a387af4b942fc9bc4d3d032, type: 2}
+  destroySound: {fileID: 0}
 --- !u!114 &649388069741242861
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 389717885744418157}
   - component: {fileID: 389717885744418156}
   - component: {fileID: 4103195712087641607}
+  - component: {fileID: 8946998137955597726}
+  - component: {fileID: 5769962614394550658}
   m_Layer: 14
   m_Name: CoinSilverSolid
   m_TagString: Untagged
@@ -51,7 +53,7 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 0.5
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
@@ -83,6 +85,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdd8eff2c98fb6a4b817e56b11bd39cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8946998137955597726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389717885744418158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cd42ee2eb454ebb8c16d95b7497b481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  action:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5769962614394550658}
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5769962614394550658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389717885744418158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a538b984a3bc4e4ba1230b4b831a85fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCue: {fileID: 11400000, guid: 8d528c6f32793e74299992038088b507, type: 2}
+  cueRefs: []
+  playAs2D: 0
 --- !u!1001 &389717886529325289
 PrefabInstance:
   m_ObjectHideFlags: 0
