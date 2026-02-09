@@ -295,7 +295,7 @@ namespace Game.Player {
             }
 
             if (GroundChecker.HasEnteredCollisionThisFrame) {
-                Debug.Log(">>> landed" + MyRigidbody.velocity.y);
+                // Debug.Log(">>> landed" + MyRigidbody.velocity.y);
                 // TODO: [BG] Figure out why sound has delay. Seems this is because we're out of sync with
                 //   physics calculations. Probably CheckGround should be done on FixedUpdate.
                 // Minor adjustment, as by some reason when jumping on a higher platform lending speed

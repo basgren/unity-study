@@ -1,10 +1,9 @@
 #if UNITY_EDITOR
 using System;
-using Game.Doors;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.Doors {
+namespace Game.Doors.Editor {
     /// <summary>
     /// Editor drawer that renders DoorLink as:
     /// - Target Scene (SceneAsset)

@@ -8,14 +8,17 @@ namespace Core.Services {
     /// global service class G.
     /// </summary>
     public class GInit : MonoBehaviour {
+        private static readonly string MainConfigResourcePath = "Configs/MainConfig";
+        private MainConfig mainConfig;
+        
         private void Awake() {
             if (HasExistingInitializers()) {
                 DestroyImmediate(gameObject);
                 return;
             }
-            
-            DontDestroyOnLoad(gameObject);
 
+            LoadConfig();
+            
             Debug.Log("Initializing Game Manager");
             G.Game = GetOrCreate<GameManager>("GameManager");
             G.Spawner = GetOrCreate<SpawnerService>("SpawnerService");
@@ -23,11 +26,19 @@ namespace Core.Services {
             G.Screen = GetOrCreate<ScreenService>("ScreenService");
             G.StateMachines = GetOrCreate<StateMachineService>("StateMachineService");
             G.Audio = GetOrCreate<AudioService>("AudioService");
-
-            // TODO: [BG] think about better way to bind configs. bootstrap room?
-            var configs = GetComponent<ConfigsInitializer>();
-            G.Game.playerConfig = configs.PlayerConfig;
+            
+            G.Game.playerConfig = mainConfig.player;
             G.Game.Init();
+        }
+
+        private void LoadConfig() {
+            MainConfig config = Resources.Load<MainConfig>(MainConfigResourcePath);
+            if (config == null) {
+                Debug.LogError($"Failed to load config from '{MainConfigResourcePath}'");
+            }
+            
+            Debug.Log("Setting main config");
+            mainConfig = config;
         }
 
         private T GetOrCreate<T>(string serviceName) where T : MonoBehaviour {

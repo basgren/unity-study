@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
-namespace Editor.Doors {
+namespace Game.Doors.Editor {
     /// <summary>
     /// Build-time validation. Fails the build if doors contain broken links or duplicate IDs.
     /// </summary>

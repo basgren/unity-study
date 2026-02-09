@@ -1,11 +1,10 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
-using Game.Doors;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
-namespace Editor.Doors {
+namespace Game.Doors.Editor {
     /// <summary>
     /// Editor-only helper that updates DoorLink references after a DoorId rename.
     /// Important:

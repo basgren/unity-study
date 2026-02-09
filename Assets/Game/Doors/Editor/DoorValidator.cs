@@ -1,12 +1,11 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using Game.Doors;
 using UnityEditor;
-using UnityEditor.SceneManagement;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Editor.Doors {
+namespace Game.Doors.Editor {
     /// <summary>
     /// Editor-only validation for door ids and door links.
     /// Used by menu validation and build-time validation.
@@ -103,6 +102,17 @@ namespace Editor.Doors {
                 var targetSceneGuid = link.TargetScene.SceneGuid;
                 var targetScenePath = AssetDatabase.GUIDToAssetPath(targetSceneGuid);
 
+                var cachedPath = link.TargetScene.ScenePath;
+                if (!string.IsNullOrWhiteSpace(cachedPath) &&
+                    !string.Equals(cachedPath, targetScenePath, StringComparison.Ordinal)) {
+                    Debug.LogWarning(
+                        $"Door '{door.DoorId}' has outdated SceneReference cache. " +
+                        $"Cached: '{cachedPath}', Actual: '{targetScenePath}'. " +
+                        "Run: Tools/Doors/Repair Door Scene References",
+                        door
+                    );
+                }
+                
                 if (string.IsNullOrWhiteSpace(targetScenePath)) {
                     errors.Add(new ValidationError(
                         $"Door '{door.DoorId}' points to missing scene GUID '{targetSceneGuid}'.", door));

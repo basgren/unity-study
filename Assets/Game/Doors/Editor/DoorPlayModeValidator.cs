@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace Editor.Doors {
+namespace Game.Doors.Editor {
     [InitializeOnLoad]
     public static class DoorPlayModeValidator {
         private const string EnabledKey = "Doors.ValidationOnPlay.Enabled";

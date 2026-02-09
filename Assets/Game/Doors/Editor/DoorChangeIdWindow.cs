@@ -1,10 +1,9 @@
 #if UNITY_EDITOR
-using Game.Doors;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace Editor.Doors {
+namespace Game.Doors.Editor {
     /// <summary>
     /// Editor utility window used to rename a door id and update references.
     /// Open scenes are marked dirty (no auto-save); prefabs are saved automatically.

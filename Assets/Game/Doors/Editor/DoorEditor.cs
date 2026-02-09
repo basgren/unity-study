@@ -1,9 +1,8 @@
 #if UNITY_EDITOR
-using Game.Doors;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.Doors {
+namespace Game.Doors.Editor {
     /// <summary>
     /// Custom inspector for Door that shows a read-only DoorId and editor actions.
     /// </summary>

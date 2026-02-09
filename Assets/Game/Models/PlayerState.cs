@@ -14,7 +14,7 @@ namespace Game.Models {
         public Inventory Inventory => inventory;
 
         public PlayerState(PlayerConfig config) {
-            baseMaxHealth = config.baseMaxHealth;
+            baseMaxHealth = config.BaseMaxHealth;
             currentHealth = baseMaxHealth;
         }
 

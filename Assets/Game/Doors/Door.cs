@@ -1,3 +1,4 @@
+using System;
 using Core.Components.Interaction;
 using UnityEditor;
 using UnityEngine;
@@ -14,10 +15,10 @@ namespace Game.Doors {
 
         [SerializeField]
         private DoorLink link;
-        
+
         [SerializeField]
         private Transform entryPoint;
-        
+
         [SerializeField]
         private UnityEvent onEntered;
 
@@ -39,7 +40,7 @@ namespace Game.Doors {
 
             return transform.position;
         }
-        
+
         /// <summary>
         /// Immediately loads target scene and teleports player there.
         /// </summary>
@@ -55,12 +56,81 @@ namespace Game.Doors {
         }
 
         private void OnDrawGizmos() {
-            // Draw gismos only for current room.
-            if (link.TargetDoorId != null && link.TargetScene.ScenePath == gameObject.scene.path) {
+            if (entryPoint == null) {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(link.TargetDoorId)) {
+                return;
+            }
+
+            Gizmos.color = new Color(0, 0, 1, 0.7f);
+            var pos = entryPoint.transform.position;
+
+            Gizmos.DrawSphere(pos, 0.1f);
+
+            if (link.TargetScene.ScenePath == gameObject.scene.path) {
                 var targetDoor = DoorUtils.FindDoorByIdInScene(gameObject.scene, link.TargetDoorId);
-                Gizmos.color = new Color(0, 0, 1, 0.4f);
-                Gizmos.DrawLine(entryPoint.transform.position, targetDoor.entryPoint.transform.position);
-                Gizmos.DrawSphere(entryPoint.transform.position, 0.1f);
+                Gizmos.DrawLine(pos, targetDoor.entryPoint.transform.position);
+            }
+        }
+
+        private void OnDrawGizmosSelected() {
+            if (entryPoint == null) {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(link.TargetDoorId)) {
+                return;
+            }
+
+            Gizmos.color = new Color(0, 0, 1, 0.7f);
+            var pos = entryPoint.transform.position;
+
+            if (link.TargetScene.ScenePath != gameObject.scene.path) {
+                var len = 1.5f;
+                var upPos = pos + (Vector3.up * len);
+                Gizmos.DrawLine(pos, upPos);
+
+#if UNITY_EDITOR
+                var sceneName = link.TargetScene.GetSceneName();
+                if (!string.IsNullOrWhiteSpace(sceneName)) {
+                    var text = sceneName + "\n" + link.TargetDoorId;
+
+                    var style = new GUIStyle(EditorStyles.boldLabel) {
+                        alignment = TextAnchor.MiddleCenter,
+                        fontSize = 11,
+                        richText = false
+                    };
+                    style.normal.textColor = Color.white;
+
+                    var content = new GUIContent(text);
+                    var size = style.CalcSize(content);
+                    var padding = new Vector2(12f, 8f);
+
+                    var guiPoint = HandleUtility.WorldToGUIPoint(upPos);
+
+                    var rect = new Rect(
+                        guiPoint.x - (size.x + padding.x) * 0.5f,
+                        guiPoint.y - (size.y + padding.y) * 0.5f,
+                        size.x + padding.x,
+                        size.y + padding.y
+                    );
+
+                    Handles.BeginGUI();
+                    EditorGUI.DrawRect(rect, new Color(0f, 0f, 0f, 0.35f));
+
+                    var labelRect = new Rect(
+                        rect.x + padding.x * 0.5f,
+                        rect.y + padding.y * 0.5f,
+                        rect.width - padding.x,
+                        rect.height - padding.y
+                    );
+
+                    EditorGUI.LabelField(labelRect, text, style);
+                    Handles.EndGUI();
+                }
+#endif
             }
         }
 
@@ -86,7 +156,8 @@ namespace Game.Doors {
             // If this is a prefab instance and it still matches the prefab's stored id,
             // generate a unique one for this instance.
             var source = PrefabUtility.GetCorrespondingObjectFromSource(this) as Door;
-            var isInheritedFromPrefab = source != null && string.Equals(doorId, source.doorId, System.StringComparison.Ordinal);
+            var isInheritedFromPrefab =
+                source != null && string.Equals(doorId, source.doorId, System.StringComparison.Ordinal);
 
             if (string.IsNullOrWhiteSpace(doorId) || isInheritedFromPrefab) {
                 doorId = $"Door_{DoorIdUtils.GenerateId(DefaultGeneratedLength)}";
