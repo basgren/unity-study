@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b188c172f33459faafc5fa729cdb132, type: 3}
   m_Name: WoodSpikeHitCue
   m_EditorClassIdentifier: 
-  clips: []
+  clips:
+  - {fileID: 8300000, guid: 5d950d06a4531e04286c9feedc1924f3, type: 3}
+  - {fileID: 8300000, guid: 88e4812b027856646b7ec9d8157859a1, type: 3}
+  - {fileID: 8300000, guid: 89f51292ea18350478c6ba32c7b61ca7, type: 3}
+  - {fileID: 8300000, guid: 0f2b46acb0ac48843b3540f08984f765, type: 3}
   mixerGroup: {fileID: 0}
   volume: 1
   randomizePitch: 1
@@ -20,7 +24,7 @@ MonoBehaviour:
   pitchMax: 1.05
   maxInstances: 0
   cooldownSeconds: 0
-  spatialBlend: 0
-  minDistance: 1
-  maxDistance: 30
-  forceMaxDistance: 0
+  spatialBlend: 0.5
+  minDistance: 3
+  maxDistance: 15
+  forceMaxDistance: 1

@@ -15,7 +15,7 @@ MonoBehaviour:
   clips:
   - {fileID: 8300000, guid: 1f618ed6798a217459c2d85030dc91d9, type: 3}
   mixerGroup: {fileID: 0}
-  volume: 1
+  volume: 0.4
   randomizePitch: 1
   pitchMin: 0.9
   pitchMax: 1.1
@@ -24,3 +24,4 @@ MonoBehaviour:
   spatialBlend: 0.4
   minDistance: 10
   maxDistance: 30
+  forceMaxDistance: 0
