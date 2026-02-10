@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Prefabs.Characters.Sharky {
+namespace Prefabs.Characters.Common {
     public enum PatrolPathDirection {
         Increasing,
         Decreasing

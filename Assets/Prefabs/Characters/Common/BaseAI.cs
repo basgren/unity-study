@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Prefabs.Characters.Sharky {
+namespace Prefabs.Characters.Common {
     public class BaseAI : MonoBehaviour {
         private Coroutine activeCoroutine;
         

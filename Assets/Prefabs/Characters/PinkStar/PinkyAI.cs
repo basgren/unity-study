@@ -2,21 +2,21 @@
 using Core.Components.Collisions;
 using Core.Services;
 using Prefabs.Characters.Common;
+using Prefabs.Characters.Sharky;
 using Prefabs.Effects.InfoBubble;
 using UnityEngine;
 
-namespace Prefabs.Characters.Sharky {
-    public enum SharkyBehaviorState {
+namespace Prefabs.Characters.PinkStar {
+    public enum PinkyBehaviorState {
         Idle,
         Patrolling,
-        Chasing,
         Attacking,
         Anticipate,
         Aggro
     }
 
-    [RequireComponent(typeof(SharkyController))]
-    public class SharkyAI : BaseAI {
+    [RequireComponent(typeof(PinkyController))]
+    public class PinkyAI : BaseAI {
         [SerializeField]
         private LayerCheck vision;
         
@@ -27,25 +27,25 @@ namespace Prefabs.Characters.Sharky {
         private float agroDelay = 1f;
         
         private readonly float confusionDelay = 2f;
-        private readonly float anticipationTime = 0.3f;
-        private readonly float attackTime = 0.5f;
+        private readonly float anticipationTime = 1f;
+        private readonly float attackTime = 3f;
         
-        private SharkyController ctrl;
+        private PinkyController ctrl;
         private GroundPatrolPath path;
         
-        private SharkyBehaviorState behaviorState;
+        private PinkyBehaviorState behaviorState;
         private float prevX;
         
         private GameObject target;
         
-        public SharkyBehaviorState BehaviorState => behaviorState;
+        public PinkyBehaviorState BehaviorState => behaviorState;
 
         private void Awake() {
-            ctrl = GetComponent<SharkyController>();
+            ctrl = GetComponent<PinkyController>();
             path = GetComponent<GroundPatrolPath>();
 
             prevX = transform.position.x;
-            behaviorState = SharkyBehaviorState.Patrolling;
+            behaviorState = PinkyBehaviorState.Patrolling;
         }
 
         private void OnEnable() {
@@ -55,39 +55,35 @@ namespace Prefabs.Characters.Sharky {
         private IEnumerator Init() {
             // Skip one frame to let SharkyController initialize, as sometimes it's initialized after AI.
             yield return null;
-            SetState(SharkyBehaviorState.Patrolling);
+            SetState(PinkyBehaviorState.Patrolling);
         }
 
         private void OnDisable() {
-            SetState(SharkyBehaviorState.Idle);
+            SetState(PinkyBehaviorState.Idle);
         }
 
-        private void SetState(SharkyBehaviorState newState) {
+        private void SetState(PinkyBehaviorState newState) {
             behaviorState = newState;
             
-            if (!enabled && newState != SharkyBehaviorState.Idle) {
+            if (!enabled && newState != PinkyBehaviorState.Idle) {
                 return;
             }
             
             switch (behaviorState) {
-                case SharkyBehaviorState.Idle:
+                case PinkyBehaviorState.Idle:
                     StopCurrentAction();
                     ctrl.StopMovement();
                     break;
                 
-                case  SharkyBehaviorState.Anticipate:
+                case  PinkyBehaviorState.Anticipate:
                     StartAction(Anticipate());
                     break;
-                
-                case SharkyBehaviorState.Chasing:
-                    StartAction(ChaseHero());
-                    break;
 
-                case SharkyBehaviorState.Aggro:
+                case PinkyBehaviorState.Aggro:
                     StartAction(AgroToHero());
                     break;
                 
-                case SharkyBehaviorState.Attacking:
+                case PinkyBehaviorState.Attacking:
                     StartAction(Attack());
                     break;
 
@@ -122,12 +118,12 @@ namespace Prefabs.Characters.Sharky {
         private IEnumerator AgroToHero() {
             // TODO: [BG] Separate AI and representation. Move all effects display to some additional layer.
             //   for now we'll just implement the easiest way.
-            G.Spawner.SpawnInfoBubble(InfoBubbleType.Exclamation, infoBubblePoint.transform.position, transform);
+            // G.Spawner.SpawnInfoBubble(InfoBubbleType.Exclamation, infoBubblePoint.transform.position, transform);
             
             ctrl.StopMovement();
             
             yield return new WaitForSeconds(agroDelay);
-            SetState(SharkyBehaviorState.Chasing);
+            SetState(PinkyBehaviorState.Anticipate);
         }
 
         private IEnumerator ChaseHero() {
@@ -139,7 +135,7 @@ namespace Prefabs.Characters.Sharky {
             // TODO: [BG] make confused
             yield return new WaitForSeconds(confusionDelay);
             
-            SetState(SharkyBehaviorState.Patrolling);
+            SetState(PinkyBehaviorState.Patrolling);
         }
         
         public void OnHeroInVision(GameObject hero) {
@@ -148,28 +144,28 @@ namespace Prefabs.Characters.Sharky {
             }
 
             target = hero;
-            SetState(SharkyBehaviorState.Aggro);
+            SetState(PinkyBehaviorState.Aggro);
         }
 
         // Attack area - area which actually deals damage.
         // Attack trigger - area, which triggers attack. It's usually smaller than attack area to have better chance
         //   to hit player before he runs away.
         public void OnHeroInAttackTrigger() {
-            if (ctrl.CanAttack()) {
-                SetState(SharkyBehaviorState.Anticipate);
-            }
+            // if (ctrl.CanAttack()) {
+            //     SetState(PinkyBehaviorState.Anticipate);
+            // }
         }
 
         private IEnumerator Anticipate() {
-            ctrl.Anticipate();
+            ctrl.StartAttack();
             yield return new WaitForSeconds(anticipationTime);
-            SetState(SharkyBehaviorState.Attacking);
+            SetState(PinkyBehaviorState.Attacking);
         }
 
         private IEnumerator Attack() {
-            ctrl.Attack();
+            ctrl.OnAttackStartedFrame();
             yield return new WaitForSeconds(attackTime);
-            SetState(SharkyBehaviorState.Chasing);
+            ctrl.EndAttackFrame();
         }
 
         private bool ReachedOrPassed(float targetX) {

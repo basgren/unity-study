@@ -1,4 +1,5 @@
-﻿using Prefabs.Characters.Sharky;
+﻿using Prefabs.Characters.Common;
+using Prefabs.Characters.Sharky;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;

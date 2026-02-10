@@ -36,6 +36,10 @@ namespace Core.Services {
             entries.Add(new FsmEntry { StateMachine = newFsm, Owner = owner });
             return newFsm;
         }
+        
+        public void Register(SimpleStateMachine fsm, Object owner) {
+            entries.Add(new FsmEntry { StateMachine = fsm, Owner = owner });
+        }
 
         private struct FsmEntry {
             public Object Owner;
