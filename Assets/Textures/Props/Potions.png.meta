@@ -78,7 +78,7 @@ TextureImporter:
       213: 6326803469982491369
     second: Potions_24
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -95,9 +95,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -129,10 +132,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -144,6 +152,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -156,6 +165,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -696,9 +706,34 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      Potions_0: 1185527514606905908
+      Potions_1: -1061600653231999548
+      Potions_10: 7142050841817600938
+      Potions_11: -860807820763296739
+      Potions_12: -5249288142952506341
+      Potions_13: 1089735312403315716
+      Potions_14: 2011574832808370117
+      Potions_15: -8438763151253471919
+      Potions_16: -7587008787810219046
+      Potions_17: 950379908824699032
+      Potions_18: -512142692958456438
+      Potions_19: 8745225756722806956
+      Potions_2: -3065595510956808684
+      Potions_20: -7481350877133238684
+      Potions_21: 6040734443530017722
+      Potions_22: 8167133005111728920
+      Potions_23: 2014349484240403859
+      Potions_24: 6326803469982491369
+      Potions_3: 6997616985800771554
+      Potions_4: 8618505411793156745
+      Potions_5: -1972361127685065434
+      Potions_6: -5226445311955339714
+      Potions_7: 3714227102187029162
+      Potions_8: -6202940564662568092
+      Potions_9: -8747976068718324687
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

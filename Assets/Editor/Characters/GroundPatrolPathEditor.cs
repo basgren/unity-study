@@ -107,7 +107,6 @@ namespace Editor.Characters {
                 var size = HandleUtility.GetHandleSize(world) * 0.08f;
                 var newWorld3 = Handles.FreeMoveHandle(
                     world,
-                    Quaternion.identity,
                     size,
                     Vector3.zero,
                     Handles.SphereHandleCap

@@ -69,7 +69,7 @@ TextureImporter:
       213: 2480740917478693294
     second: PortalPurple_21
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -86,9 +86,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -120,10 +123,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -135,6 +143,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -147,6 +156,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -624,9 +634,31 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      PortalPurple_0: 5751911307360502711
+      PortalPurple_1: -22867580812132037
+      PortalPurple_10: -7865281465427829628
+      PortalPurple_11: 3845452851229159948
+      PortalPurple_12: -6144015686692041772
+      PortalPurple_13: -3526510839194386383
+      PortalPurple_14: -1176916439028333340
+      PortalPurple_15: 457788454810040084
+      PortalPurple_16: 5913894989818858035
+      PortalPurple_17: 99490913316413079
+      PortalPurple_18: -3092847387466553231
+      PortalPurple_19: -631413762033446416
+      PortalPurple_2: 1329442707224911812
+      PortalPurple_20: 8390514689086906953
+      PortalPurple_21: 2480740917478693294
+      PortalPurple_3: -7238623239992841843
+      PortalPurple_4: 1454233497149621237
+      PortalPurple_5: 6633200641553368935
+      PortalPurple_6: -3018083148551767668
+      PortalPurple_7: -2715677420442695220
+      PortalPurple_8: -6045269246525628901
+      PortalPurple_9: 2198406780596586234
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

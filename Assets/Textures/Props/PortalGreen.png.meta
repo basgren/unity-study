@@ -69,7 +69,7 @@ TextureImporter:
       213: 7978914207639840320
     second: PortalGreen_21
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -86,9 +86,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -120,10 +123,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -135,6 +143,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -147,6 +156,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -624,9 +634,31 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      PortalGreen_0: 5101427735922361353
+      PortalGreen_1: -2029099716364161268
+      PortalGreen_10: 6997327181974321827
+      PortalGreen_11: 607541887044781417
+      PortalGreen_12: 6979708831139875766
+      PortalGreen_13: 8525991265036361782
+      PortalGreen_14: 8975315434777085791
+      PortalGreen_15: -6235743450568809770
+      PortalGreen_16: 1689530928920704126
+      PortalGreen_17: -1748580079298346529
+      PortalGreen_18: 6935002382380331669
+      PortalGreen_19: 1552699845850858337
+      PortalGreen_2: 7078819830457506469
+      PortalGreen_20: 6775579875130808368
+      PortalGreen_21: 7978914207639840320
+      PortalGreen_3: -2277254132454033411
+      PortalGreen_4: 4024254073226379251
+      PortalGreen_5: 1053998722697262341
+      PortalGreen_6: 4760207198343964024
+      PortalGreen_7: -3832055971578449635
+      PortalGreen_8: 6334401457839911534
+      PortalGreen_9: 2796448852658985777
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

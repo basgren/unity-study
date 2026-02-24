@@ -150,7 +150,7 @@ TextureImporter:
       213: 4485909223183729630
     second: Outdoor_48
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -167,9 +167,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -201,10 +204,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -216,6 +224,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -228,6 +237,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -1272,9 +1282,58 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      Outdoor_0: 3627046538570850966
+      Outdoor_1: -4879724870127323082
+      Outdoor_10: 1740069892509495799
+      Outdoor_11: 1115150762991295727
+      Outdoor_12: -155124684800366277
+      Outdoor_13: -6385561380129853650
+      Outdoor_14: 332674204867362891
+      Outdoor_15: -6586494562251989007
+      Outdoor_16: -4582879035323932320
+      Outdoor_17: 7259186746913030747
+      Outdoor_18: 3009576640167744227
+      Outdoor_19: 9135553226007170102
+      Outdoor_2: -4494208878670729846
+      Outdoor_20: 4164109064491508321
+      Outdoor_21: 3332837714448167969
+      Outdoor_22: -2563705470595196690
+      Outdoor_23: -377079570278737235
+      Outdoor_24: -4746262369668535476
+      Outdoor_25: 5027180582127468832
+      Outdoor_26: 6260142119412766440
+      Outdoor_27: 1284560944799990669
+      Outdoor_28: 1660635994305114132
+      Outdoor_29: 45747686079497319
+      Outdoor_3: -5995358177650987476
+      Outdoor_30: 1211065669692240801
+      Outdoor_31: 5836225409093904915
+      Outdoor_32: 8583546404944467967
+      Outdoor_33: -1820533201458835301
+      Outdoor_34: -2011867563906476139
+      Outdoor_35: 4760423385968079288
+      Outdoor_36: 5437537207453622543
+      Outdoor_37: -8813734772283286268
+      Outdoor_38: 2910141453184498138
+      Outdoor_39: -5449136627897645498
+      Outdoor_4: 7746298295519237496
+      Outdoor_40: 7161154358342925134
+      Outdoor_41: 7150557389018313725
+      Outdoor_42: 321028387651668522
+      Outdoor_43: -1340952627307116209
+      Outdoor_44: 1500235281931706240
+      Outdoor_45: -3579417624150266919
+      Outdoor_46: -9211589124857219794
+      Outdoor_47: 8737041969430278452
+      Outdoor_48: 4485909223183729630
+      Outdoor_5: 4528516248067518991
+      Outdoor_6: -8767819982902756987
+      Outdoor_7: 3458963084156088750
+      Outdoor_8: 628391921118590550
+      Outdoor_9: 8600929314333824524
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

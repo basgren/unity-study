@@ -567,7 +567,7 @@ TextureImporter:
       213: 4558185077485052753
     second: TerrainAndBg_93
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -584,9 +584,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -618,10 +621,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -633,6 +641,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -2622,9 +2644,103 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      TerrainAndBg_0: 2102581296563763958
+      TerrainAndBg_1: -4636282688874745392
+      TerrainAndBg_10: -1591024140432880180
+      TerrainAndBg_11: 8093910662949311184
+      TerrainAndBg_12: -6782803012141029081
+      TerrainAndBg_13: -7155769911265707308
+      TerrainAndBg_14: 4088068340351608199
+      TerrainAndBg_15: 5970381930773444701
+      TerrainAndBg_16: 2537017616868096016
+      TerrainAndBg_17: 7390744454772028700
+      TerrainAndBg_18: 5821809350536709133
+      TerrainAndBg_19: -7900922031226302277
+      TerrainAndBg_2: 2742553336832005155
+      TerrainAndBg_20: -4769022456490844462
+      TerrainAndBg_21: 3900288014450967516
+      TerrainAndBg_22: 575959967731027403
+      TerrainAndBg_23: -2665036798092406237
+      TerrainAndBg_24: 4685645918519816435
+      TerrainAndBg_25: 9108937778874097321
+      TerrainAndBg_26: -480760290871738147
+      TerrainAndBg_27: -5409058869531674713
+      TerrainAndBg_28: -4924989118681228661
+      TerrainAndBg_29: 5114337067750850380
+      TerrainAndBg_3: -1586797506548273154
+      TerrainAndBg_30: -4554993319360545571
+      TerrainAndBg_31: 1378299761536642024
+      TerrainAndBg_32: -6645406851981640866
+      TerrainAndBg_33: -8438533426363321185
+      TerrainAndBg_34: 376714344415351257
+      TerrainAndBg_35: -4456816281539784951
+      TerrainAndBg_36: 5310835401759663202
+      TerrainAndBg_37: -7845541566087067359
+      TerrainAndBg_38: -7900446034184851372
+      TerrainAndBg_39: 6739726979054171278
+      TerrainAndBg_4: -3339746854576949303
+      TerrainAndBg_40: 2538048119972050090
+      TerrainAndBg_41: 3477054624116848232
+      TerrainAndBg_42: 3894418357960753710
+      TerrainAndBg_43: -7207548964210595849
+      TerrainAndBg_44: 3378775423289965738
+      TerrainAndBg_45: -8709002834160963551
+      TerrainAndBg_46: 2990322113407031775
+      TerrainAndBg_47: 6254187284944432358
+      TerrainAndBg_48: -965166082873926728
+      TerrainAndBg_49: -4075174178176112738
+      TerrainAndBg_5: -2184335413856369539
+      TerrainAndBg_50: 2160622648222295946
+      TerrainAndBg_51: -8456024755944081192
+      TerrainAndBg_52: -4407182367380891122
+      TerrainAndBg_53: 6050678397716019200
+      TerrainAndBg_54: -5841924140307133792
+      TerrainAndBg_55: -1435619346265177903
+      TerrainAndBg_56: -2849324991667887595
+      TerrainAndBg_57: 7487265783590779700
+      TerrainAndBg_58: -8668797779321016358
+      TerrainAndBg_59: 8878892167357939833
+      TerrainAndBg_6: 7302586872545607103
+      TerrainAndBg_60: 3444413400272838303
+      TerrainAndBg_61: -459406306580604705
+      TerrainAndBg_62: 6812381315071962191
+      TerrainAndBg_63: 4548353479620558413
+      TerrainAndBg_64: -8030390083071910934
+      TerrainAndBg_65: 5473866100585757613
+      TerrainAndBg_66: -6540877839250647723
+      TerrainAndBg_67: -6473103434772272476
+      TerrainAndBg_68: 918535095689915615
+      TerrainAndBg_69: 8623370099019380112
+      TerrainAndBg_7: 3272493504272970458
+      TerrainAndBg_70: -8841934092479787843
+      TerrainAndBg_71: -7833819232861026497
+      TerrainAndBg_72: 3721435327316076720
+      TerrainAndBg_73: -1627202416227063805
+      TerrainAndBg_74: 8890613325002259631
+      TerrainAndBg_75: -1730788400072414152
+      TerrainAndBg_76: 3069386956029690865
+      TerrainAndBg_77: -478186249084805436
+      TerrainAndBg_78: 3354636549517430783
+      TerrainAndBg_79: 5385043982486740418
+      TerrainAndBg_8: 7923305298790384471
+      TerrainAndBg_80: -3492714100337742748
+      TerrainAndBg_81: 2193373803860013516
+      TerrainAndBg_82: 5787277293871620899
+      TerrainAndBg_83: -383617579951535418
+      TerrainAndBg_84: 2824641573695477616
+      TerrainAndBg_85: 393561872815198111
+      TerrainAndBg_86: 7639352274619291385
+      TerrainAndBg_87: -7112507193931243963
+      TerrainAndBg_88: -6021962021877300991
+      TerrainAndBg_89: 1704959483196878983
+      TerrainAndBg_9: -430848085624914050
+      TerrainAndBg_90: -3454696362826448433
+      TerrainAndBg_91: -7190437714808962537
+      TerrainAndBg_92: -2945836755241650133
+      TerrainAndBg_93: 4558185077485052753
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

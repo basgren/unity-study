@@ -54,7 +54,7 @@ TextureImporter:
       213: 8937529952530121073
     second: TrainingDummy_Hit3-7
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -71,9 +71,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -105,10 +108,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -120,6 +128,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -132,6 +141,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -504,9 +514,26 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      TrainingDummy_Hit1-0: -4319956433525477183
+      TrainingDummy_Hit1-1: -8078623382783839735
+      TrainingDummy_Hit1-2: -5877150832016035367
+      TrainingDummy_Hit1-3: -6006165637625706423
+      TrainingDummy_Hit2-0: 2185582127858492009
+      TrainingDummy_Hit2-1: -3405260224251948073
+      TrainingDummy_Hit2-2: 2687839951636582686
+      TrainingDummy_Hit2-3: -492516368699431896
+      TrainingDummy_Hit2-4: -4105838211984505623
+      TrainingDummy_Hit3-0: -1912074551089425723
+      TrainingDummy_Hit3-1: -306198387706585910
+      TrainingDummy_Hit3-2: -5244885896047610854
+      TrainingDummy_Hit3-3: -8211878391923376212
+      TrainingDummy_Hit3-4: -468628377947101943
+      TrainingDummy_Hit3-5: -7515377878910065892
+      TrainingDummy_Hit3-6: -7140958261237708409
+      TrainingDummy_Hit3-7: 8937529952530121073
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

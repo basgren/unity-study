@@ -39,7 +39,7 @@ TextureImporter:
       213: 1278475588773109743
     second: PalmTreeBackgroundSheet_11
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -56,9 +56,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -90,10 +93,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -105,6 +113,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -117,6 +126,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -384,9 +394,21 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      PalmTreeBackgroundSheet_0: 8683632313750085214
+      PalmTreeBackgroundSheet_1: 262518517033693272
+      PalmTreeBackgroundSheet_10: 802857254159732353
+      PalmTreeBackgroundSheet_11: 1278475588773109743
+      PalmTreeBackgroundSheet_2: 762285979657935423
+      PalmTreeBackgroundSheet_3: 1400697303485121525
+      PalmTreeBackgroundSheet_4: -2645899244835350471
+      PalmTreeBackgroundSheet_5: -6487789065682943626
+      PalmTreeBackgroundSheet_6: 1981876992937066421
+      PalmTreeBackgroundSheet_7: 7744047822205964645
+      PalmTreeBackgroundSheet_8: -6024505487453159095
+      PalmTreeBackgroundSheet_9: 3531074664856275464
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
