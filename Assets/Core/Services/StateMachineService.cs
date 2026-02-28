@@ -9,7 +9,7 @@ namespace Core.Services {
     /// If the owner object is destroyed, the corresponding state machine is automatically removed.
     /// </summary>
     public class StateMachineService : MonoBehaviour {
-        private readonly List<FsmEntry> entries = new List<FsmEntry>();
+        private readonly List<FsmEntry> entries = new();
 
         void Update() {
             for (var i = entries.Count - 1; i >= 0; i--) {

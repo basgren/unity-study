@@ -1,7 +1,6 @@
 ﻿using System;
 using Core.Audio;
 using Core.Components.Damage;
-using Core.FSM;
 using Core.Services;
 using Game.Controllers;
 using UnityEngine;
@@ -37,7 +36,6 @@ namespace Prefabs.Characters.PinkStar {
 
         private float attackCooldownTime = 2f;
 
-        private PinkyStateMachine fsm;
         private PinkyAI ai;
         private float attackCooldownTimer;
         private bool isAttacking;
