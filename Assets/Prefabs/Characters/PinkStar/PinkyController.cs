@@ -14,7 +14,7 @@ namespace Prefabs.Characters.PinkStar {
         public static readonly int OnDeath = Animator.StringToHash("onDeath");
         public static readonly int OnAnticipation = Animator.StringToHash("onAnticipation");
     }
-    
+
     public class PinkyController : BaseCharacterController, IPinkySensors {
         private const string DustPositionObjectName = "DustSpawnPoint";
 
@@ -29,13 +29,13 @@ namespace Prefabs.Characters.PinkStar {
 
         [SerializeField]
         private AnimationCurve attackSpeedCurve;
-        
+
         [SerializeField]
         private GameObject damageAreaObject;
-        
+
         [SerializeField]
         private Collider2D bodyCollider;
-        
+
         [SerializeField]
         private Collider2D bodyColliderWhenAttacking;
 
@@ -63,19 +63,20 @@ namespace Prefabs.Characters.PinkStar {
         private PinkyStateMachine state;
 
         private bool isAttackStarted;
-        
+        private readonly float verticalHopImpulse = 11f;
+
         protected override void Awake() {
             base.Awake();
 
             damageable = GetComponent<Damageable>();
-            
+
             dustSpawnPoint = transform.Find(DustPositionObjectName);
 
             state = new PinkyStateMachine(PinkyState.Calm, this);
             state.OnStateEnter += OnPinkyStateEnter;
             // state.OnStateExit += OnPinkyStateExit;
             G.StateMachines.Register(state, this);
-            
+
             CloseDamageWindow();
         }
 
@@ -83,9 +84,9 @@ namespace Prefabs.Characters.PinkStar {
             base.Update();
 
             ExecuteCommands();
-            
+
             if (knockbackStunTimer > 0f) {
-                knockbackStunTimer -= Time.deltaTime;                
+                knockbackStunTimer -= Time.deltaTime;
             }
 
             if (hasKnockback && !IsStunned && IsGrounded) {
@@ -96,14 +97,43 @@ namespace Prefabs.Characters.PinkStar {
 
         protected override void FixedUpdate() {
             base.FixedUpdate();
-            
+
             if (state.State == PinkyState.Attacking) {
                 var v = MyRigidbody.velocity;
-                var sign = Mathf.Sign(transform.lossyScale.x);
-                if (Mathf.Abs(v.x) < attackMaxSpeed) {
-                    SetDirection(Vector2.left * sign);
+                var sign = Mathf.Sign(transform.localScale.x);
+                SetDirection(Vector2.left * sign);
+            }
+        }
+        
+        private void OnCollisionEnter2D(Collision2D collision) {
+            if (!isAttacking) {
+                return;
+            }
+
+            if (!TryGetWallNormal(collision, out Vector2 wallNormal)) {
+                return;
+            }
+            
+            var bounceDir = new Vector2(wallNormal.x, 1f).normalized;
+            SetDirection(bounceDir);
+            
+            MyRigidbody.AddForce(Vector2.up * verticalHopImpulse, ForceMode2D.Impulse);
+        }
+
+        private bool TryGetWallNormal(Collision2D collision, out Vector2 wallNormal) {
+            wallNormal = default;
+
+            for (var i = 0; i < collision.contactCount; i++) {
+                var n = collision.GetContact(i).normal;
+
+                // Check that collision point is a wall, not the ceiling/floor
+                if (Mathf.Abs(n.x) > 0.6f && Mathf.Abs(n.y) < 0.6f) {
+                    wallNormal = n;
+                    return true;
                 }
             }
+
+            return false;
         }
 
         protected override float GetMoveSpeed() {
@@ -125,7 +155,7 @@ namespace Prefabs.Characters.PinkStar {
                 || state.State == PinkyState.Cooldown
                 || state.State == PinkyState.Attacking
                 || state.State == PinkyState.Anticipating
-                ) {
+               ) {
                 return;
             }
 
@@ -138,7 +168,7 @@ namespace Prefabs.Characters.PinkStar {
                     if (IsGrounded) {
                         SetDirection(Vector2.zero);
                     }
-                }                
+                }
             }
 
             if (value.Attack && state.CanGo(PinkyState.Anticipating)) {
@@ -152,16 +182,16 @@ namespace Prefabs.Characters.PinkStar {
                 case PinkyState.Anticipating:
                     Anticipate();
                     break;
-                
+
                 case PinkyState.Attacking:
                     OpenDamageWindow();
                     break;
-                
+
                 case PinkyState.Cooldown:
                     CloseDamageWindow();
                     // TODO: [BG] Cooldown animation - some deep breating or something like that 
                     break;
-                
+
                 case PinkyState.Hit:
                     OnAfterHit();
                     break;
@@ -177,18 +207,18 @@ namespace Prefabs.Characters.PinkStar {
 
         protected override void UpdateAnimator() {
             base.UpdateAnimator();
-            
+
             if (wasHit) {
                 wasHit = false;
                 MyAnimator.SetTrigger(PinkyAnimKeys.OnHit);
             }
-            
+
             if (isDiedThisFrame) {
                 MyAnimator.SetTrigger(PinkyAnimKeys.OnDeath);
                 // TODO: [BG] Actually should be reset somewhere else, not in this method, but not it's just for POC 
                 isDiedThisFrame = false;
             }
-            
+
             MyAnimator.SetBool(PinkyAnimKeys.IsDead, isDead);
         }
 
@@ -207,7 +237,7 @@ namespace Prefabs.Characters.PinkStar {
             MyRigidbody.velocity = dir * 1f + Vector2.up * 1f;
 
             if (attackSound != null) {
-                G.Audio.PlayAt(attackSound, transform.position);                
+                G.Audio.PlayAt(attackSound, transform.position);
             }
         }
 
@@ -221,7 +251,7 @@ namespace Prefabs.Characters.PinkStar {
         private void StopMovement() {
             SetDirection(Vector2.zero);
         }
-        
+
         public void SpawnRunDust() {
             if (Math.Abs(MyRigidbody.velocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
@@ -233,7 +263,7 @@ namespace Prefabs.Characters.PinkStar {
                 instance.transform.localScale = new Vector3(-ls.x, ls.y, ls.z);
             }
         }
-        
+
         public void OnAfterHit() {
             knockbackStunTimer = knockbackStunTime;
             hasKnockback = true;
