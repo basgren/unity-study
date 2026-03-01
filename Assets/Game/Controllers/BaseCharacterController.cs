@@ -72,7 +72,7 @@ namespace Game.Controllers {
             // CheckGround();
         }
 
-        private void FixedUpdate() {
+        protected virtual void FixedUpdate() {
             // TODO: [BG] by some reason player falls with delay when hit by spikes. Investigate why.
             CheckGround();
         }

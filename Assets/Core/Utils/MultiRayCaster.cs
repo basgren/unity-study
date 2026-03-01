@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Core.Utils {
@@ -56,9 +57,11 @@ namespace Core.Utils {
         private ContactFilter2D contactFilter;
         private Vector2 rayDirVector;
         private Collider2D[] excludedColliders;
+        private Vector2 rayGap;
 
-        public MultiRayCaster(BoxCollider2D myCollider, LayerMask groundLayer) {
-            this.myCollider = myCollider;
+        public MultiRayCaster([NotNull] BoxCollider2D myCollider, LayerMask groundLayer) {
+            this.myCollider = myCollider ?? throw new ArgumentNullException(nameof(myCollider));
+
             contactFilter = new ContactFilter2D {
                 useLayerMask = true,
                 layerMask = groundLayer,
@@ -69,6 +72,9 @@ namespace Core.Utils {
             WithRayCount(3)
                 .WithDirection(Direction2D.Down)
                 .WithRayLength(CoreConst.PixelSize * 0.8f); // a bit less than pixel to avoid preliminary collisions
+            
+            rayGap = GetRayGap();
+            Update();
         }
 
         /// <summary>
@@ -77,7 +83,6 @@ namespace Core.Utils {
         /// </summary>
         public void Update() {
             HadCollisionLastFrame = HasCollision;
-            Vector2 rayGap = GetRayGap();
 
             bool hasHit = false;
             IsAllCollide = true;
@@ -143,6 +148,7 @@ namespace Core.Utils {
 
                 Vector2 rayOrigin = RayOrigins[i];
                 Gizmos.DrawLine(rayOrigin, rayOrigin + RayLength * rayDirVector);
+                Debug.Log($"Draw line:::: {rayOrigin}, {rayOrigin + RayLength * rayDirVector}");
             }
         }
 

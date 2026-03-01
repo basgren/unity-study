@@ -28,6 +28,16 @@ namespace Core.FSM {
         public TState State { get; private set; }
         
         public float TimeInState { get; private set; }
+        
+        public float TargetDuration {
+            get {
+                if (!pendingTransition.HasValue) {
+                    return 0;
+                }
+
+                return pendingTransition.Value.Delay;
+            }
+        }
 
         /// <summary>
         /// Invoked after state enters a new value.

@@ -25,7 +25,19 @@ namespace Prefabs.Characters.PinkStar {
         private float chaseSpeed = 6f;
 
         [SerializeField]
+        private float attackMaxSpeed = 15f;
+
+        [SerializeField]
+        private AnimationCurve attackSpeedCurve;
+        
+        [SerializeField]
         private GameObject damageAreaObject;
+        
+        [SerializeField]
+        private Collider2D bodyCollider;
+        
+        [SerializeField]
+        private Collider2D bodyColliderWhenAttacking;
 
         [Header("Effects")]
         [SerializeField]
@@ -34,10 +46,6 @@ namespace Prefabs.Characters.PinkStar {
         [SerializeField]
         private AudioCue attackSound;
 
-        private float attackCooldownTime = 2f;
-
-        private PinkyAI ai;
-        private float attackCooldownTimer;
         private bool isAttacking;
         private Transform dustSpawnPoint;
         private Damageable damageable;
@@ -58,18 +66,17 @@ namespace Prefabs.Characters.PinkStar {
         
         protected override void Awake() {
             base.Awake();
-            
-            ai = GetComponent<PinkyAI>();
+
             damageable = GetComponent<Damageable>();
             
             dustSpawnPoint = transform.Find(DustPositionObjectName);
 
             state = new PinkyStateMachine(PinkyState.Calm, this);
             state.OnStateEnter += OnPinkyStateEnter;
-            state.OnStateExit += OnPinkyStateExit;
+            // state.OnStateExit += OnPinkyStateExit;
             G.StateMachines.Register(state, this);
             
-            // damageAreaObject.SetActive(false);
+            CloseDamageWindow();
         }
 
         protected override void Update() {
@@ -81,14 +88,30 @@ namespace Prefabs.Characters.PinkStar {
                 knockbackStunTimer -= Time.deltaTime;                
             }
 
-            if (attackCooldownTimer > 0) {
-                attackCooldownTimer -= Time.deltaTime;
-            }
-
             if (hasKnockback && !IsStunned && IsGrounded) {
                 hasKnockback = false;
                 StopMovement();
             }
+        }
+
+        protected override void FixedUpdate() {
+            base.FixedUpdate();
+            
+            if (state.State == PinkyState.Attacking) {
+                var v = MyRigidbody.velocity;
+                var sign = Mathf.Sign(transform.lossyScale.x);
+                if (Mathf.Abs(v.x) < attackMaxSpeed) {
+                    SetDirection(Vector2.left * sign);
+                }
+            }
+        }
+
+        protected override float GetMoveSpeed() {
+            if (state.State == PinkyState.Attacking) {
+                return attackSpeedCurve.Evaluate(state.Progress) * attackMaxSpeed;
+            }
+
+            return base.GetMoveSpeed();
         }
 
         private void ExecuteCommands() {
@@ -98,33 +121,59 @@ namespace Prefabs.Characters.PinkStar {
 
             PinkyCommand? command = controlSource.GetCommand();
 
-            if (command == null) {
+            if (command == null
+                || state.State == PinkyState.Cooldown
+                || state.State == PinkyState.Attacking
+                || state.State == PinkyState.Anticipating
+                ) {
                 return;
             }
 
             var value = command.Value;
 
-            if (value.XDirection != 0 && !isAttacking) {
-                SetDirection(value.XDirection > 0 ? Vector2.right : Vector2.left);
-            } else {
-                if (IsGrounded) {
-                    SetDirection(Vector2.zero);
-                }
+            if (state.State != PinkyState.Attacking) {
+                if (value.XDirection != 0 && !isAttacking) {
+                    SetDirection(value.XDirection > 0 ? Vector2.right : Vector2.left);
+                } else {
+                    if (IsGrounded) {
+                        SetDirection(Vector2.zero);
+                    }
+                }                
             }
 
             if (value.Attack && state.CanGo(PinkyState.Anticipating)) {
                 isAttackStarted = true;
-                // StartAttack();
             }
-        }
-        
-        private void OnPinkyStateExit(PinkyState curState, PinkyState nextState) {
-            Debug.Log($"Exiting state: {curState} -> {nextState}");
         }
 
         private void OnPinkyStateEnter(PinkyState curState, PinkyState prevState) {
             Debug.Log($"Entering state: {curState} <- {prevState}");
+            switch (curState) {
+                case PinkyState.Anticipating:
+                    Anticipate();
+                    break;
+                
+                case PinkyState.Attacking:
+                    OpenDamageWindow();
+                    break;
+                
+                case PinkyState.Cooldown:
+                    CloseDamageWindow();
+                    // TODO: [BG] Cooldown animation - some deep breating or something like that 
+                    break;
+                
+                case PinkyState.Hit:
+                    OnAfterHit();
+                    break;
+            }
         }
+
+        // private void OnPinkyStateExit(PinkyState curState, PinkyState nextState) {
+
+        //     Debug.Log($"Exiting state: {curState} -> {nextState}");
+
+        // }
+
 
         protected override void UpdateAnimator() {
             base.UpdateAnimator();
@@ -143,33 +192,16 @@ namespace Prefabs.Characters.PinkStar {
             MyAnimator.SetBool(PinkyAnimKeys.IsDead, isDead);
         }
 
-        protected override float GetMoveSpeed() {
-            return ai?.BehaviorState == PinkyBehaviorState.Attacking
-                ? chaseSpeed
-                : base.GetMoveSpeed();
-        }
-
-        public void StartAttack() {
+        public void Anticipate() {
             StopMovement();
             MyAnimator.SetTrigger(PinkyAnimKeys.OnAnticipation);
         }
 
-        public void OnAttackStartedFrame() {
-            MyAnimator.SetBool(PinkyAnimKeys.IsAttacking, true);
-        }
-
-        public void EndAttackFrame() {
-            MyAnimator.SetBool(PinkyAnimKeys.IsAttacking, false);
-        }
-
-        public void Attack() {
-            StopMovement();
-            // MyAnimator.SetTrigger(PinkyAnimKeys.OnAttack);
-        }
-
-        public void OpenDamageWindow() {
+        private void OpenDamageWindow() {
             isAttacking = true;
             damageAreaObject.SetActive(true);
+            // bodyColliderWhenAttacking.enabled = true;
+            MyAnimator.SetBool(PinkyAnimKeys.IsAttacking, true);
 
             Vector2 dir = Vector2.right * transform.lossyScale.x;
             MyRigidbody.velocity = dir * 1f + Vector2.up * 1f;
@@ -179,21 +211,15 @@ namespace Prefabs.Characters.PinkStar {
             }
         }
 
-        public void CloseDamageWindow() {
+        private void CloseDamageWindow() {
             damageAreaObject.SetActive(false);
-        }
-
-        public void FinishAttack() {
+            // bodyColliderWhenAttacking.enabled = false;
             isAttacking = false;
-            attackCooldownTimer = attackCooldownTime;
+            MyAnimator.SetBool(PinkyAnimKeys.IsAttacking, false);
         }
 
-        public void StopMovement() {
+        private void StopMovement() {
             SetDirection(Vector2.zero);
-        }
-
-        public bool CanAttack() {
-            return !isDead && !isAttacking && attackCooldownTimer <= 0;
         }
         
         public void SpawnRunDust() {
@@ -202,31 +228,29 @@ namespace Prefabs.Characters.PinkStar {
 
                 // Make sure the spawned object is directed in the same direction as target object.
                 // But for sharky negate x axis, as its original sprite asset looks left, while player
-                // sprite looks right. 
+                // sprite looks right.
                 var ls = dustSpawnPoint.lossyScale;
                 instance.transform.localScale = new Vector3(-ls.x, ls.y, ls.z);
             }
         }
         
-        public void OnAfterHit(Damager damager) {
+        public void OnAfterHit() {
             knockbackStunTimer = knockbackStunTime;
             hasKnockback = true;
             wasHit = true;
 
-            Debug.Log($"Sharky: Hit by {damager.Type}. Health: {damageable.Health}");
+            // Debug.Log($"Sharky: Hit by {damager.Type}. Health: {damageable.Health}");
 
             if (damageable.IsDead) {
                 Debug.Log(">>>> sharky is dead");
                 isDiedThisFrame = true;
                 isDead = true;
-                ai.enabled = false;
             }
         }
 
         public bool IsAttackTriggered() {
-            Debug.Log($">>> check {isAttackStarted}");
             var result = isAttackStarted;
-            isAttackStarted = false;
+            isAttackStarted = false; // reset value after reading
             return result;
         }
 

@@ -46,9 +46,10 @@ namespace Prefabs.Characters.PinkStar {
             
             AddTransition(PinkyState.Anticipating, PinkyState.Attacking)
                 .SetExitTime(0.5f);
-            
+
             AddTransition(PinkyState.Attacking, PinkyState.Cooldown)
-                .SetCondition((state) => state.TimeInState > 4f && sensors.IsGrounded());
+                .SetExitTime(1f);
+                // .SetCondition((state) => state.TimeInState > 4f && sensors.IsGrounded());
 
             AddTransition(PinkyState.Cooldown, PinkyState.Calm)
                 .SetExitTime(2f);
