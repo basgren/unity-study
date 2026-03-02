@@ -349,9 +349,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.02792263, y: 0.33601665}
+  m_Offset: {x: 0.02792263, y: 0.34166908}
   serializedVersion: 2
-  m_Radius: 0.3165102
+  m_Radius: 0.31085777
 --- !u!50 &6189892179132693578
 Rigidbody2D:
   serializedVersion: 4
@@ -398,7 +398,7 @@ MonoBehaviour:
   baseSpriteOrientation: 0
   controlSource: {fileID: 0}
   chaseSpeed: 3
-  attackMaxSpeed: 12
+  attackMaxSpeed: 7
   attackSpeedCurve:
     serializedVersion: 2
     m_Curve:
@@ -442,7 +442,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   damageAreaObject: {fileID: 7461146306808350787}
-  bodyCollider: {fileID: 6189892179132693579}
   bodyColliderWhenAttacking: {fileID: 6189892179132693583}
   runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
     type: 3}
@@ -472,7 +471,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9065028384139061865}
   - component: {fileID: 4814566354837581277}
-  m_Layer: 15
+  - component: {fileID: 3945399242492268703}
+  m_Layer: 16
   m_Name: DamageArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -529,3 +529,24 @@ CircleCollider2D:
   m_Offset: {x: 0.02800703, y: 0.35038298}
   serializedVersion: 2
   m_Radius: 0.34161472
+--- !u!114 &3945399242492268703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7461146306808350787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd9a81366750d4c4686954634f7ca857, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 512
+  type: 0
+  destroyOnContact: 0
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls: []

@@ -148,7 +148,6 @@ namespace Core.Utils {
 
                 Vector2 rayOrigin = RayOrigins[i];
                 Gizmos.DrawLine(rayOrigin, rayOrigin + RayLength * rayDirVector);
-                Debug.Log($"Draw line:::: {rayOrigin}, {rayOrigin + RayLength * rayDirVector}");
             }
         }
 

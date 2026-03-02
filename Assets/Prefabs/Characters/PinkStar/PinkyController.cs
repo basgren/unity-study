@@ -9,12 +9,18 @@ namespace Prefabs.Characters.PinkStar {
     internal abstract class PinkyAnimKeys : BaseCharacterAnimKeys {
         public static readonly int IsDead = Animator.StringToHash("isDead");
         public static readonly int IsAttacking = Animator.StringToHash("isAttacking");
+        public static readonly int IsCooldown = Animator.StringToHash("isCooldown");
         public static readonly int OnJump = Animator.StringToHash("onJump");
         public static readonly int OnHit = Animator.StringToHash("onHit");
         public static readonly int OnDeath = Animator.StringToHash("onDeath");
         public static readonly int OnAnticipation = Animator.StringToHash("onAnticipation");
     }
-
+    
+    /// <summary>
+    /// NOTES:
+    /// Circle collider should not touch ground, otherwise it will always count as collision with ground and won't
+    /// enter collisions with walls.
+    /// </summary>
     public class PinkyController : BaseCharacterController, IPinkySensors {
         private const string DustPositionObjectName = "DustSpawnPoint";
 
@@ -32,9 +38,6 @@ namespace Prefabs.Characters.PinkStar {
 
         [SerializeField]
         private GameObject damageAreaObject;
-
-        [SerializeField]
-        private Collider2D bodyCollider;
 
         [SerializeField]
         private Collider2D bodyColliderWhenAttacking;
@@ -63,7 +66,7 @@ namespace Prefabs.Characters.PinkStar {
         private PinkyStateMachine state;
 
         private bool isAttackStarted;
-        private readonly float verticalHopImpulse = 11f;
+        private readonly float verticalHopImpulse = 10f;
 
         protected override void Awake() {
             base.Awake();
@@ -74,7 +77,7 @@ namespace Prefabs.Characters.PinkStar {
 
             state = new PinkyStateMachine(PinkyState.Calm, this);
             state.OnStateEnter += OnPinkyStateEnter;
-            // state.OnStateExit += OnPinkyStateExit;
+            state.OnStateExit += OnPinkyStateExit;
             G.StateMachines.Register(state, this);
 
             CloseDamageWindow();
@@ -190,6 +193,7 @@ namespace Prefabs.Characters.PinkStar {
                 case PinkyState.Cooldown:
                     CloseDamageWindow();
                     // TODO: [BG] Cooldown animation - some deep breating or something like that 
+                    MyAnimator.SetBool(PinkyAnimKeys.IsCooldown, true);
                     break;
 
                 case PinkyState.Hit:
@@ -198,11 +202,13 @@ namespace Prefabs.Characters.PinkStar {
             }
         }
 
-        // private void OnPinkyStateExit(PinkyState curState, PinkyState nextState) {
-
-        //     Debug.Log($"Exiting state: {curState} -> {nextState}");
-
-        // }
+        private void OnPinkyStateExit(PinkyState curState, PinkyState nextState) {
+            switch (curState) {
+                case PinkyState.Cooldown:
+                    MyAnimator.SetBool(PinkyAnimKeys.IsCooldown, false);
+                    break;
+            }
+        }
 
 
         protected override void UpdateAnimator() {
@@ -230,11 +236,12 @@ namespace Prefabs.Characters.PinkStar {
         private void OpenDamageWindow() {
             isAttacking = true;
             damageAreaObject.SetActive(true);
-            // bodyColliderWhenAttacking.enabled = true;
+            bodyColliderWhenAttacking.enabled = true;
             MyAnimator.SetBool(PinkyAnimKeys.IsAttacking, true);
 
             Vector2 dir = Vector2.right * transform.lossyScale.x;
             MyRigidbody.velocity = dir * 1f + Vector2.up * 1f;
+            MyRigidbody.gravityScale = 0.7f;
 
             if (attackSound != null) {
                 G.Audio.PlayAt(attackSound, transform.position);
@@ -243,7 +250,8 @@ namespace Prefabs.Characters.PinkStar {
 
         private void CloseDamageWindow() {
             damageAreaObject.SetActive(false);
-            // bodyColliderWhenAttacking.enabled = false;
+            MyRigidbody.gravityScale = 1f;
+            bodyColliderWhenAttacking.enabled = false;
             isAttacking = false;
             MyAnimator.SetBool(PinkyAnimKeys.IsAttacking, false);
         }

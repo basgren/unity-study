@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Core.Components.Damage {
     public enum DamagerType {
-        Simple,
+        Continuous,
 
         /// <summary>
         /// When damager is active, it will perform a single hit per each Damageable it collides with.
@@ -27,7 +27,7 @@ namespace Core.Components.Damage {
         private LayerMask targetLayers;
 
         [SerializeField]
-        private DamagerType type = DamagerType.Simple;
+        private DamagerType type = DamagerType.Continuous;
         
         [SerializeField]
         private bool destroyOnContact;
@@ -55,6 +55,12 @@ namespace Core.Components.Damage {
 
         private void OnTriggerEnter2D(Collider2D other) {
             TryDamage(other);
+        }
+        
+        private void OnTriggerStay2D(Collider2D other) {
+            if (type == DamagerType.Continuous) {
+                TryDamage(other);
+            }
         }
 
         private void TryDamage(Collider2D other) {
