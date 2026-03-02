@@ -66,7 +66,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -2.1010194, y: 0.28326797}
+  m_Offset: {x: -1.1474919, y: 0.28326797}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -77,7 +77,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 4.1818914, y: 0.43346405}
+  m_Size: {x: 2.2748365, y: 0.43346405}
   m_EdgeRadius: 0
 --- !u!114 &4865797250729916605
 MonoBehaviour:
@@ -114,7 +114,7 @@ MonoBehaviour:
   action:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6189892179132693577}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: OnHeroInVision
         m_Mode: 0
@@ -172,7 +172,8 @@ GameObject:
   - component: {fileID: 6189892179132693583}
   - component: {fileID: 6189892179132693578}
   - component: {fileID: 6189892179132693576}
-  - component: {fileID: 6189892179132693577}
+  - component: {fileID: 84240078499934250}
+  - component: {fileID: 5711656976162200658}
   m_Layer: 15
   m_Name: Pinky
   m_TagString: Untagged
@@ -394,11 +395,12 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 3072
-  moveSpeed: 5
+  moveSpeed: 3
   baseSpriteOrientation: 0
-  controlSource: {fileID: 0}
+  controlSource: {fileID: 84240078499934250}
+  patrolSpeed: 1.5
   chaseSpeed: 3
-  attackMaxSpeed: 7
+  attackMaxSpeed: 10
   attackSpeedCurve:
     serializedVersion: 2
     m_Curve:
@@ -446,7 +448,8 @@ MonoBehaviour:
   runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
     type: 3}
   attackSound: {fileID: 0}
---- !u!114 &6189892179132693577
+  vision: {fileID: 0}
+--- !u!114 &84240078499934250
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -455,12 +458,53 @@ MonoBehaviour:
   m_GameObject: {fileID: 6189892179132693591}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00d8314952c6d7247a17d34235a8bd2c, type: 3}
+  m_Script: {fileID: 11500000, guid: 39e370da9dd34ce9939cf9cc47b626cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vision: {fileID: 4865797250729916605}
-  infoBubblePoint: {fileID: 0}
-  agroDelay: 1
+  awareLoseTime: 4
+  keepDirectionWhileBusy: 0
+  hitDrivenHuntDuration: 2
+  recoverDurationMin: 5
+  recoverDurationMax: 7
+  lookDuration: 0.7
+  recoverTurnCount: 4
+--- !u!114 &5711656976162200658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6189892179132693591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bbb9950d091b50438d5ec322d3cd97a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 6
+  currentHealth: 6
+  invulnerabilityTime: 0.5
+  hasKnockback: 1
+  knockbackForce: 5
+  onHit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6189892179132693576}
+        m_TargetAssemblyTypeName: Prefabs.Characters.PinkStar.PinkyController, Assembly-CSharp
+        m_MethodName: OnHit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  hitSound: {fileID: 11400000, guid: 6126ab6b84b56f5488445f781a909f70, type: 2}
+  destroySound: {fileID: 0}
 --- !u!1 &7461146306808350787
 GameObject:
   m_ObjectHideFlags: 0

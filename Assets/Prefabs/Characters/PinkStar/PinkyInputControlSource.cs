@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Prefabs.Characters.PinkStar {
     public struct PinkyCommand {
-        public readonly int XDirection;
-        public readonly bool Attack;
+        public readonly int XDirection; // -1 left, 0 idle, +1 right
+        public readonly bool Attack; // one-tick request to start attack
         
         public PinkyCommand(int xDirection, bool doAttack) {
             XDirection = xDirection;

@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Audio;
+using Core.Components.Collisions;
 using Core.Components.Damage;
 using Core.Services;
 using Game.Controllers;
@@ -28,7 +29,10 @@ namespace Prefabs.Characters.PinkStar {
         private PinkyControlSource controlSource;
 
         [SerializeField]
-        private float chaseSpeed = 6f;
+        private float patrolSpeed = 1.7f;
+
+        [SerializeField]
+        private float chaseSpeed = 3f;
 
         [SerializeField]
         private float attackMaxSpeed = 15f;
@@ -49,6 +53,11 @@ namespace Prefabs.Characters.PinkStar {
         [SerializeField]
         private AudioCue attackSound;
 
+        [Header("Sensors")]
+        [SerializeField]
+        private LayerCheck vision;
+
+        private GameObject visionObject;
         private bool isAttacking;
         private Transform dustSpawnPoint;
         private Damageable damageable;
@@ -62,18 +71,33 @@ namespace Prefabs.Characters.PinkStar {
         private bool isDead;
         private bool IsStunned => knockbackStunTimer > 0f;
         public bool IsDead => isDead;
+        public int LastHitSourceDirection { get; private set; }
 
         private PinkyStateMachine state;
+        private PinkyAI ai;
 
         private bool isAttackStarted;
+        private int lastRequestedLookDirection = 1;
+        private int currentAttackDirection = 1;
         private readonly float verticalHopImpulse = 10f;
+        private bool isHit = false;
+
+        private int spottedPlayerDirection;
 
         protected override void Awake() {
             base.Awake();
 
+            ai = GetComponent<PinkyAI>();
             damageable = GetComponent<Damageable>();
 
             dustSpawnPoint = transform.Find(DustPositionObjectName);
+            if (vision == null) {
+                visionObject = transform.Find("Vision").gameObject;
+
+                if (visionObject != null) {
+                    vision = visionObject.GetComponent<LayerCheck>();
+                }
+            }
 
             state = new PinkyStateMachine(PinkyState.Calm, this);
             state.OnStateEnter += OnPinkyStateEnter;
@@ -102,9 +126,12 @@ namespace Prefabs.Characters.PinkStar {
             base.FixedUpdate();
 
             if (state.State == PinkyState.Attacking) {
-                var v = MyRigidbody.velocity;
-                var sign = Mathf.Sign(transform.localScale.x);
-                SetDirection(Vector2.left * sign);
+                var attackDir = Mathf.Sign(currentAttackDirection);
+                if (attackDir == 0f) {
+                    attackDir = 1f;
+                }
+
+                SetDirection(attackDir > 0f ? Vector2.right : Vector2.left);
             }
         }
         
@@ -118,6 +145,7 @@ namespace Prefabs.Characters.PinkStar {
             }
             
             var bounceDir = new Vector2(wallNormal.x, 1f).normalized;
+            currentAttackDirection = bounceDir.x > 0f ? 1 : -1;
             SetDirection(bounceDir);
             
             MyRigidbody.AddForce(Vector2.up * verticalHopImpulse, ForceMode2D.Impulse);
@@ -144,11 +172,21 @@ namespace Prefabs.Characters.PinkStar {
                 return attackSpeedCurve.Evaluate(state.Progress) * attackMaxSpeed;
             }
 
+            if (ai != null) {
+                return ai.Behavior == PinkyBehavior.Hunting || ai.Behavior == PinkyBehavior.Recovering
+                    ? chaseSpeed
+                    : patrolSpeed;
+            }
+
             return base.GetMoveSpeed();
         }
 
         private void ExecuteCommands() {
             if (controlSource == null) {
+                return;
+            }
+
+            if (isDead || IsStunned) {
                 return;
             }
 
@@ -166,7 +204,16 @@ namespace Prefabs.Characters.PinkStar {
 
             if (state.State != PinkyState.Attacking) {
                 if (value.XDirection != 0 && !isAttacking) {
-                    SetDirection(value.XDirection > 0 ? Vector2.right : Vector2.left);
+                    lastRequestedLookDirection = value.XDirection > 0 ? 1 : -1;
+                    var lookDirection = value.XDirection > 0 ? Vector2.right : Vector2.left;
+
+                    if (ai != null && ai.Behavior == PinkyBehavior.Recovering) {
+                        // In Recovering we only want to rotate sprite, not move.
+                        SetDirection(lookDirection);
+                        SetDirection(Vector2.zero, true);
+                    } else {
+                        SetDirection(lookDirection);
+                    }
                 } else {
                     if (IsGrounded) {
                         SetDirection(Vector2.zero);
@@ -175,6 +222,9 @@ namespace Prefabs.Characters.PinkStar {
             }
 
             if (value.Attack && state.CanGo(PinkyState.Anticipating)) {
+                currentAttackDirection = value.XDirection != 0
+                    ? (value.XDirection > 0 ? 1 : -1)
+                    : lastRequestedLookDirection;
                 isAttackStarted = true;
             }
         }
@@ -235,11 +285,14 @@ namespace Prefabs.Characters.PinkStar {
 
         private void OpenDamageWindow() {
             isAttacking = true;
+            visionObject.SetActive(false);
             damageAreaObject.SetActive(true);
             bodyColliderWhenAttacking.enabled = true;
             MyAnimator.SetBool(PinkyAnimKeys.IsAttacking, true);
 
-            Vector2 dir = Vector2.right * transform.lossyScale.x;
+            Vector2 dir = spottedPlayerDirection > 0 ? Vector2.right : Vector2.left;
+            spottedPlayerDirection = 0;
+            SetDirection(dir);
             MyRigidbody.velocity = dir * 1f + Vector2.up * 1f;
             MyRigidbody.gravityScale = 0.7f;
 
@@ -250,6 +303,7 @@ namespace Prefabs.Characters.PinkStar {
 
         private void CloseDamageWindow() {
             damageAreaObject.SetActive(false);
+            visionObject.SetActive(true);
             MyRigidbody.gravityScale = 1f;
             bodyColliderWhenAttacking.enabled = false;
             isAttacking = false;
@@ -272,18 +326,36 @@ namespace Prefabs.Characters.PinkStar {
             }
         }
 
+        public void OnHit() {
+            // TODO: [BG] simplify this hit detection chain.
+            wasHit = true;
+        }
+        
         public void OnAfterHit() {
             knockbackStunTimer = knockbackStunTime;
             hasKnockback = true;
-            wasHit = true;
+            LastHitSourceDirection = GetHitSourceDirectionFromKnockback();
+            ai?.OnHitReceived(LastHitSourceDirection);
 
             // Debug.Log($"Sharky: Hit by {damager.Type}. Health: {damageable.Health}");
 
             if (damageable.IsDead) {
-                Debug.Log(">>>> sharky is dead");
                 isDiedThisFrame = true;
                 isDead = true;
             }
+        }
+
+        private int GetHitSourceDirectionFromKnockback() {
+            var knockbackDirX = Mathf.Sign(MyRigidbody.velocity.x);
+            if (knockbackDirX > 0f) {
+                return -1;
+            }
+
+            if (knockbackDirX < 0f) {
+                return 1;
+            }
+
+            return 0;
         }
 
         public bool IsAttackTriggered() {
@@ -292,12 +364,22 @@ namespace Prefabs.Characters.PinkStar {
             return result;
         }
 
+        public bool IsPlayerInSight() {
+            var isInSight = vision != null && vision.IsColliding();
+
+            if (isInSight && spottedPlayerDirection != 0) {
+                spottedPlayerDirection = GetCurrentDirection();
+            }
+            
+            return isInSight;
+        }
+
         bool IPinkySensors.IsGrounded() {
             return GroundChecker.HasCollision;
         }
 
         public bool IsHit() {
-            return false;
+            return wasHit;
         }
     }
 }

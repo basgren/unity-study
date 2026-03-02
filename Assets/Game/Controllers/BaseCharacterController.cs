@@ -91,14 +91,22 @@ namespace Game.Controllers {
             MyRigidbody.velocity = new Vector2(vx, MyRigidbody.velocity.y);
 
             if (!preserveSpriteOrientation) {
-                float dirScale = baseSpriteOrientation == SpriteOrientation.Right ? 1 : -1;
+                float dirModifier = baseSpriteOrientation == SpriteOrientation.Right ? 1 : -1;
                 
                 if (dir.x > 0) {
-                    transform.localScale = new Vector3(1 * dirScale, transform.localScale.y, transform.localScale.z);
+                    transform.localScale = new Vector3(1 * dirModifier, transform.localScale.y, transform.localScale.z);
                 } else if (dir.x < 0) {
-                    transform.localScale = new Vector3(-1 * dirScale, transform.localScale.y, transform.localScale.z);
+                    transform.localScale = new Vector3(-1 * dirModifier, transform.localScale.y, transform.localScale.z);
                 }                
             }
+        }
+        
+        /// <summary>
+        /// Returns -1 if faced left, 1 if faced right.
+        /// </summary>
+        /// <returns></returns>
+        public int GetCurrentDirection() {
+            return transform.localScale.x > 0f ? 1 : -1;
         }
         
         public void TeleportTo(Vector3 targetPosition) {
