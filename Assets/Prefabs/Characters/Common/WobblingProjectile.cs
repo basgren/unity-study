@@ -17,10 +17,8 @@ namespace Prefabs.Characters.Common {
         private float frequency = 2f;
         
         protected override Vector2 GetNewPosition(Vector2 currentPos) {
-            var invert = invertDirection ? -1 : 1;
-
             return new Vector2(
-                currentPos.x + invert * linearSpeed * DeltaTime * DirectionScale,
+                currentPos.x + Direction.x * linearSpeed * DeltaTime,
                 StartPosition.y + amplitude * Mathf.Sin(LifeTime * frequency * 2f * Mathf.PI)
             );
         }

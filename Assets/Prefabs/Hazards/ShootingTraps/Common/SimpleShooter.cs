@@ -3,6 +3,7 @@ using Core.Components.Damage;
 using Core.Components.GameObjects;
 using Core.Services;
 using Core.Utils;
+using Prefabs.Characters.Common;
 using UnityEngine;
 
 namespace Prefabs.Hazards.ShootingTraps.Common {
@@ -59,7 +60,8 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
         }
 
         public void SpawnProjectile() {
-            projectileSpawner.Spawn();
+            var projectile = projectileSpawner.SpawnInstance().GetComponent<ProjectileBase>();
+            projectile.Direction = new Vector2(-transform.lossyScale.x, 0);
         }
 
         public void OnAfterHit() {

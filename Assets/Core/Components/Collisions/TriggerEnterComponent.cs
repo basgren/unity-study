@@ -18,6 +18,8 @@ namespace Core.Components.Collisions {
         
         [SerializeField]
         private TriggerEnterEvent action;
+
+        public Collider2D LastEnteredCollider { get; private set; }
         
         private void OnTriggerEnter2D(Collider2D other) {
             if (!layer.Contains(other.gameObject)) {
@@ -27,7 +29,9 @@ namespace Core.Components.Collisions {
             if (!string.IsNullOrEmpty(otherTag) && !other.gameObject.CompareTag(otherTag)) {
                 return;
             }
-            
+
+            LastEnteredCollider = other;
+
             if (action != null) {
                 action.Invoke(other.gameObject);
             } else {

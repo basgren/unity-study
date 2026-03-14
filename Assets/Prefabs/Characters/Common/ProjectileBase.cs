@@ -6,9 +6,6 @@ namespace Prefabs.Characters.Common {
         [SerializeField]
         protected float linearSpeed = 1f;
 
-        [SerializeField]
-        protected bool invertDirection;
-
         /// <summary>
         /// Maximum distance the projectile is allowed to travel. After travelling this distance, it will be destroyed.
         /// The distance is calculated along this trajectory (even for non-linear).
@@ -21,22 +18,26 @@ namespace Prefabs.Characters.Common {
         /// Time since projectile was spawned.
         protected float LifeTime => lifeTime;
         protected Vector2 StartPosition => startPosition;
-        
-        protected float DirectionScale { get; private set; }
+
+        private Vector2 direction = Vector2.zero;
+        public Vector2 Direction {
+            get => direction;
+            set => direction = value.normalized;
+        }
         
         private Rigidbody2D myRigidbody;
+        protected Rigidbody2D MyRigidbody => myRigidbody;
         private Vector2 prevCoord;
         private float travelledDistance;
         private float lifeTime;
         private Vector2 startPosition;
 
+        protected virtual void Awake() {
+            myRigidbody = GetComponent<Rigidbody2D>();            
+        }
+        
         private void Start() {
-            myRigidbody = GetComponent<Rigidbody2D>();
-            
             startPosition = myRigidbody.position;
-            
-            // This should be initialized in Start, as in Awake lossyScale is not calculated yet.
-            DirectionScale = transform.lossyScale.x > 0 ? 1 : -1;
             prevCoord = myRigidbody.position;
         }
 
@@ -56,7 +57,7 @@ namespace Prefabs.Characters.Common {
             
             lifeTime += DeltaTime;
         }
-
+        
         /// <summary>
         /// Implement this method in descendant. It should return coords delta, which then will be used to move
         /// projectile in current frame.

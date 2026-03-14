@@ -2,6 +2,7 @@
 using Core.Components.GameObjects;
 using Core.Services;
 using Core.Utils;
+using Prefabs.Characters.Common;
 using UnityEngine;
 
 namespace Prefabs.Hazards.ShootingTraps.Seashell {
@@ -84,7 +85,8 @@ namespace Prefabs.Hazards.ShootingTraps.Seashell {
         }
 
         public void SpawnProjectile() {
-            projectileSpawner.Spawn();
+            var projectile = projectileSpawner.SpawnInstance().GetComponent<ProjectileBase>();
+            projectile.Direction = new Vector2(-transform.lossyScale.x, 0);
         }
         
         public void Bite() {
