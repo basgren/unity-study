@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Core.Components.Extensions;
 using UnityEngine;
@@ -17,6 +18,21 @@ namespace Core.Components.Damage {
         RespawnOnContact // Hit and respawned in the latest safe position.
     }
 
+    public struct HitInfo {
+        public readonly Damageable Target;
+        public readonly Damager Damager;
+        public readonly bool IsDamaged;
+
+        public HitInfo(Damageable target, Damager damager, bool isDamaged) {
+            Target = target;
+            Damager = damager;
+            IsDamaged = isDamaged;
+        }
+    }
+    
+    [Serializable]
+    public class HitEvent : UnityEvent<HitInfo> {}
+
     [RequireComponent(typeof(Collider2D))]
     public class Damager : MonoBehaviour {
         [Header("Damage")]
@@ -28,6 +44,11 @@ namespace Core.Components.Damage {
 
         [SerializeField]
         private DamagerType type = DamagerType.Continuous;
+        
+        [SerializeField]
+        private HitEvent onHit;
+        
+        [Header("Destruction")]
         
         [SerializeField]
         private bool destroyOnContact;
@@ -77,6 +98,8 @@ namespace Core.Components.Damage {
             }
 
             bool isDamaged = damageable.TryTakeDamage(this);
+
+            onHit?.Invoke(new HitInfo(damageable, this, isDamaged));
 
             if (type == DamagerType.SingleHit && isDamaged) {
                 damagedObjects.Add(damageable);

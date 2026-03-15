@@ -2408,7 +2408,7 @@ PlatformEffector2D:
   m_UseColliderMask: 1
   m_ColliderMask:
     serializedVersion: 2
-    m_Bits: 18944
+    m_Bits: 51712
   m_RotationalOffset: 0
   m_UseOneWay: 1
   m_UseOneWayGrouping: 0
@@ -2722,7 +2722,7 @@ PrefabInstance:
     - target: {fileID: 3664229136581394779, guid: 479e9f1e470492149b2933e241088252,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 185.685
+      value: 186.367
       objectReference: {fileID: 0}
     - target: {fileID: 3664229136581394779, guid: 479e9f1e470492149b2933e241088252,
         type: 3}
@@ -24081,17 +24081,17 @@ PrefabInstance:
     - target: {fileID: 3664229136581394779, guid: bfbe281ae504f4744be31bdf638dfca6,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: -1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3664229136581394779, guid: bfbe281ae504f4744be31bdf638dfca6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -206.75
+      value: -214.25
       objectReference: {fileID: 0}
     - target: {fileID: 3664229136581394779, guid: bfbe281ae504f4744be31bdf638dfca6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 185
+      value: 185.67
       objectReference: {fileID: 0}
     - target: {fileID: 3664229136581394779, guid: bfbe281ae504f4744be31bdf638dfca6,
         type: 3}
@@ -24433,12 +24433,12 @@ PrefabInstance:
     - target: {fileID: 3664229136581394779, guid: 34bd59d105afa3a458d67940b377d74a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -206.75
+      value: -218.04
       objectReference: {fileID: 0}
     - target: {fileID: 3664229136581394779, guid: 34bd59d105afa3a458d67940b377d74a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 185.688
+      value: 180.01
       objectReference: {fileID: 0}
     - target: {fileID: 3664229136581394779, guid: 34bd59d105afa3a458d67940b377d74a,
         type: 3}
@@ -46057,7 +46057,7 @@ PlatformEffector2D:
   m_UseColliderMask: 1
   m_ColliderMask:
     serializedVersion: 2
-    m_Bits: 18944
+    m_Bits: 51712
   m_RotationalOffset: 0
   m_UseOneWay: 1
   m_UseOneWayGrouping: 0
@@ -51358,7 +51358,7 @@ PlatformEffector2D:
   m_UseColliderMask: 1
   m_ColliderMask:
     serializedVersion: 2
-    m_Bits: 18944
+    m_Bits: 51712
   m_RotationalOffset: 0
   m_UseOneWay: 1
   m_UseOneWayGrouping: 0
@@ -53521,7 +53521,7 @@ PlatformEffector2D:
   m_UseColliderMask: 1
   m_ColliderMask:
     serializedVersion: 2
-    m_Bits: 18944
+    m_Bits: 51712
   m_RotationalOffset: 0
   m_UseOneWay: 1
   m_UseOneWayGrouping: 0
@@ -102595,12 +102595,12 @@ PrefabInstance:
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -206.4
+      value: -210.49
       objectReference: {fileID: 0}
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 189.93
+      value: 188.24
       objectReference: {fileID: 0}
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
@@ -103178,12 +103178,12 @@ PrefabInstance:
     - target: {fileID: 6836785096376548313, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -208.42
+      value: -212.51001
       objectReference: {fileID: 0}
     - target: {fileID: 6836785096376548313, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 87.27999
+      value: 85.590004
       objectReference: {fileID: 0}
     - target: {fileID: 6836785096376548315, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -103253,12 +103253,12 @@ PrefabInstance:
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -208.4211
+      value: -211.74426
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 85.61528
+      value: 85.59069
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097959352688, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}

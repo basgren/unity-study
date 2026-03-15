@@ -46,7 +46,7 @@ namespace Core.Audio {
         [Header("Spatial (3D only)")]
         [Range(0f, 1f)]
         [SerializeField]
-        private float spatialBlend = 0f; // 0 = 2D, 1 = 3D
+        private float spatialBlend = 0.5f; // 0 = 2D, 1 = 3D
 
         [Min(0f)]
         [SerializeField]

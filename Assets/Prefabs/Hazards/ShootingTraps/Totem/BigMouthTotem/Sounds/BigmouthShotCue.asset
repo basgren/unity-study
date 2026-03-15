@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b188c172f33459faafc5fa729cdb132, type: 3}
-  m_Name: PearlBreakCue
+  m_Name: BigmouthShotCue
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 8d96c617cd2ea2a4c9fe985cc74269e8, type: 3}
+  - {fileID: 8300000, guid: 2ffd68467d4320c4cb04e2a029f4b82a, type: 3}
   mixerGroup: {fileID: 0}
-  volume: 0.5
+  volume: 0.75
   randomizePitch: 1
-  pitchMin: 0.9
-  pitchMax: 1.1
+  pitchMin: 0.95
+  pitchMax: 1.05
   maxInstances: 0
   cooldownSeconds: 0
-  spatialBlend: 0.8
+  spatialBlend: 0.5
   minDistance: 1
   maxDistance: 30
   forceMaxDistance: 0
