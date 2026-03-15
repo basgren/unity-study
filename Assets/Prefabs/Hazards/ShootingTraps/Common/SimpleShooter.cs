@@ -61,6 +61,7 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
         }
 
         public void SpawnProjectile() {
+            // TODO: [BG] Refactor it. Direction should be applied either in spawn or in own controllers.
             var projectileObject = projectileSpawner.SpawnInstance();
             var projectile = projectileObject.GetComponent<ProjectileBase>();
             if (projectile != null) {
@@ -70,6 +71,14 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
             var skullProjectile = projectileObject.GetComponent<SkullflameController>();
             if (skullProjectile != null) {
                 skullProjectile.SetHorzDirection(
+                    // reverted, as sprites look left, while we expect them to look right.
+                    transform.lossyScale.x < 0 ? HorzDirection2D.Right : HorzDirection2D.Left
+                );
+            }
+            
+            var flyProjectile = projectileObject.GetComponent<GiantFlyController>();
+            if (flyProjectile != null) {
+                flyProjectile.SetHorzDirection(
                     // reverted, as sprites look left, while we expect them to look right.
                     transform.lossyScale.x < 0 ? HorzDirection2D.Right : HorzDirection2D.Left
                 );

@@ -4,6 +4,10 @@ using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace Core.Components.Animation {
+
+    [Serializable]
+    public class NewFrameEvent : UnityEvent<MultiStateSpriteAnimator> {}
+
     [RequireComponent(typeof(SpriteRenderer))]
     public class MultiStateSpriteAnimator : MonoBehaviour {
         [SerializeField]
@@ -25,12 +29,17 @@ namespace Core.Components.Animation {
         /// OnComplete is invoked when all frames have been played. ONLY for non-looped animations.
         /// </summary>
         [SerializeField]
-        public UnityEvent onComplete;
+        private UnityEvent onComplete;
 
+        [SerializeField]
+        private NewFrameEvent onNewFrame;
+        
+        public StateAnimationClip CurrentClip => clips.Length > 0 ? clips[currentClipIndex] : null;
+        public int CurrentFrameIndex => currentFrameIndex; 
+        
         private SpriteRenderer spriteRenderer;
 
         private int currentClipIndex;
-        private StateAnimationClip CurrentClip => clips.Length > 0 ? clips[currentClipIndex] : null;
         private int currentFrameIndex;
         private float timer;
         private float frameDuration;
@@ -95,6 +104,7 @@ namespace Core.Components.Animation {
             }
 
             SetSprite(nextSpriteIndex);
+            onNewFrame?.Invoke(this);
         }
 
         public void SetClip(string clipName) {
