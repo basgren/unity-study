@@ -23,34 +23,24 @@ namespace Prefabs.Characters.PinkStar {
         public PinkyStateMachine(PinkyState initialState, IPinkySensors sensors) : base(initialState) {
             this.sensors = sensors;
             
-            AddTransition(PinkyState.Calm, PinkyState.Anticipating)
-                .SetCondition((_) => sensors.IsAttackTriggered());
+            PermitIf(PinkyState.Calm, PinkyState.Anticipating, () => sensors.IsAttackTriggered());
             
-            AddTransition(PinkyState.Anticipating, PinkyState.Attacking)
-                .SetExitTime(0.5f);
+            PermitAfter(PinkyState.Anticipating, PinkyState.Attacking, 0.5f);
 
-            AddTransition(PinkyState.Attacking, PinkyState.Cooldown)
-                .SetExitTime(3f);
+            PermitAfter(PinkyState.Attacking, PinkyState.Cooldown, 3f);
                 // .SetCondition((state) => state.TimeInState > 4f && sensors.IsGrounded());
 
-            AddTransition(PinkyState.Cooldown, PinkyState.Calm)
-                .SetExitTime(2f);
-            
-            AddTransition(PinkyState.Calm, PinkyState.Hit)
-                .SetCondition(IsHit);
-            
-            AddTransition(PinkyState.Anticipating, PinkyState.Hit)
-                .SetCondition(IsHit);
-            
-            AddTransition(PinkyState.Cooldown, PinkyState.Hit)
-                .SetCondition(IsHit);
-            
-            AddTransition(PinkyState.Hit, PinkyState.Calm)
-                .SetExitTime(1f);
-        }
+            PermitAfter(PinkyState.Cooldown, PinkyState.Calm, 2f);
 
-        private bool IsHit(SimpleStateMachine<PinkyState> stateMachine) {
-            return sensors.IsHit();
+            PermitIfFromMany(
+                PinkyState.Hit,
+                () => sensors.IsHit(),
+                PinkyState.Calm,
+                PinkyState.Anticipating,
+                PinkyState.Cooldown
+            );
+            
+            PermitAfter(PinkyState.Hit, PinkyState.Calm, 1f);
         }
     }
 }

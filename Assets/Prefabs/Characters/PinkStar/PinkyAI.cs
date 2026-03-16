@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Prefabs.Characters.PinkStar {
     public enum PinkyBehavior {
-        Roaming,     // default: patrol, low attention
-        Hunting,     // alert/aware: actively tries to engage player
-        Recovering,  // post-attack / post-hit: lower aggressiveness but still not calm
+        Roaming, // default: patrol, low attention
+        Hunting, // alert/aware: actively tries to engage player
+        Recovering, // post-attack / post-hit: lower aggressiveness but still not calm
     }
 
     /// <summary>
@@ -42,18 +42,15 @@ namespace Prefabs.Characters.PinkStar {
             public PinkyBehaviorStateMachine(PinkyAI ai) : base(PinkyBehavior.Roaming) {
                 this.ai = ai;
 
-                AddTransition(PinkyBehavior.Roaming, PinkyBehavior.Recovering)
-                    .SetCondition(_ => ai.HasPendingRecoverRequest());
-                AddTransition(PinkyBehavior.Roaming, PinkyBehavior.Hunting)
-                    .SetCondition(_ => !ai.HasPendingRecoverRequest() && ai.ShouldEnterHuntingFromRoaming());
-                AddTransition(PinkyBehavior.Hunting, PinkyBehavior.Recovering)
-                    .SetCondition(_ => ai.ShouldEnterRecoveringFromHunting());
-                AddTransition(PinkyBehavior.Recovering, PinkyBehavior.Hunting)
-                    .SetCondition(_ => ai.ShouldEnterHuntingFromRecovering());
-                AddTransition(PinkyBehavior.Recovering, PinkyBehavior.Roaming)
-                    .SetCondition(_ =>
-                        !ai.ShouldEnterHuntingFromRecovering() &&
-                        ai.ShouldReturnToRoamingFromRecovering());
+                PermitIf(PinkyBehavior.Roaming, PinkyBehavior.Recovering, _ => ai.HasPendingRecoverRequest());
+                PermitIf(PinkyBehavior.Roaming, PinkyBehavior.Hunting, (_) => {
+                    return !ai.HasPendingRecoverRequest() && ai.ShouldEnterHuntingFromRoaming();
+                });
+                PermitIf(PinkyBehavior.Hunting, PinkyBehavior.Recovering, _ => ai.ShouldEnterRecoveringFromHunting());
+                PermitIf(PinkyBehavior.Recovering, PinkyBehavior.Hunting, _ => ai.ShouldEnterHuntingFromRecovering());
+                PermitIf(PinkyBehavior.Recovering, PinkyBehavior.Roaming, _ => {
+                    return !ai.ShouldEnterHuntingFromRecovering() && ai.ShouldReturnToRoamingFromRecovering();
+                });
             }
         }
 
@@ -124,12 +121,12 @@ namespace Prefabs.Characters.PinkStar {
             if (hero == null) {
                 throw new Exception("Could not find player object!");
             }
-            
+
             ctrl = GetComponent<PinkyController>();
             sensors = ctrl;
             path = GetComponent<GroundPatrolPath>();
             behaviorStateMachine = new PinkyBehaviorStateMachine(this);
-            behaviorStateMachine.OnStateEnter += OnBehaviorStateEnter;
+            behaviorStateMachine.OnTransition += OnBehaviorTransition;
             G.StateMachines.Register(behaviorStateMachine, this);
 
             prevX = transform.position.x;
@@ -166,7 +163,6 @@ namespace Prefabs.Characters.PinkStar {
             }
 
             UpdateTargetAwareness();
-            behaviorStateMachine.Update(Time.deltaTime);
 
             switch (behaviorStateMachine.State) {
                 case PinkyBehavior.Hunting:
@@ -382,8 +378,8 @@ namespace Prefabs.Characters.PinkStar {
             return behaviorStateMachine.TimeInState >= recoverStateDuration;
         }
 
-        private void OnBehaviorStateEnter(PinkyBehavior nextState, PinkyBehavior prevState) {
-            switch (nextState) {
+        private void OnBehaviorTransition(PinkyBehavior toState, PinkyBehavior _) {
+            switch (toState) {
                 case PinkyBehavior.Hunting:
                     hasObservedCooldownInHunt = false;
                     prevX = transform.position.x;

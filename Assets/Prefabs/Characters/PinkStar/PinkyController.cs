@@ -100,8 +100,7 @@ namespace Prefabs.Characters.PinkStar {
             }
 
             state = new PinkyStateMachine(PinkyState.Calm, this);
-            state.OnStateEnter += OnPinkyStateEnter;
-            state.OnStateExit += OnPinkyStateExit;
+            state.OnTransition += OnPinkyTransition;
             G.StateMachines.Register(state, this);
 
             CloseDamageWindow();
@@ -229,9 +228,8 @@ namespace Prefabs.Characters.PinkStar {
             }
         }
 
-        private void OnPinkyStateEnter(PinkyState curState, PinkyState prevState) {
-            Debug.Log($"Entering state: {curState} <- {prevState}");
-            switch (curState) {
+        private void OnPinkyTransition(PinkyState toState, PinkyState fromState) {
+            switch (toState) {
                 case PinkyState.Anticipating:
                     Anticipate();
                     break;
@@ -250,16 +248,13 @@ namespace Prefabs.Characters.PinkStar {
                     OnAfterHit();
                     break;
             }
-        }
-
-        private void OnPinkyStateExit(PinkyState curState, PinkyState nextState) {
-            switch (curState) {
+            
+            switch (fromState) {
                 case PinkyState.Cooldown:
                     MyAnimator.SetBool(PinkyAnimKeys.IsCooldown, false);
                     break;
             }
         }
-
 
         protected override void UpdateAnimator() {
             base.UpdateAnimator();

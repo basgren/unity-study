@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+using System;
 
 namespace Core.FSM {
     /// <summary>
@@ -8,16 +7,18 @@ namespace Core.FSM {
     /// <typeparam name="TState">State enum type.</typeparam>
     public class StateTransition<TState> where TState : Enum {
         public delegate bool StateTransitionCondition(SimpleStateMachine<TState> stateMachine);
-        
+
+        private bool hasExitTime;
+
         /// <summary>
         /// Exit time in seconds after entering the source state.
         /// </summary>
         public float ExitTime { get; private set; }
 
         /// <summary>
-        /// True when this transition has an exit time greater than zero.
+        /// True when this transition has an explicit exit time configured.
         /// </summary>
-        public bool HasExitTime => ExitTime > 0f;
+        public bool HasExitTime => hasExitTime;
 
         /// <summary>
         /// True when transition has an explicit source state.
@@ -27,15 +28,13 @@ namespace Core.FSM {
         /// <summary>
         /// Source state.
         /// </summary>
-        [CanBeNull]
-        public TState FromState { get; private set; }
+        public TState FromState { get; }
 
         /// <summary>
         /// Target state.
         /// </summary>
-        public TState ToState { get; private set; }
+        public TState ToState { get; }
 
-        [CanBeNull]
         public StateTransitionCondition Condition { get; private set; }
 
         /// <summary>
@@ -64,20 +63,21 @@ namespace Core.FSM {
         /// <param name="time">Exit time in seconds.</param>
         /// <returns>Current transition for fluent configuration.</returns>
         public StateTransition<TState> SetExitTime(float time) {
-            if (FromState == null) {
+            if (!HasFromState) {
                 throw new InvalidOperationException("Cannot set exit time for transitions from any state.");
-            } 
-            
+            }
+
             ExitTime = time;
+            hasExitTime = true;
             return this;
         }
 
         public StateTransition<TState> SetCondition(StateTransitionCondition func) {
-            if (FromState == null) {
-                throw new InvalidOperationException("Cannot set exit time for transitions from any state.");
+            if (!HasFromState) {
+                throw new InvalidOperationException("Cannot set condition for transitions from any state.");
             }
 
-            Condition = func;
+            Condition = func ?? throw new ArgumentNullException(nameof(func));
             return this;
         }
     }

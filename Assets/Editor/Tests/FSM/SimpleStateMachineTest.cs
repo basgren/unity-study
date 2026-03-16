@@ -16,24 +16,21 @@ namespace Editor.Tests.FSM {
             //   B -> A, C
             //   A -> C
             //   C -> final state
-            AddTransitions(TestState.B, TestState.A, TestState.C);
-            AddTransitions(TestState.A, TestState.C);
+            Permit(TestState.B, TestState.A, TestState.C);
+            Permit(TestState.A, TestState.C);
         }
     }
 
     public class TestStateMachineWithExitTime : SimpleStateMachine<TestState> {
         public TestStateMachineWithExitTime() : base(TestState.B) {
-            AddTransitions(
-                new StateTransition<TestState>(TestState.B, TestState.A)
-                    .SetExitTime(0.5f),
-                new StateTransition<TestState>(TestState.A, TestState.C)
-            );
+            PermitAfter(TestState.B, TestState.A, 0.5f);
+            Permit(TestState.A, TestState.C);
         }
     }
 
     public class TestStateMachineWithAnyTransition : SimpleStateMachine<TestState> {
         public TestStateMachineWithAnyTransition() : base(TestState.B) {
-            AddTransitions(new StateTransition<TestState>(TestState.C));
+            PermitFromAny(TestState.C);
         }
 
         public StateTransition<TestState> FindFromTo(TestState fromState, TestState toState) {
@@ -50,12 +47,8 @@ namespace Editor.Tests.FSM {
         public bool CanGoToC { get; set; }
 
         public TestStateMachineWithConditions() : base(TestState.B) {
-            AddTransitions(
-                new StateTransition<TestState>(TestState.B, TestState.A)
-                    .SetCondition(stateMachine => ((TestStateMachineWithConditions)stateMachine).CanGoToA),
-                new StateTransition<TestState>(TestState.B, TestState.C)
-                    .SetCondition(stateMachine => ((TestStateMachineWithConditions)stateMachine).CanGoToC)
-            );
+            PermitIf(TestState.B, TestState.A, () => CanGoToA);
+            PermitIf(TestState.B, TestState.C, () => CanGoToC);
         }
     }
 
@@ -64,8 +57,33 @@ namespace Editor.Tests.FSM {
         }
 
         public void AddDuplicate() {
-            AddTransitions(TestState.B, TestState.A);
-            AddTransitions(TestState.B, TestState.A);
+            Permit(TestState.B, TestState.A);
+            Permit(TestState.B, TestState.A);
+        }
+    }
+
+    public class DuplicateAnyTransitionsStateMachine : SimpleStateMachine<TestState> {
+        public DuplicateAnyTransitionsStateMachine() : base(TestState.B) {
+        }
+
+        public void AddDuplicateAny() {
+            PermitFromAny(TestState.C);
+            PermitFromAny(TestState.C);
+        }
+    }
+
+    public class TestStateMachineWithZeroExitTime : SimpleStateMachine<TestState> {
+        public TestStateMachineWithZeroExitTime() : base(TestState.B) {
+            PermitAfter(TestState.B, TestState.A, 0f);
+        }
+    }
+
+    public class TestStateMachineWithConditionAndExitTime : SimpleStateMachine<TestState> {
+        public bool AllowTransition { get; set; }
+
+        public TestStateMachineWithConditionAndExitTime() : base(TestState.B) {
+            PermitIf(TestState.B, TestState.A, () => AllowTransition)
+                .SetExitTime(0.5f);
         }
     }
 
@@ -159,6 +177,13 @@ namespace Editor.Tests.FSM {
         }
 
         [Test]
+        public void RejectsDuplicateAnyTransitions() {
+            var duplicateFsm = new DuplicateAnyTransitionsStateMachine();
+
+            Assert.Throws<InvalidOperationException>(() => duplicateFsm.AddDuplicateAny());
+        }
+
+        [Test]
         public void PerformsTransitionByExitTime() {
             var exitTimeFsm = new TestStateMachineWithExitTime();
 
@@ -179,36 +204,41 @@ namespace Editor.Tests.FSM {
         }
 
         [Test]
-        public void FiresExitThenEnterEventsOnGo() {
+        public void AllowsAnyTransitionFromAnyState() {
+            var anyTransitionFsm = new TestStateMachineWithAnyTransition();
+            anyTransitionFsm.ResetTo(TestState.A);
+
+            Assert.IsTrue(anyTransitionFsm.CanGo(TestState.C));
+            Assert.IsTrue(anyTransitionFsm.Go(TestState.C));
+            Assert.AreEqual(TestState.C, anyTransitionFsm.State);
+        }
+
+        [Test]
+        public void FiresTransitionEventOnGo() {
             var events = new List<string>();
-            fsm.OnStateExit += (state, _) => events.Add($"exit:{state}");
-            fsm.OnStateEnter += (state, _) => events.Add($"enter:{state}");
+            fsm.OnTransition += (toState, fromState) => events.Add($"{fromState}->{toState}");
 
             fsm.Go(TestState.A);
 
-            Assert.AreEqual(2, events.Count);
-            Assert.AreEqual("exit:B", events[0]);
-            Assert.AreEqual("enter:A", events[1]);
+            Assert.AreEqual(1, events.Count);
+            Assert.AreEqual("B->A", events[0]);
         }
 
         [Test]
-        public void FiresExitThenEnterEventsOnResetTo() {
+        public void FiresTransitionEventOnResetTo() {
             var events = new List<string>();
-            fsm.OnStateExit += (state, _) => events.Add($"exit:{state}");
-            fsm.OnStateEnter += (state, _) => events.Add($"enter:{state}");
+            fsm.OnTransition += (toState, fromState) => events.Add($"{fromState}->{toState}");
 
             fsm.ResetTo(TestState.C);
 
-            Assert.AreEqual(2, events.Count);
-            Assert.AreEqual("exit:B", events[0]);
-            Assert.AreEqual("enter:C", events[1]);
+            Assert.AreEqual(1, events.Count);
+            Assert.AreEqual("B->C", events[0]);
         }
 
         [Test]
-        public void DoesNotFireEventsWhenResetToSameState() {
+        public void DoesNotFireTransitionEventWhenResetToSameState() {
             var events = new List<string>();
-            fsm.OnStateExit += (state, _) => events.Add($"exit:{state}");
-            fsm.OnStateEnter += (state, _) => events.Add($"enter:{state}");
+            fsm.OnTransition += (_, _) => events.Add("transition");
 
             fsm.ResetTo(TestState.B);
 
@@ -245,6 +275,52 @@ namespace Editor.Tests.FSM {
             conditionalFsm.Update(0.1f);
 
             Assert.AreEqual(TestState.B, conditionalFsm.State);
+        }
+
+        [Test]
+        public void CanGoNowEvaluatesConditions() {
+            var conditionalFsm = new TestStateMachineWithConditions {
+                CanGoToA = false
+            };
+
+            Assert.IsTrue(conditionalFsm.CanGo(TestState.A));
+            Assert.IsFalse(conditionalFsm.CanGoNow(TestState.A));
+
+            conditionalFsm.CanGoToA = true;
+            Assert.IsTrue(conditionalFsm.CanGoNow(TestState.A));
+        }
+
+        [Test]
+        public void CanGoNowRespectsExitTime() {
+            var exitTimeFsm = new TestStateMachineWithExitTime();
+
+            Assert.IsTrue(exitTimeFsm.CanGo(TestState.A));
+            Assert.IsFalse(exitTimeFsm.CanGoNow(TestState.A));
+
+            exitTimeFsm.Update(0.49f);
+            Assert.IsFalse(exitTimeFsm.CanGoNow(TestState.A));
+        }
+
+        [Test]
+        public void SupportsZeroExitTimeTransitions() {
+            var zeroExitFsm = new TestStateMachineWithZeroExitTime();
+
+            zeroExitFsm.Update(0f);
+
+            Assert.AreEqual(TestState.A, zeroExitFsm.State);
+        }
+
+        [Test]
+        public void RespectsExitTimeForConditionalTransitions() {
+            var transitionFsm = new TestStateMachineWithConditionAndExitTime {
+                AllowTransition = true
+            };
+
+            transitionFsm.Update(0.25f);
+            Assert.AreEqual(TestState.B, transitionFsm.State);
+
+            transitionFsm.Update(0.25f);
+            Assert.AreEqual(TestState.A, transitionFsm.State);
         }
 
         [Test]

@@ -20,14 +20,11 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
 
         private sealed class GiantFlyStateMachine : SimpleStateMachine<FlyState> {
             public GiantFlyStateMachine(GiantFlyController ctrl) : base(FlyState.Patrol) {
-                AddTransition(FlyState.Patrol, FlyState.Attack)
-                    .SetCondition(_ => ctrl.ShouldEnterAttackFromPatrol());
+                PermitIf(FlyState.Patrol, FlyState.Attack, () => ctrl.ShouldEnterAttackFromPatrol());
 
-                AddTransitions(FlyState.Patrol, FlyState.PreExplode);
-                AddTransitions(FlyState.Attack, FlyState.PreExplode);
+                PermitFromMany(FlyState.PreExplode, FlyState.Patrol, FlyState.Attack);
 
-                AddTransition(FlyState.PreExplode, FlyState.Dying)
-                    .SetExitTime(Mathf.Max(0f, ctrl.preExplodeDuration));
+                PermitAfter(FlyState.PreExplode, FlyState.Dying, Mathf.Max(0f, ctrl.preExplodeDuration));
             }
         }
 
@@ -160,7 +157,7 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
 
             fluctuationSeed = Random.Range(0f, 1000f);
             stateMachine = new GiantFlyStateMachine(this);
-            stateMachine.OnStateEnter += OnStateEnter;
+            stateMachine.OnTransition += OnStateTransition;
             CloseDamageWindow();
         }
 
@@ -347,8 +344,8 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
             stateMachine.Go(FlyState.PreExplode);
         }
 
-        private void OnStateEnter(FlyState nextState, FlyState prevState) {
-            switch (nextState) {
+        private void OnStateTransition(FlyState toState, FlyState _) {
+            switch (toState) {
                 case FlyState.Patrol:
                     rb.velocity = Vector2.zero;
                     break;

@@ -9,9 +9,9 @@ namespace Prefabs.Characters.Sharky {
     
     public class SharkyStateMachine : SimpleStateMachine<SharkyState> {
         public SharkyStateMachine() : base(SharkyState.Idle) {
-            AddTransitions(SharkyState.Idle, SharkyState.Patrol, SharkyState.Wait);
-            AddTransitions(SharkyState.Patrol, SharkyState.Idle, SharkyState.Wait);
-            AddTransitions(SharkyState.Wait, SharkyState.Idle, SharkyState.Patrol);
+            Permit(SharkyState.Idle, SharkyState.Patrol, SharkyState.Wait);
+            Permit(SharkyState.Patrol, SharkyState.Idle, SharkyState.Wait);
+            Permit(SharkyState.Wait, SharkyState.Idle, SharkyState.Patrol);
         }
     }
 }
