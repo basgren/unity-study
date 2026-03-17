@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Audio;
+using Core.Components.Base2D;
 using Core.Components.Damage;
 using Core.Services;
 using Game.Controllers;
@@ -145,11 +146,11 @@ namespace Prefabs.Characters.Sharky {
             if (Math.Abs(MyRigidbody.velocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
 
-                // Make sure the spawned object is directed in the same direction as target object.
-                // But for sharky negate x axis, as its original sprite asset looks left, while player
-                // sprite looks right. 
-                var ls = dustSpawnPoint.lossyScale;
-                instance.transform.localScale = new Vector3(-ls.x, ls.y, ls.z);
+                var spawnedFacing = instance.GetComponent<Facing2D>();
+
+                if (spawnedFacing != null) {
+                    spawnedFacing.SetDir(Facing.Dir);
+                }
             }
         }
         

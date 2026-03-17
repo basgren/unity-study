@@ -1,11 +1,13 @@
 ﻿using Core.Audio;
+using Core.Components.Base2D;
 using Core.Components.Extensions;
 using Core.Components.GameObjects;
 using Core.Services;
+using Prefabs.Characters.Common;
 using UnityEngine;
 
 namespace Prefabs.Characters.Hero.Projectiles {
-    public class SpinningSword : MonoBehaviour {
+    public class SpinningSword : ProjectileBase {
         [SerializeField]
         private LayerMask layers = ~0;
         
@@ -13,14 +15,19 @@ namespace Prefabs.Characters.Hero.Projectiles {
         private AudioCue embeddingSound;
 
         private SpawnComponent embeddedSwordSpawner;
+        private Facing2D facing;
 
-
-        void Awake() {
+        protected override void Awake() {
+            base.Awake();
             embeddedSwordSpawner = GetComponentInChildren<SpawnComponent>();
+            facing = GetComponent<Facing2D>();
+        }
+
+        protected override Vector2 GetNewPosition(Vector2 currentPos) {
+            return currentPos + new Vector2(linearSpeed * DeltaTime * facing.DirSign, 0);
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
-            Debug.Log("collision: " + other.gameObject.name);
             if (!layers.Contains(other.gameObject) || other.CompareTag("IgnoresProjectile")) {
                 return;
             }

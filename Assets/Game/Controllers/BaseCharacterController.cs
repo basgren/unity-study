@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Components.Base2D;
 using Core.Utils;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace Game.Controllers {
         public static readonly int VelocityY = Animator.StringToHash("velocityY");
     }
     
-    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Rigidbody2D), typeof(Facing2D))]
     public class BaseCharacterController : MonoBehaviour {
         /// <summary>
         /// Layers, which collisions should be checked to detect if player stands on ground.
@@ -24,12 +25,6 @@ namespace Game.Controllers {
         
         [SerializeField]
         private float moveSpeed = 5f; // Run speed
-
-        /// <summary>
-        /// Parameter that specified where imported sprite faces - left or right. 
-        /// </summary>
-        [SerializeField]
-        private SpriteOrientation baseSpriteOrientation = SpriteOrientation.Right;
 
         public Vector2 Direction { get; private set; }
         public bool IsGrounded { get; private set; }
@@ -45,14 +40,17 @@ namespace Game.Controllers {
         protected float FallHeight => fallUpperPosY - fallLowerPosY;
         protected MultiRayCaster GroundChecker;
         protected MultiRayCaster CeilingChecker;
+        protected Facing2D Facing => facing;
         
         private float fallUpperPosY;
         private float fallLowerPosY;
+        private Facing2D facing;
         
         protected virtual void Awake() {
             MyRigidbody = GetComponent<Rigidbody2D>();
             MyAnimator = GetComponent<Animator>();
             MyCollider = GetComponent<BoxCollider2D>();
+            facing = GetComponent<Facing2D>();
 
             GroundChecker = MultiRayCaster.CreateGroundChecker(MyCollider, groundLayer)
                 // Remove adjustment to prevent double jump when jumping along the wall
@@ -91,13 +89,7 @@ namespace Game.Controllers {
             MyRigidbody.velocity = new Vector2(vx, MyRigidbody.velocity.y);
 
             if (!preserveSpriteOrientation) {
-                float dirModifier = baseSpriteOrientation == SpriteOrientation.Right ? 1 : -1;
-                
-                if (dir.x > 0) {
-                    transform.localScale = new Vector3(1 * dirModifier, transform.localScale.y, transform.localScale.z);
-                } else if (dir.x < 0) {
-                    transform.localScale = new Vector3(-1 * dirModifier, transform.localScale.y, transform.localScale.z);
-                }                
+                facing.SetByX(dir.x);
             }
         }
         
@@ -105,8 +97,8 @@ namespace Game.Controllers {
         /// Returns -1 if faced left, 1 if faced right.
         /// </summary>
         /// <returns></returns>
-        public int GetCurrentDirection() {
-            return transform.localScale.x > 0f ? 1 : -1;
+        public int GetFacingDirSign() {
+            return facing?.DirSign ?? 1;
         }
         
         public void TeleportTo(Vector3 targetPosition) {

@@ -9,11 +9,6 @@ namespace Core.Utils {
         Right
     }
 
-    public enum HorzDirection2D {
-        Right,
-        Left
-    }
-
     public static class Geometry {
         public static Vector2 GetDirVector(Direction2D dir) {
             switch (dir) {

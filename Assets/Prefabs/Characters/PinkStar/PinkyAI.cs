@@ -130,7 +130,7 @@ namespace Prefabs.Characters.PinkStar {
             G.StateMachines.Register(behaviorStateMachine, this);
 
             prevX = transform.position.x;
-            lastSeenDir = ctrl.GetCurrentDirection();
+            lastSeenDir = ctrl.GetFacingDirSign();
             tacticalStateGetter = GetTacticalStateFallback;
         }
 
@@ -140,7 +140,7 @@ namespace Prefabs.Characters.PinkStar {
             recoverStateDuration = 0f;
             nextRecoverTurnTime = 0f;
             recoverTurnsDone = 0;
-            recoverLookDirection = ctrl.GetCurrentDirection();
+            recoverLookDirection = ctrl.GetFacingDirSign();
             hasObservedCooldownInHunt = false;
             pendingRecoverTurnDirection = 0;
             pendingRecoverRequest = false;
@@ -152,7 +152,7 @@ namespace Prefabs.Characters.PinkStar {
             currentTarget = null;
             lastSeenTime = float.NegativeInfinity;
             prevX = transform.position.x;
-            lastSeenDir = ctrl.GetCurrentDirection();
+            lastSeenDir = ctrl.GetFacingDirSign();
         }
 
         public override PinkyCommand? GetCommand() {
@@ -417,7 +417,7 @@ namespace Prefabs.Characters.PinkStar {
                 recoverLookDirection = turnDirection;
                 pendingRecoverTurnDirection = turnDirection;
             } else {
-                recoverLookDirection = ctrl.GetCurrentDirection();
+                recoverLookDirection = ctrl.GetFacingDirSign();
                 pendingRecoverTurnDirection = 0;
             }
 
@@ -438,7 +438,7 @@ namespace Prefabs.Characters.PinkStar {
                 return lastSeenDir;
             }
 
-            return ctrl != null ? ctrl.GetCurrentDirection() : 0;
+            return ctrl != null ? ctrl.GetFacingDirSign() : 0;
         }
 
         private void RememberTargetDirection() {
@@ -461,7 +461,7 @@ namespace Prefabs.Characters.PinkStar {
                 return lastSeenDir;
             }
 
-            return ctrl.GetCurrentDirection();
+            return ctrl.GetFacingDirSign();
         }
 
         private int GetPatrolDirection() {

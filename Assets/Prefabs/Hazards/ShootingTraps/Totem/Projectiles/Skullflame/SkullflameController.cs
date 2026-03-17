@@ -1,14 +1,13 @@
-using System;
 using Core.Audio;
 using Core.Components.Animation;
+using Core.Components.Base2D;
 using Core.Components.Damage;
 using Core.Services;
-using Core.Utils;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
-    [RequireComponent(typeof(MultiStateSpriteAnimator), typeof(Rigidbody2D))]
+namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles.Skullflame {
+    [RequireComponent(typeof(MultiStateSpriteAnimator), typeof(Rigidbody2D), typeof(Facing2D))]
     public class SkullflameController : MonoBehaviour {
         [SerializeField]
         private float linearSpeed = 3f;
@@ -31,18 +30,18 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
 
         private MultiStateSpriteAnimator anim;
         private Rigidbody2D rb;
-        private HorzDirection2D direction;
         private float actualLifetime;
         private float lifetime;
         private bool isDying;
         private const float WallDetectorLength = 0.3f;
-        private RaycastHit2D[] results = new RaycastHit2D[5];
+        private readonly RaycastHit2D[] results = new RaycastHit2D[5];
         private IAudioLoopHandle flyingSoundHandle;
+        private Facing2D facing;
 
         private void Awake() {
             anim = GetComponent<MultiStateSpriteAnimator>();
             rb = GetComponent<Rigidbody2D>();
-            SetHorzDirection(HorzDirection2D.Right);
+            facing = GetComponent<Facing2D>();
             
             actualLifetime = Random.Range(minLifetime, maxLifetime);
         }
@@ -67,33 +66,25 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
         private void CheckObstacle() {
             var count = Physics2D.RaycastNonAlloc(
                 transform.position,
-                direction == HorzDirection2D.Right ? Vector2.right : Vector2.left,
+                facing.DirVector,
                 results,
                 WallDetectorLength,
                 wallLayer);
             
             if (count > 0) {
-                FlipDirection();
+                facing.FlipDir();
             }
         }
 
-        private void FlipDirection() {
-            SetHorzDirection(direction == HorzDirection2D.Right ? HorzDirection2D.Left : HorzDirection2D.Right);
-        }
-
-        public void SetHorzDirection(HorzDirection2D dir) {
-            direction = dir;
+        public void SetFacingDir(FacingDir dir) {
+            facing.SetDir(dir);
             UpdateSpeed();
-
-            var ls = transform.localScale;
-            transform.localScale = new Vector3(dir == HorzDirection2D.Right ? 1 : -1, ls.y, ls.z);
-            Debug.Log($"Set scale: {transform.localScale}");
         }
 
         private void UpdateSpeed() {
             var speed = isDying ? 0f : linearSpeed;
             rb.velocity = new Vector2(
-                direction == HorzDirection2D.Right ? speed : -speed,
+                speed * facing.DirSign,
                 isDying ? 0 : rb.velocity.y
             );
         }
@@ -124,7 +115,7 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(
                 transform.position,
-                transform.position + (direction == HorzDirection2D.Right ? Vector3.right : Vector3.left)
+                transform.position + (facing.IsLeft ? Vector3.left : Vector3.right)
             );
         }
     }

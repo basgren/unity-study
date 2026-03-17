@@ -1,5 +1,6 @@
 using Core.Audio;
 using Core.Components.Animation;
+using Core.Components.Base2D;
 using Core.Components.Damage;
 using Core.FSM;
 using Core.Services;
@@ -8,8 +9,8 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
-    [RequireComponent(typeof(MultiStateSpriteAnimator), typeof(Rigidbody2D))]
+namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
+    [RequireComponent(typeof(MultiStateSpriteAnimator), typeof(Rigidbody2D), typeof(Facing2D))]
     public class GiantFlyController : MonoBehaviour {
         private enum FlyState {
             Patrol,
@@ -128,7 +129,6 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
         private IAudioLoopHandle flyingSoundHandle;
         private GiantFlyStateMachine stateMachine;
 
-        private HorzDirection2D direction = HorzDirection2D.Right;
         private float actualLifetime;
         private float lifetime;
         private float attackSpeed;
@@ -145,6 +145,7 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
         private bool destroyScheduled;
         private IAudioLoopHandle moveSoundHandle;
         private GameObject damageArea;
+        private Facing2D facing;
 
         private void Awake() {
             anim = GetComponent<MultiStateSpriteAnimator>();
@@ -152,8 +153,7 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
             mainCollider = GetComponent<Collider2D>();
             damageTriggerCollider = transform.Find("DamageTrigger")?.GetComponent<CircleCollider2D>();
             damageArea = transform.Find("DamageArea")?.gameObject;
-
-            SetHorzDirection(direction);
+            facing = GetComponent<Facing2D>();
 
             fluctuationSeed = Random.Range(0f, 1000f);
             stateMachine = new GiantFlyStateMachine(this);
@@ -228,11 +228,8 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
             stateMachine.Update(dt);
         }
 
-        public void SetHorzDirection(HorzDirection2D dir) {
-            direction = dir;
-
-            var ls = transform.localScale;
-            transform.localScale = new Vector3(dir == HorzDirection2D.Right ? 1 : -1, ls.y, ls.z);
+        public void SetFacingDir(FacingDir dir) {
+            facing.SetDir(dir);
         }
 
         public void OnHit(HitInfo hit) {
@@ -244,12 +241,12 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
         }
 
         private void UpdatePatrol(float dt) {
-            if (IsObstacleAhead(new Vector2(GetDirectionSign(), 0f), obstacleCheckDistance)) {
-                SetHorzDirection(direction == HorzDirection2D.Right ? HorzDirection2D.Left : HorzDirection2D.Right);
+            if (IsObstacleAhead(facing.DirVector, obstacleCheckDistance)) {
+                facing.FlipDir();
             }
 
             float sway = Mathf.Sin((Time.time + fluctuationSeed) * patrolFluctuationFrequency) * patrolFluctuationAmplitude;
-            var moveDir = new Vector2(GetDirectionSign(), sway).normalized;
+            var moveDir = new Vector2(facing.DirSign, sway).normalized;
             var targetVelocity = moveDir * linearSpeed;
             rb.velocity = Vector2.Lerp(rb.velocity, targetVelocity, patrolResponsiveness * dt);
         }
@@ -277,10 +274,10 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
 
             Vector2 desiredDir = toTarget.sqrMagnitude > 0.0001f
                 ? toTarget.normalized
-                : new Vector2(GetDirectionSign(), 0f);
+                : facing.DirVector;
 
             if (!Mathf.Approximately(desiredDir.x, 0f)) {
-                SetHorzDirection(desiredDir.x > 0f ? HorzDirection2D.Right : HorzDirection2D.Left);
+                facing.SetByX(desiredDir.x);
             }
 
             Vector2 desiredVelocity = desiredDir * attackSpeed;
@@ -367,7 +364,7 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
         private void EnterAttackState() {
             attackTargetPoint = hasPendingAttackTarget
                 ? pendingAttackTargetPoint
-                : rb.position + new Vector2(GetDirectionSign(), 0f);
+                : rb.position + facing.DirVector;
             hasPendingAttackTarget = false;
 
             attackTimer = 0f;
@@ -376,7 +373,7 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
 
             float deltaX = attackTargetPoint.x - rb.position.x;
             if (!Mathf.Approximately(deltaX, 0f)) {
-                SetHorzDirection(deltaX >= 0f ? HorzDirection2D.Right : HorzDirection2D.Left);
+                facing.SetByX(deltaX);
             }
         }
 
@@ -440,7 +437,7 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
 
                 Vector2 candidatePos = candidate.bounds.center;
                 float deltaX = candidatePos.x - rb.position.x;
-                if (deltaX * GetDirectionSign() < 0f) {
+                if (deltaX * facing.DirSign < 0f) {
                     continue;
                 }
 
@@ -500,10 +497,6 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
             return count > 0;
         }
 
-        private int GetDirectionSign() {
-            return direction == HorzDirection2D.Right ? 1 : -1;
-        }
-
         private void EnsureMoveAnimation() {
             if (anim != null) {
                 anim.SetClip("move");
@@ -526,7 +519,7 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
             hasPendingPreExplodeAnchor = false;
             destroyScheduled = false;
 
-            SetHorzDirection(direction);
+            facing.RefreshDir();
 
             if (mainCollider != null) {
                 mainCollider.enabled = true;
@@ -553,7 +546,7 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles {
             Gizmos.DrawWireSphere(damageCenter, damageTriggerRadius);
 
             Gizmos.color = Color.red;
-            Vector3 obstacleDir = new Vector3(GetDirectionSign(), 0f, 0f);
+            Vector3 obstacleDir = new Vector3(facing.DirSign, 0f, 0f);
             Gizmos.DrawLine(transform.position, transform.position + obstacleDir * obstacleCheckDistance);
 
             Gizmos.color = Color.magenta;

@@ -1,4 +1,5 @@
-﻿using Core.Services;
+﻿using Core.Components.Base2D;
+using Core.Services;
 using UnityEngine;
 
 namespace Core.Components.GameObjects {
@@ -25,8 +26,17 @@ namespace Core.Components.GameObjects {
         public GameObject SpawnInstance() {
             var instance = G.Spawner.SpawnVfx(prefab, target.position);
             
-            // Make sure the spawned object is directed in the same direction as the target object.
-            instance.transform.localScale = target.lossyScale;
+            // As Facing2D is new source of truth, let's use it.
+            var myFacing = GetComponent<Facing2D>();
+            var spawnedFacing = instance.GetComponent<Facing2D>();
+
+            if (myFacing != null && spawnedFacing != null) {
+                spawnedFacing.SetDir(myFacing.Dir);
+            } else {
+                // Fallback to the old implementation
+                // Make sure the spawned object is directed in the same direction as the target object.
+                instance.transform.localScale = target.lossyScale;                
+            }
             
             return instance;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Audio;
+using Core.Components.Base2D;
 using Core.Components.Collisions;
 using Core.Components.Damage;
 using Core.Services;
@@ -52,12 +53,9 @@ namespace Prefabs.Characters.PinkStar {
 
         [SerializeField]
         private AudioCue attackSound;
-
-        [Header("Sensors")]
-        [SerializeField]
-        private LayerCheck vision;
-
+        
         private GameObject visionObject;
+        private LayerCheck vision;
         private bool isAttacking;
         private Transform dustSpawnPoint;
         private Damageable damageable;
@@ -312,12 +310,7 @@ namespace Prefabs.Characters.PinkStar {
         public void SpawnRunDust() {
             if (Math.Abs(MyRigidbody.velocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
-
-                // Make sure the spawned object is directed in the same direction as target object.
-                // But for sharky negate x axis, as its original sprite asset looks left, while player
-                // sprite looks right.
-                var ls = dustSpawnPoint.lossyScale;
-                instance.transform.localScale = new Vector3(-ls.x, ls.y, ls.z);
+                Facing.ApplyTo(instance);
             }
         }
 
@@ -363,7 +356,7 @@ namespace Prefabs.Characters.PinkStar {
             var isInSight = vision != null && vision.IsColliding();
 
             if (isInSight && spottedPlayerDirection != 0) {
-                spottedPlayerDirection = GetCurrentDirection();
+                spottedPlayerDirection = GetFacingDirSign();
             }
             
             return isInSight;

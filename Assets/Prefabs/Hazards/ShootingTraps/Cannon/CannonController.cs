@@ -1,4 +1,5 @@
 ﻿using Core.Audio;
+using Core.Components.Base2D;
 using Core.Components.Damage;
 using Core.Components.GameObjects;
 using Core.Services;
@@ -13,6 +14,7 @@ namespace Prefabs.Hazards.ShootingTraps.Cannon {
         public static readonly int Dead = Animator.StringToHash("onDead");
     }
     
+    [RequireComponent(typeof(Facing2D))]
     public class CannonController : MonoBehaviour {
         [SerializeField]
         private SpawnComponent projectileSpawner;
@@ -28,11 +30,13 @@ namespace Prefabs.Hazards.ShootingTraps.Cannon {
 
         private TinyTimer shootCooldownTimer;
         private Damageable damageable;
+        private Facing2D facing;
 
         private void Awake() {
             shootCooldownTimer = new TinyTimer(shootCooldown);
             
             damageable = GetComponent<Damageable>();
+            facing = GetComponent<Facing2D>();
             
             anim = GetComponentInChildren<Animator>();
         }
@@ -60,7 +64,7 @@ namespace Prefabs.Hazards.ShootingTraps.Cannon {
 
         public void SpawnProjectile() {
             var projectile = projectileSpawner.SpawnInstance().GetComponent<ProjectileBase>();
-            projectile.Direction = new Vector2(-transform.lossyScale.x, 0);
+            projectile.Direction = facing.DirVector;
         }
 
         public void OnAfterHit() {

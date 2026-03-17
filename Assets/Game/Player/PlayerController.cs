@@ -11,6 +11,7 @@ using Core.Utils;
 using Game.Controllers;
 using Game.Defs;
 using Game.Models;
+using Prefabs.Characters.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -268,7 +269,8 @@ namespace Game.Player {
         }
 
         private void ThrowSword() {
-            swordSpawner.Spawn();
+            var sword = swordSpawner.SpawnInstance();
+            Facing.ApplyTo(sword);
             state.Inventory.Remove(ItemIds.Sword, 1);
             UpdateAnimatorController();
             Debug.Log($"Swords left: {SwordCount}");
@@ -442,9 +444,7 @@ namespace Game.Player {
         public void SpawnRunDust() {
             if (Math.Abs(MyRigidbody.velocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
-
-                // Make sure the spawned object is directed in the same direction as target object.
-                instance.transform.localScale = dustSpawnPoint.lossyScale;
+                Facing.ApplyTo(instance);
             }
         }
 

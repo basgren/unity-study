@@ -1,4 +1,5 @@
 ﻿using Core.Audio;
+using Core.Components.Base2D;
 using Core.Components.GameObjects;
 using Core.Services;
 using Core.Utils;
@@ -13,6 +14,7 @@ namespace Prefabs.Hazards.ShootingTraps.Seashell {
         public static readonly int Dead = Animator.StringToHash("onDead");
     }
     
+    [RequireComponent(typeof(Facing2D))]
     public class SeashellController : MonoBehaviour {
         [SerializeField]
         private SpawnComponent projectileSpawner;
@@ -45,11 +47,13 @@ namespace Prefabs.Hazards.ShootingTraps.Seashell {
         private TinyTimer shootCooldownTimer;
         private TinyTimer biteCooldownTimer;
         private TinyTimer commonCooldownTimer;
+        private Facing2D facing;
 
         private void Awake() {
             shootCooldownTimer = new TinyTimer(shootCooldown);
             biteCooldownTimer = new TinyTimer(biteCooldown);
             commonCooldownTimer = new TinyTimer(commonCooldown);
+            facing = GetComponent<Facing2D>();
             
             anim = GetComponentInChildren<Animator>();
             
@@ -86,7 +90,7 @@ namespace Prefabs.Hazards.ShootingTraps.Seashell {
 
         public void SpawnProjectile() {
             var projectile = projectileSpawner.SpawnInstance().GetComponent<ProjectileBase>();
-            projectile.Direction = new Vector2(-transform.lossyScale.x, 0);
+            projectile.Direction = facing.DirVector;
         }
         
         public void Bite() {

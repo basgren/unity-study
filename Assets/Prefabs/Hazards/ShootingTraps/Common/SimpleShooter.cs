@@ -1,10 +1,12 @@
 ﻿using Core.Audio;
+using Core.Components.Base2D;
 using Core.Components.Damage;
 using Core.Components.GameObjects;
 using Core.Services;
 using Core.Utils;
 using Prefabs.Characters.Common;
-using Prefabs.Hazards.ShootingTraps.Totem.Projectiles;
+using Prefabs.Hazards.ShootingTraps.Totem.Projectiles.GiantFly;
+using Prefabs.Hazards.ShootingTraps.Totem.Projectiles.Skullflame;
 using UnityEngine;
 
 namespace Prefabs.Hazards.ShootingTraps.Common {
@@ -15,6 +17,7 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
     }
 
     [RequireComponent(typeof(Damageable))]
+    [RequireComponent(typeof(Facing2D))]
     public class SimpleShooter : MonoBehaviour {
         [SerializeField]
         private SpawnComponent projectileSpawner;
@@ -30,11 +33,13 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
 
         private TinyTimer shootCooldownTimer;
         private Damageable damageable;
+        private Facing2D facing;
 
         private void Awake() {
             shootCooldownTimer = new TinyTimer(shootCooldown);
 
             damageable = GetComponent<Damageable>();
+            facing = GetComponent<Facing2D>();
 
             anim = GetComponentInChildren<Animator>();
         }
@@ -65,23 +70,17 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
             var projectileObject = projectileSpawner.SpawnInstance();
             var projectile = projectileObject.GetComponent<ProjectileBase>();
             if (projectile != null) {
-                projectile.Direction = new Vector2(-transform.lossyScale.x, 0);
+                projectile.Direction = facing.DirVector;
             }
 
             var skullProjectile = projectileObject.GetComponent<SkullflameController>();
             if (skullProjectile != null) {
-                skullProjectile.SetHorzDirection(
-                    // reverted, as sprites look left, while we expect them to look right.
-                    transform.lossyScale.x < 0 ? HorzDirection2D.Right : HorzDirection2D.Left
-                );
+                skullProjectile.SetFacingDir(facing.Dir);
             }
             
             var flyProjectile = projectileObject.GetComponent<GiantFlyController>();
             if (flyProjectile != null) {
-                flyProjectile.SetHorzDirection(
-                    // reverted, as sprites look left, while we expect them to look right.
-                    transform.lossyScale.x < 0 ? HorzDirection2D.Right : HorzDirection2D.Left
-                );
+                flyProjectile.SetFacingDir(facing.Dir);
             }
         }
 
