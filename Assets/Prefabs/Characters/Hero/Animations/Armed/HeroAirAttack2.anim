@@ -7,7 +7,7 @@ AnimationClip:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: HeroAirAttack2
-  serializedVersion: 6
+  serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
   m_UseHighQualityCurve: 1
@@ -18,7 +18,8 @@ AnimationClip:
   m_ScaleCurves: []
   m_FloatCurves: []
   m_PPtrCurves:
-  - curve:
+  - serializedVersion: 2
+    curve:
     - time: 0
       value: {fileID: 21300000, guid: 1aaa00a700a6b984bb5d18f8640dd8d0, type: 3}
     - time: 0.1
@@ -29,6 +30,20 @@ AnimationClip:
     path: 
     classID: 212
     script: {fileID: 0}
+    flags: 2
+  - serializedVersion: 2
+    curve:
+    - time: 0
+      value: {fileID: 21300000, guid: 8fa68bd5ce484f3479dd97379b8e379d, type: 3}
+    - time: 0.1
+      value: {fileID: 21300000, guid: 85c31222ac06f9247ba9a756bde4cd86, type: 3}
+    - time: 0.2
+      value: {fileID: 0}
+    attribute: m_Sprite
+    path: Effects/SwordAirSlashEffect
+    classID: 212
+    script: {fileID: 0}
+    flags: 2
   m_SampleRate: 10
   m_WrapMode: 0
   m_Bounds:
@@ -43,10 +58,24 @@ AnimationClip:
       typeID: 212
       customType: 23
       isPPtrCurve: 1
+      isIntCurve: 0
+      isSerializeReferenceCurve: 0
+    - serializedVersion: 2
+      path: 4140234271
+      attribute: 0
+      script: {fileID: 0}
+      typeID: 212
+      customType: 23
+      isPPtrCurve: 1
+      isIntCurve: 0
+      isSerializeReferenceCurve: 0
     pptrCurveMapping:
     - {fileID: 21300000, guid: 1aaa00a700a6b984bb5d18f8640dd8d0, type: 3}
     - {fileID: 21300000, guid: e98ec5b5661755c41b2859c24624b494, type: 3}
     - {fileID: 21300000, guid: 9d5487fe2300cda46999b5b2403fbcee, type: 3}
+    - {fileID: 21300000, guid: 8fa68bd5ce484f3479dd97379b8e379d, type: 3}
+    - {fileID: 21300000, guid: 85c31222ac06f9247ba9a756bde4cd86, type: 3}
+    - {fileID: 0}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

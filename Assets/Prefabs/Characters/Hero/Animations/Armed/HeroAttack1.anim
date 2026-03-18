@@ -7,7 +7,7 @@ AnimationClip:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: HeroAttack1
-  serializedVersion: 6
+  serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
   m_UseHighQualityCurve: 1
@@ -18,7 +18,8 @@ AnimationClip:
   m_ScaleCurves: []
   m_FloatCurves: []
   m_PPtrCurves:
-  - curve:
+  - serializedVersion: 2
+    curve:
     - time: 0
       value: {fileID: 21300000, guid: 82b8cae0215da8341bcba60dc9cd875c, type: 3}
     - time: 0.1
@@ -29,6 +30,22 @@ AnimationClip:
     path: 
     classID: 212
     script: {fileID: 0}
+    flags: 2
+  - serializedVersion: 2
+    curve:
+    - time: 0
+      value: {fileID: 21300000, guid: d07bedcdef644244ea11bbcbd25e33fa, type: 3}
+    - time: 0.1
+      value: {fileID: 21300000, guid: f7548e6a0f318ee4e88fe51146d9b3c1, type: 3}
+    - time: 0.2
+      value: {fileID: 21300000, guid: 438d9a6eb56d56b4aa14d4f6442c94a8, type: 3}
+    - time: 0.4
+      value: {fileID: 0}
+    attribute: m_Sprite
+    path: Effects/SwordThrustEffect
+    classID: 212
+    script: {fileID: 0}
+    flags: 2
   m_SampleRate: 10
   m_WrapMode: 0
   m_Bounds:
@@ -43,16 +60,31 @@ AnimationClip:
       typeID: 212
       customType: 23
       isPPtrCurve: 1
+      isIntCurve: 0
+      isSerializeReferenceCurve: 0
+    - serializedVersion: 2
+      path: 555509316
+      attribute: 0
+      script: {fileID: 0}
+      typeID: 212
+      customType: 23
+      isPPtrCurve: 1
+      isIntCurve: 0
+      isSerializeReferenceCurve: 0
     pptrCurveMapping:
     - {fileID: 21300000, guid: 82b8cae0215da8341bcba60dc9cd875c, type: 3}
     - {fileID: 21300000, guid: 92bc715a8d262614482fb6ef1d530180, type: 3}
     - {fileID: 21300000, guid: 26f9382c143753e47862f4f37320d2b0, type: 3}
+    - {fileID: 21300000, guid: d07bedcdef644244ea11bbcbd25e33fa, type: 3}
+    - {fileID: 21300000, guid: f7548e6a0f318ee4e88fe51146d9b3c1, type: 3}
+    - {fileID: 21300000, guid: 438d9a6eb56d56b4aa14d4f6442c94a8, type: 3}
+    - {fileID: 0}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.3
+    m_StopTime: 0.5
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0

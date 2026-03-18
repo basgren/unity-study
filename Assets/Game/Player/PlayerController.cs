@@ -22,9 +22,17 @@ namespace Game.Player {
         public static readonly int OnHit = Animator.StringToHash("onHit");
         public static readonly int OnDeath = Animator.StringToHash("onDeath");
         public static readonly int OnAttack = Animator.StringToHash("onAttack");
+        public static readonly int OnAttack2 = Animator.StringToHash("onAttack2");
+        public static readonly int OnAttack3 = Animator.StringToHash("onAttack3");
         public static readonly int OnThrowSword = Animator.StringToHash("onThrowSword");
     }
 
+    public enum HeroAttackType {
+        Slash1,
+        Slash2,
+        Pierce,
+    } 
+    
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(Animator))]
     public class PlayerController : BaseCharacterController, ICollectableReceiver<ItemId> {
@@ -60,9 +68,6 @@ namespace Game.Player {
         [Header("Attack")]
         [SerializeField]
         private GameObject swordAttackArea;
-
-        [SerializeField]
-        private GameObject attack1EffectPrefab;
 
         [SerializeField]
         private RuntimeAnimatorController armedAnimator;
@@ -102,7 +107,7 @@ namespace Game.Player {
 
         private bool isAttacking;
         private bool isAttackAnimationInitiated;
-        private readonly float attackCooldownTime = 0.3f;
+        private readonly float attackCooldownTime = 0.2f;
         private float attackCooldownTimer;
 
         private readonly TinyTimer throwCooldown = new TinyTimer(0.5f);
@@ -113,6 +118,7 @@ namespace Game.Player {
         private bool IsArmed => SwordCount > 0;
 
         private PlayerState state;
+        private HeroAttackType lastAttackType = HeroAttackType.Pierce;
 
         protected override void Awake() {
             base.Awake();
@@ -205,10 +211,6 @@ namespace Game.Player {
             if (Actions.Attack.WasPerformedThisFrame() && CanAttack()) {
                 isAttacking = true; // will be used to prevent double attacks.
                 isAttackAnimationInitiated = true; // used just to trigger animation event.
-
-                // Spawn effect as hero's child object, so even if player moves, it will move with player.
-                // But in this case we should prevent changing player direction until animation is finished.
-                G.Spawner.SpawnVfx(attack1EffectPrefab, swordAttackArea.transform.position, gameObject.transform);
             }
         }
 
@@ -434,7 +436,16 @@ namespace Game.Player {
             }
 
             if (isAttackAnimationInitiated) {
-                MyAnimator.SetTrigger(HeroAnimKeys.OnAttack);
+                lastAttackType = lastAttackType == HeroAttackType.Slash1
+                    ? HeroAttackType.Slash2
+                    : HeroAttackType.Slash1;
+                
+                var animKey = lastAttackType == HeroAttackType.Slash1 
+                    ? HeroAnimKeys.OnAttack2
+                    : HeroAnimKeys.OnAttack3;
+
+                MyAnimator.SetTrigger(animKey);
+                
                 isAttackAnimationInitiated = false;
             }
 
