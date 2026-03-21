@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Core.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,7 +13,7 @@ namespace Core.Components.Interaction {
     [RequireComponent(typeof(SpriteRenderer))]
     public class Switch : InteractableBase {
         [SerializeField]
-        private List<Switchable> switchables = new List<Switchable>();
+        private List<SwitchableBase> switchables = new ();
         
         [SerializeField]
         private SwitchType switchType = SwitchType.MultipleUse;
@@ -85,12 +86,15 @@ namespace Core.Components.Interaction {
                 : Color.white;
         }
 
+        private static readonly Color ConnectorColor = new (1f, 0.92156863f, 0.015686275f, 0.25f);
         private void OnDrawGizmos() {
             if (switchables != null) {
-                Gizmos.color = Color.yellow;
+                Gizmos.color = ConnectorColor;
+                var pos = Geometry.GetColliderCenter(gameObject);
 
                 foreach (var switchable in switchables) {
-                    Gizmos.DrawLine(transform.position, switchable.transform.position);                    
+                    var targetPos = Geometry.GetColliderCenter(switchable.gameObject);
+                    Gizmos.DrawLine(pos, targetPos);                    
                 }
             }
         }

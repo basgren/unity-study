@@ -1,30 +1,18 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine;
 
 namespace Core.Components.Interaction {
-    
-    [System.Serializable]
-    public class OnSwitchChangeEvent : UnityEvent<bool> {}
-    
-    public class Switchable : MonoBehaviour {
+    public class Switchable : SwitchableBase {
         [SerializeField]
         private bool isActive;
-        
+
         [SerializeField]
-        private OnSwitchChangeEvent onChange;
+        private OnSwitchChangeEvent onChange = new();
 
-        public bool IsActive {
+        protected override OnSwitchChangeEvent ChangeEvent => onChange;
+
+        public override bool IsActive {
             get => isActive;
-            set {
-                if (isActive != value) {
-                    isActive = value;
-                    onChange?.Invoke(isActive);
-                }
-            }
-        }
-
-        public void Toggle() {
-            IsActive = !IsActive;
+            set => SetIsActive(ref isActive, value);
         }
     }
 }

@@ -26,13 +26,28 @@ MonoBehaviour:
     - {fileID: 150401592496661720, guid: 7c8336203ccf34c40ab8531105aa6856, type: 3}
     - {fileID: 6984090045565500871, guid: 6627cbd6a3380434cbb44a7cc67d9860, type: 3}
     - {fileID: 6308338862311096031, guid: f8053d59cad38cb4aa049e1c36d326e9, type: 3}
+    - {fileID: 7929554061555327308, guid: cc6c8709ce7c00f4991b5e6569695ac5, type: 3}
   - name: Dynamic
     items:
     - {fileID: 3090776278357301044, guid: a3a751dd178ec0d48951dcdb7d8cd024, type: 3}
-  - name: Hazards
-    items:
-    - {fileID: 743628953579289945, guid: 6e14bd769941c5c408100f4ee88af0e9, type: 3}
+    - {fileID: 4510978738050660014, guid: 1e5d1bc24318daa44bea7ac491aced74, type: 3}
+    - {fileID: 2986219559809948899, guid: c149d1ca663943f409e18b25df01fa0a, type: 3}
   - name: Interactive
     items:
     - {fileID: 1703046495728465378, guid: 1767eec503b79f84181a5e8e0e86f9a1, type: 3}
     - {fileID: 6495505865386133413, guid: 684f3a08ce5cb9d4480ab909bdb04b37, type: 3}
+  - name: Hazards
+    items:
+    - {fileID: 743628953579289945, guid: 6e14bd769941c5c408100f4ee88af0e9, type: 3}
+    - {fileID: 3664229136581394778, guid: 83c66b5d8681fc4468ad111364888566, type: 3}
+    - {fileID: 3664229136581394778, guid: de4bcf0bdcf849b4fa9025940c177b2a, type: 3}
+    - {fileID: 3664229136581394778, guid: 34bd59d105afa3a458d67940b377d74a, type: 3}
+    - {fileID: 3664229136581394778, guid: bfbe281ae504f4744be31bdf638dfca6, type: 3}
+    - {fileID: 3664229136581394778, guid: 56f63a1841bd935458149b8b3883bf9c, type: 3}
+    - {fileID: 3664229136581394778, guid: 5e399b1b6af1baa48955c4dbe8435eae, type: 3}
+    - {fileID: 3664229136581394778, guid: 479e9f1e470492149b2933e241088252, type: 3}
+    - {fileID: 3664229136581394778, guid: 56335f93fd2c8804396315d8642b2f3f, type: 3}
+  - name: Enemies
+    items:
+    - {fileID: 6189892179132693591, guid: f18bc96b8c80a2d48a741127ca059f3f, type: 3}
+    - {fileID: 3756431542319373574, guid: 4152606e3052ee04dbf17395fb5ab019, type: 3}

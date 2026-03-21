@@ -35,3 +35,17 @@ MonoBehaviour:
     categoryBindings:
     - categoryName: Collectables
       parentHierarchyPath: World/Props
+  - scenePath: Assets/Scenes/Level3Island.unity
+    categoryBindings:
+    - categoryName: Decor
+      parentHierarchyPath: World/Decor
+    - categoryName: Collectables
+      parentHierarchyPath: World/Collectables
+    - categoryName: Dynamic
+      parentHierarchyPath: World/Dynamic
+    - categoryName: Hazards
+      parentHierarchyPath: World/Hazards
+    - categoryName: Interactive
+      parentHierarchyPath: World/Interactive
+    - categoryName: Enemies
+      parentHierarchyPath: World/Enemies

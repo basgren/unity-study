@@ -14,7 +14,7 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
         }
 
         private void FixedUpdate() {
-            if (vision.IsColliding() && ctrl.CanShoot()) {
+            if (vision.IsColliding()) {
                 ctrl.Shoot();
             }
         }

@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 
 namespace Prefabs.Characters.Common {
+
+    public interface IProjectileLifetime {
+        float LifeTime { get; }
+    }
+    
     [RequireComponent(typeof(Rigidbody2D))]
     public abstract class ProjectileBase : MonoBehaviour {
         [SerializeField]

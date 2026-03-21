@@ -223,8 +223,8 @@ MonoBehaviour:
   directionDeviation: 180
   minRotation: 0
   maxRotation: 0
-  minLifeTime: 8
-  maxLifeTime: 13
+  minLifeTime: 4
+  maxLifeTime: 8
   fadeOutDuration: 1
 --- !u!1 &5540822740193815206
 GameObject:

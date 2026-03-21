@@ -3,12 +3,13 @@ using Core.Components.Animation;
 using Core.Components.Base2D;
 using Core.Components.Damage;
 using Core.Services;
+using Prefabs.Characters.Common;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles.Skullflame {
     [RequireComponent(typeof(MultiStateSpriteAnimator), typeof(Rigidbody2D), typeof(Facing2D))]
-    public class SkullflameController : MonoBehaviour {
+    public class SkullflameController : MonoBehaviour, IProjectileLifetime {
         [SerializeField]
         private float linearSpeed = 3f;
 
@@ -28,6 +29,15 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles.Skullflame {
         [SerializeField]
         private AudioCue destroySound;
 
+        public float LifeTime {
+            get => minLifetime;
+            set {
+                minLifetime = value;
+                maxLifetime = value;
+                UpdateActualLifetime();
+            }
+        }
+
         private MultiStateSpriteAnimator anim;
         private Rigidbody2D rb;
         private float actualLifetime;
@@ -42,10 +52,14 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles.Skullflame {
             anim = GetComponent<MultiStateSpriteAnimator>();
             rb = GetComponent<Rigidbody2D>();
             facing = GetComponent<Facing2D>();
-            
+
+            UpdateActualLifetime();
+        }
+
+        private void UpdateActualLifetime() {
             actualLifetime = Random.Range(minLifetime, maxLifetime);
         }
-        
+
         private void Start() {
             if (flyingSound != null && flyingSoundHandle == null) {
                 flyingSoundHandle = G.Audio.PlayLoopFollow(flyingSound, transform, is3D:true);

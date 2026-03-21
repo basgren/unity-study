@@ -3,7 +3,6 @@ using Core.Components.Base2D;
 using Core.Components.Damage;
 using Core.Components.GameObjects;
 using Core.Services;
-using Core.Utils;
 using Prefabs.Characters.Common;
 using Prefabs.Hazards.ShootingTraps.Totem.Projectiles.GiantFly;
 using Prefabs.Hazards.ShootingTraps.Totem.Projectiles.Skullflame;
@@ -21,9 +20,10 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
     public class SimpleShooter : MonoBehaviour {
         [SerializeField]
         private SpawnComponent projectileSpawner;
-
+        
         [SerializeField]
-        private float shootCooldown = 2f;
+        // If projectile supports lifetime setting, it will be set.
+        private float projectileLifetime = 5f;
 
         [Header("Sounds")]
         [SerializeField]
@@ -31,33 +31,17 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
 
         private Animator anim;
 
-        private TinyTimer shootCooldownTimer;
         private Damageable damageable;
         private Facing2D facing;
 
         private void Awake() {
-            shootCooldownTimer = new TinyTimer(shootCooldown);
-
             damageable = GetComponent<Damageable>();
             facing = GetComponent<Facing2D>();
 
             anim = GetComponentInChildren<Animator>();
         }
 
-        private void Update() {
-            shootCooldownTimer.Update(Time.deltaTime);
-        }
-
-        public bool CanShoot() {
-            return shootCooldownTimer.IsTimedOut;
-        }
-
         public void Shoot() {
-            if (!CanShoot()) {
-                return;
-            }
-
-            shootCooldownTimer.Start();
             anim.SetTrigger(SimpleShooterAnimKeys.Fire);
 
             if (shotSound != null) {
@@ -76,8 +60,9 @@ namespace Prefabs.Hazards.ShootingTraps.Common {
             var skullProjectile = projectileObject.GetComponent<SkullflameController>();
             if (skullProjectile != null) {
                 skullProjectile.SetFacingDir(facing.Dir);
+                skullProjectile.LifeTime = projectileLifetime;
             }
-            
+
             var flyProjectile = projectileObject.GetComponent<GiantFlyController>();
             if (flyProjectile != null) {
                 flyProjectile.SetFacingDir(facing.Dir);

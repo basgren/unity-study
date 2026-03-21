@@ -1,6 +1,5 @@
 ﻿using System;
 using Core.Audio;
-using Core.Components.Base2D;
 using Core.Components.Collisions;
 using Core.Components.Damage;
 using Core.Services;
@@ -47,6 +46,9 @@ namespace Prefabs.Characters.PinkStar {
         [SerializeField]
         private Collider2D bodyColliderWhenAttacking;
 
+        [SerializeField]
+        private GameObject touchDamager;
+        
         [Header("Effects")]
         [SerializeField]
         private GameObject runDustPrefab;
@@ -280,6 +282,8 @@ namespace Prefabs.Characters.PinkStar {
             isAttacking = true;
             visionObject.SetActive(false);
             damageAreaObject.SetActive(true);
+            damageable.IgnoreDamage = true;
+            touchDamager.SetActive(false);
             bodyColliderWhenAttacking.enabled = true;
             MyAnimator.SetBool(PinkyAnimKeys.IsAttacking, true);
 
@@ -295,6 +299,8 @@ namespace Prefabs.Characters.PinkStar {
         }
 
         private void CloseDamageWindow() {
+            touchDamager.SetActive(true);
+            damageable.IgnoreDamage = false;
             damageAreaObject.SetActive(false);
             visionObject.SetActive(true);
             MyRigidbody.gravityScale = 1f;
@@ -330,6 +336,7 @@ namespace Prefabs.Characters.PinkStar {
             if (damageable.IsDead) {
                 isDiedThisFrame = true;
                 isDead = true;
+                touchDamager.SetActive(false);
             }
         }
 

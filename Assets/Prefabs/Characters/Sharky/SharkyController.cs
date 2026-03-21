@@ -25,6 +25,9 @@ namespace Prefabs.Characters.Sharky {
         [SerializeField]
         private GameObject damageAreaObject;
         
+        [SerializeField]
+        private GameObject touchDamager;
+        
         [Header("Effects")]
         [SerializeField]
         private GameObject runDustPrefab;
@@ -162,10 +165,17 @@ namespace Prefabs.Characters.Sharky {
             Debug.Log($"Sharky: Hit by {damager.Type}. Health: {damageable.Health}");
 
             if (damageable.IsDead) {
-                Debug.Log(">>>> sharky is dead");
                 isDiedThisFrame = true;
                 isDead = true;
                 ai.enabled = false;
+                
+                // Disable all collisions with other dynamic objects and leave body in place.
+                MyCollider.enabled = false;
+                MyRigidbody.velocity = Vector2.zero;
+                MyRigidbody.angularVelocity = 0f;
+                MyRigidbody.simulated = false;
+                
+                touchDamager.SetActive(false);
             }
         }
     }

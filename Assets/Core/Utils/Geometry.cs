@@ -40,6 +40,15 @@ namespace Core.Utils {
             return closest;
         }
 
+        public static Vector3 GetColliderCenter(GameObject obj) {
+            var pos = obj.transform.position;
+            Collider2D myCollider = obj.GetComponent<Collider2D>();
+
+            return myCollider == null
+                ? pos
+                :myCollider.bounds.center;
+        }
+
         /// <summary>
         /// Tries to detect a small "step" in front of the origin by casting short horizontal rays.
         /// Starts from the given origin at foot level and moves the origin up in pixel-sized increments

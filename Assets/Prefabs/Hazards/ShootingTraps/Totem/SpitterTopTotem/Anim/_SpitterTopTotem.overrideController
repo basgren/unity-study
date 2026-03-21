@@ -7,13 +7,13 @@ AnimatorOverrideController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: _SpitterTopTotem
-  m_Controller: {fileID: 9100000, guid: 76346516e0e6d3047b65a04f64fd4482, type: 2}
+  m_Controller: {fileID: 9100000, guid: 3bbf75242cb50ca4792c78ac78346d61, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 7400000, guid: 2f023eb82f71f804faec73b8a272cdfc, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 4b456cf346c9b8248acbd1dfe18ee3e4, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: c837338f512f16d4eaf46530a1e5ff2f, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: c51cdcd7953b04e4d88694435260f5bb, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 5b5353842f0516a4a8040b05ad534e66, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: 15561e1494e326641b36b6af56e26dc1, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: 50cffba6fa290e941bdac788825a92fe, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a201e45d0c8f70043a03af106b139812, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: 652f28701f3a75e4781e7357551d6ad9, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: a660d3f9c9ac6374fa8e563ef9061b0c, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 6a462fc34606b0d4d8f28ccd5e575fa4, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: e5e59d6c0d840a34f85dc35988164ed6, type: 2}
