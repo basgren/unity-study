@@ -11,7 +11,6 @@ using Core.Utils;
 using Game.Controllers;
 using Game.Defs;
 using Game.Models;
-using Prefabs.Characters.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -64,6 +63,9 @@ namespace Game.Player {
 
         [SerializeField]
         private GameObject groundDustPrefab;
+        
+        [SerializeField]
+        private AudioCue deadGroundedSound;
 
         [Header("Attack")]
         [SerializeField]
@@ -116,7 +118,7 @@ namespace Game.Player {
         private int CoinsCount => state.Inventory.GetCount(ItemIds.Coin);
         private int SwordCount => state.Inventory.GetCount(ItemIds.Sword);
         private bool IsArmed => SwordCount > 0;
-
+        
         private PlayerState state;
         private HeroAttackType lastAttackType = HeroAttackType.Pierce;
 
@@ -525,6 +527,10 @@ namespace Game.Player {
         }
 
         public void OnAfterDeath(Damager damager) {
+        }
+
+        public void OnGroundedDead() {
+            G.Audio.Play2D(deadGroundedSound);
         }
 
         private void ShowHitAndRestartScene() {

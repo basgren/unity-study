@@ -56,6 +56,9 @@ namespace Prefabs.Characters.PinkStar {
         [SerializeField]
         private AudioCue attackSound;
         
+        [SerializeField]
+        private AudioCue deadGroundedSound;
+        
         private GameObject visionObject;
         private LayerCheck vision;
         private bool isAttacking;
@@ -83,6 +86,8 @@ namespace Prefabs.Characters.PinkStar {
         private bool isHit = false;
 
         private int spottedPlayerDirection;
+
+        private IAudioLoopHandle attackSoundHandle;
 
         protected override void Awake() {
             base.Awake();
@@ -131,6 +136,12 @@ namespace Prefabs.Characters.PinkStar {
                 }
 
                 SetDirection(attackDir > 0f ? Vector2.right : Vector2.left);
+
+                if (attackSoundHandle != null) {
+                    var minPitch = 0.7f;
+                    float pitch = minPitch + MyRigidbody.velocity.magnitude / attackMaxSpeed * (1 - minPitch);
+                    attackSoundHandle.SetPitch(pitch);
+                }
             }
         }
         
@@ -294,11 +305,20 @@ namespace Prefabs.Characters.PinkStar {
             MyRigidbody.gravityScale = 0.7f;
 
             if (attackSound != null) {
-                G.Audio.PlayAt(attackSound, transform.position);
+                StopAttackSound();
+                attackSoundHandle = G.Audio.PlayLoopAt(attackSound, transform.position);
+            }
+        }
+
+        private void StopAttackSound() {
+            if (attackSoundHandle != null) {
+                attackSoundHandle.Stop();
+                attackSoundHandle = null;
             }
         }
 
         private void CloseDamageWindow() {
+            StopAttackSound();
             touchDamager.SetActive(true);
             damageable.IgnoreDamage = false;
             damageAreaObject.SetActive(false);
@@ -375,6 +395,10 @@ namespace Prefabs.Characters.PinkStar {
 
         public bool IsHit() {
             return wasHit;
+        }
+        
+        public void OnGroundedDead() {
+            G.Audio.Play2D(deadGroundedSound);
         }
     }
 }

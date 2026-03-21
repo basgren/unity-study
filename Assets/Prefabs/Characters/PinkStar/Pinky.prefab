@@ -66,7 +66,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 1.14, y: 0.28326797}
+  m_Offset: {x: 2.2559135, y: 0.28326797}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -77,7 +77,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.2748365, y: 0.43346405}
+  m_Size: {x: 4.506663, y: 0.43346405}
   m_EdgeRadius: 0
 --- !u!114 &4865797250729916605
 MonoBehaviour:
@@ -564,7 +564,8 @@ MonoBehaviour:
   touchDamager: {fileID: 4115264955693280413}
   runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
     type: 3}
-  attackSound: {fileID: 0}
+  attackSound: {fileID: 11400000, guid: f71e2c61406d1c64e91558e5e8a0662b, type: 2}
+  deadGroundedSound: {fileID: 11400000, guid: fdb1d3fc59767e946b3a45afa7b5805c, type: 2}
 --- !u!114 &84240078499934250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -620,7 +621,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hitSound: {fileID: 11400000, guid: 6126ab6b84b56f5488445f781a909f70, type: 2}
-  destroySound: {fileID: 0}
+  destroySound: {fileID: 11400000, guid: 77c549ee2873530459b99a1421871aed, type: 2}
 --- !u!1 &7461146306808350787
 GameObject:
   m_ObjectHideFlags: 0

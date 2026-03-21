@@ -34,6 +34,9 @@ namespace Prefabs.Characters.Sharky {
         
         [SerializeField]
         private AudioCue biteSound;
+        
+        [SerializeField]
+        private AudioCue deadGroundedSound;
 
         private float attackCooldownTime = 2f;
 
@@ -177,6 +180,10 @@ namespace Prefabs.Characters.Sharky {
                 
                 touchDamager.SetActive(false);
             }
+        }
+        
+        public void OnGroundedDead() {
+            G.Audio.Play2D(deadGroundedSound);
         }
     }
 }

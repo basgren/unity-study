@@ -437,6 +437,7 @@ MonoBehaviour:
     type: 3}
   groundDustPrefab: {fileID: 1526976483526385961, guid: e10df518c928ddd409277f7fc43929e9,
     type: 3}
+  deadGroundedCue: {fileID: 11400000, guid: fdb1d3fc59767e946b3a45afa7b5805c, type: 2}
   swordAttackArea: {fileID: 2945355596670905074}
   armedAnimator: {fileID: 9100000, guid: 15452c8f5b5d1294aae1e2825f20f3fc, type: 2}
   unarmedAnimator: {fileID: 9100000, guid: da7b63019bcab78479068d687e4267ef, type: 2}
@@ -522,7 +523,7 @@ Animator:
   m_GameObject: {fileID: 3756431542319373574}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 15452c8f5b5d1294aae1e2825f20f3fc, type: 2}
+  m_Controller: {fileID: 9100000, guid: da7b63019bcab78479068d687e4267ef, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -569,7 +570,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hitSound: {fileID: 11400000, guid: 6126ab6b84b56f5488445f781a909f70, type: 2}
-  destroySound: {fileID: 0}
+  destroySound: {fileID: 11400000, guid: 624eb10b06e1e5f4dae7fb8e71fecd88, type: 2}
 --- !u!114 &649388069741242861
 MonoBehaviour:
   m_ObjectHideFlags: 0
