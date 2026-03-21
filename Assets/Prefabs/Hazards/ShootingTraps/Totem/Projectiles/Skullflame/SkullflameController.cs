@@ -1,3 +1,4 @@
+using System;
 using Core.Audio;
 using Core.Components.Animation;
 using Core.Components.Base2D;
@@ -110,14 +111,18 @@ namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles.Skullflame {
         private void StartDestroy() {
             anim.SetClip("destroy");
             isDying = true;
-            
-            if (flyingSoundHandle != null) {
-                flyingSoundHandle.Stop();
-                flyingSoundHandle = null;
-            }
+
+            StopFlyingSound();
 
             if (destroySound != null) {
                 G.Audio.PlayAt(destroySound, transform.position);
+            }
+        }
+
+        private void StopFlyingSound() {
+            if (flyingSoundHandle != null) {
+                flyingSoundHandle.Stop();
+                flyingSoundHandle = null;
             }
         }
         

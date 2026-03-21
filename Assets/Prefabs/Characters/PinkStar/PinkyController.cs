@@ -306,7 +306,7 @@ namespace Prefabs.Characters.PinkStar {
 
             if (attackSound != null) {
                 StopAttackSound();
-                attackSoundHandle = G.Audio.PlayLoopAt(attackSound, transform.position);
+                attackSoundHandle = G.Audio.PlayLoopFollow(attackSound, transform);
             }
         }
 

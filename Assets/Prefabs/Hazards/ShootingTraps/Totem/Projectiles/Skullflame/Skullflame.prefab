@@ -287,7 +287,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   checkDistance: 2
-  normalMaxFallSpeed: -5
+  normalMaxFallSpeed: -10
   nearGroundMaxFallSpeed: 0
 --- !u!114 &6141188057811215074
 MonoBehaviour:

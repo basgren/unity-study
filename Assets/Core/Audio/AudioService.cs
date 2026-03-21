@@ -106,6 +106,7 @@ namespace Core.Audio {
             tag.Cue = cue;
             tag.IsLoop = true;
             tag.Follow = null;
+            tag.StopWhenFollowLost = false;
 
             IncrementPlaying(cue);
             // lastPlayTimeByCue можно обновлять или нет — но для loop чаще не надо.
@@ -127,6 +128,7 @@ namespace Core.Audio {
                 var tag = internalHandle.Source.GetComponent<AudioSourceTag>();
                 if (tag != null) {
                     tag.Follow = follow;
+                    tag.StopWhenFollowLost = true;
                 }
             }
 
@@ -161,6 +163,10 @@ namespace Core.Audio {
                 }
 
                 if (tag.Follow == null) {
+                    if (tag.StopWhenFollowLost && src.isPlaying) {
+                        src.Stop();
+                    }
+
                     continue;
                 }
 
@@ -451,6 +457,7 @@ namespace Core.Audio {
             tag.Cue = null;
             tag.IsLoop = false;
             tag.Follow = null;
+            tag.StopWhenFollowLost = false;
         }
         
         internal void StopLoopInternal(AudioSource source, float fadeOutSeconds) {
@@ -592,6 +599,7 @@ namespace Core.Audio {
         public AudioCue Cue;
         public bool IsLoop;
         public Transform Follow;
+        public bool StopWhenFollowLost;
     }
 
     /// <summary>
