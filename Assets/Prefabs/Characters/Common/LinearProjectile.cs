@@ -1,7 +1,6 @@
 using Core.Audio;
 using Core;
 using Core.Services;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
@@ -61,7 +60,6 @@ namespace Prefabs.Characters.Common {
         private int ricochetCount;
         private bool isBroken;
 
-        [CanBeNull]
         private PlaySfxOnCall sfx;
         private Collider2D myCollider;
         private ContactFilter2D castFilter;

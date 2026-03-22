@@ -1,4 +1,5 @@
 ﻿using Core.Audio;
+using Game.Configs;
 
 namespace Core.Services {
     /// <summary>
@@ -14,5 +15,7 @@ namespace Core.Services {
         public static GameManager Game { get; internal set; }
         public static StateMachineService StateMachines { get; internal set; }
         public static IAudioService Audio { get; internal set; }
+        public static MainConfig Config { get; internal set; }
+        public static MenuManager Menu { get; internal set; }
     }
 }

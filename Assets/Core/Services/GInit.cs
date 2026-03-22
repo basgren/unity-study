@@ -18,16 +18,18 @@ namespace Core.Services {
             }
 
             LoadConfig();
-            
+            G.Config = mainConfig;
+
             Debug.Log("Initializing Game Manager");
             G.Game = GetOrCreate<GameManager>("GameManager");
+            
             G.Spawner = GetOrCreate<SpawnerService>("SpawnerService");
             G.Input = GetOrCreate<InputService>("InputService");
             G.Screen = GetOrCreate<ScreenService>("ScreenService");
             G.StateMachines = GetOrCreate<StateMachineService>("StateMachineService");
             G.Audio = GetOrCreate<AudioService>("AudioService");
-            
-            G.Game.playerConfig = mainConfig.player;
+            G.Menu = GetOrCreate<MenuManager>("MenuManager");
+            G.Game.playerConfig = mainConfig.Player;
             G.Game.Init();
         }
 

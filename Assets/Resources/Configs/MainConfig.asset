@@ -12,4 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 580f4a6b93c750849ad391f4e0d57cdf, type: 3}
   m_Name: MainConfig
   m_EditorClassIdentifier: 
-  player: {fileID: 11400000, guid: b0fb1bd7a698c024c92390596d727bc2, type: 2}
+  Player: {fileID: 11400000, guid: b0fb1bd7a698c024c92390596d727bc2, type: 2}
+  MainMenu: {fileID: 8618158011026402637, guid: 162c5fe0c44ee984388015517b40d157,
+    type: 3}
+  OptionsMenu: {fileID: 8607079421164368098, guid: 33172a8f0bc272b4e8f3de04bb60ca19,
+    type: 3}
+  PauseMenu: {fileID: 181822652088074092, guid: 2b7950c000bc2fd4d80d6062bfa90f8f,
+    type: 3}
+  EscQuitsImmediately: 0

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Core.Utils {
@@ -59,7 +58,7 @@ namespace Core.Utils {
         private Collider2D[] excludedColliders;
         private Vector2 rayGap;
 
-        public MultiRayCaster([NotNull] BoxCollider2D myCollider, LayerMask groundLayer) {
+        public MultiRayCaster(BoxCollider2D myCollider, LayerMask groundLayer) {
             this.myCollider = myCollider ?? throw new ArgumentNullException(nameof(myCollider));
 
             contactFilter = new ContactFilter2D {

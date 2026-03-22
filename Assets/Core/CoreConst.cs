@@ -43,7 +43,9 @@ namespace Core
         public static readonly float OrthographicSize = ReferenceResolution.y * 0.5f / PixelsPerUnit;
     
         public const string EntryPointName = "EntryPoint";
-        public const string CanvasesName = "SysCanvases";
+        public const string GlobalRootName = "GlobalRoot";
+        public const string CanvasesName = "Canvases";
+        public const string UICanvasName = "UICanvas";
         public const string FadeOverlayName = "FadeOverlay";
     }
 }

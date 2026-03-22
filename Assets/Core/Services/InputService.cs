@@ -6,9 +6,12 @@ namespace Core.Services {
     public class InputService : MonoBehaviour {
         public static InputActions Actions { get; private set; }
 
+        public InputActions InputActions => Actions;
         public InputActions.PlayerActions Player { get; private set; }
         public InputActions.UIActions UI { get; private set; }
 
+        private bool immediateQuit = false;
+        
         private void Awake() {
             Actions = new InputActions();
             Player = Actions.Player;
@@ -16,6 +19,7 @@ namespace Core.Services {
         }
         
         private void OnEnable() {
+            immediateQuit = G.Config.EscQuitsImmediately;
             Actions.Enable();
         }
 
@@ -25,7 +29,7 @@ namespace Core.Services {
 
         private void Update() {
             // TODO: [BG] Move quit handler to proper place when menu system is ready.
-            if (Player.Quit.WasPressedThisFrame()) {
+            if (immediateQuit && Player.Pause.WasPressedThisFrame()) {
                 QuitGame();
             }
         }

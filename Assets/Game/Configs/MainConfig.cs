@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using Core.UI;
+using UnityEngine;
 
 namespace Game.Configs {
     /// <summary>
@@ -6,6 +7,14 @@ namespace Game.Configs {
     /// </summary>
     [CreateAssetMenu(menuName = "Config/Main Config", fileName = "MainConfig")]
     public class MainConfig : ScriptableObject {
-        public PlayerConfig player;
+        public PlayerConfig Player;
+
+        [Header("Menus")]
+        public AnimatedWindow MainMenu;
+        public AnimatedWindow OptionsMenu;
+        public AnimatedWindow PauseMenu;
+
+        [Header("Debug")]
+        public bool EscQuitsImmediately;
     }
 }

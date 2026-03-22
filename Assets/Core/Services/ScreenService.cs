@@ -105,7 +105,6 @@ namespace Core.Services {
             canvasGroup.blocksRaycasts = to > 0.001f;
         }
 
-
         private IEnumerator RunWhenFadeOutRoutine(
             float fadeOutDuration,
             float fadeInDuration,
