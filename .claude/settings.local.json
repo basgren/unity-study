@@ -6,7 +6,9 @@
       "Bash(mv Assets/System.meta Assets/Game/System.meta)",
       "Bash(mv Assets/Resources.meta Assets/Game/Resources.meta)",
       "Bash(mv Assets/Materials.meta Assets/Game/Content/Materials.meta)",
-      "Bash(mv Assets/Music.meta Assets/Game/Content/Music.meta)"
+      "Bash(mv Assets/Music.meta Assets/Game/Content/Music.meta)",
+      "Bash(rm -rf Assets/Game/Background Assets/Game/Background.meta)",
+      "Bash(rm -rf Assets/Game/EditorOnly Assets/Game/EditorOnly.meta)"
     ]
   }
 }
