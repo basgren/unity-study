@@ -1,5 +1,4 @@
-﻿using Game;
-using Game.Configs;
+﻿using Game.Configs;
 using Game.Models;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ namespace Core.Services {
         public void Init() {
             ResetPlayerState();
         }
-        
+
         public void ResetPlayerState() {
             playerState = new PlayerState(playerConfig);
         }

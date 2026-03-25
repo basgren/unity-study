@@ -1,86 +1,107 @@
 # Project Structure
-This is a Unity 2D project organized mainly under `Assets` with split areas for shared/core code, game-specific code, 
-editor tooling, scenes, prefabs, and content assets.  
-The layout below documents the current state only (no redesign assumptions).
+
+Unity 2D pixel art platformer. All project-owned code and assets live under `Assets/Game/`.
+The `Assets/` root is reserved for third-party content.
 
 ## Top-Level Layout
-- `Assets` - Main project code and content.
-- `Packages` - Unity package dependencies (`manifest.json`, `packages-lock.json`).
-- `ProjectSettings` - Unity project configuration.
-- `UserSettings` - Local/editor user settings.
-- `Library`, `Temp`, `Logs`, `obj` - Unity/generated build and cache data.
-- `*.sln`, `*.csproj` - Generated project/IDE files for C# tooling.
+- `Assets/Game/` - All project-owned code, assets, and content.
+- `Assets/TextMesh Pro/` - Third-party (imported by Unity, do not modify).
+- `Packages/` - Unity package dependencies (`manifest.json`, `packages-lock.json`).
+- `ProjectSettings/` - Unity project configuration.
+- `Docs/` - Project documentation.
 - `AGENTS.md`, `CLAUDE.md` - Repository-local agent/instruction files.
 
-## Assets Layout
-- `Assets/Core` - Shared runtime foundation: components, services, audio abstractions, FSM, models, UI helpers, utilities.
-- `Assets/Game` - Game-specific runtime logic and data types (player, doors, controllers, configs, UI, audio maps).
-- `Assets/System` - App-level bootstrap and Unity Input System assets/code.
-- `Assets/Editor` - Root editor scripts and tools.
-- `Assets/Scenes` - Scene files (`IntroLevel`, `Level2SmallShip`, `Level3Island`, `MainMenuScene`, `TilesTest`, `_Template`).
-- `Assets/Prefabs` - Prefab library grouped by gameplay/content category.
-- `Assets/Resources` - Runtime-loadable assets (configs, refs/facades).
-- `Assets/Textures`, `Assets/Tiles`, `Assets/TilePalettes`, `Assets/Materials`, `Assets/Sounds`, `Assets/Music` - Art/audio/tile content.
-- `Assets/TextMesh Pro` - TextMesh Pro local asset content.
+## Game/ Layout
+- `Game/Core/` - Shared reusable systems (no feature-specific logic).
+- `Game/Features/` - Self-contained gameplay features (feature-folder pattern).
+- `Game/UI/` - Game UI (menus, HUD, widgets).
+- `Game/Audio/` - Game-specific audio data (sound maps, profiles).
+- `Game/Configs/` - Game-wide configuration (`MainConfig`, `PlayerConfig`).
+- `Game/Defs/` - Generated definitions (`ItemIds`).
+- `Game/Editor/` - General editor tools (not tied to one feature).
+- `Game/Content/` - Centralized art and audio assets.
+- `Game/Resources/` - Runtime-loadable assets (configs).
+- `Game/Scenes/` - Scene files.
+- `Game/System/` - App bootstrap and Input System config.
 
-## Core Runtime Areas
-- `Assets/Core/Components` - Reusable gameplay components (animation, collisions, damage, interaction, camera, collectables, scene management).
-- `Assets/Core/Services` - Shared services and global access points (`GameManager`, `InputService`, `MenuManager`, `Audio` service types, `G`/`GInit`).
-- `Assets/Core/FSM` - State machine implementation plus editor inspector under `Assets/Core/FSM/Editor`.
-- `Assets/Core/Models` - Data models and inventory definitions; includes editor utilities in `Assets/Core/Models/Editor`.
-- `Assets/Game` - Feature-level gameplay logic (notably `Assets/Game/Player`, `Assets/Game/Doors`, `Assets/Game/Components/Abilities`, `Assets/Game/Controllers`, `Assets/Game/UI`).
-- `Assets/Prefabs/.../*.cs` - Some prefab-local behavior scripts are stored beside prefab assets (for example characters, hazards, props).  
-  Likely purpose: keep prefab-specific logic close to prefab content.
+## Core/ (shared systems)
+- `Core/Audio/` - Audio service, cues, interfaces.
+- `Core/Components/` - Reusable gameplay components (animation, collisions, damage, interaction, camera, collectables, effects, scene management). Feature-specific editors live in local `Editor/` subfolders.
+- `Core/FSM/` - State machine framework + `Editor/` for inspector.
+- `Core/Models/` - Inventory, data models, `DefsFacade` + `Editor/` for drawers.
+- `Core/Services/` - Global services:
+  - `Bootstrap/` - `G`, `GInit`, `GameManager`, `AssetRefs`.
+  - `Input/` - `InputService`.
+  - `Scene/` - `SceneUtils`, `MenuManager`, `ScreenService`.
+  - `SpawnerService`, `StateMachineService` at root.
+- `Core/Tiles/` - Tilemap extensions (`PatternGridTile`).
+- `Core/UI/` - Shared UI framework (`AnimatedWindow`, widgets).
+- `Core/Utils/` - Helpers (`TinyTimer`, `SafePointTracker`, `Geometry`, `MultiRayCaster`).
 
-## Editor / Tooling
-- `Assets/Editor` - General editor extensions (inspectors, sprite tools, object brush, scene note tooling, tests).
-- `Assets/Game/Doors/Editor` - Door/link validation and repair tooling tied to door workflow.
-- `Assets/Game/UI/Widgets/Editor` and prefab-local `Editor` folders - Feature-specific custom inspectors/drawers.
-- `Assets/Editor/Tests/FSM` - Editor-side test script location.
+## Features/ (gameplay feature folders)
+Each subfolder is a complete feature bundle: scripts + prefab + animations + sounds + effects.
+Feature-specific editor scripts live in local `Editor/` subfolders.
 
-## Content / Data
-- `Assets/Textures` - Sprite/art source grouped by domain (`Chars`, `Environment`, `Hazards`, `UI`, etc.).
-- `Assets/Tiles` and `Assets/TilePalettes` - Tile assets and palette assets (`Outdoor`, `PirateShip`).
-- `Assets/Materials` - Physics materials (`*.physicsMaterial2D`).
-- `Assets/Sounds` and `Assets/Music` - Audio clips and grouped SFX categories.
-- `Assets/Resources/Configs` - Runtime-loadable config assets (`MainConfig.asset`, `PlayerConfig.asset`).
-- `Assets/Resources` - Additional shared runtime assets (`AssetRefs.asset`, `DefsFacade.asset`).
-- `Assets/Game/Defs` - Definition assets/classes (for example inventory definitions).
-- `Assets/Game/Audio` and prefab sound folders - Audio cue/profile assets (`*.asset`) mapped to gameplay events.
+- `Features/Characters/` - Player and NPC characters.
+  - `_Shared/` - `BaseCharacterController`, `BaseAI`, projectile bases, `GroundPatrolPath` + `Editor/`.
+  - `Hero/` - Hero prefab, `PlayerController`, `PlayerState`, sound profiles, abilities, animations, projectiles, effects + `Editor/`.
+  - `PinkStar/` - Pinky prefab, controller, AI, state machine, animations, sounds + `Editor/`.
+  - `Sharky/` - Sharky prefab, controller, AI, state machine, animations, effects, sounds + `Editor/`.
+- `Features/Hazards/ShootingTraps/` - Cannon, Seashell, Totem (with projectiles and sounds).
+- `Features/Collectibles/` - Coins, Potions, Weapons.
+- `Features/Doors/` - Door system (scripts, prefabs, editor validation suite).
+- `Features/Interactive/` - Portal, Helm.
+- `Features/Dynamic/` - Barrel (prefab + drag/highlight scripts).
+- `Features/Props/` - TrainingDummy, destructible barrel, Chest.
+- `Features/Effects/` - InfoBubble.
+- `Features/Background/` - Clouds, Trees, Water, `CloudMover`.
+- `Features/PirateShip/` - Ship decoration prefabs.
+- `Features/GlobalRoot.prefab` - Shared scene root prefab.
 
-## Scenes and Prefabs
-- `Assets/Scenes` - Main scenes and a template scene. Likely purpose based on names: menu + level flow.
-- `Assets/Prefabs` - Large prefab catalog, including `Assets/Prefabs/Background`, `Assets/Prefabs/Characters`,
-  `Assets/Prefabs/Collectibles`, `Assets/Prefabs/Dynamic`, `Assets/Prefabs/Effects`, `Assets/Prefabs/Hazards`,
-  `Assets/Prefabs/Interactive`, `Assets/Prefabs/PirateShip`, `Assets/Prefabs/Props`.
-- `Assets/Prefabs/GlobalRoot.prefab` exists.  
-  Assumption: likely a shared/global composition prefab used across scenes.
+## UI/
+- `UI/MainMenu/` - Main menu screen + launcher.
+- `UI/OptionsMenu/` - Options menu.
+- `UI/PauseMenu/` - Pause menu.
+- `UI/ModalAnim/` - Modal animation controller.
+- `UI/Widgets/` - Reusable UI components (MenuButton, Slider, LabeledSlider) + `Editor/`.
+
+## Editor/ (general tools)
+- `ObjectBrush/` - Level design brush tool + profiles.
+- `SpriteValidator/` - Batch sprite checks.
+- `Tools/` - Batch rename, pivot tool, transition defaults.
+- `Tests/FSM/` - Editor-side FSM tests.
+- `SceneNote.cs`, `SceneNoteMenu.cs` - Scene annotation system.
+- `SpritePivotBatchTool.cs` - Sprite pivot batch editor.
+- `EditorConst.cs` - Shared editor constants.
+
+## Content/ (centralized assets)
+- `Content/Textures/` - Sprites organized by domain (Chars, Environment, Hazards, UI, etc.). Batch-exported from Aseprite.
+- `Content/Music/` - Background music.
+- `Content/Sounds/` - Shared SFX (feature-specific sounds live in feature folders).
+- `Content/Materials/` - Physics materials.
+- `Content/Tiles/` - Tile definitions.
+- `Content/TilePalettes/` - Tile palettes (Outdoor, PirateShip).
 
 ## Third-Party / External
-- Unity packages are managed in `Packages/manifest.json` (includes `com.unity.inputsystem`, `com.unity.cinemachine`,
-  `com.unity.textmeshpro`, 2D packages, and `com.unity.2d.tilemap.extras` from GitHub).
-- `Assets/TextMesh Pro` contains imported TMP assets/resources.
-- No `Assets/Plugins` directory was found in current structure.
+- Unity packages managed in `Packages/manifest.json` (includes `com.unity.inputsystem`, `com.unity.cinemachine`, `com.unity.textmeshpro`, 2D packages, `com.unity.2d.tilemap.extras`).
+- `Assets/TextMesh Pro/` contains imported TMP assets/resources.
 
 ## Where to add new code
-- New gameplay script: prefer `Assets/Game/<feature>` (for feature-specific logic) or
-  `Assets/Core/Components`/`Assets/Core/Services` (for reusable/shared logic).
-- UI logic: prefer `Assets/Game/UI/<feature>`; use `Assets/Core/UI` for shared UI utilities/widgets.
-- Editor tooling: prefer `Assets/Editor` for generic tools; use feature-local `Editor` folders (for example
-  `Assets/Game/Doors/Editor`) when tooling is tightly coupled to one feature.
-- Config/data assets: prefer `Assets/Resources/Configs` for runtime-loaded config assets, and existing domain
-  folders like `Assets/Game/Defs` for definition assets.
-- Avoid placing new code in pure content folders such as `Assets/Textures`, `Assets/Sounds`, `Assets/Music`,
-  `Assets/Tiles`, `Assets/TilePalettes`, or vendor content under `Assets/TextMesh Pro` unless there is a strong
-  project-specific reason.
 
-## Notes / Risk Areas
-- Scenes in `Assets/Scenes` and prefabs in `Assets/Prefabs` are high-impact integration points; reference changes
-  can ripple quickly.
-- `Assets/Resources` is runtime-load sensitive (asset names/paths matter for `Resources` loading).
-- Input setup lives in `Assets/System` (`InputActions.inputactions`, generated `InputActions.cs`,
-  `InputSystem.inputsettings.asset`); changes here can affect controls globally.
-- Door system has dedicated validators/repair tools under `Assets/Game/Doors/Editor`; this suggests cross-scene
-  linkage/data integrity concerns.
-- `Assets/Core/Services` appears to hold global service entry points.  
-  Assumption: changes here may have broad project-wide runtime impact.
+1. **Reusable system, no game-specific logic?** → `Game/Core/`
+2. **Belongs to one feature?** → That feature's folder under `Game/Features/`
+3. **Shared between features in the same category?** → `_Shared/` within that category
+4. **UI (menus, HUD, widgets)?** → `Game/UI/`
+5. **Game-wide config or data?** → `Game/Configs/`, `Game/Defs/`, or `Game/Audio/`
+6. **Generic editor tool?** → `Game/Editor/`
+7. **Feature-specific editor tool?** → `Editor/` subfolder inside that feature
+8. **Third-party package?** → `Assets/` root (outside `Game/`)
+9. **Sound clip for a feature?** → Feature folder's `Sounds/` subfolder
+10. **Sprites/textures?** → `Game/Content/Textures/` (batch-exported, centralized)
+
+## Risk Areas
+- Scenes in `Game/Scenes/` and prefabs in feature folders are high-impact integration points.
+- `Game/Resources/` is runtime-load sensitive (asset paths matter for `Resources.Load()`).
+- Input setup lives in `Game/System/`; changes affect controls globally.
+- Door system has cross-scene linkage — use door validation tools after changes.
+- `Core/Services/Bootstrap/` holds global service entry points; changes have project-wide impact.
