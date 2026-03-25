@@ -64,6 +64,7 @@ namespace Game.UI.Widgets {
             ApplyPresentation();
         }
 
+#if UNITY_EDITOR
         protected override void OnValidate() {
             base.OnValidate();
 
@@ -71,6 +72,7 @@ namespace Game.UI.Widgets {
             EnsurePresentationInitialized();
             ApplyPresentation();
         }
+#endif
 
         protected override void DoStateTransition(SelectionState state, bool instant) {
             base.DoStateTransition(state, instant);

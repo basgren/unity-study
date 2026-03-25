@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(mv Assets/Scenes.meta Assets/Game/Scenes.meta)",
+      "Bash(mv Assets/System.meta Assets/Game/System.meta)",
+      "Bash(mv Assets/Resources.meta Assets/Game/Resources.meta)",
+      "Bash(mv Assets/Materials.meta Assets/Game/Content/Materials.meta)",
+      "Bash(mv Assets/Music.meta Assets/Game/Content/Music.meta)"
+    ]
+  }
+}
