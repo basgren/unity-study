@@ -19,6 +19,7 @@ Main priorities:
 - Keep methods focused
 - Avoid magic numbers where practical
 - Do not reformat unrelated code
+- Add XML documentation to important classes and their public API methods when it adds clarity; skip trivial or self-explanatory members
 
 Example:
 ```csharp

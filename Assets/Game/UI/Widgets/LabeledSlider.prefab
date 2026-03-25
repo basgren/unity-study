@@ -279,6 +279,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4847429812140731788}
+  - component: {fileID: 7063318861346801126}
   m_Layer: 5
   m_Name: LabeledSlider
   m_TagString: Untagged
@@ -308,6 +309,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -48}
   m_SizeDelta: {x: 80, y: 26}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &7063318861346801126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7678354647304219582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af12d0f51cff9a143807e6fee55cd239, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 5515457819771385691}
+  valueText: {fileID: 1759854243982198838}
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &6709733871061951037
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -335,6 +353,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Value
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267504694235911526, guid: 18b9dbb7c0c492e42a045951adc4f924,
+        type: 3}
+      propertyPath: m_MaxValue
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267504694235911526, guid: 18b9dbb7c0c492e42a045951adc4f924,
+        type: 3}
+      propertyPath: m_WholeNumbers
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3230337136519470063, guid: 18b9dbb7c0c492e42a045951adc4f924,
         type: 3}
@@ -441,6 +469,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18b9dbb7c0c492e42a045951adc4f924, type: 3}
+--- !u!114 &5515457819771385691 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1267504694235911526, guid: 18b9dbb7c0c492e42a045951adc4f924,
+    type: 3}
+  m_PrefabInstance: {fileID: 6709733871061951037}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8199284592913627602 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3230337136519470063, guid: 18b9dbb7c0c492e42a045951adc4f924,

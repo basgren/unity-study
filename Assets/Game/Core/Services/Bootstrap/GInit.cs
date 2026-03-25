@@ -1,5 +1,6 @@
 ﻿using Core.Audio;
 using Game.Configs;
+using Game.Core.Services;
 using UnityEngine;
 
 namespace Core.Services {
@@ -27,6 +28,7 @@ namespace Core.Services {
             G.Input = GetOrCreate<InputService>("InputService");
             G.Screen = GetOrCreate<ScreenService>("ScreenService");
             G.StateMachines = GetOrCreate<StateMachineService>("StateMachineService");
+            G.Settings = GetOrCreate<SettingsService>("SettingsService");
             G.Audio = GetOrCreate<AudioService>("AudioService");
             G.Menu = GetOrCreate<MenuManager>("MenuManager");
             G.Game.playerConfig = mainConfig.Player;
