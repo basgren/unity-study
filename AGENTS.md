@@ -78,6 +78,9 @@ When changing code:
 - touch only relevant files
 - keep diffs small
 - for moving files and renaming use `git mv` to keep history
+- when moving a file or folder, always move its `.meta` file together (e.g.,
+  `git mv Foo.cs dest/Foo.cs && git mv Foo.cs.meta dest/Foo.cs.meta`). Unity tracks assets by
+  GUID stored in `.meta` files — if a `.meta` is left behind or regenerated, all references break
 - do not do unrelated cleanup
 - do not rename things casually
 - do not move files unless required
