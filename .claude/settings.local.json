@@ -8,7 +8,9 @@
       "Bash(mv Assets/Materials.meta Assets/Game/Content/Materials.meta)",
       "Bash(mv Assets/Music.meta Assets/Game/Content/Music.meta)",
       "Bash(rm -rf Assets/Game/Background Assets/Game/Background.meta)",
-      "Bash(rm -rf Assets/Game/EditorOnly Assets/Game/EditorOnly.meta)"
+      "Bash(rm -rf Assets/Game/EditorOnly Assets/Game/EditorOnly.meta)",
+      "Bash(rm -rf Assets/Game/Editor/Inspectors Assets/Game/Editor/Inspectors.meta)",
+      "Bash(rm -rf Assets/Game/Editor/Characters Assets/Game/Editor/Characters.meta)"
     ]
   }
 }
