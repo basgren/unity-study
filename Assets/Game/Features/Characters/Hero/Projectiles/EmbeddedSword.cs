@@ -1,9 +1,7 @@
-﻿using Core.Audio;
-using Core.Components;
-using Core.Components.GameObjects;
+﻿using Game.Core.Components.GameObjects;
 using UnityEngine;
 
-namespace Prefabs.Characters.Hero.Projectiles {
+namespace Game.Features.Characters.Hero.Projectiles {
     public class EmbeddedSword : MonoBehaviour {
         private GameObject linkedObject;
         private bool destroyWithLinked;

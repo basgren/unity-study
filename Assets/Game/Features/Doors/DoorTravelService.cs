@@ -1,10 +1,11 @@
 ﻿using System.Collections;
-using Core.Services;
-using Game.Player;
+using Game.Core.Services.Bootstrap;
+using Game.Doors;
+using Game.Features.Characters.Hero;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Game.Doors {
+namespace Game.Features.Doors {
     public static class DoorTravelService {
         public static void Travel(Door fromDoor) {
             var link = fromDoor.Link;

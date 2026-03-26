@@ -2,19 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using Core.Audio;
-using Core.Components.Collectables;
-using Core.Components.Damage;
-using Core.Components.GameObjects;
 using Core.Components.Interaction;
-using Core.Services;
 using Core.Utils;
 using Game.Controllers;
+using Game.Core.Audio;
+using Game.Core.Components.Collectables;
+using Game.Core.Components.Damage;
+using Game.Core.Components.GameObjects;
+using Game.Core.Services.Bootstrap;
 using Game.Defs;
 using Game.Models;
+using Game.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Game.Player {
+namespace Game.Features.Characters.Hero {
     public abstract class HeroAnimKeys : BaseCharacterAnimKeys {
         public static readonly int IsDead = Animator.StringToHash("isDead");
         public static readonly int OnJump = Animator.StringToHash("onJump");

@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System;
+using Game.Features.Doors.Editor;
 using UnityEditor;
 
 namespace Game.Doors.Editor {

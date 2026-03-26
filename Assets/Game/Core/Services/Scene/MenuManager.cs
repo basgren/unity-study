@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Core;
+using Core.Services;
 using Core.UI;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -8,7 +11,7 @@ using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Core.Services {
+namespace Game.Core.Services.Scene {
     /// <summary>
     /// Centralized menu navigation manager.
     /// Instantiates menus from configured prefabs and keeps a stack-like history of opened

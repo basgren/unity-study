@@ -1,8 +1,7 @@
-﻿using Prefabs.Characters.Sharky;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace Editor.Inspectors {
+namespace Game.Features.Characters.Sharky.Editor {
     [CustomEditor(typeof(SharkyController))]
     public class SharkyControllerInspector: UnityEditor.Editor {
         public override void OnInspectorGUI() {

@@ -1,8 +1,9 @@
 #if UNITY_EDITOR
+using Game.Doors;
 using UnityEditor;
 using UnityEngine;
 
-namespace Game.Doors.Editor {
+namespace Game.Features.Doors.Editor {
     /// <summary>
     /// Editor drawer that displays a SceneReference as a SceneAsset field.
     /// </summary>

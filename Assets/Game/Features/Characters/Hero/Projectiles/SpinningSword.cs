@@ -1,12 +1,12 @@
 ﻿using Core.Audio;
 using Core.Components.Base2D;
 using Core.Components.Extensions;
-using Core.Components.GameObjects;
-using Core.Services;
+using Game.Core.Components.GameObjects;
+using Game.Core.Services.Bootstrap;
 using Prefabs.Characters.Common;
 using UnityEngine;
 
-namespace Prefabs.Characters.Hero.Projectiles {
+namespace Game.Features.Characters.Hero.Projectiles {
     public class SpinningSword : ProjectileBase {
         [SerializeField]
         private LayerMask layers = ~0;

@@ -1,8 +1,8 @@
 ﻿using Core.Components.Base2D;
-using Core.Services;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
 
-namespace Core.Components.GameObjects {
+namespace Game.Core.Components.GameObjects {
     public class SpawnComponent: MonoBehaviour {
         [SerializeField]
         private Transform target;

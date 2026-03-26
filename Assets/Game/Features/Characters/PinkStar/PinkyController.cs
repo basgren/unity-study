@@ -1,12 +1,13 @@
 ﻿using System;
 using Core.Audio;
 using Core.Components.Collisions;
-using Core.Components.Damage;
-using Core.Services;
 using Game.Controllers;
+using Game.Core.Components.Damage;
+using Game.Core.Services.Bootstrap;
+using Prefabs.Characters.PinkStar;
 using UnityEngine;
 
-namespace Prefabs.Characters.PinkStar {
+namespace Game.Features.Characters.PinkStar {
     internal abstract class PinkyAnimKeys : BaseCharacterAnimKeys {
         public static readonly int IsDead = Animator.StringToHash("isDead");
         public static readonly int IsAttacking = Animator.StringToHash("isAttacking");

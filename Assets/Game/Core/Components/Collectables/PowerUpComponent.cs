@@ -1,7 +1,7 @@
-﻿using Core.Services;
+﻿using Game.Core.Services.Bootstrap;
 using UnityEngine;
 
-namespace Core.Components.Collectables {
+namespace Game.Core.Components.Collectables {
     /// <summary>
     /// Provides additional effects to power ups.
     /// </summary>

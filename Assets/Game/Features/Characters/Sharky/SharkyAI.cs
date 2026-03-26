@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using Core.Components.Collisions;
-using Core.Services;
+using Game.Core.Services.Bootstrap;
 using Prefabs.Characters.Common;
 using Prefabs.Effects.InfoBubble;
 using UnityEngine;
 
-namespace Prefabs.Characters.Sharky {
+namespace Game.Features.Characters.Sharky {
     public enum SharkyBehaviorState {
         Idle,
         Patrolling,

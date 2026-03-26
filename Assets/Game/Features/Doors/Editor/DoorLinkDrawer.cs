@@ -1,9 +1,12 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
+using Game.Doors;
+using Game.Doors.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Game.Doors.Editor {
+namespace Game.Features.Doors.Editor {
     /// <summary>
     /// Editor drawer that renders DoorLink as:
     /// - Target Scene (SceneAsset)
@@ -48,8 +51,8 @@ namespace Game.Doors.Editor {
 
             var doors = SceneDoorCache.GetDoorsByGuid(sceneGuid);
             var currentTargetId = doorIdProp.stringValue;
-            var names = new System.Collections.Generic.List<string>(doors.Length + 1);
-            var values = new System.Collections.Generic.List<string>(doors.Length + 1);
+            var names = new List<string>(doors.Length + 1);
+            var values = new List<string>(doors.Length + 1);
 
             names.Add("(None)");
             values.Add(string.Empty);

@@ -1,7 +1,7 @@
 ﻿using Core.Components.Collisions;
 using UnityEngine;
 
-namespace Prefabs.Hazards.ShootingTraps.Cannon {
+namespace Game.Features.Hazards.ShootingTraps.Cannon {
     public class CannonAI : MonoBehaviour {
         [SerializeField]
         private LayerCheck vision;

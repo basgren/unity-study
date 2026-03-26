@@ -1,4 +1,4 @@
-﻿namespace Core.Components.Collectables {
+﻿namespace Game.Core.Components.Collectables {
     /// <summary>
     /// Implement this interface in the component that should receive collectable events.
     /// </summary>

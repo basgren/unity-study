@@ -2,11 +2,12 @@
 using Core;
 using Core.Audio;
 using Core.Components.Collisions;
-using Core.Services;
 using Core.Utils;
+using Game.Components.Abilities;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
 
-namespace Game.Components.Abilities {
+namespace Game.Features.Dynamic {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
     [RequireComponent(typeof(GroundCheckComponent))]

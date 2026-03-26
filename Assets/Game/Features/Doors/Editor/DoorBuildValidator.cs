@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System.Text;
+using Game.Features.Doors.Editor;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;

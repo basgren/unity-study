@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Game.Player;
+using Game.Components.Abilities;
+using Game.Features.Dynamic;
 using UnityEngine;
 
-namespace Game.Components.Abilities {
+namespace Game.Features.Characters.Hero.Abilities {
     public class DragAbility : MonoBehaviour {
         [Header("References")]
         [SerializeField]

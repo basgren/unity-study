@@ -1,8 +1,7 @@
-using Game.Player;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.Inspectors {
+namespace Game.Features.Characters.Hero.Editor {
     [CustomEditor(typeof(PlayerController))]
     public class PlayerControllerInspector : UnityEditor.Editor {
         public override void OnInspectorGUI() {

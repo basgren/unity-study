@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.Audio;
+﻿using Core.Audio;
+using UnityEngine;
 
-namespace Core.Audio {
+namespace Game.Core.Audio {
     /// <summary>
     /// Abstraction for playing audio cues.
     /// Use this from gameplay code instead of talking to AudioSource directly.

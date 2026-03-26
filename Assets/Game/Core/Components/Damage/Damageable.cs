@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
 using Core.Audio;
-using Core.Services;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Core.Components.Damage {
+namespace Game.Core.Components.Damage {
     [Serializable]
     public class OnHitEvent : UnityEvent<Damager> {
     }

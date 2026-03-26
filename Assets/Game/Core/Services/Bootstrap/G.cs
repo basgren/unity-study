@@ -1,8 +1,10 @@
-﻿using Core.Audio;
+﻿using Core.Services;
 using Game.Configs;
-using Game.Core.Services;
+using Game.Core.Audio;
+using Game.Core.Services.Input;
+using Game.Core.Services.Scene;
 
-namespace Core.Services {
+namespace Game.Core.Services.Bootstrap {
     /// <summary>
     /// Global class for system services. To make it available, add empty game object "System" to
     /// the scene and add SystemInitializer component to it.

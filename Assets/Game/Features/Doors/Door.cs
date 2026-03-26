@@ -1,10 +1,11 @@
 using System;
 using Core.Components.Interaction;
+using Game.Doors;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Game.Doors {
+namespace Game.Features.Doors {
     /// <summary>
     /// A scene door that can transition the player to another scene/door.
     /// The door uses a stable string ID (DoorId) that is referenced by other doors.
@@ -151,7 +152,7 @@ namespace Game.Doors {
             // generate a unique one for this instance.
             var source = PrefabUtility.GetCorrespondingObjectFromSource(this) as Door;
             var isInheritedFromPrefab =
-                source != null && string.Equals(doorId, source.doorId, System.StringComparison.Ordinal);
+                source != null && string.Equals(doorId, source.doorId, StringComparison.Ordinal);
 
             if (string.IsNullOrWhiteSpace(doorId) || isInheritedFromPrefab) {
                 doorId = $"Door_{DoorIdUtils.GenerateId(DefaultGeneratedLength)}";

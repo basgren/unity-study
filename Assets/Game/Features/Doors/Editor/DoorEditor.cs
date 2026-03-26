@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Game.Doors.Editor {
+namespace Game.Features.Doors.Editor {
     /// <summary>
     /// Custom inspector for Door that shows a read-only DoorId and editor actions.
     /// </summary>

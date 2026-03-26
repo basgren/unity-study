@@ -1,8 +1,9 @@
 ﻿using System;
+using Game.Core.Services.Bootstrap;
 using UnityEditor;
 using UnityEngine;
 
-namespace Core.Services {
+namespace Game.Core.Services.Input {
     public class InputService : MonoBehaviour {
         public static InputActions Actions { get; private set; }
 

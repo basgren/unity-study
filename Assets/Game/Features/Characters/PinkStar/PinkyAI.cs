@@ -1,11 +1,12 @@
 using System;
 using System.Reflection;
 using Core.FSM;
-using Core.Services;
+using Game.Core.Services.Bootstrap;
 using Prefabs.Characters.Common;
+using Prefabs.Characters.PinkStar;
 using UnityEngine;
 
-namespace Prefabs.Characters.PinkStar {
+namespace Game.Features.Characters.PinkStar {
     public enum PinkyBehavior {
         Roaming, // default: patrol, low attention
         Hunting, // alert/aware: actively tries to engage player

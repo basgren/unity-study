@@ -1,6 +1,6 @@
 using System;
-using Core.Services;
 using Core.UI;
+using Game.Core.Services.Bootstrap;
 using Game.UI.Widgets;
 using UnityEngine;
 

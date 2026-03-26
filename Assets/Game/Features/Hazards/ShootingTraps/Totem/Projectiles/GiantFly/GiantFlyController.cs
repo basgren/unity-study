@@ -1,15 +1,14 @@
 using Core.Audio;
 using Core.Components.Animation;
 using Core.Components.Base2D;
-using Core.Components.Damage;
 using Core.FSM;
-using Core.Services;
-using Core.Utils;
+using Game.Core.Components.Damage;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
+namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
     [RequireComponent(typeof(MultiStateSpriteAnimator), typeof(Rigidbody2D), typeof(Facing2D))]
     public class GiantFlyController : MonoBehaviour {
         private enum FlyState {

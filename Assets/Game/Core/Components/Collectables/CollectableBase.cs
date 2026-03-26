@@ -1,10 +1,10 @@
 ﻿using System;
 using Core.Audio;
 using Core.Components.Animation;
-using Core.Services;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
 
-namespace Core.Components.Collectables {
+namespace Game.Core.Components.Collectables {
     /// <summary>
     /// Collectible component represents an item that can be collected, but which doesn't
     /// occupy space in inventory. For example, coins, health, power-ups, etc.

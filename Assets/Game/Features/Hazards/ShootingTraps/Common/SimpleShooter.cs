@@ -1,14 +1,14 @@
 ﻿using Core.Audio;
 using Core.Components.Base2D;
-using Core.Components.Damage;
-using Core.Components.GameObjects;
-using Core.Services;
+using Game.Core.Components.Damage;
+using Game.Core.Components.GameObjects;
+using Game.Core.Services.Bootstrap;
+using Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly;
+using Game.Features.Hazards.ShootingTraps.Totem.Projectiles.Skullflame;
 using Prefabs.Characters.Common;
-using Prefabs.Hazards.ShootingTraps.Totem.Projectiles.GiantFly;
-using Prefabs.Hazards.ShootingTraps.Totem.Projectiles.Skullflame;
 using UnityEngine;
 
-namespace Prefabs.Hazards.ShootingTraps.Common {
+namespace Game.Features.Hazards.ShootingTraps.Common {
     internal abstract class SimpleShooterAnimKeys {
         public static readonly int Fire = Animator.StringToHash("onFire");
         public static readonly int Hit = Animator.StringToHash("onHit");

@@ -1,11 +1,12 @@
 ﻿#if UNITY_EDITOR
 using System;
+using Game.Doors.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Game.Doors.Editor {
+namespace Game.Features.Doors.Editor {
     /// <summary>
     /// Repairs cached SceneReference.scenePath for DoorLink target scenes.
     /// Uses SceneReference.sceneGuid as the source of truth.
@@ -108,7 +109,7 @@ namespace Game.Doors.Editor {
             var roots = scene.GetRootGameObjects();
 
             for (var i = 0; i < roots.Length; i++) {
-                var doors = roots[i].GetComponentsInChildren<Game.Doors.Door>(true);
+                var doors = roots[i].GetComponentsInChildren<Door>(true);
                 for (var j = 0; j < doors.Length; j++) {
                     changed += RepairDoorSerialized(doors[j]);
                 }
@@ -119,7 +120,7 @@ namespace Game.Doors.Editor {
 
         private static int RepairInPrefabRoot(GameObject root) {
             var changed = 0;
-            var doors = root.GetComponentsInChildren<Game.Doors.Door>(true);
+            var doors = root.GetComponentsInChildren<Door>(true);
 
             for (var i = 0; i < doors.Length; i++) {
                 changed += RepairDoorSerialized(doors[i]);
@@ -128,7 +129,7 @@ namespace Game.Doors.Editor {
             return changed;
         }
 
-        private static int RepairDoorSerialized(Game.Doors.Door door) {
+        private static int RepairDoorSerialized(Door door) {
             if (door == null) {
                 return 0;
             }

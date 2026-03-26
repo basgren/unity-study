@@ -1,14 +1,13 @@
-using System;
 using Core.Audio;
 using Core.Components.Animation;
 using Core.Components.Base2D;
-using Core.Components.Damage;
-using Core.Services;
+using Game.Core.Components.Damage;
+using Game.Core.Services.Bootstrap;
 using Prefabs.Characters.Common;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Prefabs.Hazards.ShootingTraps.Totem.Projectiles.Skullflame {
+namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.Skullflame {
     [RequireComponent(typeof(MultiStateSpriteAnimator), typeof(Rigidbody2D), typeof(Facing2D))]
     public class SkullflameController : MonoBehaviour, IProjectileLifetime {
         [SerializeField]

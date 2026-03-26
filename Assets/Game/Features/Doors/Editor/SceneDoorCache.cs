@@ -1,9 +1,10 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using Game.Doors.Editor;
 using UnityEditor;
 
-namespace Game.Doors.Editor {
+namespace Game.Features.Doors.Editor {
     /// <summary>
     /// Editor-only cache for listing door IDs inside a scene.
     /// Used by inspectors to show a dropdown of available target doors.

@@ -1,7 +1,7 @@
 ﻿using Core.Utils;
 using UnityEngine;
 
-namespace Core.Components.Collectables {
+namespace Game.Core.Components.Collectables {
     /// <summary>
     /// Controller that handles coin drops by the player. The main reason is to prevent coin pickup
     /// at the moment when coins are spawned, as for some time they will collide with the player.

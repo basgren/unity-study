@@ -1,11 +1,12 @@
-using Core.Audio;
 using Core;
-using Core.Services;
+using Game.Core.Audio;
+using Game.Core.Services.Bootstrap;
+using Prefabs.Characters.Common;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
-namespace Prefabs.Characters.Common {
+namespace Game.Features.Characters._Shared {
     /// <summary>
     /// Kinematic projectile with deterministic movement and ricochet.
     ///

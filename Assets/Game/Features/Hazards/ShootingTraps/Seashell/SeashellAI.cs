@@ -1,7 +1,7 @@
 ﻿using Core.Components.Collisions;
 using UnityEngine;
 
-namespace Prefabs.Hazards.ShootingTraps.Seashell {
+namespace Game.Features.Hazards.ShootingTraps.Seashell {
     public class SeashellAI : MonoBehaviour {
         [SerializeField]
         private LayerCheck vision;

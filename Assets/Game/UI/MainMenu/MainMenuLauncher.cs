@@ -1,8 +1,8 @@
 using System.Collections;
-using Core.Services;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
 
-namespace Game.UI {
+namespace Game.UI.MainMenu {
     public enum MenuType {
         MainMenu,
         OptionsMenu,

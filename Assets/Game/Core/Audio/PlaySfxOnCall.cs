@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using Core.Services;
+using Core.Audio;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
 
-namespace Core.Audio {
-
+namespace Game.Core.Audio {
     [Serializable]
     public class AudioCueRef {
         public string id;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-namespace Game.Doors {
+namespace Game.Features.Doors {
     /// <summary>
     /// Shared runtime utilities for door management.
     /// </summary>

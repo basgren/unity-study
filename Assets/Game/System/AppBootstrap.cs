@@ -1,7 +1,7 @@
-﻿using Core.Services;
+﻿using Game.Core.Services.Bootstrap;
 using UnityEngine;
 
-namespace System {
+namespace Game.System {
     public static class AppBootstrap {
         private static readonly string EntryPointObjectName = "EntryPoint";
         

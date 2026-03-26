@@ -1,9 +1,9 @@
 ﻿using System;
-using Core.Services;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Core.Components.GameObjects {
+namespace Game.Core.Components.GameObjects {
     public class LootDropper : MonoBehaviour {
         [SerializeField]
         private GameObject lootPrefab;

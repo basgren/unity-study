@@ -1,9 +1,7 @@
-﻿using System;
-using Core.Components;
-using Core.Components.GameObjects;
+﻿using Game.Core.Components.GameObjects;
 using UnityEngine;
 
-namespace Prefabs.Props.Chest {
+namespace Game.Features.Props.Chest {
     [RequireComponent(typeof(Animator))]
     public class ChestController : MonoBehaviour {
         private static readonly int IsOpenKey = Animator.StringToHash("isOpen");

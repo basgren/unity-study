@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace EditorTools.Sprites {
+namespace Game.Editor {
     /// <summary>
     /// Batch tool for assigning Sprite pivot import settings in a Sprite Editor–style workflow:
     /// <list type="bullet">

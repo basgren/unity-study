@@ -1,7 +1,7 @@
 ﻿using Core.Components.Collisions;
 using UnityEngine;
 
-namespace Prefabs.Hazards.ShootingTraps.Common {
+namespace Game.Features.Hazards.ShootingTraps.Common {
     [RequireComponent(typeof(SimpleShooter))]
     public class SimpleShooterAI : MonoBehaviour {
         [SerializeField]

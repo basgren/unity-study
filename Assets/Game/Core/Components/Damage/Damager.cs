@@ -4,7 +4,7 @@ using Core.Components.Extensions;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Core.Components.Damage {
+namespace Game.Core.Components.Damage {
     public enum DamagerType {
         Continuous,
 

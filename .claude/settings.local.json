@@ -3,7 +3,8 @@
     "allow": [
       "Bash(cd:*)",
       "Bash(grep -E \"\\\\.\\(cs|prefab\\)$\")",
-      "Bash(grep -E \"\\\\.cs$\")"
+      "Bash(grep -E \"\\\\.cs$\")",
+      "Bash(xargs grep:*)"
     ]
   }
 }

@@ -1,11 +1,13 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using Game.Doors;
+using Game.Doors.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Game.Doors.Editor {
+namespace Game.Features.Doors.Editor {
     /// <summary>
     /// Editor-only validation for door ids and door links.
     /// Used by menu validation and build-time validation.

@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
+using Game.Features.Doors.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;

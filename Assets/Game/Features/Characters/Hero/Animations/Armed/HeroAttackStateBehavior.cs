@@ -1,7 +1,6 @@
-﻿using Game.Player;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Prefabs.Characters.Hero.Animations.Armed {
+namespace Game.Features.Characters.Hero.Animations.Armed {
     public class AttackStateBehavior : StateMachineBehaviour {
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             // We don't allow jumping when attack is in progress, but if player falls from the edge while

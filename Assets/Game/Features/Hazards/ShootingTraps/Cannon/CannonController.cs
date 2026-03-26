@@ -1,13 +1,13 @@
 ﻿using Core.Audio;
 using Core.Components.Base2D;
-using Core.Components.Damage;
-using Core.Components.GameObjects;
-using Core.Services;
 using Core.Utils;
+using Game.Core.Components.Damage;
+using Game.Core.Components.GameObjects;
+using Game.Core.Services.Bootstrap;
 using Prefabs.Characters.Common;
 using UnityEngine;
 
-namespace Prefabs.Hazards.ShootingTraps.Cannon {
+namespace Game.Features.Hazards.ShootingTraps.Cannon {
     internal abstract class CannonAnimKeys {
         public static readonly int Fire = Animator.StringToHash("onFire");
         public static readonly int Hit = Animator.StringToHash("onHit");

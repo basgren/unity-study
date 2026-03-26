@@ -1,12 +1,13 @@
 ﻿using System;
 using Core.Audio;
 using Core.Components.Base2D;
-using Core.Components.Damage;
-using Core.Services;
 using Game.Controllers;
+using Game.Core.Components.Damage;
+using Game.Core.Services.Bootstrap;
+using Prefabs.Characters.Sharky;
 using UnityEngine;
 
-namespace Prefabs.Characters.Sharky {
+namespace Game.Features.Characters.Sharky {
     internal abstract class SharkyAnimKeys : BaseCharacterAnimKeys {
         public static readonly int IsDead = Animator.StringToHash("isDead");
         public static readonly int OnJump = Animator.StringToHash("onJump");
