@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b188c172f33459faafc5fa729cdb132, type: 3}
-  m_Name: SunlitAdventuresCue
+  m_Name: LazySailingCue
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 9fd1fee6a7c8cd24890b969b5663341e, type: 3}
+  - {fileID: 8300000, guid: b9f591aae0f752e4890c81a8987318fe, type: 3}
   mixerGroup: {fileID: -6267908494152717907, guid: 9ad9472c7ade3b841aecbb7dbc94d08a,
     type: 2}
   volume: 0.6
