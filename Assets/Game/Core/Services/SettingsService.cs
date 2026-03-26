@@ -1,7 +1,9 @@
 using System;
 using System.IO;
 using Game.Configs;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Game.Core.Services {
     /// <summary>
@@ -10,6 +12,11 @@ namespace Game.Core.Services {
     /// </summary>
     public class SettingsService : MonoBehaviour {
         private static readonly string FileName = "settings.json";
+        private static readonly string MusicVolumeParam = "MusicVolume";
+        private static readonly string SfxVolumeParam = "SfxVolume";
+        private static readonly float MinDecibels = -80f;
+
+        private AudioMixer mixer;
 
         public GameSettings Current { get; private set; }
 
@@ -17,6 +24,19 @@ namespace Game.Core.Services {
 
         private void Awake() {
             Current = Load();
+        }
+
+        /// <summary>
+        /// Called after G.Config is available to grab the mixer reference.
+        /// Volume is applied in Start because AudioMixer ignores SetFloat during Awake.
+        /// </summary>
+        public void Init() {
+            if (G.Config != null) {
+                mixer = G.Config.AudioMixer;
+            }
+        }
+
+        private void Start() {
             ApplyVolume();
         }
 
@@ -51,13 +71,28 @@ namespace Game.Core.Services {
         }
 
         /// <summary>
-        /// Applies current volume settings to the audio system.
-        /// Currently stubbed — wire to AudioMixer when ready.
+        /// Applies current volume settings to the AudioMixer.
+        /// Slider values (0–10) are converted to decibels.
         /// </summary>
         public void ApplyVolume() {
-            // TODO: Apply volume to AudioMixer or AudioListener.
-            // Example: mixer.SetFloat("MusicVolume", ConvertToDecibels(Current.MusicVolume));
-            Debug.Log($"Settings: Music={Current.MusicVolume}, SFX={Current.SfxVolume}");
+            if (mixer == null) {
+                return;
+            }
+
+            mixer.SetFloat(MusicVolumeParam, ToDecibels(Current.MusicVolume));
+            mixer.SetFloat(SfxVolumeParam, ToDecibels(Current.SfxVolume));
+        }
+
+        /// <summary>
+        /// Converts a linear 0–10 slider value to decibels.
+        /// 0 = silence (−80 dB), 10 = full volume (0 dB).
+        /// </summary>
+        private float ToDecibels(int value) {
+            if (value <= 0) {
+                return MinDecibels;
+            }
+
+            return Mathf.Log10(value / 10f) * 20f;
         }
     }
 }

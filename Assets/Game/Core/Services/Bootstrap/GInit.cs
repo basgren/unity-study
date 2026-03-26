@@ -1,9 +1,11 @@
-﻿using Core.Audio;
+using Core.Services;
 using Game.Configs;
-using Game.Core.Services;
+using Game.Core.Audio;
+using Game.Core.Services.Input;
+using Game.Core.Services.Scene;
 using UnityEngine;
 
-namespace Core.Services {
+namespace Game.Core.Services.Bootstrap {
     /// <summary>
     /// This component should be added to the scene to initialize the system. It initializes
     /// global service class G.
@@ -29,10 +31,14 @@ namespace Core.Services {
             G.Screen = GetOrCreate<ScreenService>("ScreenService");
             G.StateMachines = GetOrCreate<StateMachineService>("StateMachineService");
             G.Settings = GetOrCreate<SettingsService>("SettingsService");
-            G.Audio = GetOrCreate<AudioService>("AudioService");
+            var audioService = GetOrCreate<AudioService>("AudioService");
+            G.Audio = audioService;
             G.Menu = GetOrCreate<MenuManager>("MenuManager");
             G.Game.playerConfig = mainConfig.Player;
             G.Game.Init();
+
+            audioService.Init();
+            G.Settings.Init();
         }
 
         private void LoadConfig() {

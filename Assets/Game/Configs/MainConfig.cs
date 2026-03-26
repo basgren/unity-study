@@ -1,5 +1,6 @@
 using Core.UI;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Game.Configs {
     /// <summary>
@@ -8,6 +9,10 @@ namespace Game.Configs {
     [CreateAssetMenu(menuName = "Config/Main Config", fileName = "MainConfig")]
     public class MainConfig : ScriptableObject {
         public PlayerConfig Player;
+
+        [Header("Audio")]
+        public AudioMixer AudioMixer;
+        public AudioMixerGroup SfxMixerGroup;
 
         [Header("Menus")]
         public AnimatedWindow MainMenu;

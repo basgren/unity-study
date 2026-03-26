@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Core.Audio;
 using Game.Core.Services.Bootstrap;
 using UnityEngine;
 
@@ -17,6 +19,17 @@ namespace Game.UI.MainMenu {
         [SerializeField]
         private float mainMenuDelay = 0.4f;
         
+        [SerializeField]
+        private AudioCue mainMenuMusic;
+        
+        private IAudioLoopHandle musicHandle;
+
+        private void Awake() {
+            if (mainMenuMusic != null) {
+                musicHandle = G.Audio.PlayLoopAt(mainMenuMusic, transform.position, false);
+            }
+        }
+        
         private IEnumerator Start() {
             yield return null;
             yield return new WaitForEndOfFrame();
@@ -33,6 +46,13 @@ namespace Game.UI.MainMenu {
                 default:
                     StartCoroutine(ShowMainMenu(mainMenuDelay));
                     break;
+            }
+        }
+
+        private void OnDestroy() {
+            if (musicHandle != null) {
+                musicHandle.Stop();
+                musicHandle = null;
             }
         }
 

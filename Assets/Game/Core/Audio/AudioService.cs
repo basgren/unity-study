@@ -1,9 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
+using Core.Audio;
+using Game.Core.Services.Bootstrap;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Core.Audio {
+namespace Game.Core.Audio {
     /// <summary>
     /// Central audio playback service with pooled AudioSources.
     /// Applies AudioCue settings and enforces per-cue limits (cooldown/max instances).
@@ -21,6 +23,8 @@ namespace Core.Audio {
         [Header("Routing")]
         [SerializeField]
         private Transform poolRoot;
+
+        private AudioMixerGroup defaultMixerGroup;
 
         private readonly Queue<AudioSource> freeSources = new Queue<AudioSource>();
         private readonly HashSet<AudioSource> busySources = new HashSet<AudioSource>();
@@ -40,11 +44,20 @@ namespace Core.Audio {
             }
 
             WarmupPool();
-            
+
             cachedListener = FindObjectOfType<AudioListener>();
-            
+
             if (cachedListener != null) {
                 cachedListenerTransform = cachedListener.transform;
+            }
+        }
+
+        /// <summary>
+        /// Called after G.Config is available to grab the default mixer group.
+        /// </summary>
+        public void Init() {
+            if (G.Config != null) {
+                defaultMixerGroup = G.Config.SfxMixerGroup;
             }
         }
 
@@ -348,7 +361,7 @@ namespace Core.Audio {
             source.clip = clip;
             source.volume = cue.Volume;
             source.pitch = cue.PickPitch();
-            source.outputAudioMixerGroup = cue.MixerGroup;
+            source.outputAudioMixerGroup = cue.MixerGroup != null ? cue.MixerGroup : defaultMixerGroup;
             source.loop = false;
 
             if (is3D) {

@@ -227,6 +227,7 @@ MonoBehaviour:
   autoOpenOnCreation: 0
   musicSlider: {fileID: 7678305134624414331}
   sfxSlider: {fileID: 3029830057790826406}
+  sfxSample: {fileID: 11400000, guid: 997a193463ee91344afbd731ffd40830, type: 2}
 --- !u!1 &4843576637343947163
 GameObject:
   m_ObjectHideFlags: 0

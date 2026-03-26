@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: MainConfig
   m_EditorClassIdentifier: 
   Player: {fileID: 11400000, guid: b0fb1bd7a698c024c92390596d727bc2, type: 2}
+  AudioMixer: {fileID: 24100000, guid: 9ad9472c7ade3b841aecbb7dbc94d08a, type: 2}
+  SfxMixerGroup: {fileID: 2757630577671673946, guid: 9ad9472c7ade3b841aecbb7dbc94d08a,
+    type: 2}
   MainMenu: {fileID: 8618158011026402637, guid: 162c5fe0c44ee984388015517b40d157,
     type: 3}
   OptionsMenu: {fileID: 8607079421164368098, guid: 33172a8f0bc272b4e8f3de04bb60ca19,

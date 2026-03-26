@@ -1,4 +1,4 @@
-﻿# AGENTS.md
+# AGENTS.md
 
 ## Project Context
 Unity 2D pixel art platformer.
@@ -55,6 +55,10 @@ public void SetDir(int dir) {
 - Prefer explicit and readable state transitions
 - Keep movement, collision, damage, and animation logic reasonably separated
 - Expose tuning values in the Inspector when they are meant to be adjusted
+
+## Service Configuration Rules
+- Services exposed via the `G` global static class must NOT use `[SerializeField]` for their configuration references (they are created dynamically, so serialized fields would be unset)
+- Instead, put shared references (AudioMixer, mixer groups, prefabs, etc.) on `MainConfig` ScriptableObject (`Resources/Configs/MainConfig`) and access them via `G.Config` in an `Init()` method called from `GInit`
 
 ## Architecture Rules
 Prefer:

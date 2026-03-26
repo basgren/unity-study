@@ -1,4 +1,5 @@
 using System;
+using Core.Audio;
 using Core.UI;
 using Game.Core.Services.Bootstrap;
 using Game.UI.Widgets;
@@ -6,8 +7,14 @@ using UnityEngine;
 
 namespace Game.UI.OptionsMenu {
     public class OptionsMenu : AnimatedWindow {
-        [SerializeField] private LabeledSlider musicSlider;
-        [SerializeField] private LabeledSlider sfxSlider;
+        [SerializeField]
+        private LabeledSlider musicSlider;
+        
+        [SerializeField]
+        private LabeledSlider sfxSlider;
+
+        [SerializeField]
+        private AudioCue sfxSample;
 
         public override void Open(GameObject selected = null) {
             LoadSettings();
@@ -86,6 +93,10 @@ namespace Game.UI.OptionsMenu {
 
             G.Settings.Current.SfxVolume = value;
             G.Settings.ApplyVolume();
+
+            if (sfxSample != null && G.Audio != null) {
+                G.Audio.Play2D(sfxSample);
+            }
         }
     }
 }
