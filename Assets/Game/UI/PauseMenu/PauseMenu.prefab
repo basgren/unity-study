@@ -330,15 +330,15 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5113256826808101117}
-  - {fileID: 2580104421218741853}
-  - {fileID: 1665231183611079123}
   - {fileID: 802359585660206758}
+  - {fileID: 1665231183611079123}
+  - {fileID: 2580104421218741853}
   m_Father: {fileID: 5670140468453796196}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 120, y: 138}
+  m_SizeDelta: {x: 130, y: 138}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6920663530516765086
 CanvasRenderer:
@@ -418,11 +418,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
-        type: 3}
       propertyPath: m_SizeDelta.y
       value: 22
       objectReference: {fileID: 0}
@@ -449,17 +444,17 @@ PrefabInstance:
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
@@ -469,7 +464,7 @@ PrefabInstance:
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -112
+      value: -60
       objectReference: {fileID: 0}
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
@@ -489,17 +484,12 @@ PrefabInstance:
     - target: {fileID: 5762636334736794001, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_Name
-      value: BackButton
+      value: ContinueButton
       objectReference: {fileID: 0}
     - target: {fileID: 7757909298453616938, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_text
-      value: Back
-      objectReference: {fileID: 0}
-    - target: {fileID: 8444615499869456331, guid: 2a36267b3ba76584c92ce1a293590892,
-        type: 3}
-      propertyPath: text
-      value: Back
+      value: Continue
       objectReference: {fileID: 0}
     - target: {fileID: 8444615499869456331, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
@@ -509,7 +499,7 @@ PrefabInstance:
     - target: {fileID: 8444615499869456331, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnBackClick
+      value: OnContinueClick
       objectReference: {fileID: 0}
     - target: {fileID: 8444615499869456331, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
@@ -573,11 +563,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
-        type: 3}
       propertyPath: m_SizeDelta.y
       value: 22
       objectReference: {fileID: 0}
@@ -620,6 +605,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -86
       objectReference: {fileID: 0}
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
@@ -717,11 +707,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
-        type: 3}
       propertyPath: m_SizeDelta.y
       value: 22
       objectReference: {fileID: 0}
@@ -768,7 +753,7 @@ PrefabInstance:
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -60
+      value: -112
       objectReference: {fileID: 0}
     - target: {fileID: 1109797332946783813, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
@@ -803,17 +788,17 @@ PrefabInstance:
     - target: {fileID: 5762636334736794001, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_Name
-      value: RestartButton
+      value: ExitToMenuButton
       objectReference: {fileID: 0}
     - target: {fileID: 7757909298453616938, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_text
-      value: Restart
+      value: To Main Menu
       objectReference: {fileID: 0}
     - target: {fileID: 8444615499869456331, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: text
-      value: Restart
+      value: To Main Menu
       objectReference: {fileID: 0}
     - target: {fileID: 8444615499869456331, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
@@ -828,7 +813,7 @@ PrefabInstance:
     - target: {fileID: 8444615499869456331, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnRestartClick
+      value: OnExitToMenuClick
       objectReference: {fileID: 0}
     - target: {fileID: 8444615499869456331, guid: 2a36267b3ba76584c92ce1a293590892,
         type: 3}

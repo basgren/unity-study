@@ -13,6 +13,10 @@ namespace Game.UI {
         [SerializeField]
         private MenuType startMenu = MenuType.MainMenu;
         
+        // Just to synchronize main menu with music
+        [SerializeField]
+        private float mainMenuDelay = 0.4f;
+        
         private IEnumerator Start() {
             yield return null;
             yield return new WaitForEndOfFrame();
@@ -27,9 +31,14 @@ namespace Game.UI {
                     break;
                 
                 default:
-                    G.Menu.OpenMainMenu();
+                    StartCoroutine(ShowMainMenu(mainMenuDelay));
                     break;
             }
+        }
+
+        private IEnumerator ShowMainMenu(float delay) {
+            yield return new WaitForSeconds(delay);
+            G.Menu.OpenMainMenu();
         }
     }
 }

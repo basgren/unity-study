@@ -4,9 +4,9 @@ using UnityEngine.SceneManagement;
 
 namespace Game.UI.PauseMenu {
     public class PauseMenu : AnimatedWindow {
-        public void OnRestartClick() {
+        public void OnExitToMenuClick() {
             G.Menu.CloseAll(() => {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                SceneManager.LoadScene("MainMenuScene");
             });
         }
         
@@ -14,7 +14,7 @@ namespace Game.UI.PauseMenu {
             G.Menu.OpenOptionsMenu();
         }
         
-        public void OnBackClick() {
+        public void OnContinueClick() {
             G.Menu.CloseTopWindow();
         }
     }
