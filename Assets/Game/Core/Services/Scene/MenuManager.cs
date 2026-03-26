@@ -33,6 +33,7 @@ namespace Game.Core.Services.Scene {
         private InputAction cancelAction;
         private Canvas menuCanvas;
         private bool isTransitionInProgress;
+        private int openedOnFrame;
         private int TopIndex => windowEntries.Count - 1;
 
         /// <summary>
@@ -92,12 +93,14 @@ namespace Game.Core.Services.Scene {
                 return;
             }
 
-            Debug.Log("Pause menu opened.");
+            // Remember the frame so OnCancelPerformed ignores the same Escape press
+            // that opened the menu (Pause and Cancel share the Escape key).
+            openedOnFrame = Time.frameCount;
             OpenPauseMenu();
         }
 
         private void OnCancelPerformed(InputAction.CallbackContext context) {
-            if (isTransitionInProgress) {
+            if (isTransitionInProgress || Time.frameCount == openedOnFrame) {
                 return;
             }
 

@@ -20,6 +20,7 @@ Main priorities:
 - Avoid magic numbers where practical
 - Do not reformat unrelated code
 - Add XML documentation to important classes and their public API methods when it adds clarity; skip trivial or self-explanatory members
+- Add brief inline comments for non-obvious solutions (workarounds, timing tricks, subtle interactions); skip comments for self-evident code
 
 Example:
 ```csharp
