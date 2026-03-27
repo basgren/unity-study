@@ -1,19 +1,20 @@
-using Core.Services;
 using Game.Configs;
 using Game.Core.Audio;
+using Game.Core.Services;
 using Game.Core.Services.Input;
 using Game.Core.Services.Scene;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-namespace Game.Core.Services.Bootstrap {
+namespace Game.Core.Bootstrap {
     /// <summary>
     /// This component should be added to the scene to initialize the system. It initializes
     /// global service class G.
     /// </summary>
     public class GInit : MonoBehaviour {
-        private static readonly string MainConfigResourcePath = "Configs/MainConfig";
+        private static readonly string MainConfigResourcePath = "MainConfig";
         private MainConfig mainConfig;
-        
+
         private void Awake() {
             if (HasExistingInitializers()) {
                 DestroyImmediate(gameObject);
@@ -23,9 +24,11 @@ namespace Game.Core.Services.Bootstrap {
             LoadConfig();
             G.Config = mainConfig;
 
+            EnsureEventSystem();
+            
             Debug.Log("Initializing Game Manager");
             G.Game = GetOrCreate<GameManager>("GameManager");
-            
+            G.Hero = GetOrCreate<HeroService>("HeroService");
             G.Spawner = GetOrCreate<SpawnerService>("SpawnerService");
             G.Input = GetOrCreate<InputService>("InputService");
             G.Screen = GetOrCreate<ScreenService>("ScreenService");
@@ -34,11 +37,13 @@ namespace Game.Core.Services.Bootstrap {
             var audioService = GetOrCreate<AudioService>("AudioService");
             G.Audio = audioService;
             G.Menu = GetOrCreate<MenuManager>("MenuManager");
+            G.Hud = GetOrCreate<HudService>("HudService");
             G.Game.playerConfig = mainConfig.Player;
             G.Game.Init();
 
             audioService.Init();
             G.Settings.Init();
+            G.Hud.Init();
         }
 
         private void LoadConfig() {
@@ -46,7 +51,7 @@ namespace Game.Core.Services.Bootstrap {
             if (config == null) {
                 Debug.LogError($"Failed to load config from '{MainConfigResourcePath}'");
             }
-            
+
             Debug.Log("Setting main config");
             mainConfig = config;
         }
@@ -54,7 +59,6 @@ namespace Game.Core.Services.Bootstrap {
         private T GetOrCreate<T>(string serviceName) where T : MonoBehaviour {
             T svc = GetComponentInChildren<T>();
             if (svc != null) {
-                
                 return svc;
             }
 
@@ -70,8 +74,19 @@ namespace Game.Core.Services.Bootstrap {
                     return true;
                 }
             }
-            
+
             return false;
+        }
+
+        private void EnsureEventSystem() {
+            EventSystem existing = FindFirstObjectByType<EventSystem>();
+
+            if (existing != null) {
+                return;
+            }
+
+            GameObject instance = Instantiate(mainConfig.eventSystem.gameObject);
+            DontDestroyOnLoad(instance);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using Core.Audio;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -57,6 +57,8 @@ namespace Game.Core.Components.Damage {
 
         public float Health => currentHealth;
         public bool IsDead { get; private set; }
+
+        public event Action<float> OnHealthChanged;
 
         private SpriteRenderer spriteRenderer;
         private float nextAllowedDamageTime;
@@ -116,8 +118,12 @@ namespace Game.Core.Components.Damage {
         }
 
         public void SetHealth(float amount) {
+            float previous = currentHealth;
             currentHealth = Mathf.Clamp(amount, 0, maxHealth);
-            Debug.Log($">>> health: {currentHealth}/{maxHealth}");
+
+            if (!Mathf.Approximately(previous, currentHealth)) {
+                OnHealthChanged?.Invoke(currentHealth);
+            }
         }
 
         private bool IsInvulnerable() {

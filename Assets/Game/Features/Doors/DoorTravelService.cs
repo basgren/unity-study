@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using Game.Doors;
 using Game.Features.Characters.Hero;
 using UnityEngine;

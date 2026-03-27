@@ -1,6 +1,7 @@
 using Core.UI;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.EventSystems;
 
 namespace Game.Configs {
     /// <summary>
@@ -8,6 +9,7 @@ namespace Game.Configs {
     /// </summary>
     [CreateAssetMenu(menuName = "Config/Main Config", fileName = "MainConfig")]
     public class MainConfig : ScriptableObject {
+        [Header("Player")]
         public PlayerConfig Player;
 
         [Header("Audio")]
@@ -19,6 +21,9 @@ namespace Game.Configs {
         public AnimatedWindow OptionsMenu;
         public AnimatedWindow PauseMenu;
 
+        [Header("System")]
+        public EventSystem eventSystem;
+        
         [Header("Debug")]
         public bool EscQuitsImmediately;
     }

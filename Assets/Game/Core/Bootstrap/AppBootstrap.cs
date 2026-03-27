@@ -1,22 +1,20 @@
-﻿using Game.Core.Services.Bootstrap;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Game.System {
+namespace Game.Core.Bootstrap {
     public static class AppBootstrap {
         private static readonly string EntryPointObjectName = "EntryPoint";
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init() {
-            Debug.Log(">>>> App Bootstrap");
             // Prevent duplicates (domain reload on/off, etc.)
-            var existing = UnityEngine.Object.FindObjectOfType<GInit>();
+            var existing = Object.FindObjectOfType<GInit>();
             if (existing != null) {
                 Debug.Log("Already initialized.");
                 return;
             }
             
             var go = new GameObject(EntryPointObjectName);
-            UnityEngine.Object.DontDestroyOnLoad(go);
+            Object.DontDestroyOnLoad(go);
             go.AddComponent<GInit>();
         }
     }

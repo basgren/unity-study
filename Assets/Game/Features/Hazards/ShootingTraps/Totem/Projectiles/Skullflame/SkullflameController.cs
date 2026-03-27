@@ -1,8 +1,8 @@
 using Core.Audio;
 using Core.Components.Animation;
 using Core.Components.Base2D;
+using Game.Core.Bootstrap;
 using Game.Core.Components.Damage;
-using Game.Core.Services.Bootstrap;
 using Prefabs.Characters.Common;
 using UnityEngine;
 using Random = UnityEngine.Random;

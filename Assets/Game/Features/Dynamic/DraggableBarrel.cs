@@ -4,7 +4,7 @@ using Core.Audio;
 using Core.Components.Collisions;
 using Core.Utils;
 using Game.Components.Abilities;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using UnityEngine;
 
 namespace Game.Features.Dynamic {

@@ -1,6 +1,6 @@
 ﻿using System;
 using Core.Audio;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using UnityEngine;
 
 namespace Game.Core.Audio {

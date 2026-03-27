@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Core;
-using Core.Services;
 using Core.UI;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;

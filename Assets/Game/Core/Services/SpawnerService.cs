@@ -1,7 +1,9 @@
-﻿using Prefabs.Effects.InfoBubble;
+﻿using Game.Core.Bootstrap;
+using Game.Core.Services.Scene;
+using Prefabs.Effects.InfoBubble;
 using UnityEngine;
 
-namespace Core.Services {
+namespace Game.Core.Services {
     public class SpawnerService : MonoBehaviour {
         // This object will be created in a scene, or added if not exists.
         private static readonly string VfxParentName = "VFX";

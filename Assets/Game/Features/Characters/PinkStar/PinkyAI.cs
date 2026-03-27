@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 using Core.FSM;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using Prefabs.Characters.Common;
 using Prefabs.Characters.PinkStar;
 using UnityEngine;

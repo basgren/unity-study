@@ -2,7 +2,7 @@
 using Game.Models;
 using UnityEngine;
 
-namespace Core.Services {
+namespace Game.Core.Services {
     public class GameManager : MonoBehaviour {
         public PlayerConfig playerConfig;
 

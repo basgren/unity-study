@@ -2,7 +2,7 @@
 using Core.FSM;
 using UnityEngine;
 
-namespace Core.Services {
+namespace Game.Core.Services {
     /// <summary>
     /// Service for managing and updating state machines.
     /// It handles the lifecycle of state machines and ensures they are updated every frame.

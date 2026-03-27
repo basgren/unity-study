@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using Core.Components.Collisions;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using Prefabs.Characters.Common;
 using Prefabs.Effects.InfoBubble;
 using UnityEngine;

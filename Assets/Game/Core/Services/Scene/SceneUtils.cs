@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Core.Services {
+namespace Game.Core.Services.Scene {
     public static class SceneUtils {
         public static GameObject GetOrCreateObject(string gameObjectName) {
             return GameObject.Find(gameObjectName) ?? new GameObject(gameObjectName);

@@ -1,6 +1,6 @@
 using Core;
 using Game.Core.Audio;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using Prefabs.Characters.Common;
 using UnityEngine;
 using UnityEngine.Events;

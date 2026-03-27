@@ -2,8 +2,8 @@
 using Core.Audio;
 using Core.Components.Collisions;
 using Game.Controllers;
+using Game.Core.Bootstrap;
 using Game.Core.Components.Damage;
-using Game.Core.Services.Bootstrap;
 using Prefabs.Characters.PinkStar;
 using UnityEngine;
 

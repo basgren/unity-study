@@ -1,7 +1,6 @@
-using System;
 using System.Collections;
 using Core.Audio;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using UnityEngine;
 
 namespace Game.UI.MainMenu {

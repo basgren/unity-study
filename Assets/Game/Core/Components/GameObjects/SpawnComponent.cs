@@ -1,5 +1,5 @@
 ﻿using Core.Components.Base2D;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using UnityEngine;
 
 namespace Game.Core.Components.GameObjects {

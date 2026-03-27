@@ -1,10 +1,10 @@
-﻿using Core.Services;
-using Game.Configs;
+﻿using Game.Configs;
 using Game.Core.Audio;
+using Game.Core.Services;
 using Game.Core.Services.Input;
 using Game.Core.Services.Scene;
 
-namespace Game.Core.Services.Bootstrap {
+namespace Game.Core.Bootstrap {
     /// <summary>
     /// Global class for system services. To make it available, add empty game object "System" to
     /// the scene and add SystemInitializer component to it.
@@ -20,6 +20,8 @@ namespace Game.Core.Services.Bootstrap {
         public static IAudioService Audio { get; internal set; }
         public static SettingsService Settings { get; internal set; }
         public static MainConfig Config { get; internal set; }
+        public static HeroService Hero { get; internal set; }
+        public static HudService Hud { get; internal set; }
         public static MenuManager Menu { get; internal set; }
     }
 }

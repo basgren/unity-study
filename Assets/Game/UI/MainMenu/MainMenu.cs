@@ -1,14 +1,16 @@
 using Core.UI;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
+using Game.Doors;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Game.UI.MainMenu {
     public class MainMenu : AnimatedWindow {
-        private static readonly string StartScene = "IntroLevel";
+        [SerializeField]
+        private SceneReference startScene;
         
         public void OnStartGameClick() {
-            G.Menu.CloseAll(() => SceneManager.LoadScene(StartScene));
+            G.Menu.CloseAll(() => SceneManager.LoadScene(startScene.GetSceneName()));
         }
 
         public void OnOptionsClick() {

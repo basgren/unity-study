@@ -1,5 +1,5 @@
 ﻿using System;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using Prefabs.Characters.PinkStar;
 using UnityEngine;
 

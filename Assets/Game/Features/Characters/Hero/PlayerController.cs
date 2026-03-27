@@ -6,10 +6,10 @@ using Core.Components.Interaction;
 using Core.Utils;
 using Game.Controllers;
 using Game.Core.Audio;
+using Game.Core.Bootstrap;
 using Game.Core.Components.Collectables;
 using Game.Core.Components.Damage;
 using Game.Core.Components.GameObjects;
-using Game.Core.Services.Bootstrap;
 using Game.Defs;
 using Game.Models;
 using Game.Player;
@@ -80,6 +80,7 @@ namespace Game.Features.Characters.Hero {
         private RuntimeAnimatorController unarmedAnimator;
 
         public InputActions.PlayerActions Actions { get; private set; }
+        public Damageable Damageable => damageable;
 
         private BoxCollider2D myCollider;
         private Damageable damageable;
@@ -145,6 +146,12 @@ namespace Game.Features.Characters.Hero {
             UpdateAnimatorController();
 
             InitFromState(state);
+
+            G.Hero.Register(this);
+        }
+
+        private void OnDestroy() {
+            G.Hero.Unregister(this);
         }
 
         private void InitFromState(PlayerState playerState) {

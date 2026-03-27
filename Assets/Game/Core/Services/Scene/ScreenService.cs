@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
+using Core;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Core.Services {
+namespace Game.Core.Services.Scene {
     [DisallowMultipleComponent]
     public class ScreenService : MonoBehaviour {
         private readonly Color fadeColor = Color.black;

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Core.Audio;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using UnityEngine;
 using UnityEngine.Audio;
 

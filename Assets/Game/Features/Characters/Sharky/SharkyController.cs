@@ -2,8 +2,8 @@
 using Core.Audio;
 using Core.Components.Base2D;
 using Game.Controllers;
+using Game.Core.Bootstrap;
 using Game.Core.Components.Damage;
-using Game.Core.Services.Bootstrap;
 using Prefabs.Characters.Sharky;
 using UnityEngine;
 

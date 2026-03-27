@@ -1,12 +1,12 @@
 using Core.UI;
-using Game.Core.Services.Bootstrap;
+using Game.Core.Bootstrap;
 using UnityEngine.SceneManagement;
 
 namespace Game.UI.PauseMenu {
     public class PauseMenu : AnimatedWindow {
         public void OnExitToMenuClick() {
             G.Menu.CloseAll(() => {
-                SceneManager.LoadScene("MainMenuScene");
+                SceneManager.LoadScene("MainMenu");
             });
         }
         

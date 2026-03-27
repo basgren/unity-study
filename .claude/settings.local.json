@@ -4,7 +4,10 @@
       "Bash(cd:*)",
       "Bash(grep -E \"\\\\.\\(cs|prefab\\)$\")",
       "Bash(grep -E \"\\\\.cs$\")",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Bash(find F:/Work/unity/piratik/PlatformStudy/Assets/Core -name *.cs -type f)",
+      "Bash(grep:*)",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }
