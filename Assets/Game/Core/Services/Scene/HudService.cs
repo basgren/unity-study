@@ -8,7 +8,7 @@ namespace Game.Core.Services.Scene {
     /// </summary>
     public class HudService : MonoBehaviour {
         private const string HudSceneName = "Hud";
-        private const string MainMenuSceneName = "MainMenuScene";
+        private const string MainMenuSceneName = "MainMenu";
 
         public void Init() {
             SceneManager.sceneLoaded += OnSceneLoaded;
