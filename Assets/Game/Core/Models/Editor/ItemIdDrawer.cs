@@ -1,10 +1,10 @@
 ﻿#if UNITY_EDITOR
-using Core.Models.Inventory;
-using Game.Models;
+using Core.Models;
+using Game.Core.Models.Inventory;
 using UnityEditor;
 using UnityEngine;
 
-namespace Core.Models.Editor {
+namespace Game.Core.Models.Editor {
     [CustomPropertyDrawer(typeof(ItemId))]
     public sealed class ItemIdDrawer : PropertyDrawer {
         private static string[] cachedIds;

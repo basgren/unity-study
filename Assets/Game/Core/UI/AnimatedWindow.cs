@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Core.UI {
+namespace Game.Core.UI {
     [RequireComponent(typeof(Animator))]
     public abstract class AnimatedWindow : MonoBehaviour {
         private static readonly int OnShow = Animator.StringToHash("onShow");

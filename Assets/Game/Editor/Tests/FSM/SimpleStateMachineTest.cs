@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Core.FSM;
 using NUnit.Framework;
 
-namespace Editor.Tests.FSM {
+namespace Game.Editor.Tests.FSM {
     public enum TestState {
         A, // Can go only to C
         B, // Initial state, can go to A and C

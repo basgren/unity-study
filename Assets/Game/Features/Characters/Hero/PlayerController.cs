@@ -10,9 +10,9 @@ using Game.Core.Bootstrap;
 using Game.Core.Components.Collectables;
 using Game.Core.Components.Damage;
 using Game.Core.Components.GameObjects;
+using Game.Core.Models.Inventory;
 using Game.Defs;
-using Game.Models;
-using Game.Player;
+using Game.Features.Characters.Hero.ItemUse;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -81,6 +81,9 @@ namespace Game.Features.Characters.Hero {
 
         public InputActions.PlayerActions Actions { get; private set; }
         public Damageable Damageable => damageable;
+        internal PlayerState State => state;
+        internal PlayerSoundProfile Sounds => sounds;
+        internal Animator Animator => MyAnimator;
 
         private BoxCollider2D myCollider;
         private Damageable damageable;
@@ -94,7 +97,7 @@ namespace Game.Features.Characters.Hero {
         private float jumpSustainTimer;
 
         // List of all interactable components which are currently available for interaction.
-        private readonly List<InteractableBase> availableInteractables = new List<InteractableBase>();
+        private readonly List<InteractableBase> availableInteractables = new();
         private InteractableBase closestInteractable;
 
         private Transform dustSpawnPoint;
@@ -115,14 +118,14 @@ namespace Game.Features.Characters.Hero {
         private readonly float attackCooldownTime = 0.2f;
         private float attackCooldownTimer;
 
-        private readonly TinyTimer throwCooldown = new TinyTimer(0.5f);
         private Transform swordThrowPoint;
         private SpawnComponent swordSpawner;
         private int CoinsCount => state.Inventory.GetCount(ItemIds.Coin);
-        private int SwordCount => state.Inventory.GetCount(ItemIds.Sword);
-        private bool IsArmed => SwordCount > 0;
-        
+        internal int SwordCount => state.Inventory.GetCount(ItemIds.Sword);
+        internal bool IsArmed { get; private set; }
+
         private PlayerState state;
+        private ItemUseService itemUseService;
         private HeroAttackType lastAttackType = HeroAttackType.Pierce;
 
         protected override void Awake() {
@@ -144,7 +147,7 @@ namespace Game.Features.Characters.Hero {
             swordSpawner = swordThrowPoint.GetComponent<SpawnComponent>();
 
             UpdateAnimatorController();
-
+            InitItemUseService();
             InitFromState(state);
 
             G.Hero.Register(this);
@@ -159,6 +162,13 @@ namespace Game.Features.Characters.Hero {
             damageable.SetHealth(playerState.currentHealth);
         }
 
+        private void InitItemUseService() {
+            itemUseService = new ItemUseService(state.BackpackPanelModel);
+            itemUseService.Register(new SmallHealPotionStrategy(this));
+            itemUseService.Register(new MediumHealPotionStrategy(this));
+            itemUseService.Register(new SwordThrowStrategy(this));
+        }
+
         private void UpdateAnimatorController() {
             MyAnimator.runtimeAnimatorController = IsArmed ? armedAnimator : unarmedAnimator;
         }
@@ -166,7 +176,7 @@ namespace Game.Features.Characters.Hero {
         protected override void Update() {
             base.Update();
 
-            throwCooldown.Update(Time.deltaTime);
+            itemUseService.Update(Time.deltaTime);
 
             // TODO: investigate proper solution for reading input and reacting on them. Main points:
             //   * inputs are checked before `Update` event (while it may be configured to be checked
@@ -187,25 +197,34 @@ namespace Game.Features.Characters.Hero {
             CheckHorizontalMovement();
             CheckInteraction();
             CheckAttack();
-            CheckThrow();
             CheckItemUse();
+            CheckInventory();
+        }
+
+        private void CheckInventory() {
+            if (Actions.NextItem.WasPressedThisFrame()) {
+                state.BackpackPanelModel.NextItem();
+            }
+
+            if (Actions.PrevItem.WasPressedThisFrame()) {
+                state.BackpackPanelModel.PrevItem();
+            }
+            
+            if (Actions.Inventory.WasPressedThisFrame()) {
+                G.Menu.OpenInventory();
+            }
         }
 
         private void CheckItemUse() {
-            if (Actions.UseItem.WasPerformedThisFrame()
-                && state.Inventory.GetCount(ItemIds.HealthPotionUsable) > 0) {
-                // TODO: [BG] Move health potions healing stats to some data section, so we can get actual
-                // healing value for it without hardcoding.
-                Debug.Log(">>> Healing +3 HP");
-                damageable.AddHealth(3f);
-                state.Inventory.Remove(ItemIds.HealthPotionUsable, 1);
+            if (Actions.UseItem.WasPerformedThisFrame()) {
+                itemUseService.TryUseSelectedItem();
             }
         }
 
         #region Attack
 
         /// <summary>
-        /// Currently attack is implemente in a vary simple way. Key is pressed - we activate damage window,
+        /// Currently attack is implemented in a very simple way. Key is pressed - we activate damage window,
         /// activate child object with collider and Damager components (DamageArea), it will hit everything once and
         /// when animation is finished we deactivate damage window and deactivate DamageArea.
         /// </summary>
@@ -263,33 +282,15 @@ namespace Game.Features.Characters.Hero {
 
         #endregion
 
-        #region ThrowSword
-
-        private void CheckThrow() {
-            if (Actions.Throw.WasPerformedThisFrame() && CanThrow()) {
-                Debug.Log("Throwind sword anim!");
-                // Set animation trigger and in the middle it will call `ThrowSword` method.
-                MyAnimator.SetTrigger(HeroAnimKeys.OnThrowSword);
-                throwCooldown.Start();
-                G.Audio.Play2D(sounds.Attack.ThrowSword);
-            }
-        }
-
-        private bool CanThrow() {
-            return IsArmed
-                   && throwCooldown.IsTimedOut
-                   && SwordCount > 1; // Additional condition - don't allow throwing the last sword.
-        }
-
+        /// <summary>
+        /// Called from animation event during throw animation.
+        /// </summary>
         private void ThrowSword() {
             var sword = swordSpawner.SpawnInstance();
             Facing.ApplyTo(sword);
             state.Inventory.Remove(ItemIds.Sword, 1);
             UpdateAnimatorController();
-            Debug.Log($"Swords left: {SwordCount}");
         }
-
-        #endregion
 
         public void SetDragMode(bool dragging, float speedMultiplier) {
             // TODO: [BG] we'll need this flag later for animations
@@ -409,16 +410,13 @@ namespace Game.Features.Characters.Hero {
         #endregion
 
         public void OnCollected(ItemId itemId, float value) {
-            if (itemId == ItemIds.HealthPotion) {
-                Debug.Log($"Player: Collected {value} health");
-                damageable.AddHealth(value);
-            } else {
-                state.Inventory.Add(itemId, (int)value);
-
-                if (itemId == ItemIds.Sword) {
-                    UpdateAnimatorController();
-                }
+            if (itemId == ItemIds.Sword && !IsArmed) {
+                IsArmed = true;
+                UpdateAnimatorController();
+                return;
             }
+            
+            state.Inventory.Add(itemId, (int)value);
         }
 
         #region Animator

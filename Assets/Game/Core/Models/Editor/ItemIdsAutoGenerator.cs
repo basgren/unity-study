@@ -1,10 +1,10 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Linq;
-using Core.Models.Inventory;
+using Game.Core.Models.Inventory;
 using UnityEditor;
 
-namespace Core.Models.Editor {
+namespace Game.Core.Models.Editor {
     public sealed class ItemIdsAutoGenerator : UnityEditor.AssetModificationProcessor {
         private static bool queued;
 

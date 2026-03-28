@@ -1,7 +1,6 @@
-﻿using Game.Audio;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Game.Player {
+namespace Game.Features.Characters.Hero {
     public class PlayerSoundProfileLink: MonoBehaviour {
         [SerializeField]
         private PlayerSoundProfile profile;

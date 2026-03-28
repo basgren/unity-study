@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Core;
-using Core.UI;
 using Game.Core.Bootstrap;
+using Game.Core.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -138,6 +138,10 @@ namespace Game.Core.Services.Scene {
         /// </summary>
         public void OpenPauseMenu() {
             OpenMenu(G.Config.PauseMenu);
+        }
+        
+        public void OpenInventory() {
+            OpenMenu(G.Config.InventoryPanel);
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Game.Models {
+namespace Game.Core.Models.Inventory {
     [Serializable]
     public struct ItemId : IEquatable<ItemId> {
         [SerializeField]

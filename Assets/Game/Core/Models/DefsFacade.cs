@@ -1,5 +1,5 @@
 ﻿using System;
-using Core.Models.Inventory;
+using Game.Core.Models.Inventory;
 using UnityEngine;
 
 namespace Core.Models {

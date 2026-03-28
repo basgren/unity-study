@@ -1,7 +1,7 @@
 ﻿using Game.Audio;
 using UnityEngine;
 
-namespace Game.Player {
+namespace Game.Features.Characters.Hero {
     [CreateAssetMenu(fileName = "PlayerSoundProfile", menuName = "Audio/Profiles/PlayerSoundProfile")]
     public class PlayerSoundProfile: ScriptableObject {
         [SerializeField]

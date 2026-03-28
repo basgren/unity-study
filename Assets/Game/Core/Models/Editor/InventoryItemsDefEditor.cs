@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Core.Models.Inventory;
+using Game.Core.Models.Inventory;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Core.Models.Editor {
+namespace Game.Core.Models.Editor {
     [CustomEditor(typeof(InventoryItemsDef))]
     public sealed class InventoryItemsDefEditor : UnityEditor.Editor {
         private const string FoldoutKey = "InventoryItemsDefEditor.CSharpGenerationFoldout";
@@ -39,22 +39,44 @@ namespace Core.Models.Editor {
 
             list.drawHeaderCallback = rect => { EditorGUI.LabelField(rect, "Inventory Items"); };
 
-            list.elementHeight = EditorGUIUtility.singleLineHeight + 6f;
+            const float iconSize = 48f;
+            const float padding = 2f;
+            const float lineSpacing = 2f;
+
+            list.elementHeight = iconSize + padding * 2f;
 
             list.drawElementCallback = (rect, index, isActive, isFocused) => {
                 var element = itemsProp.GetArrayElementAtIndex(index);
 
-                // For List<ItemDef> where ItemDef is a serializable class:
                 var idProp = element.FindPropertyRelative("id");
                 var uidProp = element.FindPropertyRelative("uid");
+                var iconProp = element.FindPropertyRelative("icon");
+                var typeProp = element.FindPropertyRelative("type");
 
-                rect.y += 2f;
-                rect.height = EditorGUIUtility.singleLineHeight;
+                rect.y += padding;
 
                 // Ensure uid exists
                 if (uidProp != null && string.IsNullOrEmpty(uidProp.stringValue)) {
                     uidProp.stringValue = Guid.NewGuid().ToString("N");
                 }
+
+                // Icon preview on the left
+                var iconRect = new Rect(rect.x, rect.y, iconSize, iconSize);
+                if (iconProp != null) {
+                    iconProp.objectReferenceValue = EditorGUI.ObjectField(
+                        iconRect, iconProp.objectReferenceValue, typeof(Sprite), false);
+                }
+
+                // Fields to the right of the icon
+                var fieldsX = rect.x + iconSize + 6f;
+                var fieldsWidth = rect.width - iconSize - 6f;
+                var lineHeight = EditorGUIUtility.singleLineHeight;
+
+                var prevLabelWidth = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = 36f;
+
+                // Id field
+                var idRect = new Rect(fieldsX, rect.y, fieldsWidth, lineHeight);
 
                 var id = idProp != null ? idProp.stringValue : string.Empty;
                 var isEmpty = string.IsNullOrWhiteSpace(id);
@@ -64,7 +86,7 @@ namespace Core.Models.Editor {
                 GUI.SetNextControlName(controlName);
 
                 EditorGUI.BeginChangeCheck();
-                var newValue = EditorGUI.DelayedTextField(rect, id);
+                var newValue = EditorGUI.DelayedTextField(idRect, "Id", id);
                 if (EditorGUI.EndChangeCheck()) {
                     if (idProp != null) {
                         idProp.stringValue = newValue;
@@ -72,10 +94,18 @@ namespace Core.Models.Editor {
                 }
 
                 if (isEmpty) {
-                    DrawOutline(rect, new Color(1f, 0.6f, 0.2f, 0.9f));
+                    DrawOutline(idRect, new Color(1f, 0.6f, 0.2f, 0.9f));
                 } else if (isDuplicate) {
-                    DrawOutline(rect, new Color(1f, 0.2f, 0.2f, 0.9f));
+                    DrawOutline(idRect, new Color(1f, 0.2f, 0.2f, 0.9f));
                 }
+
+                // Type field
+                var typeRect = new Rect(fieldsX, idRect.yMax + lineSpacing, fieldsWidth, lineHeight);
+                if (typeProp != null) {
+                    EditorGUI.PropertyField(typeRect, typeProp, new GUIContent("Type"));
+                }
+
+                EditorGUIUtility.labelWidth = prevLabelWidth;
             };
 
             list.onAddCallback = l => {
@@ -87,6 +117,8 @@ namespace Core.Models.Editor {
                 var element = itemsProp.GetArrayElementAtIndex(i);
                 element.FindPropertyRelative("id").stringValue = string.Empty;
                 element.FindPropertyRelative("uid").stringValue = Guid.NewGuid().ToString("N");
+                element.FindPropertyRelative("icon").objectReferenceValue = null;
+                element.FindPropertyRelative("type").enumValueIndex = 0;
 
                 serializedObject.ApplyModifiedProperties();
                 GUIUtility.ExitGUI();

@@ -1,5 +1,5 @@
-using Core.UI;
 using Game.Core.Bootstrap;
+using Game.Core.UI;
 using UnityEngine.SceneManagement;
 
 namespace Game.UI.PauseMenu {

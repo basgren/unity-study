@@ -22,6 +22,8 @@ MonoBehaviour:
     type: 3}
   PauseMenu: {fileID: 181822652088074092, guid: 2b7950c000bc2fd4d80d6062bfa90f8f,
     type: 3}
+  InventoryPanel: {fileID: 6962322086487646681, guid: c6a0ea478465499448f9bab2a0fba667,
+    type: 3}
   eventSystem: {fileID: 148805550643421190, guid: 88f8a27aef0d544489c8eb0aff769c02,
     type: 3}
   EscQuitsImmediately: 0

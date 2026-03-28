@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Core.Models.Inventory {
+namespace Game.Core.Models.Inventory {
     [CreateAssetMenu(menuName = "Defs/InventoryItemsDef", fileName = "InventoryItemsDef")]
     public sealed class InventoryItemsDef : ScriptableObject {
         [SerializeField]
-        private List<ItemDef> items = new List<ItemDef>();
+        private List<ItemDef> items = new();
 
         [SerializeField]
         private bool generateCSharpClass;
@@ -53,15 +53,29 @@ namespace Core.Models.Inventory {
         }
     }
 
+    public enum ItemType {
+        Usable,
+        Resource,
+        InstantUse,
+    }
+
     [Serializable]
     public sealed class ItemDef {
         [SerializeField]
         private string id;
 
+        [SerializeField]
+        private Sprite icon;
+
+        [SerializeField]
+        private ItemType type = ItemType.Resource;
+
         [SerializeField, HideInInspector]
         private string uid;
 
         public string Id => id;
+        public Sprite Icon => icon;
+        public ItemType Type => type;
         public string Uid => uid;
         public bool IsEmpty => string.IsNullOrEmpty(id);
 

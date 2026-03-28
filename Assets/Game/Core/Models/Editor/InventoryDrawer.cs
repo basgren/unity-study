@@ -1,9 +1,10 @@
 ﻿#if UNITY_EDITOR
+using Core.Models;
 using UnityEditor;
 using UnityEngine;
 
-namespace Core.Models.Editor {
-    [CustomPropertyDrawer(typeof(Inventory.Inventory))]
+namespace Game.Core.Models.Editor {
+    [CustomPropertyDrawer(typeof(global::Game.Core.Models.Inventory.Inventory))]
     public sealed class InventoryDrawer : PropertyDrawer {
         private const float PaddingY = 2f;
         private const float ColumnGap = 8f;

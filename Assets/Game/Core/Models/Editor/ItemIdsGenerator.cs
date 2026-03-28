@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Core.Models.Inventory;
+using Game.Core.Models.Inventory;
 using UnityEditor;
 using UnityEngine;
 
-namespace Core.Models.Editor {
+namespace Game.Core.Models.Editor {
     public static class ItemIdsGenerator {
         public static void GenerateFor(InventoryItemsDef itemsDef) {
             if (itemsDef == null) {
@@ -38,7 +38,7 @@ namespace Core.Models.Editor {
 
             var sb = new StringBuilder(4096);
             sb.AppendLine("// Auto-generated. Do not edit manually.");
-            sb.AppendLine("using Game.Models;");
+            sb.AppendLine("using Game.Core.Models.Inventory;");
             sb.AppendLine();
 
             var useNamespace = !string.IsNullOrWhiteSpace(ns);

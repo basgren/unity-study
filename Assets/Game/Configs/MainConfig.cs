@@ -1,4 +1,4 @@
-using Core.UI;
+using Game.Core.UI;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
@@ -21,6 +21,9 @@ namespace Game.Configs {
         public AnimatedWindow OptionsMenu;
         public AnimatedWindow PauseMenu;
 
+        [Header("In-Game UI")]
+        public AnimatedWindow InventoryPanel;
+        
         [Header("System")]
         public EventSystem eventSystem;
         

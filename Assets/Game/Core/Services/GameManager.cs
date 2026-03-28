@@ -1,5 +1,5 @@
 ﻿using Game.Configs;
-using Game.Models;
+using Game.Features.Characters.Hero;
 using UnityEngine;
 
 namespace Game.Core.Services {
