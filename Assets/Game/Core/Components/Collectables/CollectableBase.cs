@@ -44,6 +44,12 @@ namespace Game.Core.Components.Collectables {
         [SerializeField]
         private AudioCue collectSound;
 
+        /// <summary>
+        /// When collectable is a child object, specify root object of collectable, so it can be destroyed.
+        /// </summary>
+        [SerializeField]
+        private GameObject rootObject;
+
         public event Action OnCollected;
 
         private bool canCollect = true;
@@ -104,7 +110,11 @@ namespace Game.Core.Components.Collectables {
                 G.Audio.PlayAt(collectSound, transform.position);
             }
 
-            Destroy(gameObject);
+            if (rootObject != null) {
+                Destroy(rootObject);
+            } else {
+                Destroy(gameObject);                
+            }
 
             // Call at the very end to apply all effects, as this object may belong to the
             // parent object which could be destroyed in this event.

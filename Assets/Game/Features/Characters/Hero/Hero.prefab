@@ -437,7 +437,9 @@ MonoBehaviour:
     type: 3}
   groundDustPrefab: {fileID: 1526976483526385961, guid: e10df518c928ddd409277f7fc43929e9,
     type: 3}
-  deadGroundedCue: {fileID: 11400000, guid: fdb1d3fc59767e946b3a45afa7b5805c, type: 2}
+  deadGroundedSound: {fileID: 0}
+  parrotPrefab: {fileID: 4342028724218311932, guid: b5cd547685304ed43bace093d73b58a2,
+    type: 3}
   swordAttackArea: {fileID: 2945355596670905074}
   armedAnimator: {fileID: 9100000, guid: 15452c8f5b5d1294aae1e2825f20f3fc, type: 2}
   unarmedAnimator: {fileID: 9100000, guid: da7b63019bcab78479068d687e4267ef, type: 2}

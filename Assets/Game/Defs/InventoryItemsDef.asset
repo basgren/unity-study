@@ -17,18 +17,22 @@ MonoBehaviour:
     icon: {fileID: 0}
     type: 1
     uid: 7664800605724c7c80fef10863b5e76b
-  - id: HealthPotion
-    icon: {fileID: 0}
-    type: 2
-    uid: ff7d38390b7b4a4d9415198edbdacbe0
-  - id: HealthPotionUsable
+  - id: MediumHealthPotion
     icon: {fileID: 21300000, guid: 55263992aed645244834c325daf422f5, type: 3}
     type: 0
     uid: db72dc4338d249aebac5948f26a0a956
+  - id: SmallHealthPotion
+    icon: {fileID: 21300000, guid: b5b3751a750dc6c47b705766b022d976, type: 3}
+    type: 0
+    uid: ff7d38390b7b4a4d9415198edbdacbe0
   - id: Sword
     icon: {fileID: 21300000, guid: f663981b52c9f964693943cfd119d147, type: 3}
     type: 0
     uid: 5eaee4b293594a538cacea192078ef1d
+  - id: Parrot
+    icon: {fileID: 21300000, guid: 862cc04f16267e843b5deff8a6289e6b, type: 3}
+    type: 0
+    uid: eb2073f0accb4ca7ab214d8d22fcff0c
   generateCSharpClass: 1
   csharpClassFile: Assets/Game/Defs/ItemIds.cs
   csharpClassName: ItemIds

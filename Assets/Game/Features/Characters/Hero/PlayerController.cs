@@ -13,6 +13,7 @@ using Game.Core.Components.GameObjects;
 using Game.Core.Models.Inventory;
 using Game.Defs;
 using Game.Features.Characters.Hero.ItemUse;
+using Game.Features.Characters.Parrot;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -68,6 +69,10 @@ namespace Game.Features.Characters.Hero {
         
         [SerializeField]
         private AudioCue deadGroundedSound;
+
+        [Header("Companions")]
+        [SerializeField]
+        private GameObject parrotPrefab;
 
         [Header("Attack")]
         [SerializeField]
@@ -167,6 +172,7 @@ namespace Game.Features.Characters.Hero {
             itemUseService.Register(new SmallHealPotionStrategy(this));
             itemUseService.Register(new MediumHealPotionStrategy(this));
             itemUseService.Register(new SwordThrowStrategy(this));
+            itemUseService.Register(new ParrotDeployStrategy(this, parrotPrefab));
         }
 
         private void UpdateAnimatorController() {
