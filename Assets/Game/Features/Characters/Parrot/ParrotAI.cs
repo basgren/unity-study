@@ -26,8 +26,8 @@ namespace Game.Features.Characters.Parrot {
     /// </summary>
     [RequireComponent(typeof(ParrotController))]
     public class ParrotAI : MonoBehaviour {
-        private sealed class ParrotBehaviorFSM : SimpleStateMachine<ParrotBehavior> {
-            public ParrotBehaviorFSM(ParrotAI ai) : base(ParrotBehavior.Roaming) {
+        private sealed class ParrotBehaviorFsm : SimpleStateMachine<ParrotBehavior> {
+            public ParrotBehaviorFsm(ParrotAI ai) : base(ParrotBehavior.Roaming) {
                 PermitIf(ParrotBehavior.Roaming, ParrotBehavior.Following,
                     () => ai.ctrl.Mode == ParrotMode.Follow);
 
@@ -63,7 +63,7 @@ namespace Game.Features.Characters.Parrot {
 
         private ParrotController ctrl;
         private GroundPatrolPath path;
-        private ParrotBehaviorFSM fsm;
+        private ParrotBehaviorFsm fsm;
 
         // Patrol state
         private int patrolDirection = 1;
@@ -84,7 +84,7 @@ namespace Game.Features.Characters.Parrot {
             ctrl = GetComponent<ParrotController>();
             path = GetComponent<GroundPatrolPath>();
 
-            fsm = new ParrotBehaviorFSM(this);
+            fsm = new ParrotBehaviorFsm(this);
             fsm.OnTransition += OnBehaviorTransition;
             G.StateMachines.Register(fsm, this);
 

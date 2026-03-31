@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace Game.Features.Characters.Parrot {
     /// <summary>
-    /// Item use strategy that deploys a parrot companion from inventory.
-    /// When the parrot finishes its follow cycle (attack or timeout), it recalls itself
-    /// and this strategy returns it to the player's inventory.
+    /// Item use strategy that deploys a parrot companion.
+    /// The parrot stays in inventory (Usable item) and is blocked from re-use while active.
+    /// Cooldown after use is managed by <see cref="ItemUseService"/>.
     /// </summary>
     public class ParrotDeployStrategy : IItemUseStrategy {
         private readonly PlayerController controller;
@@ -29,8 +29,6 @@ namespace Game.Features.Characters.Parrot {
         }
 
         public void Use() {
-            controller.State.Inventory.Remove(ItemId, 1);
-
             var spawnPos = controller.transform.position;
             var go = Object.Instantiate(parrotPrefab, spawnPos, Quaternion.identity);
             activeParrot = go.GetComponent<ParrotController>();
@@ -51,10 +49,6 @@ namespace Game.Features.Characters.Parrot {
             }
 
             activeParrot.OnRecalled -= OnParrotRecalled;
-
-            // Return parrot to inventory
-            controller.State.Inventory.Add(ItemIds.Parrot, 1);
-
             Object.Destroy(activeParrot.gameObject);
             activeParrot = null;
         }

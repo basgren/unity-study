@@ -54,9 +54,17 @@ namespace Game.Core.Models.Inventory {
     }
 
     public enum ItemType {
-        Usable,
+        // When an item is collected, it's not added to the backpack (coins, keys)
         Resource,
-        InstantUse,
+        
+        // When item is collected, it's added to backpack and can be used multiple times
+        Usable,
+        
+        // When an item is collected, it's added to the backpack and can be used only once
+        Consumable,
+        
+        // Used instantly on pick up (like fruits which restore health on pickup), not added to the backpack.
+        Instant,
     }
 
     [Serializable]
@@ -70,12 +78,16 @@ namespace Game.Core.Models.Inventory {
         [SerializeField]
         private ItemType type = ItemType.Resource;
 
+        [SerializeField]
+        private float cooldown;
+
         [SerializeField, HideInInspector]
         private string uid;
 
         public string Id => id;
         public Sprite Icon => icon;
         public ItemType Type => type;
+        public float Cooldown => cooldown;
         public string Uid => uid;
         public bool IsEmpty => string.IsNullOrEmpty(id);
 

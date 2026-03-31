@@ -2,7 +2,7 @@
 
 ## Project Context
 Unity 2D pixel art platformer.
-For full project layout and placement rules see `Assets/Game/Docs/PROJECT_STRUCTURE.md`.
+For full project layout and placement rules see `Assets/Docs/PROJECT_STRUCTURE.md`.
 
 Main priorities:
 1. Do not break gameplay

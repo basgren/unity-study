@@ -34,10 +34,27 @@ namespace Game.UI.Inventory {
                 Debug.Log(">>>> pref");
                 backpack.PrevItem();
             }
-            
+
             if (uiActions.Right.WasPressedThisFrame()) {
                 Debug.Log(">>>> next");
                 backpack.NextItem();
+            }
+
+            UpdateCooldowns();
+        }
+
+        private void UpdateCooldowns() {
+            var useService = G.Hero.ItemUseService;
+            if (useService == null) {
+                return;
+            }
+
+            foreach (var itemCtrl in items) {
+                if (!itemCtrl.gameObject.activeSelf || itemCtrl.Item == null) {
+                    continue;
+                }
+
+                itemCtrl.SetCooldownProgress(useService.GetCooldownProgress(itemCtrl.Item.id));
             }
         }
 

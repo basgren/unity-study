@@ -403,6 +403,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SelectedItemPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 5963993403818960710, guid: c02d98c421996b04b8148b90ecf599a4,
+        type: 3}
+      propertyPath: showCooldownEndEffect
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

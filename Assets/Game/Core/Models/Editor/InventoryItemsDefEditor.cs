@@ -43,7 +43,14 @@ namespace Game.Core.Models.Editor {
             const float padding = 2f;
             const float lineSpacing = 2f;
 
-            list.elementHeight = iconSize + padding * 2f;
+            list.elementHeightCallback = index => {
+                var element = itemsProp.GetArrayElementAtIndex(index);
+                var typeProp = element.FindPropertyRelative("type");
+                var itemType = typeProp != null ? (ItemType)typeProp.enumValueIndex : ItemType.Resource;
+                var lines = (itemType == ItemType.Usable || itemType == ItemType.Consumable) ? 3 : 2;
+                var fieldsHeight = lines * EditorGUIUtility.singleLineHeight + (lines - 1) * lineSpacing;
+                return Mathf.Max(iconSize, fieldsHeight) + padding * 2f;
+            };
 
             list.drawElementCallback = (rect, index, isActive, isFocused) => {
                 var element = itemsProp.GetArrayElementAtIndex(index);
@@ -52,6 +59,7 @@ namespace Game.Core.Models.Editor {
                 var uidProp = element.FindPropertyRelative("uid");
                 var iconProp = element.FindPropertyRelative("icon");
                 var typeProp = element.FindPropertyRelative("type");
+                var cooldownProp = element.FindPropertyRelative("cooldown");
 
                 rect.y += padding;
 
@@ -105,6 +113,14 @@ namespace Game.Core.Models.Editor {
                     EditorGUI.PropertyField(typeRect, typeProp, new GUIContent("Type"));
                 }
 
+                // Cooldown field (only for Usable and Consumable types)
+                var itemType = typeProp != null ? (ItemType)typeProp.enumValueIndex : ItemType.Resource;
+                if (cooldownProp != null
+                    && (itemType == ItemType.Usable || itemType == ItemType.Consumable)) {
+                    var cdRect = new Rect(fieldsX, typeRect.yMax + lineSpacing, fieldsWidth, lineHeight);
+                    EditorGUI.PropertyField(cdRect, cooldownProp, new GUIContent("CD"));
+                }
+
                 EditorGUIUtility.labelWidth = prevLabelWidth;
             };
 
@@ -119,6 +135,7 @@ namespace Game.Core.Models.Editor {
                 element.FindPropertyRelative("uid").stringValue = Guid.NewGuid().ToString("N");
                 element.FindPropertyRelative("icon").objectReferenceValue = null;
                 element.FindPropertyRelative("type").enumValueIndex = 0;
+                element.FindPropertyRelative("cooldown").floatValue = 0f;
 
                 serializedObject.ApplyModifiedProperties();
                 GUIUtility.ExitGUI();

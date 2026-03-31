@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.Audio;
@@ -155,7 +155,7 @@ namespace Game.Features.Characters.Hero {
             InitItemUseService();
             InitFromState(state);
 
-            G.Hero.Register(this);
+            G.Hero.Register(this, itemUseService);
         }
 
         private void OnDestroy() {
@@ -223,6 +223,7 @@ namespace Game.Features.Characters.Hero {
 
         private void CheckItemUse() {
             if (Actions.UseItem.WasPerformedThisFrame()) {
+                Debug.Log("try to use item");
                 itemUseService.TryUseSelectedItem();
             }
         }

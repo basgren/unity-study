@@ -19,7 +19,7 @@ namespace Game.Core.Models.Inventory {
         public int SelectedItemUid => selectedItem?.Uid ?? -1;
         public InventoryItem SelectedItem => selectedItem;
         
-        private static readonly ItemType HandledItemType = ItemType.Usable;
+        private static readonly ItemType[] HandledItemTypes = { ItemType.Usable, ItemType.Consumable };
         
         public BackpackPanelModel(Inventory inventory) {
             this.inventory = inventory;
@@ -30,13 +30,13 @@ namespace Game.Core.Models.Inventory {
         private void OnInventoryChange(InventoryChangeEvent eventInfo) {
             var itemDef = DefsFacade.I.Items.Get(eventInfo.ItemId);
 
-            if (itemDef.Type == HandledItemType) {
+            if (HandledItemTypes.Contains(itemDef.Type)) {
                 Update();
             }
         }
         
         private void Update() {
-            items = inventory.GetAll(HandledItemType);
+            items = inventory.GetAll(HandledItemTypes);
 
             if (IsAnyItemSelected && items.All(i => i.Uid != selectedItem.Uid)) {
                 selectedItem = null;

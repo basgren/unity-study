@@ -1,11 +1,12 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Core.Utils {
+namespace Game.Core.Utils {
     public class TinyTimer {
         public float Remaining => timeRemaining;
         public float Elapsed => baseTime - timeRemaining;
         public bool IsTimedOut => timeRemaining <= 0;
+        public float Progress => baseTime > 0 ? 1f - (timeRemaining / baseTime) : 1f;
         public event Action OnTimeout;
         
         private float baseTime;
