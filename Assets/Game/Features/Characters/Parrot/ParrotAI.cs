@@ -272,7 +272,9 @@ namespace Game.Features.Characters.Parrot {
                 return true;
             }
 
-            return attacksDelivered >= maxAttackCount;
+            // Wait for cooldown after the final attack so the damager has time
+            // to register the hit before the Returning transition disables it.
+            return attacksDelivered >= maxAttackCount && attackCooldownTimer <= 0f;
         }
 
         private bool IsNearPlayer() {
