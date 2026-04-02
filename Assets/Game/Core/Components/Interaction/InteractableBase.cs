@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace Core.Components.Interaction {
+namespace Game.Core.Components.Interaction {
     [RequireComponent(typeof(Collider2D))]
     public abstract class InteractableBase : MonoBehaviour {
         /// <summary>

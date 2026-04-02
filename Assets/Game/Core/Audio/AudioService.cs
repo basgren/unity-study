@@ -80,6 +80,39 @@ namespace Game.Core.Audio {
         }
 
         /// <summary>
+        /// Plays a 2D sound and returns a handle that can stop it early.
+        /// The sound does not loop — it finishes naturally unless stopped.
+        /// </summary>
+        public IAudioLoopHandle Play2DTracked(AudioCue cue) {
+            if (!CanPlay(cue)) {
+                return NullLoopHandle.Instance;
+            }
+
+            var source = GetSource();
+            if (source == null) {
+                return NullLoopHandle.Instance;
+            }
+
+            ConfigureSource(source, cue, is3D: false, worldPosition: Vector3.zero);
+
+            var tag = source.GetComponent<AudioSourceTag>();
+            if (tag == null) {
+                tag = source.gameObject.AddComponent<AudioSourceTag>();
+            }
+
+            tag.Cue = cue;
+            tag.IsLoop = false;
+            tag.Follow = null;
+            tag.StopWhenFollowLost = false;
+
+            IncrementPlaying(cue);
+            lastPlayTimeByCue[cue] = Time.unscaledTime;
+            source.Play();
+
+            return new AudioLoopHandle(this, source);
+        }
+
+        /// <summary>
         /// Plays a cue at a world position (spatial/3D).
         /// This respects cooldown and max instances rules in the AudioCue.
         /// </summary>

@@ -25,7 +25,7 @@ namespace Game.Features.Characters.Parrot {
         public bool CanUse() {
             return activeParrot == null
                    && parrotPrefab != null
-                   && controller.State.Inventory.GetCount(ItemId) > 0;
+                   && controller.State.InventoryModel.GetCount(ItemId) > 0;
         }
 
         public void Use() {

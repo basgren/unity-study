@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Components.Base2D;
 using Core.Utils;
+using Game.Core.Utils;
 using UnityEngine;
 
 namespace Game.Controllers {

@@ -5,5 +5,6 @@ namespace Game.Configs {
     public class GameSettings {
         public int MusicVolume = 10;
         public int SfxVolume = 10;
+        public string Locale = "en";
     }
 }

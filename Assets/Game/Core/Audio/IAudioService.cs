@@ -13,6 +13,12 @@ namespace Game.Core.Audio {
         void Play2D(AudioCue cue);
 
         /// <summary>
+        /// Plays a 2D sound and returns a handle that can stop it early.
+        /// The sound does not loop — it finishes naturally unless stopped.
+        /// </summary>
+        IAudioLoopHandle Play2DTracked(AudioCue cue);
+
+        /// <summary>
         /// Plays a cue at a world position (3D/spatial playback).
         /// </summary>
         void PlayAt(AudioCue cue, Vector3 worldPosition);

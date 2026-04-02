@@ -16,6 +16,9 @@ namespace Game.UI.OptionsMenu {
         [SerializeField]
         private AudioCue sfxSample;
 
+        [SerializeField]
+        private LocalePicker localePicker;
+
         public override void Open(GameObject selected = null) {
             LoadSettings();
             base.Open(selected);
@@ -34,6 +37,10 @@ namespace Game.UI.OptionsMenu {
             if (sfxSlider != null) {
                 sfxSlider.OnValueChanged.AddListener(OnSfxChanged);
             }
+
+            if (localePicker != null) {
+                localePicker.OnLocaleChanged.AddListener(OnLocaleChanged);
+            }
         }
 
         private void OnDisable() {
@@ -43,6 +50,10 @@ namespace Game.UI.OptionsMenu {
 
             if (sfxSlider != null) {
                 sfxSlider.OnValueChanged.RemoveListener(OnSfxChanged);
+            }
+
+            if (localePicker != null) {
+                localePicker.OnLocaleChanged.RemoveListener(OnLocaleChanged);
             }
         }
 
@@ -63,6 +74,10 @@ namespace Game.UI.OptionsMenu {
 
             if (sfxSlider != null) {
                 sfxSlider.Value = settings.SfxVolume;
+            }
+
+            if (localePicker != null && G.Locale != null) {
+                localePicker.Value = G.Locale.CurrentLocale;
             }
         }
 
@@ -96,6 +111,12 @@ namespace Game.UI.OptionsMenu {
 
             if (sfxSample != null && G.Audio != null) {
                 G.Audio.Play2D(sfxSample);
+            }
+        }
+
+        private void OnLocaleChanged(string localeCode) {
+            if (G.Locale != null) {
+                G.Locale.SetLocale(localeCode);
             }
         }
     }

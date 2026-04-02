@@ -12,12 +12,12 @@ namespace Game.Features.Characters.Hero.ItemUse {
         }
         
         public bool CanUse() {
-            return controller.State.Inventory.GetCount(ItemId) > 0;
+            return controller.State.InventoryModel.GetCount(ItemId) > 0;
         }
 
         public void Use() {
             controller.Damageable.AddHealth(HealAmount);
-            controller.State.Inventory.Remove(ItemId, 1);
+            controller.State.InventoryModel.Remove(ItemId, 1);
         }
 
         public void Update(float deltaTime) {

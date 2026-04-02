@@ -1,3 +1,4 @@
+using Game.Audio.Dialog;
 using Game.Core.UI;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -15,14 +16,16 @@ namespace Game.Configs {
         [Header("Audio")]
         public AudioMixer AudioMixer;
         public AudioMixerGroup SfxMixerGroup;
+        public DialogSoundLibrary DialogSoundLibrary;
 
         [Header("Menus")]
-        public AnimatedWindow MainMenu;
-        public AnimatedWindow OptionsMenu;
-        public AnimatedWindow PauseMenu;
+        public MenuWindow MainMenu;
+        public MenuWindow OptionsMenu;
+        public MenuWindow PauseMenu;
 
         [Header("In-Game UI")]
-        public AnimatedWindow InventoryPanel;
+        public MenuWindow InventoryPanel;
+        public MenuWindow DialogPanel;
         
         [Header("System")]
         public EventSystem eventSystem;

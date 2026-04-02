@@ -1,8 +1,7 @@
-﻿using Core.Components.Interaction;
+﻿using Game.Core.Components.Interaction;
 using UnityEngine;
 
-namespace Prefabs.Interactive.Helm {
-
+namespace Game.Features.Interactive.Helm {
     static class HelmAnimationKeys {
         public static readonly int OnUse = Animator.StringToHash("onUse");        
         public static readonly int IsDisabled = Animator.StringToHash("isDisabled");        

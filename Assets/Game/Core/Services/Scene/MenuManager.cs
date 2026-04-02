@@ -14,7 +14,7 @@ namespace Game.Core.Services.Scene {
     /// <summary>
     /// Centralized menu navigation manager.
     /// Instantiates menus from configured prefabs and keeps a stack-like history of opened
-    /// <see cref="AnimatedWindow"/> instances,
+    /// <see cref="MenuWindow"/> instances,
     /// handles open/close transitions, remembers selected UI elements per window,
     /// and switches input/time between gameplay and UI modes.
     /// </summary>
@@ -22,7 +22,7 @@ namespace Game.Core.Services.Scene {
         private const string MainMenuSceneName = "MainMenuScene";
 
         private sealed class WindowEntry {
-            public AnimatedWindow Window;
+            public MenuWindow Window;
             public GameObject LastSelected;
         }
 
@@ -150,26 +150,27 @@ namespace Game.Core.Services.Scene {
         /// Otherwise a new instance is created and pushed to the top.
         /// </summary>
         /// <param name="menuPrefab">Menu prefab/component reference to open.</param>
-        public void OpenMenu(AnimatedWindow menuPrefab) {
+        public T OpenMenu<T>(T menuPrefab) where T : MenuWindow {
             if (isTransitionInProgress) {
-                return;
+                return null;
             }
 
             if (menuPrefab == null) {
                 Debug.LogWarning("Requested menu is null. Assign menu prefabs in MainConfig.");
-                return;
+                return null;
             }
 
             if (!EnsureEventSystem()) {
-                return;
+                return null;
             }
 
             if (TryRestoreManagedWindow(menuPrefab.GetType())) {
-                return;
+                return null;
             }
 
             var window = InstantiateWindow(menuPrefab);
             OpenWindow(window);
+            return window;
         }
 
         /// <summary>
@@ -206,7 +207,7 @@ namespace Game.Core.Services.Scene {
             CloseAllInternal(afterClosed);
         }
 
-        private void OpenWindow(AnimatedWindow window) {
+        private void OpenWindow(MenuWindow window) {
             PruneInvalidWindows();
 
             if (window == null) {
@@ -263,7 +264,7 @@ namespace Game.Core.Services.Scene {
             return false;
         }
 
-        private AnimatedWindow InstantiateWindow(AnimatedWindow menuPrefab) {
+        private T InstantiateWindow<T>(T menuPrefab) where T : MenuWindow {
             var canvas = ResolveMenuCanvas();
             if (canvas == null) {
                 return null;
@@ -371,7 +372,7 @@ namespace Game.Core.Services.Scene {
             return true;
         }
 
-        private GameObject GetCurrentSelection(AnimatedWindow window) {
+        private GameObject GetCurrentSelection(MenuWindow window) {
             if (window == null || EventSystem.current == null) {
                 return null;
             }
@@ -511,7 +512,7 @@ namespace Game.Core.Services.Scene {
             return SceneManager.GetActiveScene().name == MainMenuSceneName;
         }
 
-        private bool IsMainMenuWindow(AnimatedWindow window) {
+        private bool IsMainMenuWindow(MenuWindow window) {
             if (window == null || G.Config?.MainMenu == null) {
                 return false;
             }

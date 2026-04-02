@@ -10,7 +10,7 @@ namespace Game.Core.Models.Inventory {
         public delegate void SelectionChangedHandler(InventoryItem currentItem, InventoryItem prevItem);
         public event SelectionChangedHandler SelectionUpdated; 
         
-        private readonly Inventory inventory;
+        private readonly InventoryModel inventoryModel;
         private InventoryItem selectedItem;
         private List<InventoryItem> items = new();
 
@@ -21,9 +21,9 @@ namespace Game.Core.Models.Inventory {
         
         private static readonly ItemType[] HandledItemTypes = { ItemType.Usable, ItemType.Consumable };
         
-        public BackpackPanelModel(Inventory inventory) {
-            this.inventory = inventory;
-            inventory.OnChange += OnInventoryChange;
+        public BackpackPanelModel(InventoryModel inventoryModel) {
+            this.inventoryModel = inventoryModel;
+            inventoryModel.OnChange += OnInventoryChange;
             Update();
         }
         
@@ -36,7 +36,7 @@ namespace Game.Core.Models.Inventory {
         }
         
         private void Update() {
-            items = inventory.GetAll(HandledItemTypes);
+            items = inventoryModel.GetAll(HandledItemTypes);
 
             if (IsAnyItemSelected && items.All(i => i.Uid != selectedItem.Uid)) {
                 selectedItem = null;

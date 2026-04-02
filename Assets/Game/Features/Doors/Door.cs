@@ -1,5 +1,6 @@
 using System;
 using Core.Components.Interaction;
+using Game.Core.Components.Interaction;
 using Game.Doors;
 using UnityEditor;
 using UnityEngine;

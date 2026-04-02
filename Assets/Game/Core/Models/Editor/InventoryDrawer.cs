@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 namespace Game.Core.Models.Editor {
-    [CustomPropertyDrawer(typeof(global::Game.Core.Models.Inventory.Inventory))]
+    [CustomPropertyDrawer(typeof(global::Game.Core.Models.Inventory.InventoryModel))]
     public sealed class InventoryDrawer : PropertyDrawer {
         private const float PaddingY = 2f;
         private const float ColumnGap = 8f;

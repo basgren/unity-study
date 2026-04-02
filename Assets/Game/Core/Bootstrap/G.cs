@@ -1,8 +1,11 @@
 ﻿using Game.Configs;
 using Game.Core.Audio;
 using Game.Core.Services;
+using Game.Core.Services.Dialog;
 using Game.Core.Services.Input;
+using Game.Core.Services.Locale;
 using Game.Core.Services.Scene;
+using Game.Core.Services.Tween;
 
 namespace Game.Core.Bootstrap {
     /// <summary>
@@ -23,5 +26,8 @@ namespace Game.Core.Bootstrap {
         public static HeroService Hero { get; internal set; }
         public static HudService Hud { get; internal set; }
         public static MenuManager Menu { get; internal set; }
+        public static TweenService Tween { get; internal set; }
+        public static LocaleService Locale { get; internal set; }
+        public static DialogService Dialog { get; internal set; }
     }
 }

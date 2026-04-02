@@ -3,6 +3,9 @@ using Game.Core.Audio;
 using Game.Core.Services;
 using Game.Core.Services.Input;
 using Game.Core.Services.Scene;
+using Game.Core.Services.Dialog;
+using Game.Core.Services.Locale;
+using Game.Core.Services.Tween;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -38,11 +41,15 @@ namespace Game.Core.Bootstrap {
             G.Audio = audioService;
             G.Menu = GetOrCreate<MenuManager>("MenuManager");
             G.Hud = GetOrCreate<HudService>("HudService");
+            G.Tween = GetOrCreate<TweenService>("TweenService");
+            G.Locale = GetOrCreate<LocaleService>("LocaleService");
+            G.Dialog = GetOrCreate<DialogService>("DialogService");
             G.Game.playerConfig = mainConfig.Player;
             G.Game.Init();
 
             audioService.Init();
             G.Settings.Init();
+            G.Locale.Init();
             G.Hud.Init();
         }
 

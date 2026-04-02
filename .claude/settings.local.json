@@ -7,7 +7,10 @@
       "Bash(xargs grep:*)",
       "Bash(find F:/Work/unity/piratik/PlatformStudy/Assets/Core -name *.cs -type f)",
       "Bash(grep:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(find /f/Work/unity/piratik/PlatformStudy/Assets -type f -name *Service.cs)",
+      "Bash(find F:WorkunitypiratikPlatformStudyAssets -type f -name *.cs)",
+      "Bash(git log:*)"
     ]
   }
 }

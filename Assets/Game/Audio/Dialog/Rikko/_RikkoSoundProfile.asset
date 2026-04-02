@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c22203da4a062de42aeacc3831b53d95, type: 3}
+  m_Name: _RikkoSoundProfile
+  m_EditorClassIdentifier: 
+  defaultTalkSound: {fileID: 11400000, guid: d3688738ffdc26b46b99c361632f62fb, type: 2}
+  sounds:
+  - id: speech1
+    cue: {fileID: 11400000, guid: d3688738ffdc26b46b99c361632f62fb, type: 2}
+  - id: speech2
+    cue: {fileID: 11400000, guid: fc8b209f11fe2fa469233b230081fd98, type: 2}
+  - id: speech3
+    cue: {fileID: 11400000, guid: ae37ce5b55f1f484398d60227c78190a, type: 2}

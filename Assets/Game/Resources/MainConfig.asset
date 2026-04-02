@@ -16,6 +16,7 @@ MonoBehaviour:
   AudioMixer: {fileID: 24100000, guid: 9ad9472c7ade3b841aecbb7dbc94d08a, type: 2}
   SfxMixerGroup: {fileID: 2757630577671673946, guid: 9ad9472c7ade3b841aecbb7dbc94d08a,
     type: 2}
+  DialogSoundLibrary: {fileID: 11400000, guid: fca8f4a01aa6c9b43aa9af122e2b3be8, type: 2}
   MainMenu: {fileID: 8618158011026402637, guid: 162c5fe0c44ee984388015517b40d157,
     type: 3}
   OptionsMenu: {fileID: 8607079421164368098, guid: 33172a8f0bc272b4e8f3de04bb60ca19,
@@ -23,6 +24,8 @@ MonoBehaviour:
   PauseMenu: {fileID: 181822652088074092, guid: 2b7950c000bc2fd4d80d6062bfa90f8f,
     type: 3}
   InventoryPanel: {fileID: 6962322086487646681, guid: c6a0ea478465499448f9bab2a0fba667,
+    type: 3}
+  DialogPanel: {fileID: 6452827198061851914, guid: 655108a08afd1894ebb4cb5c4f8f217d,
     type: 3}
   eventSystem: {fileID: 148805550643421190, guid: 88f8a27aef0d544489c8eb0aff769c02,
     type: 3}

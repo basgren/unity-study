@@ -10,7 +10,9 @@ using Game.Core.Bootstrap;
 using Game.Core.Components.Collectables;
 using Game.Core.Components.Damage;
 using Game.Core.Components.GameObjects;
+using Game.Core.Components.Interaction;
 using Game.Core.Models.Inventory;
+using Game.Core.Utils;
 using Game.Defs;
 using Game.Features.Characters.Hero.ItemUse;
 using Game.Features.Characters.Parrot;
@@ -125,8 +127,8 @@ namespace Game.Features.Characters.Hero {
 
         private Transform swordThrowPoint;
         private SpawnComponent swordSpawner;
-        private int CoinsCount => state.Inventory.GetCount(ItemIds.Coin);
-        internal int SwordCount => state.Inventory.GetCount(ItemIds.Sword);
+        private int CoinsCount => state.InventoryModel.GetCount(ItemIds.Coin);
+        internal int SwordCount => state.InventoryModel.GetCount(ItemIds.Sword);
         internal bool IsArmed { get; private set; }
 
         private PlayerState state;
@@ -150,6 +152,7 @@ namespace Game.Features.Characters.Hero {
             dustSpawnPoint = transform.Find(DustPositionObjectName);
             swordThrowPoint = transform.Find(SwordThrowPointObjectName);
             swordSpawner = swordThrowPoint.GetComponent<SpawnComponent>();
+            state.InventoryModel.OnChange += OnInventoryChanged;
 
             UpdateAnimatorController();
             InitItemUseService();
@@ -159,6 +162,10 @@ namespace Game.Features.Characters.Hero {
         }
 
         private void OnDestroy() {
+            if (state != null) {
+                state.InventoryModel.OnChange -= OnInventoryChanged;
+            }
+
             G.Hero.Unregister(this);
         }
 
@@ -177,6 +184,15 @@ namespace Game.Features.Characters.Hero {
 
         private void UpdateAnimatorController() {
             MyAnimator.runtimeAnimatorController = IsArmed ? armedAnimator : unarmedAnimator;
+        }
+
+        private void OnInventoryChanged(InventoryChangeEvent eventInfo) {
+            if (eventInfo.ItemId == ItemIds.Sword && eventInfo.CountDelta > 0 && !IsArmed) {
+                // The first sword becomes the equipped weapon instead of staying in the backpack.
+                IsArmed = true;
+                UpdateAnimatorController();
+                state.InventoryModel.Remove(ItemIds.Sword, 1);
+            }
         }
 
         protected override void Update() {
@@ -295,7 +311,7 @@ namespace Game.Features.Characters.Hero {
         private void ThrowSword() {
             var sword = swordSpawner.SpawnInstance();
             Facing.ApplyTo(sword);
-            state.Inventory.Remove(ItemIds.Sword, 1);
+            state.InventoryModel.Remove(ItemIds.Sword, 1);
             UpdateAnimatorController();
         }
 
@@ -417,13 +433,7 @@ namespace Game.Features.Characters.Hero {
         #endregion
 
         public void OnCollected(ItemId itemId, float value) {
-            if (itemId == ItemIds.Sword && !IsArmed) {
-                IsArmed = true;
-                UpdateAnimatorController();
-                return;
-            }
-            
-            state.Inventory.Add(itemId, (int)value);
+            state.InventoryModel.Add(itemId, (int)value);
         }
 
         #region Animator
@@ -589,7 +599,7 @@ namespace Game.Features.Characters.Hero {
         private void DropCoins() {
             var count = Math.Min(5, CoinsCount);
             lootDropper.DropLoot(count);
-            state.Inventory.Remove(ItemIds.Coin, count);
+            state.InventoryModel.Remove(ItemIds.Coin, count);
         }
 
         // ------------------- GIZMOS -------------------

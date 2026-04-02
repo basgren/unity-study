@@ -9,16 +9,18 @@ namespace Game.Core.Models.Inventory {
         public readonly ItemId ItemId;
         public readonly int NewCount;
         public readonly int PrevCount;
+        public readonly int CountDelta;
 
         public InventoryChangeEvent(ItemId itemId, int newCount, int prevCount) {
             NewCount = newCount;
             PrevCount = prevCount;
             ItemId = itemId;
+            CountDelta = newCount - prevCount;
         }
     }
     
     [Serializable]
-    public class Inventory {
+    public class InventoryModel {
         [SerializeField]
         private List<InventoryItem> items = new();
 

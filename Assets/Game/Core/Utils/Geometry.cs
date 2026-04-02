@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Core.Utils {
+namespace Game.Core.Utils {
     public enum Direction2D {
         Up,
         Down,

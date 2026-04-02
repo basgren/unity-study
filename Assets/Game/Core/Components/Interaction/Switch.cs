@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Core.Components.Interaction;
 using Core.Utils;
+using Game.Core.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Core.Components.Interaction {
+namespace Game.Core.Components.Interaction {
     public enum SwitchType {
         MultipleUse,
         SingleUse
