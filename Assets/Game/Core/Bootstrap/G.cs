@@ -28,6 +28,7 @@ namespace Game.Core.Bootstrap {
         public static MenuManager Menu { get; internal set; }
         public static TweenService Tween { get; internal set; }
         public static LocaleService Locale { get; internal set; }
+        public static IStringResolver Strings { get; internal set; }
         public static DialogService Dialog { get; internal set; }
     }
 }

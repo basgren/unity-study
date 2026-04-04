@@ -11,28 +11,10 @@ namespace Game.UI.Widgets {
 
     public class MenuButton : Button {
         [SerializeField]
-        private string text = string.Empty;
-
-        [SerializeField]
         private MenuButtonStyle style = MenuButtonStyle.Normal;
 
         [SerializeField]
-        private bool presentationInitialized;
-
-        [SerializeField]
         private float pressedTextOffset = -2f;
-
-        public string Text {
-            get => text;
-            set {
-                if (text == value) {
-                    return;
-                }
-
-                text = value;
-                ApplyPresentation();
-            }
-        }
 
         public MenuButtonStyle Style {
             get => style;
@@ -42,7 +24,7 @@ namespace Game.UI.Widgets {
                 }
 
                 style = value;
-                ApplyPresentation();
+                ApplyStyle();
             }
         }
 
@@ -54,14 +36,12 @@ namespace Game.UI.Widgets {
         protected override void Awake() {
             base.Awake();
             CacheReferences();
-            EnsurePresentationInitialized();
-            ApplyPresentation();
+            ApplyStyle();
         }
 
         protected override void OnEnable() {
             base.OnEnable();
-            EnsurePresentationInitialized();
-            ApplyPresentation();
+            ApplyStyle();
         }
 
 #if UNITY_EDITOR
@@ -69,8 +49,7 @@ namespace Game.UI.Widgets {
             base.OnValidate();
 
             CacheReferences();
-            EnsurePresentationInitialized();
-            ApplyPresentation();
+            ApplyStyle();
         }
 #endif
 
@@ -86,38 +65,15 @@ namespace Game.UI.Widgets {
                 : originalTextOffset;
 
             textRect.anchoredPosition = new Vector2(textRect.anchoredPosition.x, offset);
-            ApplyPresentation();
+            ApplyStyle();
         }
 
-        private void ApplyPresentation() {
+        private void ApplyStyle() {
             CacheReferences();
-            EnsurePresentationInitialized();
 
             if (buttonImage != null) {
                 buttonImage.color = GetStyleColor(style);
             }
-
-            if (buttonText != null) {
-                buttonText.text = text ?? string.Empty;
-            }
-        }
-
-        private void EnsurePresentationInitialized() {
-            if (presentationInitialized) {
-                return;
-            }
-
-            CacheReferences();
-
-            if (buttonText != null) {
-                text = buttonText.text;
-            }
-
-            if (buttonImage != null) {
-                style = ResolveStyleFromColor(buttonImage.color);
-            }
-
-            presentationInitialized = true;
         }
 
         private static Color32 GetStyleColor(MenuButtonStyle buttonStyle) {

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   globalDefaultTalkSound: {fileID: 0}
   characters:
-  - speaker: merchant
+  - speaker: rikko
     profile: {fileID: 11400000, guid: 7bbc6a665fb8a9d40adedc24e83aa125, type: 2}

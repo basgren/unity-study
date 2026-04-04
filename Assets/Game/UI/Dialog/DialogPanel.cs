@@ -169,7 +169,7 @@ namespace Game.UI.Dialog {
 
             for (int i = 0; i < choices.Count; i++) {
                 var btn = Instantiate(choiceBtnPrefab, choiceContainer);
-                btn.Setup(i, choices[i].text, OnChoicePicked);
+                btn.Setup(i, choices[i], OnChoicePicked);
                 var rectTrans = btn.GetComponent<RectTransform>();
                 btn.transform.localPosition = new Vector3(0f, top, 0f);
                 top -= rectTrans.rect.height;

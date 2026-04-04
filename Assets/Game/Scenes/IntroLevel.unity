@@ -1140,12 +1140,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c68941588b8e714ebb69081c50949f6, type: 3}
---- !u!4 &133785756 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-    type: 3}
-  m_PrefabInstance: {fileID: 5424329713934098330}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &137974040 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3756431542319373574, guid: 4152606e3052ee04dbf17395fb5ab019,
@@ -24666,7 +24660,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  dialogId: merchant
+  dialogId: rikko
 --- !u!212 &459914518
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -63408,7 +63402,6 @@ Transform:
   - {fileID: 153444919}
   - {fileID: 1982644375}
   - {fileID: 292743185}
-  - {fileID: 133785756}
   - {fileID: 1876847137}
   - {fileID: 459914514}
   m_Father: {fileID: 1857425453}
@@ -63680,7 +63673,12 @@ PrefabInstance:
     - target: {fileID: 8530387803212650678, guid: 307a0d0d7cfe6ff43a96a31edd507811,
         type: 3}
       propertyPath: message
-      value: Kome here!\nCheepast Guudz!\nBest kwoliti!
+      value: ui.info.rikko_info
+      objectReference: {fileID: 0}
+    - target: {fileID: 8530387803212650678, guid: 307a0d0d7cfe6ff43a96a31edd507811,
+        type: 3}
+      propertyPath: textKey
+      value: ui.info.rikko_info
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -103204,79 +103202,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b5cd547685304ed43bace093d73b58a2, type: 3}
---- !u!1001 &5424329713934098330
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1864179049}
-    m_Modifications:
-    - target: {fileID: 3637322136846235067, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_Name
-      value: WoodenSign
-      objectReference: {fileID: 0}
-    - target: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -214.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 176
-      objectReference: {fileID: 0}
-    - target: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4571018459336753898, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8530387803212650678, guid: 307a0d0d7cfe6ff43a96a31edd507811,
-        type: 3}
-      propertyPath: message
-      value: Oak Tavern
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 307a0d0d7cfe6ff43a96a31edd507811, type: 3}
 --- !u!1001 &6308338862335153288
 PrefabInstance:
   m_ObjectHideFlags: 0

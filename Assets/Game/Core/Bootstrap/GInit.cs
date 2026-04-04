@@ -50,6 +50,7 @@ namespace Game.Core.Bootstrap {
             audioService.Init();
             G.Settings.Init();
             G.Locale.Init();
+            G.Strings = new UnityStringResolver("Dialogs");
             G.Hud.Init();
         }
 

@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Dialogs_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 58070936bfb01de4f9cfb75929166653, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 16244863356928
+    m_Localized: 'Rikko                                       '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16244863356929
+    m_Localized: "\u0410hoy, trravelerrr... come closher, don't be shy now.                            "
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16244863356930
+    m_Localized: 'Lookin'' forr shomethin'' sharp, pointy, an'' jusht a little dangerus?
+
+'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16244863356931
+    m_Localized: 'Show me what you have                      '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16244863356932
+    m_Localized: 'Not today                                  '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16244863356933
+    m_Localized: Fiiine blade, very shiny, very pointy. 10 coinsh only!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16244863356934
+    m_Localized: 'I''ll take it                               '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16244863356935
+    m_Localized: 'No thanks                                  '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16244863356936
+    m_Localized: 'Exshellent choishe! That one bites almosht ash well ash I do.                   '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16244863356937
+    m_Localized: No coinsh? Hisssh... then no shtabby for you.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16244863356938
+    m_Localized: Suit yershelf, landwalker.
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

@@ -3,6 +3,7 @@ using Core.Audio;
 using Game.Core.Bootstrap;
 using Game.Core.UI;
 using Game.UI.Widgets;
+using Game.UI.Widgets.LocalePicker;
 using UnityEngine;
 
 namespace Game.UI.OptionsMenu {
@@ -20,8 +21,8 @@ namespace Game.UI.OptionsMenu {
         private LocalePicker localePicker;
 
         public override void Open(GameObject selected = null) {
-            LoadSettings();
             base.Open(selected);
+            LoadSettings();
         }
 
         public override void Close(Action afterClosed = null) {

@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: UI
+  m_TableCollectionNameGuidString: c33ce59ea9c687f478f3c689c642afc6
+  m_Entries:
+  - m_Id: 42935656599552
+    m_Key: ui.options.language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38478348767232
+    m_Key: ui.options.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38418177282048
+    m_Key: ui.options.music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38447067648000
+    m_Key: ui.options.sfx
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38144826101760
+    m_Key: ui.options.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40053075038208
+    m_Key: ui.pause.continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35922696425472
+    m_Key: ui.pause.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40629842169856
+    m_Key: ui.pause.to_main_menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45248672649216
+    m_Key: ui.main_menu.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45342323068928
+    m_Key: ui.main_menu.exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45740907778048
+    m_Key: ui.main_menu.start_game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59916065656832
+    m_Key: ui.info.rikko_info
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8450891563597824024
+  references:
+    version: 2
+    RefIds:
+    - rid: 8450891563597824024
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1775344701654

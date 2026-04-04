@@ -1,26 +1,20 @@
 using System.Collections.Generic;
-using Game.Core.Bootstrap;
 using UnityEngine;
 
 namespace Game.Core.Models.Dialog {
     /// <summary>
-    /// Loads dialog definitions from locale-specific JSON files under Resources/Locale/.
-    /// Caches loaded dialogs until <see cref="ClearCache"/> is called (e.g., on locale switch).
+    /// Loads locale-agnostic dialog graph definitions from Resources/Dialogs/.
+    /// Text is stored as localization keys and resolved at runtime by DialogService.
     /// </summary>
     public static class DialogLoader {
         private static readonly Dictionary<string, DialogDef> Cache = new();
 
-        private static string GetPath(string locale, string dialogId) {
-            return $"Locale/{locale}/Dialogs/{dialogId}.{locale}";
-        }
-        
         public static DialogDef Load(string dialogId) {
             if (Cache.TryGetValue(dialogId, out var cached)) {
                 return cached;
             }
 
-            var locale = G.Locale.CurrentLocale;
-            var path = GetPath(locale, dialogId);
+            var path = $"Dialogs/{dialogId}";
             var textAsset = Resources.Load<TextAsset>(path);
 
             if (textAsset == null) {

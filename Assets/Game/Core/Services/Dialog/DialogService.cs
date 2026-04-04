@@ -17,9 +17,9 @@ namespace Game.Core.Services.Dialog {
         public readonly DialogViewMode Mode;
         public readonly string Speaker;
         public readonly string Text;
-        public readonly IReadOnlyList<DialogChoice> Choices;
+        public readonly IReadOnlyList<string> Choices;
 
-        public DialogViewState(DialogViewMode mode, string speaker, string text, IReadOnlyList<DialogChoice> choices) {
+        public DialogViewState(DialogViewMode mode, string speaker, string text, IReadOnlyList<string> choices) {
             Mode = mode;
             Speaker = speaker;
             Text = text;
@@ -40,6 +40,7 @@ namespace Game.Core.Services.Dialog {
         private int currentLineIndex;
         private List<DialogChoice> visibleChoices;
         private DialogViewState currentViewState;
+        private List<string> resolvedChoiceTexts;
         private bool isCurrentLineFullyRevealed;
         private bool showingChoices;
         private IAudioLoopHandle activeSpeechSound;
@@ -114,6 +115,7 @@ namespace Game.Core.Services.Dialog {
             currentNode = null;
             currentLineIndex = 0;
             visibleChoices = null;
+            resolvedChoiceTexts = null;
             isCurrentLineFullyRevealed = false;
             showingChoices = false;
             SetViewState(DialogViewMode.Hidden, null, null, null);
@@ -147,7 +149,9 @@ namespace Game.Core.Services.Dialog {
             isCurrentLineFullyRevealed = false;
             var line = currentNode.lines[currentLineIndex];
             PlayLineSound(currentNode.speaker, line.soundId);
-            SetViewState(DialogViewMode.Line, currentNode.speaker, line.text, null);
+            var speakerName = ResolveSpeakerName(currentNode.speaker);
+            var lineText = G.Strings.Resolve(line.textKey);
+            SetViewState(DialogViewMode.Line, speakerName, lineText, null);
         }
 
         private void ShowChoicesOrEnd() {
@@ -162,8 +166,8 @@ namespace Game.Core.Services.Dialog {
             var state = G.Game.playerState;
             visibleChoices = FilterVisibleChoices(currentNode.choices, state);
 
-            // Auto-continue: single choice with empty text
-            if (visibleChoices.Count == 1 && string.IsNullOrEmpty(visibleChoices[0].text)) {
+            // Auto-continue: single choice with empty key
+            if (visibleChoices.Count == 1 && string.IsNullOrEmpty(visibleChoices[0].textKey)) {
                 PickChoice(0);
                 return true;
             }
@@ -174,7 +178,9 @@ namespace Game.Core.Services.Dialog {
             }
 
             showingChoices = true;
-            SetViewState(DialogViewMode.Choices, currentNode.speaker, GetCurrentLineText(), visibleChoices);
+            resolvedChoiceTexts = ResolveChoiceTexts(visibleChoices);
+            var speakerName = ResolveSpeakerName(currentNode.speaker);
+            SetViewState(DialogViewMode.Choices, speakerName, GetCurrentLineText(), resolvedChoiceTexts);
             return true;
         }
 
@@ -195,7 +201,25 @@ namespace Game.Core.Services.Dialog {
                 return null;
             }
 
-            return currentNode.lines[currentLineIndex].text;
+            return G.Strings.Resolve(currentNode.lines[currentLineIndex].textKey);
+        }
+
+        private string ResolveSpeakerName(string speakerId) {
+            if (string.IsNullOrEmpty(speakerId)) {
+                return "";
+            }
+
+            var key = $"dialog.{currentDialog.dialogId}.speaker.{speakerId}";
+            return G.Strings.Resolve(key);
+        }
+
+        private static List<string> ResolveChoiceTexts(List<DialogChoice> choices) {
+            var result = new List<string>(choices.Count);
+            for (int i = 0; i < choices.Count; i++) {
+                result.Add(G.Strings.Resolve(choices[i].textKey));
+            }
+
+            return result;
         }
 
         private void PlayLineSound(string speaker, string soundId) {
@@ -220,7 +244,7 @@ namespace Game.Core.Services.Dialog {
             activeSpeechSound = null;
         }
 
-        private void SetViewState(DialogViewMode mode, string speaker, string text, IReadOnlyList<DialogChoice> choices) {
+        private void SetViewState(DialogViewMode mode, string speaker, string text, IReadOnlyList<string> choices) {
             currentViewState = new DialogViewState(mode, speaker, text, choices);
             StateChanged?.Invoke(currentViewState);
         }

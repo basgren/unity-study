@@ -151,4 +151,5 @@ MonoBehaviour:
         m_CallState: 2
   infoSignPrefab: {fileID: 6317869227438106085, guid: f159551c90db1aa4daff2b0d8331ed2b,
     type: 3}
-  message: Info
+  textKey: world.sign.info
+  tableCollectionName: UI

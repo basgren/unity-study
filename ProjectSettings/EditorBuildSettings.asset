@@ -21,5 +21,9 @@ EditorBuildSettings:
     path: Assets/Game/Scenes/Level3Island.unity
     guid: aa055ab60fc4e514f91edd99c026be0e
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: a95e6ed043347534a8767f25a4d96a36,
+      type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 20cedae7329f3d641a8cd41978bf6ddb,
+      type: 2}
+    com.unity.localization.settings: {fileID: 11400000, guid: 26fbefa0af16e5f47b169f467129f5eb,
       type: 2}
