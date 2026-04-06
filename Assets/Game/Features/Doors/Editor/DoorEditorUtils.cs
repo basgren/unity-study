@@ -1,7 +1,7 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using System;
+using Game.Core.Editor;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
 namespace Game.Doors.Editor {
@@ -21,29 +21,10 @@ namespace Game.Doors.Editor {
         }
 
         /// <summary>
-        /// Safely executes an action in a scene. If the scene is not loaded, it will be opened additively,
-        /// processed, and then closed.
+        /// Safely executes an action in a scene. Forwards to the shared EditorSceneUtils.
         /// </summary>
         public static void ExecuteInScene(string scenePath, Action<Scene> action) {
-            if (string.IsNullOrWhiteSpace(scenePath)) {
-                return;
-            }
-
-            var targetScene = SceneManager.GetSceneByPath(scenePath);
-            var isAlreadyLoaded = targetScene.IsValid() && targetScene.isLoaded;
-
-            var scene = isAlreadyLoaded
-                ? targetScene
-                : EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
-
-            try {
-                action(scene);
-            }
-            finally {
-                if (!isAlreadyLoaded) {
-                    EditorSceneManager.CloseScene(scene, true);
-                }
-            }
+            EditorSceneUtils.ExecuteInScene(scenePath, action);
         }
     }
 }

@@ -16,6 +16,7 @@ using Game.Core.Utils;
 using Game.Defs;
 using Game.Features.Characters.Hero.ItemUse;
 using Game.Features.Characters.Parrot;
+using Game.Features.Interactive.Bonfire;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -159,6 +160,23 @@ namespace Game.Features.Characters.Hero {
             InitFromState(state);
 
             G.Hero.Register(this, itemUseService);
+        }
+
+        private void Start() {
+            if (G.Checkpoint.HasPendingRespawn) {
+                var checkpointRef = G.Checkpoint.ConsumePendingRespawn();
+                var bonfire = BonfireUtils.FindByIdInScene(gameObject.scene, checkpointRef.LocalId);
+                
+                if (bonfire != null) {
+                    transform.position = bonfire.GetSpawnPosition();
+                } else {
+                    Debug.LogWarning($"Checkpoint bonfire '{checkpointRef.LocalId}' not found after scene load.");
+                }
+                
+                RestoreHealthAfterRespawn();
+                damageable.IgnoreDamage = false;
+                Actions.Enable();
+            }
         }
 
         private void OnDestroy() {
@@ -541,7 +559,11 @@ namespace Game.Features.Characters.Hero {
             UpdateState();
 
             if (damageable.IsDead) {
-                ShowHitAndRestartScene();
+                if (G.Checkpoint.Current.HasValue) {
+                    ShowHitAndRespawnAtCheckpoint();
+                } else {
+                    ShowHitAndRestartScene();
+                }
                 return;
             }
 
@@ -594,6 +616,48 @@ namespace Game.Features.Characters.Hero {
             transform.position = safePointTracker.LastSafePosition;
             damageable.IgnoreDamage = false;
             Actions.Enable();
+        }
+
+        private void ShowHitAndRespawnAtCheckpoint() {
+            Actions.Disable();
+            isDead = true;
+            isDiedThisFrame = true;
+            damageable.IgnoreDamage = true;
+            StartCoroutine(WaitAndRespawnAtCheckpoint(WaitBeforeRestart));
+        }
+
+        private IEnumerator WaitAndRespawnAtCheckpoint(float seconds) {
+            yield return new WaitForSeconds(seconds);
+
+            var checkpointRef = G.Checkpoint.Current.Value;
+            var checkpointSceneName = checkpointRef.Scene.GetSceneName();
+            var currentScene = SceneManager.GetActiveScene().name;
+
+            if (checkpointSceneName == currentScene) {
+                var bonfire = BonfireUtils.FindByIdInScene(gameObject.scene, checkpointRef.LocalId);
+                if (bonfire != null) {
+                    RespawnAtPosition(bonfire.GetSpawnPosition());
+                } else {
+                    Debug.LogWarning($"Checkpoint bonfire '{checkpointRef.LocalId}' not found in scene '{currentScene}'.");
+                }
+            } else {
+                G.Checkpoint.RequestRespawn();
+                SceneManager.LoadScene(checkpointSceneName);
+            }
+        }
+
+        private void RespawnAtPosition(Vector2 position) {
+            transform.position = position;
+            RestoreHealthAfterRespawn();
+            damageable.IgnoreDamage = false;
+            Actions.Enable();
+        }
+
+        private void RestoreHealthAfterRespawn() {
+            var maxHealth = state.GetMaxHealth();
+            state.currentHealth = maxHealth;
+            isDead = false;
+            damageable.Revive();
         }
 
         private void DropCoins() {

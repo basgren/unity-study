@@ -30,5 +30,6 @@ namespace Game.Core.Bootstrap {
         public static LocaleService Locale { get; internal set; }
         public static IStringResolver Strings { get; internal set; }
         public static DialogService Dialog { get; internal set; }
+        public static CheckpointService Checkpoint { get; internal set; }
     }
 }

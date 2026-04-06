@@ -1,6 +1,7 @@
 using Game.Core.Bootstrap;
 using Game.Core.UI;
 using Game.Doors;
+using Game.Features.Doors;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

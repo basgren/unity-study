@@ -126,6 +126,11 @@ namespace Game.Core.Components.Damage {
             }
         }
 
+        public void Revive() {
+            IsDead = false;
+            SetHealth(maxHealth);
+        }
+
         private bool IsInvulnerable() {
             return invulnerabilityTimer > 0;
         }

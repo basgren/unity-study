@@ -32,6 +32,7 @@ namespace Game.Core.Bootstrap {
             Debug.Log("Initializing Game Manager");
             G.Game = GetOrCreate<GameManager>("GameManager");
             G.Hero = GetOrCreate<HeroService>("HeroService");
+            G.Checkpoint = GetOrCreate<CheckpointService>("CheckpointService");
             G.Spawner = GetOrCreate<SpawnerService>("SpawnerService");
             G.Input = GetOrCreate<InputService>("InputService");
             G.Screen = GetOrCreate<ScreenService>("ScreenService");

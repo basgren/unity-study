@@ -3,10 +3,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
-namespace Core.Components.Animation {
-
+namespace Game.Core.Components.Animation {
     [Serializable]
-    public class NewFrameEvent : UnityEvent<MultiStateSpriteAnimator> {}
+    public class NewFrameEvent : UnityEvent<MultiStateSpriteAnimator> {
+    }
 
     [RequireComponent(typeof(SpriteRenderer))]
     public class MultiStateSpriteAnimator : MonoBehaviour {
@@ -33,10 +33,10 @@ namespace Core.Components.Animation {
 
         [SerializeField]
         private NewFrameEvent onNewFrame;
-        
+
         public StateAnimationClip CurrentClip => clips.Length > 0 ? clips[currentClipIndex] : null;
-        public int CurrentFrameIndex => currentFrameIndex; 
-        
+        public int CurrentFrameIndex => currentFrameIndex;
+
         private SpriteRenderer spriteRenderer;
 
         private int currentClipIndex;
