@@ -63512,7 +63512,7 @@ Transform:
   m_GameObject: {fileID: 1867640852}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -63537,10 +63537,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1867640852}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1e41f6cd783264b8767c6f67586054, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c76cdd75dd55464f9ad5d22b6c1a576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxMultiplier: {x: 1, y: 1}
+  overrideSpeed: 1
+  speed: {x: 1, y: 1}
+  confiner: {fileID: 1237674579}
 --- !u!1001 &1871833470
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -103748,12 +103750,12 @@ PrefabInstance:
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -214.97444
+      value: -214.96887
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 75.287895
+      value: 75.2879
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097959352688, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
