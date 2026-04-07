@@ -1,9 +1,7 @@
 using Game.Core.Bootstrap;
+using Game.Core.Services.Scene;
 using Game.Core.UI;
-using Game.Doors;
-using Game.Features.Doors;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Game.UI.MainMenu {
     public class MainMenu : AnimatedWindow {
@@ -11,7 +9,7 @@ namespace Game.UI.MainMenu {
         private SceneReference startScene;
         
         public void OnStartGameClick() {
-            G.Menu.CloseAll(() => SceneManager.LoadScene(startScene.GetSceneName()));
+            G.Menu.CloseAll(() => G.SceneTravel.LoadScene(startScene.GetSceneName()));
         }
 
         public void OnOptionsClick() {

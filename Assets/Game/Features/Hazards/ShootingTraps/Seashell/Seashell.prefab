@@ -460,6 +460,8 @@ GameObject:
   - component: {fileID: 66716327013474203}
   - component: {fileID: 1600101890110421964}
   - component: {fileID: -8922686484826777971}
+  - component: {fileID: 5488970526600631103}
+  - component: {fileID: 2758217128438993380}
   m_Layer: 15
   m_Name: Seashell
   m_TagString: Untagged
@@ -631,3 +633,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 3664229136581394779}
   prefab: {fileID: 5540822738990593286, guid: 4e9a2bba15cbcb446815cff261cc6a4d, type: 3}
+--- !u!114 &5488970526600631103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3664229136581394778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c73f5a36c302541a2e19ec4d53a9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveId: 
+  skipSave: 0
+  tier: 0
+--- !u!114 &2758217128438993380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3664229136581394778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 193622ed0d77dbc4ab2a7b43dcb1c804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

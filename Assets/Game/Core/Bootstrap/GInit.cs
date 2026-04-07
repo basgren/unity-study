@@ -2,9 +2,10 @@ using Game.Configs;
 using Game.Core.Audio;
 using Game.Core.Services;
 using Game.Core.Services.Input;
-using Game.Core.Services.Scene;
+using Game.Core.Services.SceneState;
 using Game.Core.Services.Dialog;
 using Game.Core.Services.Locale;
+using Game.Core.Services.Scene;
 using Game.Core.Services.Tween;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -33,9 +34,13 @@ namespace Game.Core.Bootstrap {
             G.Game = GetOrCreate<GameManager>("GameManager");
             G.Hero = GetOrCreate<HeroService>("HeroService");
             G.Checkpoint = GetOrCreate<CheckpointService>("CheckpointService");
+            G.SceneTravel = GetOrCreate<SceneTravelService>("SceneTravelService");
+            var sceneStateService = GetOrCreate<SceneStateService>("SceneStateService");
+            G.SceneState = sceneStateService;
             G.Spawner = GetOrCreate<SpawnerService>("SpawnerService");
             G.Input = GetOrCreate<InputService>("InputService");
             G.Screen = GetOrCreate<ScreenService>("ScreenService");
+            G.Camera = GetOrCreate<CameraService>("CameraService");
             G.StateMachines = GetOrCreate<StateMachineService>("StateMachineService");
             G.Settings = GetOrCreate<SettingsService>("SettingsService");
             var audioService = GetOrCreate<AudioService>("AudioService");
@@ -48,6 +53,8 @@ namespace Game.Core.Bootstrap {
             G.Game.playerConfig = mainConfig.Player;
             G.Game.Init();
 
+            // SceneTravelService must be created before Init() so SceneStateService can subscribe.
+            sceneStateService.Init();
             audioService.Init();
             G.Settings.Init();
             G.Locale.Init();

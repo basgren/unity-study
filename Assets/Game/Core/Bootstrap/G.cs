@@ -5,6 +5,7 @@ using Game.Core.Services.Dialog;
 using Game.Core.Services.Input;
 using Game.Core.Services.Locale;
 using Game.Core.Services.Scene;
+using Game.Core.Services.SceneState;
 using Game.Core.Services.Tween;
 
 namespace Game.Core.Bootstrap {
@@ -31,5 +32,8 @@ namespace Game.Core.Bootstrap {
         public static IStringResolver Strings { get; internal set; }
         public static DialogService Dialog { get; internal set; }
         public static CheckpointService Checkpoint { get; internal set; }
+        public static SceneTravelService SceneTravel { get; internal set; }
+        public static SceneStateService SceneState { get; internal set; }
+        public static CameraService Camera { get; internal set; }
     }
 }

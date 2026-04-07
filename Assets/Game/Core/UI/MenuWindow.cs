@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
+using Game.Core.Services.Scene;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Game.Core.UI {
     /// <summary>
-    /// Abstract base for any window managed by <see cref="Services.Scene.MenuManager"/>.
+    /// Abstract base for any window managed by <see cref="MenuManager"/>.
     /// Subclasses decide how the open/close transition is performed (Animator, tween, etc.).
     /// </summary>
     public abstract class MenuWindow : MonoBehaviour {

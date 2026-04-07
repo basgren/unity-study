@@ -1,7 +1,8 @@
-﻿using Core.Components.Interaction;
+using Core.Components.Interaction;
+using Game.Core.Bootstrap;
 using UnityEngine;
 
-namespace Prefabs.Interactive.StoneDoor {
+namespace Game.Features.Doors.StoneDoor {
     static class StoneDoorAnimationKeys {
         public static readonly int IsOpen = Animator.StringToHash("isOpen");
     }
@@ -9,9 +10,9 @@ namespace Prefabs.Interactive.StoneDoor {
     [RequireComponent(typeof(Switchable))]
     [RequireComponent(typeof(Animator))]
     public class StoneDoorController : MonoBehaviour {
-        private const string ClosedStateName = "Closed";
-        private const string OpenStateName = "Opened";
-        
+        private static readonly int ClosedStateHash = Animator.StringToHash("Closed");
+        private static readonly int OpenStateHash = Animator.StringToHash("Opened");
+
         private Animator animator;
         private Switchable switchable;
 
@@ -22,20 +23,20 @@ namespace Prefabs.Interactive.StoneDoor {
         }
 
         public void OnChangeState(bool isActive) {
-            UpdateAnimator();
+            UpdateAnimator(G.SceneState != null && G.SceneState.IsRestoring);
         }
 
         private void UpdateAnimator(bool instant = false) {
             animator.SetBool(StoneDoorAnimationKeys.IsOpen, switchable.IsActive);
-            
+
             if (instant) {
                 ApplyStateInstant(switchable.IsActive);
             }
         }
 
         private void ApplyStateInstant(bool isActive) {
-            string stateName = isActive ? OpenStateName : ClosedStateName;
-            animator.Play(stateName, 0, 1f);
+            int stateHash = isActive ? OpenStateHash : ClosedStateHash;
+            animator.Play(stateHash, 0, 1f);
             animator.Update(0f);
         }
     }

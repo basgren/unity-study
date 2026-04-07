@@ -223,6 +223,8 @@ GameObject:
   - component: {fileID: 649388069741242861}
   - component: {fileID: 4568076159340871885}
   - component: {fileID: 1260341882089066869}
+  - component: {fileID: 5710170391909424992}
+  - component: {fileID: -3832196192249431684}
   m_Layer: 15
   m_Name: Sharky
   m_TagString: Enemy
@@ -534,6 +536,33 @@ MonoBehaviour:
   startIndex: 0
   direction: 0
   points: []
+--- !u!114 &5710170391909424992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3756431542319373574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 193622ed0d77dbc4ab2a7b43dcb1c804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-3832196192249431684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3756431542319373574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c73f5a36c302541a2e19ec4d53a9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveId: 
+  skipSave: 0
+  tier: 0
 --- !u!1 &6351119516102635767
 GameObject:
   m_ObjectHideFlags: 0

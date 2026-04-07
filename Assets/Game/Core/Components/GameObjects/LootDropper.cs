@@ -24,6 +24,10 @@ namespace Game.Core.Components.GameObjects {
         private readonly float angleSpread = 90f;
 
         public void DropLoot(int lootCount = -1) {
+            if (G.SceneState != null && G.SceneState.IsRestoring) {
+                return;
+            }
+
             if (lootCount < 0) {
                 lootCount = count;
             }

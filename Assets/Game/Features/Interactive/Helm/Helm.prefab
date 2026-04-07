@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 711908704433443735}
   - component: {fileID: 5324404524698164522}
   - component: {fileID: -8958234560914074183}
+  - component: {fileID: -5998578574885228302}
+  - component: {fileID: 7322997550620335432}
   m_Layer: 0
   m_Name: Helm
   m_TagString: Untagged
@@ -220,3 +222,29 @@ MonoBehaviour:
   defaultCue: {fileID: 11400000, guid: 260151be2d3e4034aae25827ff5cd1e9, type: 2}
   cueRefs: []
   playAs2D: 1
+--- !u!114 &-5998578574885228302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703046495728465378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d18223a10b060714d931ea0d4548cab3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7322997550620335432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703046495728465378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c73f5a36c302541a2e19ec4d53a9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveId: 
+  tier: 1

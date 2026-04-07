@@ -4,6 +4,7 @@ using Core.Utils;
 using Game.Core.Bootstrap;
 using Game.Core.Components.Damage;
 using Game.Core.Components.GameObjects;
+using Game.Core.Services.SceneState.Savers;
 using Game.Core.Utils;
 using Prefabs.Characters.Common;
 using UnityEngine;
@@ -81,7 +82,11 @@ namespace Game.Features.Hazards.ShootingTraps.Cannon {
         public void DestroyAndSpawnDebris() {
             Debug.Log("Destroyed");
             GetComponent<SpawnComponent>().Spawn();
-            Destroy(gameObject);
+            
+            var destroyedSaver = GetComponent<DestructionStateSaver>();
+            if (destroyedSaver != null) {
+                destroyedSaver.MarkDestroyedAndDestroy();
+            }
         }
     }
 }

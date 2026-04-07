@@ -22,6 +22,12 @@ namespace Game.Core.Services {
         /// </summary>
         public bool HasPendingRespawn { get; private set; }
 
+        /// <summary>
+        /// True while a bonfire rest reload is in progress.
+        /// The freshly loaded player should stay locked and invulnerable until the transition completes.
+        /// </summary>
+        public bool IsBonfireRestTransitionActive { get; private set; }
+
         public void Activate(CheckpointRef checkpointRef) {
             var key = MakeKey(checkpointRef.Scene.GetSceneName(), checkpointRef.LocalId);
             discovered.Add(key);
@@ -53,6 +59,17 @@ namespace Game.Core.Services {
         /// </summary>
         public void RequestRespawn() {
             HasPendingRespawn = true;
+            IsBonfireRestTransitionActive = false;
+        }
+
+        /// <summary>
+        /// Marks that the next scene load comes from a bonfire rest transition.
+        /// Use this instead of <see cref="RequestRespawn"/> when a fade sequence will restore
+        /// player controls and vulnerability only after the fade-in completes.
+        /// </summary>
+        public void BeginBonfireRestTransition() {
+            HasPendingRespawn = true;
+            IsBonfireRestTransitionActive = true;
         }
 
         /// <summary>
@@ -62,6 +79,14 @@ namespace Game.Core.Services {
         public CheckpointRef ConsumePendingRespawn() {
             HasPendingRespawn = false;
             return Current.Value;
+        }
+
+        /// <summary>
+        /// Ends the bonfire rest transition after the new scene has faded back in and the player
+        /// can safely regain control.
+        /// </summary>
+        public void CompleteBonfireRestTransition() {
+            IsBonfireRestTransitionActive = false;
         }
 
         private static string MakeKey(string sceneName, string localId) {

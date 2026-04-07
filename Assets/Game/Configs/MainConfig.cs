@@ -1,4 +1,5 @@
 using Game.Audio.Dialog;
+using Game.Core.Services.SceneState;
 using Game.Core.UI;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -30,6 +31,9 @@ namespace Game.Configs {
         [Header("System")]
         public EventSystem eventSystem;
         
+        [Header("Scene State")]
+        public SceneCatalog SceneCatalog;
+
         [Header("Debug")]
         public bool EscQuitsImmediately;
     }

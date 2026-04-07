@@ -1,9 +1,10 @@
 ﻿using System;
 using Core.Audio;
 using Core.Components.Base2D;
-using Game.Controllers;
 using Game.Core.Bootstrap;
 using Game.Core.Components.Damage;
+using Game.Core.Services.SceneState.Savers;
+using Game.Features.Characters._Shared;
 using Prefabs.Characters.Sharky;
 using UnityEngine;
 
@@ -172,6 +173,11 @@ namespace Game.Features.Characters.Sharky {
                 isDiedThisFrame = true;
                 isDead = true;
                 ai.enabled = false;
+                
+                var destroyedSaver = GetComponent<DestructionStateSaver>();
+                if (destroyedSaver != null) {
+                    destroyedSaver.MarkDestroyed();
+                }
                 
                 // Disable all collisions with other dynamic objects and leave body in place.
                 MyCollider.enabled = false;

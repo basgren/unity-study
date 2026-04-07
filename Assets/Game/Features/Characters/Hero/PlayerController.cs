@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Core.Audio;
 using Core.Components.Interaction;
 using Core.Utils;
-using Game.Controllers;
 using Game.Core.Audio;
 using Game.Core.Bootstrap;
 using Game.Core.Components.Collectables;
@@ -14,6 +13,7 @@ using Game.Core.Components.Interaction;
 using Game.Core.Models.Inventory;
 using Game.Core.Utils;
 using Game.Defs;
+using Game.Features.Characters._Shared;
 using Game.Features.Characters.Hero.ItemUse;
 using Game.Features.Characters.Parrot;
 using Game.Features.Interactive.Bonfire;
@@ -130,7 +130,7 @@ namespace Game.Features.Characters.Hero {
         private SpawnComponent swordSpawner;
         private int CoinsCount => state.InventoryModel.GetCount(ItemIds.Coin);
         internal int SwordCount => state.InventoryModel.GetCount(ItemIds.Sword);
-        internal bool IsArmed { get; private set; }
+        internal bool IsArmed => state != null && state.IsArmed;
 
         private PlayerState state;
         private ItemUseService itemUseService;
@@ -174,8 +174,14 @@ namespace Game.Features.Characters.Hero {
                 }
                 
                 RestoreHealthAfterRespawn();
-                damageable.IgnoreDamage = false;
-                Actions.Enable();
+
+                if (G.Checkpoint.IsBonfireRestTransitionActive) {
+                    SetCanTakeDamage(false);
+                    SetControlsEnabled(false);
+                } else {
+                    SetCanTakeDamage(true);
+                    SetControlsEnabled(true);
+                }
             }
         }
 
@@ -207,10 +213,22 @@ namespace Game.Features.Characters.Hero {
         private void OnInventoryChanged(InventoryChangeEvent eventInfo) {
             if (eventInfo.ItemId == ItemIds.Sword && eventInfo.CountDelta > 0 && !IsArmed) {
                 // The first sword becomes the equipped weapon instead of staying in the backpack.
-                IsArmed = true;
-                UpdateAnimatorController();
+                SetArmedState(true);
                 state.InventoryModel.Remove(ItemIds.Sword, 1);
             }
+        }
+
+        internal void RestorePersistentState(bool armed) {
+            SetArmedState(armed);
+        }
+
+        private void SetArmedState(bool armed) {
+            if (state == null) {
+                return;
+            }
+
+            state.IsArmed = armed;
+            UpdateAnimatorController();
         }
 
         protected override void Update() {
@@ -301,6 +319,27 @@ namespace Game.Features.Characters.Hero {
         public void CancelAttack() {
             CloseSwordDamageWindow();
             FinishAttack();
+        }
+
+        /// <summary>
+        /// Enables or disables the player action map directly.
+        /// Intended for short transition windows such as bonfire rests, fades, and respawn handling.
+        /// </summary>
+        public void SetControlsEnabled(bool isEnabled) {
+            if (isEnabled) {
+                Actions.Enable();
+            } else {
+                Actions.Disable();
+            }
+        }
+
+        /// <summary>
+        /// Toggles whether the hero can receive damage.
+        /// This uses <see cref="Damageable.IgnoreDamage"/> and is intended for transition states
+        /// where the player should be invulnerable without triggering hit visuals.
+        /// </summary>
+        public void SetCanTakeDamage(bool canTakeDamage) {
+            damageable.IgnoreDamage = !canTakeDamage;
         }
 
         /// <summary>
@@ -600,10 +639,7 @@ namespace Game.Features.Characters.Hero {
             // TODO: [BG] Leave for refactor - move to some service like game manager.
             //   player should not manage own death or even respawn. I should throw some message
             //   and game manager should decide what to do.
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            isDead = false;
-            damageable.IgnoreDamage = false;
-            Actions.Enable();
+            G.SceneTravel.ReloadActiveScene();
         }
 
         private IEnumerator WaitAndRespawn(float seconds) {
@@ -642,15 +678,15 @@ namespace Game.Features.Characters.Hero {
                 }
             } else {
                 G.Checkpoint.RequestRespawn();
-                SceneManager.LoadScene(checkpointSceneName);
+                G.SceneTravel.LoadScene(checkpointSceneName);
             }
         }
 
         private void RespawnAtPosition(Vector2 position) {
             transform.position = position;
             RestoreHealthAfterRespawn();
-            damageable.IgnoreDamage = false;
-            Actions.Enable();
+            SetCanTakeDamage(true);
+            SetControlsEnabled(true);
         }
 
         private void RestoreHealthAfterRespawn() {

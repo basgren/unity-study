@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 using Game.Core.Bootstrap;
 using Game.Core.Components.Animation;
 using Game.Core.Components.Interaction;
 using Game.Core.Services;
+using Game.Core.Services.Scene;
 using Game.Core.Services.Tween.Components;
 using Game.Core.Utils;
-using Game.Features.Doors;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ namespace Game.Features.Interactive.Bonfire {
 
     [RequireComponent(typeof(MultiStateSpriteAnimator))]
     public class Bonfire : InteractableBase {
+        private const float RestFadeDuration = 1f;
+
         [SerializeField]
         private string checkpointId;
 
@@ -63,16 +66,30 @@ namespace Game.Features.Interactive.Bonfire {
         }
 
         protected override void DoInteract() {
-            if (bonfireState == BonfireState.Current) {
-                return;
-            }
-
             var checkpointRef = new CheckpointRef {
                 Scene = SceneReference.FromScene(gameObject.scene),
                 LocalId = checkpointId,
             };
 
             G.Checkpoint.Activate(checkpointRef);
+
+            // Clear session-tier state (moved barrels, weakened enemies, etc.) and reload the scene
+            // so the world resets to its default state while persistent state (opened doors, used
+            // helms) is re-applied by StateRoot.Start on the fresh load.
+            var hero = G.Hero.Controller;
+            if (hero != null) {
+                hero.SetControlsEnabled(false);
+                hero.SetCanTakeDamage(false);
+            }
+
+            G.SceneState.OnBonfireRest();
+            G.Checkpoint.BeginBonfireRestTransition();
+            G.Screen.RunWhenFadeOut(
+                RestFadeDuration,
+                RestFadeDuration,
+                ReloadSceneAfterRest,
+                RestoreHeroAfterRestFade
+            );
         }
 
         private void OnCheckpointChanged(CheckpointRef? data) {
@@ -138,10 +155,31 @@ namespace Game.Features.Interactive.Bonfire {
                             spriteRenderer.color = Color.Lerp(Color.white, Color.clear, eased);
                         }
                     }, () => {
-                        smokeEffect.SetActive(false);
+                        // 
+                        if (smokeEffect != null) {
+                            smokeEffect.SetActive(false);                            
+                        }
                     });
                 }
             }
+        }
+
+        private static IEnumerator ReloadSceneAfterRest() {
+            yield return G.SceneTravel.ReloadActiveScene();
+
+            while (G.Hero.Controller == null || G.Checkpoint.HasPendingRespawn) {
+                yield return null;
+            }
+        }
+
+        private static void RestoreHeroAfterRestFade() {
+            var hero = G.Hero.Controller;
+            if (hero != null) {
+                hero.SetCanTakeDamage(true);
+                hero.SetControlsEnabled(true);
+            }
+
+            G.Checkpoint.CompleteBonfireRestTransition();
         }
 
 #if UNITY_EDITOR

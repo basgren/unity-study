@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using Game.Core.Services.Scene;
 using Game.Doors;
 using UnityEditor;
 using UnityEngine;

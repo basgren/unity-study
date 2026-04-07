@@ -13,12 +13,19 @@ namespace Game.Features.Characters.Hero {
         [SerializeField]
         private List<string> flags = new();
 
+        [SerializeField]
+        private bool isArmed;
+
         private BackpackPanelModel backpackPanelModel;
         public float baseMaxHealth;
         public float currentHealth;
         
         public InventoryModel InventoryModel => inventoryModel;
         public BackpackPanelModel BackpackPanelModel => backpackPanelModel;
+        public bool IsArmed {
+            get => isArmed;
+            set => isArmed = value;
+        }
 
         public PlayerState(PlayerConfig config) {
             baseMaxHealth = config.BaseMaxHealth;

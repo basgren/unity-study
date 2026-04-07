@@ -2,6 +2,8 @@
 using Core.Audio;
 using Core.Components.Animation;
 using Game.Core.Bootstrap;
+using Game.Core.Services.SceneState;
+using Game.Core.Services.SceneState.Savers;
 using UnityEngine;
 
 namespace Game.Core.Components.Collectables {
@@ -110,6 +112,12 @@ namespace Game.Core.Components.Collectables {
                 G.Audio.PlayAt(collectSound, transform.position);
             }
 
+            var existenceSaver = GetComponentInParent<DestructionStateSaver>();
+
+            if (existenceSaver != null) {
+                existenceSaver.MarkDestroyed();
+            }
+            
             if (rootObject != null) {
                 Destroy(rootObject);
             } else {

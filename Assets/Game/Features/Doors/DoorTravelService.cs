@@ -1,12 +1,15 @@
-﻿using System.Collections;
+using System.Collections;
 using Game.Core.Bootstrap;
-using Game.Doors;
+using Game.Core.Services.Scene;
 using Game.Features.Characters.Hero;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Game.Features.Doors {
     public static class DoorTravelService {
+        private const float DoorFadeDuration = 0.25f;
+        private const int MaxCameraSnapWaitFrames = 8;
+
         public static void Travel(Door fromDoor) {
             var link = fromDoor.Link;
             var targetSceneName = link.TargetScene.GetSceneName();
@@ -14,48 +17,78 @@ namespace Game.Features.Doors {
             var currentScene = fromDoor.gameObject.scene;
 
             G.Screen.RunWhenFadeOut(
-                0.25f,
-                0.25f,
+                DoorFadeDuration,
+                DoorFadeDuration,
                 () => {
                     return currentScene.name == targetSceneName
                         ? TeleportWithDelay(currentScene, targetDoorId, fromDoor)
                         : LoadSceneAndTeleportPlayer(targetSceneName, targetDoorId, fromDoor);
-                }
+                },
+                () => SetHeroTransitionState(true)
             );
         }
 
         private static IEnumerator TeleportWithDelay(Scene targetScene, string doorId, Door fromDoor) {
             var targetDoor = DoorUtils.FindDoorByIdInScene(targetScene, doorId);
-            
+
             TeleportPlayerToDoor(targetDoor);
-            
-            // Wait a little bit to make scene settle and make small delay, as quick fade-out + fade-in
-            // looks like flash.
-            yield return new WaitForSecondsRealtime(0.4f);
+
+            // Keep the screen faded while Cinemachine applies teleport warp in the loaded scene.
+            yield return WaitForCameraSnapAfterTeleport();
             targetDoor.NotifyEntered();
             fromDoor.NotifyEntered();
         }
-        
+
         private static IEnumerator LoadSceneAndTeleportPlayer(string sceneName, string doorId, Door fromDoor) {
-            AsyncOperation sceneLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-
-            while (!sceneLoad.isDone) {
-                yield return null;
-            }
-            
-            var scene = SceneManager.GetSceneByName(sceneName);
-
-            yield return TeleportWithDelay(scene, doorId, fromDoor);
+            // SceneTravelService fires BeforeUnload (state capture) before loading the new scene.
+            yield return G.SceneTravel.LoadScene(sceneName, new SceneLoadOptions {
+                PostLoad = scene => TeleportWithDelay(scene, doorId, fromDoor),
+            });
         }
 
         private static void TeleportPlayerToDoor(Door targetDoor) {
-            // We assume that player is always present and doorId valid
-            // TODO: [BG] Find better way of finding player object. Maybe some service? 
-            var player = GameObject.FindGameObjectWithTag("Player");
-            var playerController = player.GetComponent<PlayerController>();
+            var playerController = G.Hero.Controller;
+            if (playerController == null) {
+                // Fallback for cases where the hero service has not registered yet.
+                var player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null) {
+                    playerController = player.GetComponent<PlayerController>();
+                }
+            }
 
-            // TODO: [BG] Also move camera immediately to the player after teleportation.
-            playerController.TeleportTo(targetDoor.GetEntryPosition());
+            if (playerController == null) {
+                Debug.LogWarning("PlayerController not found during door travel.");
+                return;
+            }
+
+            var targetPosition = targetDoor.GetEntryPosition();
+            var previousPosition = playerController.transform.position;
+            playerController.TeleportTo(targetPosition);
+            G.Camera?.NotifyTargetTeleported(playerController.transform, targetPosition - previousPosition);
+        }
+
+        private static IEnumerator WaitForCameraSnapAfterTeleport() {
+            if (G.Camera == null) {
+                yield break;
+            }
+
+            for (int i = 0; i < MaxCameraSnapWaitFrames; i++) {
+                if (G.Camera.TryApplyPendingTeleports()) {
+                    yield break;
+                }
+
+                yield return null;
+            }
+        }
+
+        private static void SetHeroTransitionState(bool isEnabled) {
+            var playerController = G.Hero.Controller;
+            if (playerController == null) {
+                return;
+            }
+
+            playerController.SetCanTakeDamage(isEnabled);
+            playerController.SetControlsEnabled(isEnabled);
         }
     }
 }

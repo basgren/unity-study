@@ -1,9 +1,10 @@
 ﻿using System;
 using Core.Audio;
 using Core.Components.Collisions;
-using Game.Controllers;
 using Game.Core.Bootstrap;
 using Game.Core.Components.Damage;
+using Game.Core.Services.SceneState.Savers;
+using Game.Features.Characters._Shared;
 using Prefabs.Characters.PinkStar;
 using UnityEngine;
 
@@ -358,6 +359,11 @@ namespace Game.Features.Characters.PinkStar {
                 isDiedThisFrame = true;
                 isDead = true;
                 touchDamager.SetActive(false);
+                
+                var destroyedSaver = GetComponent<DestructionStateSaver>();
+                if (destroyedSaver != null) {
+                    destroyedSaver.MarkDestroyed();
+                }
             }
         }
 

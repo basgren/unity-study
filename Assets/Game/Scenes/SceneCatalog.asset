@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1ef9d3199a6d2f438812f5dd9bf3821, type: 3}
+  m_Name: SceneCatalog
+  m_EditorClassIdentifier: 
+  scenes:
+  - sceneGuid: 61a7394c3d8813c47a242d95511c72a3
+    scenePath: Assets/Game/Scenes/MainMenu.unity
+  - sceneGuid: 448c499cf51d4d7438209339e95cbfc6
+    scenePath: Assets/Game/Scenes/Hud.unity
+  - sceneGuid: 2cda990e2423bbf4892e6590ba056729
+    scenePath: Assets/Game/Scenes/IntroLevel.unity
+  - sceneGuid: 023634d65c5397b4a82d1d1b91f35e1a
+    scenePath: Assets/Game/Scenes/Level2SmallShip.unity
+  - sceneGuid: aa055ab60fc4e514f91edd99c026be0e
+    scenePath: Assets/Game/Scenes/Level3Island.unity

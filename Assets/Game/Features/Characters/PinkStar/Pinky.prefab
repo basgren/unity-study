@@ -277,6 +277,8 @@ GameObject:
   - component: {fileID: 6189892179132693576}
   - component: {fileID: 84240078499934250}
   - component: {fileID: 5711656976162200658}
+  - component: {fileID: 4378280901850321434}
+  - component: {fileID: -2887701082741740285}
   m_Layer: 15
   m_Name: Pinky
   m_TagString: Untagged
@@ -622,6 +624,33 @@ MonoBehaviour:
       m_Calls: []
   hitSound: {fileID: 11400000, guid: 6126ab6b84b56f5488445f781a909f70, type: 2}
   destroySound: {fileID: 11400000, guid: 77c549ee2873530459b99a1421871aed, type: 2}
+--- !u!114 &4378280901850321434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6189892179132693591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c73f5a36c302541a2e19ec4d53a9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveId: 
+  skipSave: 0
+  tier: 1
+--- !u!114 &-2887701082741740285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6189892179132693591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 193622ed0d77dbc4ab2a7b43dcb1c804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7461146306808350787
 GameObject:
   m_ObjectHideFlags: 0

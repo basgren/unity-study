@@ -1,4 +1,4 @@
-using Game.Features.Doors;
+using Game.Core.Services.Scene;
 
 namespace Game.Core.Services {
     /// <summary>

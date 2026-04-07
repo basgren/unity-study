@@ -1,9 +1,8 @@
 using System;
 using System.IO;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-namespace Game.Features.Doors {
+namespace Game.Core.Services.Scene {
     /// <summary>
     /// Serializable reference to a scene asset.
     /// Stores the scene GUID (stable across moves/renames) and a cached path for convenience.
@@ -46,7 +45,7 @@ namespace Game.Features.Doors {
         /// Constructs a SceneReference from a runtime scene.
         /// GUID is not available at runtime, so only the path is stored.
         /// </summary>
-        public static SceneReference FromScene(Scene scene) {
+        public static SceneReference FromScene(UnityEngine.SceneManagement.Scene scene) {
             return new SceneReference {
                 sceneGuid = string.Empty,
                 scenePath = scene.path,

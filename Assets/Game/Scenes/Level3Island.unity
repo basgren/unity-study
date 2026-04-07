@@ -22702,7 +22702,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d1e41f6cd783264b8767c6f67586054, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxMultiplier: {x: 1, y: 1}
 --- !u!1001 &1871955414
 PrefabInstance:
   m_ObjectHideFlags: 0

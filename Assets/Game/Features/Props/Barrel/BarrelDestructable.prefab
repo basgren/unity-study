@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2986219559809948898}
   - component: {fileID: 2986219559809948909}
   - component: {fileID: 2986219559809948905}
-  - component: {fileID: 2986219559809948910}
   - component: {fileID: 2986219559809948911}
   - component: {fileID: 2986219559809948908}
   - component: {fileID: 2986219559809948906}
@@ -20,6 +19,9 @@ GameObject:
   - component: {fileID: 2986219559809948917}
   - component: {fileID: 2986219559809948916}
   - component: {fileID: 7342184690546311500}
+  - component: {fileID: -7183454011982891441}
+  - component: {fileID: -7490709666928927278}
+  - component: {fileID: 1543599126481411729}
   m_Layer: 11
   m_Name: BarrelDestructable
   m_TagString: Untagged
@@ -34,12 +36,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2986219559809948899}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -212.90163, y: 177.437, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2986219559809948909
 SpriteRenderer:
@@ -52,10 +55,12 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -128,6 +133,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 2986219559809948905}
+          m_TargetAssemblyTypeName: 
           m_MethodName: SetClip
           m_Mode: 5
           m_Arguments:
@@ -147,8 +153,10 @@ MonoBehaviour:
     onComplete:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 2986219559809948910}
-          m_MethodName: DestroySelf
+        - m_Target: {fileID: 1543599126481411729}
+          m_TargetAssemblyTypeName: Game.Core.Services.SceneState.Savers.DestructionStateSaver,
+            Assembly-CSharp
+          m_MethodName: MarkDestroyedAndDestroy
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -159,6 +167,7 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
         - m_Target: {fileID: 2986219559809948916}
+          m_TargetAssemblyTypeName: 
           m_MethodName: Spawn
           m_Mode: 1
           m_Arguments:
@@ -172,19 +181,9 @@ MonoBehaviour:
   onComplete:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &2986219559809948910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2986219559809948899}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8901e5bbb747eef46bf0facf6bd92ff3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectToDestroy: {fileID: 0}
+  onNewFrame:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!61 &2986219559809948911
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -195,6 +194,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -232,6 +250,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2986219559809948905}
+        m_TargetAssemblyTypeName: 
         m_MethodName: SetClip
         m_Mode: 5
         m_Arguments:
@@ -246,6 +265,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2986219559809948905}
+        m_TargetAssemblyTypeName: 
         m_MethodName: SetClip
         m_Mode: 5
         m_Arguments:
@@ -257,6 +277,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 7342184690546311500}
+        m_TargetAssemblyTypeName: 
         m_MethodName: DropLoot
         m_Mode: 3
         m_Arguments:
@@ -286,6 +307,12 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 77d00fdcb24d7194e8dd011937196e98, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -370,3 +397,42 @@ MonoBehaviour:
   speedRandomFactor: 0.5
   randomDirection: 1
   count: 5
+--- !u!114 &-7183454011982891441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986219559809948899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c73f5a36c302541a2e19ec4d53a9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveId: 
+  tier: 1
+--- !u!114 &-7490709666928927278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986219559809948899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e598b953a49f7d4f9e8130f22fe25a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveRotation: 0
+--- !u!114 &1543599126481411729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986219559809948899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 193622ed0d77dbc4ab2a7b43dcb1c804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

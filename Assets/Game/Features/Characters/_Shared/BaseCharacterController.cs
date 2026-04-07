@@ -4,7 +4,7 @@ using Core.Utils;
 using Game.Core.Utils;
 using UnityEngine;
 
-namespace Game.Controllers {
+namespace Game.Features.Characters._Shared {
     public enum SpriteOrientation {
         Left,
         Right,

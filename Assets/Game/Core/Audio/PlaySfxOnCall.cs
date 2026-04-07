@@ -37,6 +37,10 @@ namespace Game.Core.Audio {
         /// Plays the configured AudioCue through the audio service.
         /// </summary>
         public void Play(string cueName = "") {
+            if (G.SceneState != null && G.SceneState.IsRestoring) {
+                return;
+            }
+
             var cue = GetCue(cueName);
             
             if (audioService == null || cue == null) {

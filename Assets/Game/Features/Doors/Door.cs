@@ -50,6 +50,20 @@ namespace Game.Features.Doors {
         }
 
         /// <summary>
+        /// Disables player control and damage intake before the door opening animation starts.
+        /// Wire this before door opening events so the transition lock begins on the first interact frame.
+        /// </summary>
+        public void BeginTravelTransition() {
+            var hero = Game.Core.Bootstrap.G.Hero.Controller;
+            if (hero == null) {
+                return;
+            }
+
+            hero.SetCanTakeDamage(false);
+            hero.SetControlsEnabled(false);
+        }
+
+        /// <summary>
         /// Call this method from outer handlers when player has entered the door (close animation will be played).
         /// </summary>
         public void NotifyEntered() {

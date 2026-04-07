@@ -1,5 +1,5 @@
 using System;
-using Game.Features.Doors;
+using Game.Core.Services.Scene;
 using UnityEngine;
 
 namespace Game.Doors {

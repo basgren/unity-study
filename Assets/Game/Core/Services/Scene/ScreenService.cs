@@ -58,8 +58,21 @@ namespace Game.Core.Services.Scene {
         }
 
         // ---------------- PUBLIC API ----------------
-        public Coroutine RunWhenFadeOut(float fadeOutDuration, float fadeInDuration, Func<IEnumerator> callback) {
-            return StartCoroutine(RunWhenFadeOutRoutine(fadeOutDuration, fadeInDuration, callback));
+        /// <summary>
+        /// Fades the screen out, runs the callback while fully faded, then fades back in.
+        /// Optionally invokes a final action after the fade-in completes.
+        /// </summary>
+        /// <param name="fadeOutDuration">Fade-out duration in seconds.</param>
+        /// <param name="fadeInDuration">Fade-in duration in seconds.</param>
+        /// <param name="callback">Work to perform while the screen is fully faded out.</param>
+        /// <param name="afterFadeIn">Optional action invoked after the fade-in is complete.</param>
+        public Coroutine RunWhenFadeOut(
+            float fadeOutDuration,
+            float fadeInDuration,
+            Func<IEnumerator> callback,
+            Action afterFadeIn = null
+        ) {
+            return StartCoroutine(RunWhenFadeOutRoutine(fadeOutDuration, fadeInDuration, callback, afterFadeIn));
         }
 
         public Coroutine FadeOut(float duration) {
@@ -91,14 +104,20 @@ namespace Game.Core.Services.Scene {
                 yield break;
             }
 
-            float t = 0f;
+            float startTime = Time.realtimeSinceStartup;
             canvasGroup.alpha = from;
             canvasGroup.blocksRaycasts = true;
 
-            while (t < duration) {
-                t += Time.unscaledDeltaTime;
-                float normalized = Mathf.Clamp01(t / duration);
+            while (true) {
+                // Use realtimeSinceStartup so a blocking scene load does not collapse the first fade frame.
+                float elapsed = Time.realtimeSinceStartup - startTime;
+                float normalized = Mathf.Clamp01(elapsed / duration);
                 canvasGroup.alpha = Mathf.Lerp(from, to, normalized);
+
+                if (normalized >= 1f) {
+                    break;
+                }
+
                 yield return null;
             }
 
@@ -109,11 +128,13 @@ namespace Game.Core.Services.Scene {
         private IEnumerator RunWhenFadeOutRoutine(
             float fadeOutDuration,
             float fadeInDuration,
-            Func<IEnumerator> callback
+            Func<IEnumerator> callback,
+            Action afterFadeIn
         ) {
             yield return FadeOutCoroutine(fadeOutDuration);
             yield return callback();
             yield return FadeInCoroutine(fadeInDuration);
+            afterFadeIn?.Invoke();
         }
     }
 }
