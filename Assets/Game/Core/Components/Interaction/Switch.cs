@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Core.Components.Interaction;
-using Core.Utils;
 using Game.Core.Utils;
 using UnityEngine;
 using UnityEngine.Events;
@@ -42,6 +41,10 @@ namespace Game.Core.Components.Interaction {
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
+        public override bool CanInteract() {
+            return !isDisabled;
+        }
+
         protected override void DoInteract() {
             if (isDisabled) {
                 return;
@@ -64,7 +67,10 @@ namespace Game.Core.Components.Interaction {
 
                 if (switchType == SwitchType.SingleUse) {
                     isDisabled = true;
-                    IsHovered = false;
+                    // Immediate visual reset; the resolver will also drop us as a candidate
+                    // next frame (CanInteract becomes false), but we don't want a 1-frame
+                    // yellow flash on the now-disabled sprite.
+                    SetHighlighted(false);
                 }
             }
         }

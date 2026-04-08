@@ -1,5 +1,6 @@
 using System;
 using Game.Features.Characters.Hero;
+using Game.Features.Characters.Hero.Interaction;
 using Game.Features.Characters.Hero.ItemUse;
 using UnityEngine;
 
@@ -11,13 +12,19 @@ namespace Game.Core.Services {
     public class HeroService : MonoBehaviour {
         public PlayerController Controller { get; private set; }
         public ItemUseService ItemUseService { get; private set; }
+        public PlayerInteractionResolver Interaction { get; private set; }
 
         public event Action<PlayerController> OnHeroRegistered;
         public event Action OnHeroUnregistered;
 
-        public void Register(PlayerController controller, ItemUseService itemUseService) {
+        public void Register(
+            PlayerController controller,
+            ItemUseService itemUseService,
+            PlayerInteractionResolver interaction
+        ) {
             Controller = controller;
             ItemUseService = itemUseService;
+            Interaction = interaction;
             OnHeroRegistered?.Invoke(controller);
         }
 
@@ -28,6 +35,7 @@ namespace Game.Core.Services {
 
             Controller = null;
             ItemUseService = null;
+            Interaction = null;
             OnHeroUnregistered?.Invoke();
         }
     }

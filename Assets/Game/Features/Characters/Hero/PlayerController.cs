@@ -1,19 +1,16 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using Core.Audio;
-using Core.Components.Interaction;
 using Core.Utils;
 using Game.Core.Audio;
 using Game.Core.Bootstrap;
 using Game.Core.Components.Collectables;
 using Game.Core.Components.Damage;
 using Game.Core.Components.GameObjects;
-using Game.Core.Components.Interaction;
 using Game.Core.Models.Inventory;
-using Game.Core.Utils;
 using Game.Defs;
 using Game.Features.Characters._Shared;
+using Game.Features.Characters.Hero.Interaction;
 using Game.Features.Characters.Hero.ItemUse;
 using Game.Features.Characters.Parrot;
 using Game.Features.Interactive.Bonfire;
@@ -104,10 +101,6 @@ namespace Game.Features.Characters.Hero {
         private bool isJumped;
         private float jumpSustainTimer;
 
-        // List of all interactable components which are currently available for interaction.
-        private readonly List<InteractableBase> availableInteractables = new();
-        private InteractableBase closestInteractable;
-
         private Transform dustSpawnPoint;
 
         private readonly float jumpInputBufferTime = 0.1f;
@@ -159,7 +152,15 @@ namespace Game.Features.Characters.Hero {
             InitItemUseService();
             InitFromState(state);
 
-            G.Hero.Register(this, itemUseService);
+            var interactionResolver = GetComponent<PlayerInteractionResolver>();
+            if (interactionResolver == null) {
+                Debug.LogWarning(
+                    $"{nameof(PlayerController)}: {nameof(PlayerInteractionResolver)} component is missing on the hero. " +
+                    "World interactions and the bottom-center hint will not work until it is added.",
+                    this
+                );
+            }
+            G.Hero.Register(this, itemUseService, interactionResolver);
         }
 
         private void Start() {
@@ -253,7 +254,6 @@ namespace Game.Features.Characters.Hero {
 
             CheckJump();
             CheckHorizontalMovement();
-            CheckInteraction();
             CheckAttack();
             CheckItemUse();
             CheckInventory();
@@ -539,53 +539,6 @@ namespace Game.Features.Characters.Hero {
             if (Math.Abs(MyRigidbody.velocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
                 Facing.ApplyTo(instance);
-            }
-        }
-
-        #endregion
-
-        #region Interaction
-
-        private void CheckInteraction() {
-            if (!Actions.Interact.WasPerformedThisFrame() || availableInteractables.Count == 0) {
-                return;
-            }
-
-            var closest = GetClosestInteractable();
-            if (closest != null) {
-                closest.Interact();
-            }
-        }
-
-        private void OnTriggerEnter2D(Collider2D other) {
-            if (!other.TryGetComponent<InteractableBase>(out var interactable)) {
-                return;
-            }
-
-            availableInteractables.Add(interactable);
-
-            UpdateClosestInteractable(true);
-        }
-
-        private void OnTriggerExit2D(Collider2D other) {
-            if (other.TryGetComponent<InteractableBase>(out var interactable)) {
-                availableInteractables.Remove(interactable);
-                interactable.IsHovered = false;
-
-                // If there were several interactables, we should update the closest one after we remove
-                // the one for which we exited trigger.
-                UpdateClosestInteractable(true);
-            }
-        }
-
-        private InteractableBase GetClosestInteractable() {
-            return Geometry.FindClosest(availableInteractables, transform.position);
-        }
-
-        private void UpdateClosestInteractable(bool isHovered) {
-            var closest = GetClosestInteractable();
-            if (closest != null) {
-                closest.IsHovered = isHovered;
             }
         }
 

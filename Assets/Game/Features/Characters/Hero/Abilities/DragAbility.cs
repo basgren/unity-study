@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Components.Abilities;
+using Game.Features.Characters.Hero.Interaction;
 using Game.Features.Dynamic;
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace Game.Features.Characters.Hero.Abilities {
-    public class DragAbility : MonoBehaviour {
+    public class DragAbility : MonoBehaviour, IInteractionProvider {
+        private const int BarrelInteractionPriority = 100;
+
         [Header("References")]
         [SerializeField]
         private Rigidbody2D playerRb;
@@ -14,7 +18,7 @@ namespace Game.Features.Characters.Hero.Abilities {
         private Collider2D playerCollider;
 
         [SerializeField]
-        private Transform interactPoint; // точка перед игроком
+        private Transform interactPoint; // GrabPoint child on the Hero prefab
 
         [SerializeField]
         private float interactRadius = 0.5f;
@@ -26,14 +30,26 @@ namespace Game.Features.Characters.Hero.Abilities {
         [SerializeField]
         private float dragSpeedMultiplier = 0.4f;
 
+        [Header("Hint")]
+        [Tooltip("Localized verb shown by the HUD interaction hint when a barrel is the selected target.")]
+        [SerializeField]
+        private LocalizedString actionText;
+
+        public Transform InteractPoint => interactPoint;
+
         private PlayerController player;
         private FixedJoint2D dragJoint;
         private DraggableBarrel draggedBottom;
         private DraggableBarrel draggedTop;
-                
+
         private DraggableBarrel highlightedBarrel;
         private List<DraggableBarrel> barrelsOnTopHighlighted;
-        private const int MaxBarrelsOnTop = 1; 
+        private const int MaxBarrelsOnTop = 1;
+
+        private BarrelDragHandle activeHandle;
+
+        // Pooled candidate adapter — reused frame-to-frame to avoid GC churn in Update.
+        private BarrelDragCandidate cachedCandidate;
 
         private void Awake() {
             player = GetComponent<PlayerController>();
@@ -44,6 +60,8 @@ namespace Game.Features.Characters.Hero.Abilities {
                 return;
             }
 
+            // While a drag is in progress, this component owns the lifecycle.
+            // The modal handle keeps the resolver suspended until StopDragging() runs.
             if (draggedBottom != null) {
                 bool isInteractReleased = player.Actions.Interact.WasReleasedThisFrame();
                 bool isJumpPressed = player.Actions.Jump.WasPressedThisFrame();
@@ -51,34 +69,69 @@ namespace Game.Features.Characters.Hero.Abilities {
                 if (isInteractReleased || isJumpPressed || !player.IsGrounded || !draggedBottom.IsGrounded) {
                     StopDragging();
                 }
-            } else {
-                DraggableBarrel baseBarrel = GetBarrelAtInteractPoint();
-
-                if (highlightedBarrel != baseBarrel) {
-                    if (highlightedBarrel != null) {
-                        highlightedBarrel?.SetHighlighted(BarrelHighlightMode.None);
-                        highlightedBarrel = null;
-                    }
-                    
-                    if (baseBarrel != null) {
-                        highlightedBarrel = baseBarrel;
-                        baseBarrel.SetHighlighted(BarrelHighlightMode.Hover);
-                    }
-                }
-                
-                bool interactWasPressed = player.Actions.Interact.WasPressedThisFrame();
-
-                if (interactWasPressed && player.IsGrounded) {
-                    TryStartDragging();
-                    highlightedBarrel = null;
-                }
             }
         }
-        
-        // very dirty code, as just a proof of concept
-        private void TryStartDragging() {
-            DraggableBarrel baseBarrel = GetBarrelAtInteractPoint();
 
+        public void CollectCandidates(List<IInteractionCandidate> output) {
+            // Defensive: while a drag is active the resolver is suspended anyway.
+            if (activeHandle != null && activeHandle.IsActive) {
+                return;
+            }
+
+            DraggableBarrel barrel = GetBarrelAtInteractPoint();
+            if (barrel == null) {
+                return;
+            }
+
+            if (!player.IsGrounded) {
+                return;
+            }
+
+            if (cachedCandidate == null) {
+                cachedCandidate = new BarrelDragCandidate(this);
+            }
+            cachedCandidate.Refresh(barrel, interactPoint.position);
+            output.Add(cachedCandidate);
+        }
+
+        private void OnCandidateHoverEnter(DraggableBarrel barrel) {
+            if (highlightedBarrel == barrel) {
+                return;
+            }
+
+            if (highlightedBarrel != null) {
+                highlightedBarrel.SetHighlighted(BarrelHighlightMode.None);
+            }
+
+            highlightedBarrel = barrel;
+            if (highlightedBarrel != null) {
+                highlightedBarrel.SetHighlighted(BarrelHighlightMode.Hover);
+            }
+        }
+
+        private void OnCandidateHoverExit(DraggableBarrel barrel) {
+            if (highlightedBarrel == barrel && highlightedBarrel != null) {
+                highlightedBarrel.SetHighlighted(BarrelHighlightMode.None);
+                highlightedBarrel = null;
+            }
+        }
+
+        private IInteractionHandle BeginDrag(DraggableBarrel barrel) {
+            // Clear hover state — the drag itself owns the visual now.
+            highlightedBarrel = null;
+
+            TryStartDragging(barrel);
+
+            if (draggedBottom == null) {
+                return null;
+            }
+
+            activeHandle = new BarrelDragHandle();
+            return activeHandle;
+        }
+
+        // very dirty code, as just a proof of concept
+        private void TryStartDragging(DraggableBarrel baseBarrel) {
             if (baseBarrel == null) {
                 return;
             }
@@ -88,7 +141,7 @@ namespace Game.Features.Characters.Hero.Abilities {
             barrelsOnTopHighlighted = topBarrelsSorted;
             draggedBottom = baseBarrel;
             draggedTop = topBarrelsSorted.Count > 0 ? topBarrelsSorted[0] : null;
-            
+
             draggedBottom.SetHighlighted(BarrelHighlightMode.Interact);
             if (aboveCountSorted <= MaxBarrelsOnTop) {
                 draggedBottom.SetDragged(true);
@@ -99,7 +152,7 @@ namespace Game.Features.Characters.Hero.Abilities {
                 draggedBottom.ConnectToDraggable(draggedTop);
 
                 if (aboveCountSorted <= MaxBarrelsOnTop) {
-                    draggedTop.SetDragged(true);                    
+                    draggedTop.SetDragged(true);
                 }
             }
 
@@ -152,20 +205,29 @@ namespace Game.Features.Characters.Hero.Abilities {
                 draggedTop = null;
             }
 
-            foreach (var barrel in barrelsOnTopHighlighted) {
-                barrel.SetHighlighted(BarrelHighlightMode.None);
+            if (barrelsOnTopHighlighted != null) {
+                foreach (var barrel in barrelsOnTopHighlighted) {
+                    barrel.SetHighlighted(BarrelHighlightMode.None);
+                }
+
+                barrelsOnTopHighlighted.Clear();
             }
-            
-            barrelsOnTopHighlighted.Clear();
 
             if (player != null) {
                 player.SetDragMode(false, 1f);
             }
+
+            // Release the modal handle so the resolver resumes normal candidate
+            // evaluation. Must be the LAST step so any cleanup above runs first.
+            if (activeHandle != null) {
+                activeHandle.Release();
+                activeHandle = null;
+            }
         }
-        
+
         // Returns the number of barrels above up to 2nd level. Also returns a sorted array of barrels above
         // baseBarrel. The first element is the nearest one. Max 2 levels checked,
-        // so all barrels in the output array starting from index 1 are preventing dragging. 
+        // so all barrels in the output array starting from index 1 are preventing dragging.
         private int CountBarrelsAboveSorted(
             DraggableBarrel baseBarrel,
             out List<DraggableBarrel> topBarrelsSorted,
@@ -207,6 +269,39 @@ namespace Game.Features.Characters.Hero.Abilities {
             if (interactPoint != null) {
                 Gizmos.color = Color.cyan;
                 Gizmos.DrawWireSphere(interactPoint.position, interactRadius);
+            }
+        }
+
+        private class BarrelDragCandidate : IInteractionCandidate {
+            private readonly DragAbility ability;
+            private DraggableBarrel barrel;
+            private float sqrDistance;
+
+            public BarrelDragCandidate(DragAbility ability) {
+                this.ability = ability;
+            }
+
+            public void Refresh(DraggableBarrel barrel, Vector3 referencePoint) {
+                this.barrel = barrel;
+                sqrDistance = (barrel.transform.position - referencePoint).sqrMagnitude;
+            }
+
+            public int Priority => BarrelInteractionPriority;
+            public LocalizedString ActionText => ability.actionText;
+            public float SqrDistanceFromGrabPoint => sqrDistance;
+            public bool IsValid => barrel != null && barrel.IsGrounded;
+            public int StableId => barrel != null ? barrel.GetInstanceID() : 0;
+
+            public void OnHoverEnter() {
+                ability.OnCandidateHoverEnter(barrel);
+            }
+
+            public void OnHoverExit() {
+                ability.OnCandidateHoverExit(barrel);
+            }
+
+            public IInteractionHandle Execute() {
+                return ability.BeginDrag(barrel);
             }
         }
     }

@@ -63,6 +63,30 @@ MonoBehaviour:
     m_Key: ui.info.rikko_info
     m_Metadata:
       m_Items: []
+  - m_Id: 1418028064395264
+    m_Key: ui.interaction.grab
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1418078706421760
+    m_Key: ui.interaction.rest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1418104249733120
+    m_Key: ui.interaction.turn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1418205282127872
+    m_Key: ui.interaction.read
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1418238438100992
+    m_Key: ui.interaction.open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1444416548982784
+    m_Key: ui.interaction.talk
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

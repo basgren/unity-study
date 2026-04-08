@@ -70,6 +70,30 @@ MonoBehaviour:
       Best kwoliti!'
     m_Metadata:
       m_Items: []
+  - m_Id: 1418238438100992
+    m_Localized: Open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1418028064395264
+    m_Localized: Grab
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1418078706421760
+    m_Localized: Rest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1418104249733120
+    m_Localized: Turn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1418205282127872
+    m_Localized: Read
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1444416548982784
+    m_Localized: Talk
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

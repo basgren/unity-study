@@ -173,6 +173,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionCollider: {fileID: 7012586469692720898}
+  interactionPriority: 0
+  actionText:
+    m_TableReference:
+      m_TableCollectionName: GUID:c33ce59ea9c687f478f3c689c642afc6
+    m_TableEntryReference:
+      m_KeyId: 1418238438100992
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   onInteract:
     m_PersistentCalls:
       m_Calls: []
@@ -184,6 +194,9 @@ MonoBehaviour:
       m_Calls: []
   activationDelay: 0
   isDisabled: 0
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &8713444622480048511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,6 +295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   saveId: 
+  skipSave: 0
   tier: 1
 --- !u!114 &6700416649484809344
 MonoBehaviour:
