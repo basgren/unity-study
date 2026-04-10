@@ -17,6 +17,11 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 4eaa5f434dfd8494c921c7b3edd02ed4
   m_SerializeEntries:
+  - m_GUID: 199e22bf19b37964597bcd43518a730d
+    m_Address: Assets/Game/L10n/Shops Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 58070936bfb01de4f9cfb75929166653
     m_Address: Assets/Game/L10n/Dialogs Shared Data.asset
     m_ReadOnly: 1

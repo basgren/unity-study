@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Shops_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 199e22bf19b37964597bcd43518a730d, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 125821734912
+    m_Localized: "Pulled it from the sship wre\u0441k. Shiny, sharpy, and mighty
+      pershuasive."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 308169101312
+    m_Localized: "Don\u2019ashk me what it ish. A mashk\u2019s a mashk. But'u hold
+      it, you shee it\u2019sh no ordinary pieshe."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 401156820992
+    m_Localized: "Troubles\u0440ome bird. Very! But pretty, bold, and wid a beak
+      sharp lika blade - not give it awayee for free."
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

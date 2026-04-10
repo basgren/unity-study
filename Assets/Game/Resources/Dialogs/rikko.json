@@ -14,14 +14,14 @@
           "textKey": "dialog.rikko.greeting.choice_shop",
           "actions": [{ "type": "OpenShop", "stringParam": "RikkoShopDef" }]
         },
-        { "textKey": "dialog.rikko.greeting.choice_02" }
+        { "textKey": "dialog.rikko.greeting.choice_02", "nextNodeId": "farewell" }
       ]
     },
     {
       "nodeId": "farewell",
       "speaker": "rikko",
       "lines": [
-        { "textKey": "dialog.rikko.farewell.line_01" }
+        { "textKey": "dialog.rikko.farewell.line_01", "soundId": "speech3" }
       ],
       "choices": []
     }

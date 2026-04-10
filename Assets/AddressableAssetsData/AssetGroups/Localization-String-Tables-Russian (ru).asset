@@ -24,6 +24,12 @@ MonoBehaviour:
     - Locale-ru
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae0cae09975330a40a3ce7b1203aaade
+    m_Address: Shops_ru
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ba74fce066d4abd43b3df5604ad85586
     m_Address: Dialogs_ru
     m_ReadOnly: 1

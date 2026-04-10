@@ -19,9 +19,9 @@ MonoBehaviour:
     maxCount: 5
     description:
       m_TableReference:
-        m_TableCollectionName: 
+        m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
       m_TableEntryReference:
-        m_KeyId: 0
+        m_KeyId: 125821734912
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0
@@ -32,9 +32,9 @@ MonoBehaviour:
     maxCount: 1
     description:
       m_TableReference:
-        m_TableCollectionName: 
+        m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
       m_TableEntryReference:
-        m_KeyId: 0
+        m_KeyId: 401156820992
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0
@@ -45,9 +45,9 @@ MonoBehaviour:
     maxCount: 1
     description:
       m_TableReference:
-        m_TableCollectionName: 
+        m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
       m_TableEntryReference:
-        m_KeyId: 0
+        m_KeyId: 308169101312
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0

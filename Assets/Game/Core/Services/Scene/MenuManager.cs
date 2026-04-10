@@ -36,6 +36,21 @@ namespace Game.Core.Services.Scene {
         private int TopIndex => windowEntries.Count - 1;
 
         /// <summary>
+        /// Fires when the first window opens and UI mode is entered.
+        /// </summary>
+        public event Action OnMenuOpened;
+
+        /// <summary>
+        /// Fires when all windows are closed and gameplay mode is restored.
+        /// </summary>
+        public event Action OnMenuClosed;
+
+        /// <summary>
+        /// The canvas used to host menu windows. Lazily created.
+        /// </summary>
+        public Canvas Canvas => ResolveMenuCanvas();
+
+        /// <summary>
         /// Gets whether at least one valid window is currently managed/open.
         /// </summary>
         public bool IsAnyWindowOpen {
@@ -223,6 +238,7 @@ namespace Game.Core.Services.Scene {
                 EnterMenuMode();
                 windowEntries.Add(newEntry);
                 window.Open(newEntry.LastSelected);
+
                 ApplyPauseState();
                 return;
             }
@@ -234,6 +250,7 @@ namespace Game.Core.Services.Scene {
             topEntry.Window.Close(() => {
                 windowEntries.Add(newEntry);
                 window.Open(newEntry.LastSelected);
+
                 ApplyPauseState();
                 isTransitionInProgress = false;
             });
@@ -292,6 +309,8 @@ namespace Game.Core.Services.Scene {
                 menuCanvas = uiCanvas.AddComponent<Canvas>();
                 menuCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
             }
+
+            menuCanvas.sortingOrder = 100;
 
             if (uiCanvas.GetComponent<CanvasScaler>() == null) {
                 var scaler = uiCanvas.AddComponent<CanvasScaler>();
@@ -352,11 +371,13 @@ namespace Game.Core.Services.Scene {
 
             if (removedAny && windowEntries.Count == 0 && !isTransitionInProgress) {
                 ExitMenuMode();
+
                 return;
             }
 
             if (removedAny) {
                 ApplyPauseState();
+
             }
         }
 
@@ -415,6 +436,7 @@ namespace Game.Core.Services.Scene {
             CloseAndDestroy(closingEntry, () => {
                 RemoveEntry(closingEntry);
 
+
                 if (restorePreviousWindow) {
                     if (TryGetTopEntry(out var nextEntry)) {
                         nextEntry.Window.Open(nextEntry.LastSelected);
@@ -454,6 +476,8 @@ namespace Game.Core.Services.Scene {
         }
 
         private void EnterMenuMode() {
+            OnMenuOpened?.Invoke();
+
             if (G.Input == null) {
                 return;
             }
@@ -463,6 +487,8 @@ namespace Game.Core.Services.Scene {
         }
 
         private void ExitMenuMode() {
+            OnMenuClosed?.Invoke();
+
             Time.timeScale = 1f;
 
             if (G.Input == null) {
