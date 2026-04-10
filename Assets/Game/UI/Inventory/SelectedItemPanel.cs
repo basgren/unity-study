@@ -3,6 +3,7 @@ using Game.Core.Bootstrap;
 using Game.Core.Models.Inventory;
 using Game.Features.Characters.Hero.ItemUse;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Game.UI.Inventory {
     public enum SelectedPanelMode {
@@ -15,9 +16,13 @@ namespace Game.UI.Inventory {
         private BackpackItemCtrl itemBox;
 
         [SerializeField]
+        private KeyHint keyHint;
+
+        [SerializeField]
         private SelectedPanelMode mode;
 
         private ISelectablePanelModel panelModel;
+        private InputAction action;
 
         private void Awake() {
             var state = G.Game.playerState;
@@ -28,6 +33,13 @@ namespace Game.UI.Inventory {
             panelModel.ItemsUpdated += OnItemsUpdated;
             panelModel.SelectionUpdated += OnSelectionUpdated;
             UpdateItem();
+
+            action = mode == SelectedPanelMode.Item
+                ? G.Input.Player.UseItem
+                : G.Input.Player.UsePerk;
+
+            G.Input.OnSchemeChanged += OnSchemeChanged;
+            RefreshKeyHint();
         }
 
         private void Update() {
@@ -37,6 +49,10 @@ namespace Game.UI.Inventory {
         private void OnDestroy() {
             panelModel.ItemsUpdated -= OnItemsUpdated;
             panelModel.SelectionUpdated -= OnSelectionUpdated;
+
+            if (G.Input != null) {
+                G.Input.OnSchemeChanged -= OnSchemeChanged;
+            }
         }
 
         private void OnSelectionUpdated(InventoryItem currentItem, InventoryItem prevItem) {
@@ -62,6 +78,18 @@ namespace Game.UI.Inventory {
             }
 
             itemBox.SetCooldownProgress(useService.GetCooldownProgress(selected.id));
+        }
+
+        private void OnSchemeChanged() {
+            RefreshKeyHint();
+        }
+
+        private void RefreshKeyHint() {
+            if (keyHint == null || G.Input == null) {
+                return;
+            }
+
+            keyHint.SetFromAction(action, G.Input.CurrentSchemeBindingGroup);
         }
 
         private ItemUseService GetUseService() {

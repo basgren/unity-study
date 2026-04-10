@@ -69,18 +69,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SwitchPerk",
+                    "name": "UsePerk",
                     "type": "Button",
-                    "id": "a7c2e1f0-3b5d-4a8e-9c6f-1d2e3f4a5b6c",
+                    "id": "b8d3f2a1-4c6e-5b9f-0d7a-2e3f4a5b6c7d",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "UsePerk",
+                    "name": "SwitchPerk",
                     "type": "Button",
-                    "id": "b8d3f2a1-4c6e-5b9f-0d7a-2e3f4a5b6c7d",
+                    "id": "a7c2e1f0-3b5d-4a8e-9c6f-1d2e3f4a5b6c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",

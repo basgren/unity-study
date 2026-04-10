@@ -157,18 +157,18 @@ namespace System
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SwitchPerk"",
+                    ""name"": ""UsePerk"",
                     ""type"": ""Button"",
-                    ""id"": ""a7c2e1f0-3b5d-4a8e-9c6f-1d2e3f4a5b6c"",
+                    ""id"": ""b8d3f2a1-4c6e-5b9f-0d7a-2e3f4a5b6c7d"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""UsePerk"",
+                    ""name"": ""SwitchPerk"",
                     ""type"": ""Button"",
-                    ""id"": ""b8d3f2a1-4c6e-5b9f-0d7a-2e3f4a5b6c7d"",
+                    ""id"": ""a7c2e1f0-3b5d-4a8e-9c6f-1d2e3f4a5b6c"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -782,8 +782,8 @@ namespace System
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             m_Player_UseItem = m_Player.FindAction("UseItem", throwIfNotFound: true);
             m_Player_SwitchItem = m_Player.FindAction("SwitchItem", throwIfNotFound: true);
-            m_Player_SwitchPerk = m_Player.FindAction("SwitchPerk", throwIfNotFound: true);
             m_Player_UsePerk = m_Player.FindAction("UsePerk", throwIfNotFound: true);
+            m_Player_SwitchPerk = m_Player.FindAction("SwitchPerk", throwIfNotFound: true);
             m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -882,8 +882,8 @@ namespace System
         private readonly InputAction m_Player_Attack;
         private readonly InputAction m_Player_UseItem;
         private readonly InputAction m_Player_SwitchItem;
-        private readonly InputAction m_Player_SwitchPerk;
         private readonly InputAction m_Player_UsePerk;
+        private readonly InputAction m_Player_SwitchPerk;
         private readonly InputAction m_Player_Inventory;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
@@ -925,13 +925,13 @@ namespace System
             /// </summary>
             public InputAction @SwitchItem => m_Wrapper.m_Player_SwitchItem;
             /// <summary>
-            /// Provides access to the underlying input action "Player/SwitchPerk".
-            /// </summary>
-            public InputAction @SwitchPerk => m_Wrapper.m_Player_SwitchPerk;
-            /// <summary>
             /// Provides access to the underlying input action "Player/UsePerk".
             /// </summary>
             public InputAction @UsePerk => m_Wrapper.m_Player_UsePerk;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/SwitchPerk".
+            /// </summary>
+            public InputAction @SwitchPerk => m_Wrapper.m_Player_SwitchPerk;
             /// <summary>
             /// Provides access to the underlying input action "Player/Inventory".
             /// </summary>
@@ -983,12 +983,12 @@ namespace System
                 @SwitchItem.started += instance.OnSwitchItem;
                 @SwitchItem.performed += instance.OnSwitchItem;
                 @SwitchItem.canceled += instance.OnSwitchItem;
-                @SwitchPerk.started += instance.OnSwitchPerk;
-                @SwitchPerk.performed += instance.OnSwitchPerk;
-                @SwitchPerk.canceled += instance.OnSwitchPerk;
                 @UsePerk.started += instance.OnUsePerk;
                 @UsePerk.performed += instance.OnUsePerk;
                 @UsePerk.canceled += instance.OnUsePerk;
+                @SwitchPerk.started += instance.OnSwitchPerk;
+                @SwitchPerk.performed += instance.OnSwitchPerk;
+                @SwitchPerk.canceled += instance.OnSwitchPerk;
                 @Inventory.started += instance.OnInventory;
                 @Inventory.performed += instance.OnInventory;
                 @Inventory.canceled += instance.OnInventory;
@@ -1024,12 +1024,12 @@ namespace System
                 @SwitchItem.started -= instance.OnSwitchItem;
                 @SwitchItem.performed -= instance.OnSwitchItem;
                 @SwitchItem.canceled -= instance.OnSwitchItem;
-                @SwitchPerk.started -= instance.OnSwitchPerk;
-                @SwitchPerk.performed -= instance.OnSwitchPerk;
-                @SwitchPerk.canceled -= instance.OnSwitchPerk;
                 @UsePerk.started -= instance.OnUsePerk;
                 @UsePerk.performed -= instance.OnUsePerk;
                 @UsePerk.canceled -= instance.OnUsePerk;
+                @SwitchPerk.started -= instance.OnSwitchPerk;
+                @SwitchPerk.performed -= instance.OnSwitchPerk;
+                @SwitchPerk.canceled -= instance.OnSwitchPerk;
                 @Inventory.started -= instance.OnInventory;
                 @Inventory.performed -= instance.OnInventory;
                 @Inventory.canceled -= instance.OnInventory;
@@ -1311,19 +1311,19 @@ namespace System
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSwitchItem(InputAction.CallbackContext context);
             /// <summary>
-            /// Method invoked when associated input action "SwitchPerk" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-            /// </summary>
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-            void OnSwitchPerk(InputAction.CallbackContext context);
-            /// <summary>
             /// Method invoked when associated input action "UsePerk" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
             /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnUsePerk(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "SwitchPerk" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSwitchPerk(InputAction.CallbackContext context);
             /// <summary>
             /// Method invoked when associated input action "Inventory" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
