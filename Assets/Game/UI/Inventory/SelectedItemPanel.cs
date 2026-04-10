@@ -1,19 +1,32 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Game.Core.Bootstrap;
 using Game.Core.Models.Inventory;
+using Game.Features.Characters.Hero.ItemUse;
 using UnityEngine;
 
 namespace Game.UI.Inventory {
+    public enum SelectedPanelMode {
+        Item,
+        Perk,
+    }
+
     public class SelectedItemPanel : MonoBehaviour {
         [SerializeField]
         private BackpackItemCtrl itemBox;
 
-        private BackpackPanelModel backpack;
+        [SerializeField]
+        private SelectedPanelMode mode;
+
+        private ISelectablePanelModel panelModel;
 
         private void Awake() {
-            backpack = G.Game.playerState.BackpackPanelModel;
-            backpack.ItemsUpdated += OnItemsUpdated;
-            backpack.SelectionUpdated += OnSelectionUpdated;
+            var state = G.Game.playerState;
+            panelModel = mode == SelectedPanelMode.Item
+                ? state.BackpackPanelModel
+                : state.PerkPanelModel;
+
+            panelModel.ItemsUpdated += OnItemsUpdated;
+            panelModel.SelectionUpdated += OnSelectionUpdated;
             UpdateItem();
         }
 
@@ -22,8 +35,8 @@ namespace Game.UI.Inventory {
         }
 
         private void OnDestroy() {
-            backpack.ItemsUpdated -= OnItemsUpdated;
-            backpack.SelectionUpdated -= OnSelectionUpdated;
+            panelModel.ItemsUpdated -= OnItemsUpdated;
+            panelModel.SelectionUpdated -= OnSelectionUpdated;
         }
 
         private void OnSelectionUpdated(InventoryItem currentItem, InventoryItem prevItem) {
@@ -35,19 +48,26 @@ namespace Game.UI.Inventory {
         }
 
         private void UpdateItem() {
-            var currentItem = backpack.SelectedItem;
+            var currentItem = panelModel.SelectedItem;
             itemBox.SetItem(currentItem);
         }
 
         private void UpdateCooldown() {
-            var selected = backpack.SelectedItem;
-            var useService = G.Hero.ItemUseService;
+            var selected = panelModel.SelectedItem;
+            var useService = GetUseService();
+
             if (selected == null || useService == null) {
                 itemBox.SetCooldownProgress(1f);
                 return;
             }
 
             itemBox.SetCooldownProgress(useService.GetCooldownProgress(selected.id));
+        }
+
+        private ItemUseService GetUseService() {
+            return mode == SelectedPanelMode.Item
+                ? G.Hero.ItemUseService
+                : G.Hero.PerkUseService;
         }
     }
 }

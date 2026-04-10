@@ -12,6 +12,7 @@ namespace Game.Core.Services {
     public class HeroService : MonoBehaviour {
         public PlayerController Controller { get; private set; }
         public ItemUseService ItemUseService { get; private set; }
+        public ItemUseService PerkUseService { get; private set; }
         public PlayerInteractionResolver Interaction { get; private set; }
 
         public event Action<PlayerController> OnHeroRegistered;
@@ -20,10 +21,12 @@ namespace Game.Core.Services {
         public void Register(
             PlayerController controller,
             ItemUseService itemUseService,
+            ItemUseService perkUseService,
             PlayerInteractionResolver interaction
         ) {
             Controller = controller;
             ItemUseService = itemUseService;
+            PerkUseService = perkUseService;
             Interaction = interaction;
             OnHeroRegistered?.Invoke(controller);
         }
@@ -35,6 +38,7 @@ namespace Game.Core.Services {
 
             Controller = null;
             ItemUseService = null;
+            PerkUseService = null;
             Interaction = null;
             OnHeroUnregistered?.Invoke();
         }

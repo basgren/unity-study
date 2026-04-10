@@ -59,6 +59,10 @@ MonoBehaviour:
     m_Key: dialog.rikko.farewell.line_01
     m_Metadata:
       m_Items: []
+  - m_Id: 1853243752665088
+    m_Key: dialog.rikko.greeting.choice_shop
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Core.Audio;
 using Game.Core.Bootstrap;
 using Game.Core.Models.Dialog;
 using Game.Features.Characters.Hero;
+using Game.UI.ShopInventory;
 using UnityEngine;
 
 namespace Game.Core.Services.Dialog {
@@ -44,6 +46,7 @@ namespace Game.Core.Services.Dialog {
         private bool isCurrentLineFullyRevealed;
         private bool showingChoices;
         private IAudioLoopHandle activeSpeechSound;
+        private string pendingShopId;
 
         public bool IsActive => currentDialog != null;
         public DialogViewState CurrentViewState => currentViewState;
@@ -119,6 +122,26 @@ namespace Game.Core.Services.Dialog {
             isCurrentLineFullyRevealed = false;
             showingChoices = false;
             SetViewState(DialogViewMode.Hidden, null, null, null);
+
+            if (pendingShopId != null) {
+                var shopId = pendingShopId;
+                pendingShopId = null;
+                StartCoroutine(OpenShopDeferred(shopId));
+            }
+        }
+
+        private IEnumerator OpenShopDeferred(string shopId) {
+            // Wait until the dialog panel close transition finishes and the menu
+            // stack is clear. MenuManager.OpenMenu returns null while a transition
+            // is in progress, so we must wait it out.
+            while (G.Menu.IsAnyWindowOpen) {
+                yield return null;
+            }
+
+            var shop = G.Menu.OpenMenu(G.Config.ShopPanel);
+            if (shop is ShopInventory shopInventory) {
+                shopInventory.LoadShop(shopId);
+            }
         }
 
         private void EnterNode(string nodeId) {
@@ -316,7 +339,7 @@ namespace Game.Core.Services.Dialog {
             }
         }
 
-        private static void ExecuteActions(DialogAction[] actions) {
+        private void ExecuteActions(DialogAction[] actions) {
             if (actions == null) {
                 return;
             }
@@ -328,7 +351,7 @@ namespace Game.Core.Services.Dialog {
             }
         }
 
-        private static void ExecuteAction(DialogAction action, PlayerState state) {
+        private void ExecuteAction(DialogAction action, PlayerState state) {
             switch (action.type) {
                 case DialogActionType.GiveItem:
                     state.InventoryModel.Add(action.stringParam, action.intParam);
@@ -344,6 +367,10 @@ namespace Game.Core.Services.Dialog {
 
                 case DialogActionType.ClearFlag:
                     state.ClearFlag(action.stringParam);
+                    break;
+
+                case DialogActionType.OpenShop:
+                    pendingShopId = action.stringParam;
                     break;
 
                 default:

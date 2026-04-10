@@ -35,9 +35,14 @@ MonoBehaviour:
     uid: 5eaee4b293594a538cacea192078ef1d
   - id: Parrot
     icon: {fileID: 21300000, guid: 862cc04f16267e843b5deff8a6289e6b, type: 3}
-    type: 1
+    type: 4
     cooldown: 20
     uid: eb2073f0accb4ca7ab214d8d22fcff0c
+  - id: ProtectionMask
+    icon: {fileID: -330045518, guid: 70f7ee5499b943240bbc77a1794230c4, type: 3}
+    type: 4
+    cooldown: 0
+    uid: 926368c0360747ee9ccfccbd25547e5e
   generateCSharpClass: 1
   csharpClassFile: Assets/Game/Defs/ItemIds.cs
   csharpClassName: ItemIds

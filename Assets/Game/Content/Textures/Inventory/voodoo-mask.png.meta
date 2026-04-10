@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2bdc18bb51d1a164b97db6f5fe63f564
+guid: 70f7ee5499b943240bbc77a1794230c4
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,13 +43,13 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 9
+  alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 32
-  spriteBorder: {x: 6, y: 6, z: 6, w: 6}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -95,18 +95,62 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: voodoo-mask
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acaf6aabc3f511744b6a6879815fd436
+      internalID: -330045518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: voodoo-mask-active
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 0
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 839d7f9ac611fd64183e403453c5b622
+      internalID: -1519899180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      voodoo-mask: -330045518
+      voodoo-mask-active: -1519899180
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -64,6 +64,10 @@ MonoBehaviour:
     m_Localized: Suit yershelf, landwalker.
     m_Metadata:
       m_Items: []
+  - m_Id: 1853243752665088
+    m_Localized: Show me the goods
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

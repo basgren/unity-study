@@ -27,6 +27,8 @@ MonoBehaviour:
     type: 3}
   DialogPanel: {fileID: 6452827198061851914, guid: 655108a08afd1894ebb4cb5c4f8f217d,
     type: 3}
+  ShopPanel: {fileID: 3862653807244111931, guid: cb8cead1482c35d47a176f319f66d530,
+    type: 3}
   eventSystem: {fileID: 148805550643421190, guid: 88f8a27aef0d544489c8eb0aff769c02,
     type: 3}
   SceneCatalog: {fileID: 11400000, guid: a3f9cedcb3d4f074db420c3534bc9ceb, type: 2}

@@ -148,7 +148,7 @@ namespace System
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""NextItem"",
+                    ""name"": ""SwitchItem"",
                     ""type"": ""Button"",
                     ""id"": ""5bc5da35-94d2-4164-bff6-ded949ee1b16"",
                     ""expectedControlType"": """",
@@ -157,9 +157,18 @@ namespace System
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""PrevItem"",
+                    ""name"": ""SwitchPerk"",
                     ""type"": ""Button"",
-                    ""id"": ""1e60090a-0e85-4ae4-a5ab-fbfde4bcd75a"",
+                    ""id"": ""a7c2e1f0-3b5d-4a8e-9c6f-1d2e3f4a5b6c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UsePerk"",
+                    ""type"": ""Button"",
+                    ""id"": ""b8d3f2a1-4c6e-5b9f-0d7a-2e3f4a5b6c7d"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -355,11 +364,11 @@ namespace System
                 {
                     ""name"": """",
                     ""id"": ""91735a25-9a01-4709-ac6f-51aeddabc120"",
-                    ""path"": ""<Keyboard>/3"",
+                    ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""NextItem"",
+                    ""action"": ""SwitchItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -370,29 +379,51 @@ namespace System
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
-                    ""action"": ""NextItem"",
+                    ""action"": ""SwitchItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""9eea8015-9527-4803-ab18-c30930ebb819"",
-                    ""path"": ""<Keyboard>/1"",
+                    ""id"": ""c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f"",
+                    ""path"": ""<Keyboard>/2"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""PrevItem"",
+                    ""action"": ""SwitchPerk"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""61d9a77d-c692-4a75-a409-f98942e44393"",
+                    ""id"": ""d2e3f4a5-6b7c-8d9e-0f1a-2b3c4d5e6f7a"",
                     ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
-                    ""action"": ""PrevItem"",
+                    ""action"": ""SwitchPerk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e3f4a5b6-7c8d-9e0f-1a2b-3c4d5e6f7a8b"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""UsePerk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f4a5b6c7-8d9e-0f1a-2b3c-4d5e6f7a8b9c"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""UsePerk"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -750,8 +781,9 @@ namespace System
             m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             m_Player_UseItem = m_Player.FindAction("UseItem", throwIfNotFound: true);
-            m_Player_NextItem = m_Player.FindAction("NextItem", throwIfNotFound: true);
-            m_Player_PrevItem = m_Player.FindAction("PrevItem", throwIfNotFound: true);
+            m_Player_SwitchItem = m_Player.FindAction("SwitchItem", throwIfNotFound: true);
+            m_Player_SwitchPerk = m_Player.FindAction("SwitchPerk", throwIfNotFound: true);
+            m_Player_UsePerk = m_Player.FindAction("UsePerk", throwIfNotFound: true);
             m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -849,8 +881,9 @@ namespace System
         private readonly InputAction m_Player_Pause;
         private readonly InputAction m_Player_Attack;
         private readonly InputAction m_Player_UseItem;
-        private readonly InputAction m_Player_NextItem;
-        private readonly InputAction m_Player_PrevItem;
+        private readonly InputAction m_Player_SwitchItem;
+        private readonly InputAction m_Player_SwitchPerk;
+        private readonly InputAction m_Player_UsePerk;
         private readonly InputAction m_Player_Inventory;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
@@ -888,13 +921,17 @@ namespace System
             /// </summary>
             public InputAction @UseItem => m_Wrapper.m_Player_UseItem;
             /// <summary>
-            /// Provides access to the underlying input action "Player/NextItem".
+            /// Provides access to the underlying input action "Player/SwitchItem".
             /// </summary>
-            public InputAction @NextItem => m_Wrapper.m_Player_NextItem;
+            public InputAction @SwitchItem => m_Wrapper.m_Player_SwitchItem;
             /// <summary>
-            /// Provides access to the underlying input action "Player/PrevItem".
+            /// Provides access to the underlying input action "Player/SwitchPerk".
             /// </summary>
-            public InputAction @PrevItem => m_Wrapper.m_Player_PrevItem;
+            public InputAction @SwitchPerk => m_Wrapper.m_Player_SwitchPerk;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/UsePerk".
+            /// </summary>
+            public InputAction @UsePerk => m_Wrapper.m_Player_UsePerk;
             /// <summary>
             /// Provides access to the underlying input action "Player/Inventory".
             /// </summary>
@@ -943,12 +980,15 @@ namespace System
                 @UseItem.started += instance.OnUseItem;
                 @UseItem.performed += instance.OnUseItem;
                 @UseItem.canceled += instance.OnUseItem;
-                @NextItem.started += instance.OnNextItem;
-                @NextItem.performed += instance.OnNextItem;
-                @NextItem.canceled += instance.OnNextItem;
-                @PrevItem.started += instance.OnPrevItem;
-                @PrevItem.performed += instance.OnPrevItem;
-                @PrevItem.canceled += instance.OnPrevItem;
+                @SwitchItem.started += instance.OnSwitchItem;
+                @SwitchItem.performed += instance.OnSwitchItem;
+                @SwitchItem.canceled += instance.OnSwitchItem;
+                @SwitchPerk.started += instance.OnSwitchPerk;
+                @SwitchPerk.performed += instance.OnSwitchPerk;
+                @SwitchPerk.canceled += instance.OnSwitchPerk;
+                @UsePerk.started += instance.OnUsePerk;
+                @UsePerk.performed += instance.OnUsePerk;
+                @UsePerk.canceled += instance.OnUsePerk;
                 @Inventory.started += instance.OnInventory;
                 @Inventory.performed += instance.OnInventory;
                 @Inventory.canceled += instance.OnInventory;
@@ -981,12 +1021,15 @@ namespace System
                 @UseItem.started -= instance.OnUseItem;
                 @UseItem.performed -= instance.OnUseItem;
                 @UseItem.canceled -= instance.OnUseItem;
-                @NextItem.started -= instance.OnNextItem;
-                @NextItem.performed -= instance.OnNextItem;
-                @NextItem.canceled -= instance.OnNextItem;
-                @PrevItem.started -= instance.OnPrevItem;
-                @PrevItem.performed -= instance.OnPrevItem;
-                @PrevItem.canceled -= instance.OnPrevItem;
+                @SwitchItem.started -= instance.OnSwitchItem;
+                @SwitchItem.performed -= instance.OnSwitchItem;
+                @SwitchItem.canceled -= instance.OnSwitchItem;
+                @SwitchPerk.started -= instance.OnSwitchPerk;
+                @SwitchPerk.performed -= instance.OnSwitchPerk;
+                @SwitchPerk.canceled -= instance.OnSwitchPerk;
+                @UsePerk.started -= instance.OnUsePerk;
+                @UsePerk.performed -= instance.OnUsePerk;
+                @UsePerk.canceled -= instance.OnUsePerk;
                 @Inventory.started -= instance.OnInventory;
                 @Inventory.performed -= instance.OnInventory;
                 @Inventory.canceled -= instance.OnInventory;
@@ -1261,19 +1304,26 @@ namespace System
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnUseItem(InputAction.CallbackContext context);
             /// <summary>
-            /// Method invoked when associated input action "NextItem" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// Method invoked when associated input action "SwitchItem" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
             /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-            void OnNextItem(InputAction.CallbackContext context);
+            void OnSwitchItem(InputAction.CallbackContext context);
             /// <summary>
-            /// Method invoked when associated input action "PrevItem" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// Method invoked when associated input action "SwitchPerk" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
             /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-            void OnPrevItem(InputAction.CallbackContext context);
+            void OnSwitchPerk(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "UsePerk" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnUsePerk(InputAction.CallbackContext context);
             /// <summary>
             /// Method invoked when associated input action "Inventory" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>

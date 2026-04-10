@@ -6,6 +6,7 @@ namespace Game.Core.Models.Dialog {
         RemoveItem,
         SetFlag,
         ClearFlag,
+        OpenShop,
     }
 
     [Serializable]

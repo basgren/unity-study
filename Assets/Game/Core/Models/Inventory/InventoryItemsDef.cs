@@ -65,6 +65,9 @@ namespace Game.Core.Models.Inventory {
         
         // Used instantly on pick up (like fruits which restore health on pickup), not added to the backpack.
         Instant,
+
+        // Activatable perk (mask, parrot, etc.). Shown in a separate perk panel, not the backpack.
+        Perk,
     }
 
     [Serializable]

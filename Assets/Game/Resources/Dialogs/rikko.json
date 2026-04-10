@@ -10,50 +10,12 @@
         { "textKey": "dialog.rikko.greeting.line_02", "soundId": "speech2" }
       ],
       "choices": [
-        { "textKey": "dialog.rikko.greeting.choice_01", "nextNodeId": "offer" },
+        {
+          "textKey": "dialog.rikko.greeting.choice_shop",
+          "actions": [{ "type": "OpenShop", "stringParam": "RikkoShopDef" }]
+        },
         { "textKey": "dialog.rikko.greeting.choice_02" }
       ]
-    },
-    {
-      "nodeId": "offer",
-      "speaker": "rikko",
-      "lines": [
-        { "textKey": "dialog.rikko.offer.line_01", "soundId": "speech1" }
-      ],
-      "choices": [
-        {
-          "textKey": "dialog.rikko.offer.choice_buy",
-          "nextNodeId": "buy_sword",
-          "conditions": [{ "type": "HasItem", "stringParam": "Coin", "intParam": 10 }],
-          "actions": [
-            { "type": "RemoveItem", "stringParam": "Coin", "intParam": 10 },
-            { "type": "GiveItem", "stringParam": "Sword", "intParam": 1 }
-          ]
-        },
-        {
-          "textKey": "dialog.rikko.offer.choice_buy",
-          "nextNodeId": "no_coins",
-          "conditions": [{ "type": "DoesNotHaveItem", "stringParam": "Coin", "intParam": 10 }]
-        },
-        { "textKey": "dialog.rikko.offer.choice_decline", "nextNodeId": "farewell" }
-      ]
-    },
-    {
-      "nodeId": "buy_sword",
-      "speaker": "rikko",
-      "lines": [
-        { "textKey": "dialog.rikko.buy_sword.line_01", "soundId": "speech2" }
-      ],
-      "onEnterActions": [{ "type": "SetFlag", "stringParam": "bought_sword" }],
-      "choices": []
-    },
-    {
-      "nodeId": "no_coins",
-      "speaker": "rikko",
-      "lines": [
-        { "textKey": "dialog.rikko.no_coins.line_01", "soundId": "speech3" }
-      ],
-      "choices": []
     },
     {
       "nodeId": "farewell",

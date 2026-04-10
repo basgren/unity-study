@@ -27,6 +27,7 @@ namespace Game.Configs {
         [Header("In-Game UI")]
         public MenuWindow InventoryPanel;
         public MenuWindow DialogPanel;
+        public MenuWindow ShopPanel;
         
         [Header("System")]
         public EventSystem eventSystem;

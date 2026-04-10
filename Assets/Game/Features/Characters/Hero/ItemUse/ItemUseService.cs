@@ -6,12 +6,12 @@ using UnityEngine;
 
 namespace Game.Features.Characters.Hero.ItemUse {
     public class ItemUseService {
-        private readonly BackpackPanelModel backpackModel;
+        private readonly ISelectablePanelModel panelModel;
         private readonly Dictionary<ItemId, IItemUseStrategy> strategies = new();
         private readonly Dictionary<ItemId, TinyTimer> cooldowns = new();
 
-        public ItemUseService(BackpackPanelModel backpackModel) {
-            this.backpackModel = backpackModel;
+        public ItemUseService(ISelectablePanelModel panelModel) {
+            this.panelModel = panelModel;
         }
 
         public void Register(IItemUseStrategy strategy) {
@@ -34,7 +34,7 @@ namespace Game.Features.Characters.Hero.ItemUse {
         }
 
         public void TryUseSelectedItem() {
-            var selected = backpackModel.SelectedItem;
+            var selected = panelModel.SelectedItem;
             if (selected == null) {
                 Debug.Log("No item selected.");
                 return;

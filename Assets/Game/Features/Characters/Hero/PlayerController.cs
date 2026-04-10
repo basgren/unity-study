@@ -127,6 +127,7 @@ namespace Game.Features.Characters.Hero {
 
         private PlayerState state;
         private ItemUseService itemUseService;
+        private ItemUseService perkUseService;
         private HeroAttackType lastAttackType = HeroAttackType.Pierce;
 
         protected override void Awake() {
@@ -160,7 +161,7 @@ namespace Game.Features.Characters.Hero {
                     this
                 );
             }
-            G.Hero.Register(this, itemUseService, interactionResolver);
+            G.Hero.Register(this, itemUseService, perkUseService, interactionResolver);
         }
 
         private void Start() {
@@ -204,7 +205,10 @@ namespace Game.Features.Characters.Hero {
             itemUseService.Register(new SmallHealPotionStrategy(this));
             itemUseService.Register(new MediumHealPotionStrategy(this));
             itemUseService.Register(new SwordThrowStrategy(this));
-            itemUseService.Register(new ParrotDeployStrategy(this, parrotPrefab));
+
+            perkUseService = new ItemUseService(state.PerkPanelModel);
+            perkUseService.Register(new ProtectionMaskStrategy());
+            perkUseService.Register(new ParrotDeployStrategy(this, parrotPrefab));
         }
 
         private void UpdateAnimatorController() {
@@ -236,6 +240,7 @@ namespace Game.Features.Characters.Hero {
             base.Update();
 
             itemUseService.Update(Time.deltaTime);
+            perkUseService.Update(Time.deltaTime);
 
             // TODO: investigate proper solution for reading input and reacting on them. Main points:
             //   * inputs are checked before `Update` event (while it may be configured to be checked
@@ -256,18 +261,19 @@ namespace Game.Features.Characters.Hero {
             CheckHorizontalMovement();
             CheckAttack();
             CheckItemUse();
+            CheckPerkUse();
             CheckInventory();
         }
 
         private void CheckInventory() {
-            if (Actions.NextItem.WasPressedThisFrame()) {
+            if (Actions.SwitchItem.WasPressedThisFrame()) {
                 state.BackpackPanelModel.NextItem();
             }
 
-            if (Actions.PrevItem.WasPressedThisFrame()) {
-                state.BackpackPanelModel.PrevItem();
+            if (Actions.SwitchPerk.WasPressedThisFrame()) {
+                state.PerkPanelModel.NextItem();
             }
-            
+
             if (Actions.Inventory.WasPressedThisFrame()) {
                 G.Menu.OpenInventory();
             }
@@ -277,6 +283,13 @@ namespace Game.Features.Characters.Hero {
             if (Actions.UseItem.WasPerformedThisFrame()) {
                 Debug.Log("try to use item");
                 itemUseService.TryUseSelectedItem();
+            }
+        }
+
+        private void CheckPerkUse() {
+            if (Actions.UsePerk.WasPerformedThisFrame()) {
+                Debug.Log("try to use perk");
+                perkUseService.TryUseSelectedItem();
             }
         }
 
