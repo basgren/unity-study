@@ -47,7 +47,7 @@ namespace Game.Core.Models.Editor {
                 var element = itemsProp.GetArrayElementAtIndex(index);
                 var typeProp = element.FindPropertyRelative("type");
                 var itemType = typeProp != null ? (ItemType)typeProp.enumValueIndex : ItemType.Resource;
-                var lines = (itemType == ItemType.Usable || itemType == ItemType.Consumable) ? 3 : 2;
+                var lines = hasCooldown(itemType) ? 3 : 2;
                 var fieldsHeight = lines * EditorGUIUtility.singleLineHeight + (lines - 1) * lineSpacing;
                 return Mathf.Max(iconSize, fieldsHeight) + padding * 2f;
             };
@@ -115,8 +115,7 @@ namespace Game.Core.Models.Editor {
 
                 // Cooldown field (only for Usable and Consumable types)
                 var itemType = typeProp != null ? (ItemType)typeProp.enumValueIndex : ItemType.Resource;
-                if (cooldownProp != null
-                    && (itemType == ItemType.Usable || itemType == ItemType.Consumable)) {
+                if (cooldownProp != null && hasCooldown(itemType)) {
                     var cdRect = new Rect(fieldsX, typeRect.yMax + lineSpacing, fieldsWidth, lineHeight);
                     EditorGUI.PropertyField(cdRect, cooldownProp, new GUIContent("CD"));
                 }
@@ -142,7 +141,11 @@ namespace Game.Core.Models.Editor {
             };
         }
 
-        public override void OnInspectorGUI() {
+        private bool hasCooldown(ItemType itemType) {
+            return itemType is ItemType.Usable or ItemType.Consumable or ItemType.Perk;
+        }
+
+    public override void OnInspectorGUI() {
             serializedObject.Update();
 
             DrawCodeGenerationUi();

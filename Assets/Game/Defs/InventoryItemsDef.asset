@@ -41,7 +41,7 @@ MonoBehaviour:
   - id: ProtectionMask
     icon: {fileID: -330045518, guid: 70f7ee5499b943240bbc77a1794230c4, type: 3}
     type: 4
-    cooldown: 0
+    cooldown: 60
     uid: 926368c0360747ee9ccfccbd25547e5e
   generateCSharpClass: 1
   csharpClassFile: Assets/Game/Defs/ItemIds.cs

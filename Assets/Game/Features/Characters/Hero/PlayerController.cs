@@ -74,6 +74,19 @@ namespace Game.Features.Characters.Hero {
         [SerializeField]
         private GameObject parrotPrefab;
 
+        [Header("Shield")]
+        [SerializeField]
+        private GameObject shieldAuraPrefab;
+
+        [SerializeField]
+        private Transform auraSpawnPoint;
+
+        [SerializeField]
+        private float shieldDuration = 10f;
+
+        [SerializeField]
+        private float shieldPulsateTime = 3f;
+
         [Header("Attack")]
         [SerializeField]
         private GameObject swordAttackArea;
@@ -207,7 +220,7 @@ namespace Game.Features.Characters.Hero {
             itemUseService.Register(new SwordThrowStrategy(this));
 
             perkUseService = new ItemUseService(state.PerkPanelModel);
-            perkUseService.Register(new ProtectionMaskStrategy());
+            perkUseService.Register(new ProtectionMaskStrategy(this, shieldAuraPrefab, auraSpawnPoint, shieldDuration, shieldPulsateTime));
             perkUseService.Register(new ParrotDeployStrategy(this, parrotPrefab));
         }
 
