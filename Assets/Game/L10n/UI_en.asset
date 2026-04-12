@@ -94,6 +94,10 @@ MonoBehaviour:
     m_Localized: Talk
     m_Metadata:
       m_Items: []
+  - m_Id: 2745098744844288
+    m_Localized: Offer gifts
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

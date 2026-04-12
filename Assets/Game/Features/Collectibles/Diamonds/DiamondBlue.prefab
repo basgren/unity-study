@@ -105,7 +105,7 @@ MonoBehaviour:
     value: DiamondBlue
   value: 1
   collectorTag: Player
-  pickupAnimationPrefab: {fileID: 5701283640780159239, guid: 42a5b7ee89073fc47a0917151fcc5ce9,
+  pickupAnimationPrefab: {fileID: 7939134663002375227, guid: 089fc0ca4a762be4189f255b3efdcf0b,
     type: 3}
   collectSound: {fileID: 11400000, guid: 94c4b9b3f6d4c354a8f52b0cb5999af3, type: 2}
   rootObject: {fileID: 0}

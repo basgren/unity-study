@@ -21,8 +21,6 @@ namespace Core.Components.Collisions {
                 return;
             }
 
-            Debug.Log(">>> COLLISION!!!");
-
             if (action != null) {
                 action.Invoke(other.gameObject);
             } else {

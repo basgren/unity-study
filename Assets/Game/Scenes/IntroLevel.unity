@@ -107206,6 +107206,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1864179049}
     m_Modifications:
+    - target: {fileID: -14692969083280056, guid: 669900f5cfb8f7d45977ad4dbd1cf131,
+        type: 3}
+      propertyPath: actionText.m_TableEntryReference.m_KeyId
+      value: 2745098744844288
+      objectReference: {fileID: 0}
+    - target: {fileID: -14692969083280056, guid: 669900f5cfb8f7d45977ad4dbd1cf131,
+        type: 3}
+      propertyPath: actionText.m_TableReference.m_TableCollectionName
+      value: GUID:c33ce59ea9c687f478f3c689c642afc6
+      objectReference: {fileID: 0}
     - target: {fileID: 445090071749330829, guid: 669900f5cfb8f7d45977ad4dbd1cf131,
         type: 3}
       propertyPath: m_Name

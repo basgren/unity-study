@@ -87,6 +87,10 @@ MonoBehaviour:
     m_Key: ui.interaction.talk
     m_Metadata:
       m_Items: []
+  - m_Id: 2745098744844288
+    m_Key: ui.interaction.offer_gifts
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

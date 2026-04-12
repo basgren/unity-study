@@ -147,6 +147,8 @@ namespace Game.Core.Components.Damage {
             IsHitThisFrame = true;
             invulnerabilityTimer = invulnerabilityTime;
 
+            Debug.Log($"Health: {currentHealth}/{maxHealth}");
+            
             if (currentHealth <= 0) {
                 IsDead = true;
             }

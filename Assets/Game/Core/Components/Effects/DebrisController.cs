@@ -89,7 +89,6 @@ namespace Core.Components.Effects {
                 
                 var progress = Mathf.Clamp01((Time.time - debris.destroyTime) / duration);
                 if (Mathf.Approximately(progress, 1f)) {
-                    Debug.Log("Destroying debris");
                     Destroy(sr.gameObject);
                 } else {
                     var color = sr.color;
