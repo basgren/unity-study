@@ -1176,6 +1176,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2045891378}
     m_Modifications:
+    - target: {fileID: 703281144300523990, guid: 82b6a579da5858747b619ec5c6ca42c9,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2631432660699507845, guid: 82b6a579da5858747b619ec5c6ca42c9,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 70
+      objectReference: {fileID: 0}
     - target: {fileID: 2631432660699507845, guid: 82b6a579da5858747b619ec5c6ca42c9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1205,6 +1215,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HealthBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 8449729112324692887, guid: 82b6a579da5858747b619ec5c6ca42c9,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

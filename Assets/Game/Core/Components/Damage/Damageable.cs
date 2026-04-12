@@ -59,6 +59,7 @@ namespace Game.Core.Components.Damage {
         public bool IsDead { get; private set; }
 
         public event Action<float> OnHealthChanged;
+        public event Action<float> OnMaxHealthChanged;
 
         private SpriteRenderer spriteRenderer;
         private float nextAllowedDamageTime;
@@ -111,6 +112,15 @@ namespace Game.Core.Components.Damage {
 
             ApplyDamage(damager);
             return true;
+        }
+
+        public void SetMaxHealth(float value) {
+            if (Mathf.Approximately(maxHealth, value)) {
+                return;
+            }
+
+            maxHealth = value;
+            OnMaxHealthChanged?.Invoke(maxHealth);
         }
 
         public void AddHealth(float amount) {

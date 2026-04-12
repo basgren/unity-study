@@ -9,6 +9,7 @@ namespace Game.UI.Widgets.HealthBar {
     /// Displays the hero's health using two fill-mode Image stripes.
     /// HealthStripe snaps to the current value on damage; HighlightStripe trails behind
     /// with a configurable delay and constant drain speed.
+    /// The bar resizes itself when max health changes (stat upgrades).
     /// </summary>
     public class HealthBarWidget : MonoBehaviour {
         [SerializeField]
@@ -23,10 +24,25 @@ namespace Game.UI.Widgets.HealthBar {
         [SerializeField]
         private float highlightSpeed = 1f;
 
+        [Header("Sizing")]
+        [SerializeField, Tooltip("Current maximum HP the bar represents.")]
+        private int maxHealth = 5;
+
+        [SerializeField, Tooltip("Width in pixels per 1 HP.")]
+        private int pixelsPerHp = 5;
+
         private Damageable damageable;
         private float targetFill;
         private float highlightDelayTimer;
         private bool isHighlightAnimating;
+
+        private void OnValidate() {
+            if (healthStripe == null || highlightStripe == null) {
+                return;
+            }
+
+            UpdateBarSize();
+        }
 
         private void OnEnable() {
             G.Hero.OnHeroRegistered += OnHeroRegistered;
@@ -78,12 +94,16 @@ namespace Game.UI.Widgets.HealthBar {
             Unbind();
             damageable = controller.Damageable;
             damageable.OnHealthChanged += OnHealthChanged;
+            damageable.OnMaxHealthChanged += OnMaxHealthChanged;
+            maxHealth = Mathf.RoundToInt(damageable.maxHealth);
+            UpdateBarSize();
             SetHealthImmediate(damageable.Health, damageable.maxHealth);
         }
 
         private void Unbind() {
             if (damageable != null) {
                 damageable.OnHealthChanged -= OnHealthChanged;
+                damageable.OnMaxHealthChanged -= OnMaxHealthChanged;
                 damageable = null;
             }
         }
@@ -94,6 +114,30 @@ namespace Game.UI.Widgets.HealthBar {
 
         private void OnHeroUnregistered() {
             Unbind();
+        }
+
+        private void OnMaxHealthChanged(float newMax) {
+            maxHealth = Mathf.RoundToInt(newMax);
+            UpdateBarSize();
+            SetHealthImmediate(damageable.Health, newMax);
+        }
+
+        /// <summary>
+        /// Resizes both stripes and the root RectTransform so the bar width matches
+        /// <c>maxHealth * pixelsPerHp</c>. The root grows or shrinks by the same delta
+        /// as the stripes, preserving the frame border padding.
+        /// </summary>
+        private void UpdateBarSize() {
+            float stripeWidth = maxHealth * pixelsPerHp;
+
+            var healthRT = healthStripe.rectTransform;
+            var highlightRT = highlightStripe.rectTransform;
+            var rootRT = (RectTransform)transform;
+
+            float widthDelta = stripeWidth - healthRT.sizeDelta.x;
+            healthRT.sizeDelta = new Vector2(stripeWidth, healthRT.sizeDelta.y);
+            highlightRT.sizeDelta = new Vector2(stripeWidth, highlightRT.sizeDelta.y);
+            rootRT.sizeDelta = new Vector2(rootRT.sizeDelta.x + widthDelta, rootRT.sizeDelta.y);
         }
 
         private void OnHealthChanged(float newHealth) {

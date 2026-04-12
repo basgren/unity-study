@@ -220,7 +220,7 @@ namespace Game.Features.Characters.Hero {
                 baseMeleeDamage = swordAttackDamager.Damage;
             }
 
-            damageable.maxHealth = playerState.GetMaxHealth();
+            damageable.SetMaxHealth(playerState.GetMaxHealth());
             damageable.SetHealth(playerState.currentHealth);
             ApplyMeleeStat();
         }
@@ -233,7 +233,7 @@ namespace Game.Features.Characters.Hero {
         /// </summary>
         public void ApplyCurrentStats() {
             var newMax = state.GetMaxHealth();
-            damageable.maxHealth = newMax;
+            damageable.SetMaxHealth(newMax);
             if (damageable.Health > newMax) {
                 damageable.SetHealth(newMax);
             }
