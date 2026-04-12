@@ -14,9 +14,15 @@ namespace Game.Features.Characters.Hero.Interaction {
     [RequireComponent(typeof(PlayerInteractionResolver))]
     public class TriggerInteractionProvider : MonoBehaviour, IInteractionProvider {
         // Parallel lists: cachedCandidates[i] is the pooled adapter for inRange[i].
+        // overlapCounts[i] tracks how many of our child trigger colliders currently
+        // overlap inRange[i]. Trigger callbacks bubble up from every child collider
+        // to this Rigidbody2D, so the same interactable can fire enter/exit from the
+        // body collider AND from short-lived attack hit areas. Ref-counting prevents
+        // a transient sword swing from evicting an interactable the body still overlaps.
         // Pooling avoids per-frame GC pressure from rebuilding adapters in Update.
         private readonly List<InteractableBase> inRange = new();
         private readonly List<InteractableCandidate> cachedCandidates = new();
+        private readonly List<int> overlapCounts = new();
         private PlayerInteractionResolver resolver;
 
         private void Awake() {
@@ -34,8 +40,7 @@ namespace Game.Features.Characters.Hero.Interaction {
                 // Defensive: if the underlying object was destroyed without firing
                 // OnTriggerExit2D (e.g. scene unload mid-frame), drop it now.
                 if (interactable == null) {
-                    inRange.RemoveAt(i);
-                    cachedCandidates.RemoveAt(i);
+                    RemoveAt(i);
                     continue;
                 }
 
@@ -50,9 +55,13 @@ namespace Game.Features.Characters.Hero.Interaction {
                 return;
             }
 
-            if (!inRange.Contains(interactable)) {
+            int index = inRange.IndexOf(interactable);
+            if (index < 0) {
                 inRange.Add(interactable);
                 cachedCandidates.Add(new InteractableCandidate());
+                overlapCounts.Add(1);
+            } else {
+                overlapCounts[index]++;
             }
         }
 
@@ -66,12 +75,22 @@ namespace Game.Features.Characters.Hero.Interaction {
                 return;
             }
 
-            inRange.RemoveAt(index);
-            cachedCandidates.RemoveAt(index);
+            overlapCounts[index]--;
+            if (overlapCounts[index] > 0) {
+                return;
+            }
+
+            RemoveAt(index);
 
             // The resolver owns hover state, so we deliberately do NOT clear hover
             // here. The resolver will notice the candidate disappeared on its next
             // tick and call OnHoverExit through the candidate adapter.
+        }
+
+        private void RemoveAt(int index) {
+            inRange.RemoveAt(index);
+            cachedCandidates.RemoveAt(index);
+            overlapCounts.RemoveAt(index);
         }
     }
 }

@@ -1,10 +1,14 @@
 using Game.Core.Bootstrap;
 using Game.Core.Models.Inventory;
+using Game.Defs;
 using TMPro;
 using UnityEngine;
 
 namespace Game.UI.Widgets.CoinsCounter {
     public class CoinsCounter : MonoBehaviour {
+        [SerializeField]
+        private ItemId itemIdToCount = ItemIds.Coin;
+        
         private TextMeshProUGUI[] valueTextComps;
         private InventoryModel inventory;
 
@@ -19,7 +23,7 @@ namespace Game.UI.Widgets.CoinsCounter {
         }
 
         private void OnChange(InventoryChangeEvent eventInfo) {
-            if (eventInfo.ItemId == "Coin") {
+            if (eventInfo.ItemId == itemIdToCount) {
                 foreach (var value in valueTextComps) {
                     value.text = eventInfo.NewCount.ToString();
                 }

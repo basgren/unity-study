@@ -27,6 +27,18 @@ MonoBehaviour:
     m_Key: rikko.desc.parrot
     m_Metadata:
       m_Items: []
+  - m_Id: 400025906532352
+    m_Key: stats.health
+    m_Metadata:
+      m_Items: []
+  - m_Id: 400149307150336
+    m_Key: stats.melee_damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 400244861784064
+    m_Key: stats.throw_damage
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

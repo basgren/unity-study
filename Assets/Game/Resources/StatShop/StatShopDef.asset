@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a4d649774d205b4ebe9b59e1df7e64a, type: 3}
+  m_Name: StatShopDef
+  m_EditorClassIdentifier: 
+  stats:
+  - id: 0
+    displayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
+      m_TableEntryReference:
+        m_KeyId: 400025906532352
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    icon: {fileID: 512784286, guid: 51fef382c9646d44ea4313ab12987e33, type: 3}
+    maxLevel: 5
+    costPerLevel: 0100000002000000030000000400000005000000
+  - id: 1
+    displayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
+      m_TableEntryReference:
+        m_KeyId: 400149307150336
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    icon: {fileID: -555571321, guid: 51fef382c9646d44ea4313ab12987e33, type: 3}
+    maxLevel: 3
+    costPerLevel: 010000000300000005000000
+  - id: 2
+    displayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
+      m_TableEntryReference:
+        m_KeyId: 400244861784064
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    icon: {fileID: 1250446835, guid: 51fef382c9646d44ea4313ab12987e33, type: 3}
+    maxLevel: 3
+    costPerLevel: 020000000400000006000000
+  references:
+    version: 2
+    RefIds: []

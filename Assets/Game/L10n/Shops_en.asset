@@ -33,6 +33,18 @@ MonoBehaviour:
       sharp lika blade - not give it awayee for free."
     m_Metadata:
       m_Items: []
+  - m_Id: 400025906532352
+    m_Localized: Health
+    m_Metadata:
+      m_Items: []
+  - m_Id: 400149307150336
+    m_Localized: Melee damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 400244861784064
+    m_Localized: Throw damage
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

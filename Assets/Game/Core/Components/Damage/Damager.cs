@@ -60,6 +60,14 @@ namespace Game.Core.Components.Damage {
         public DamagerType Type => type;
         public Collider2D DamageCollider { get; private set; }
 
+        /// <summary>
+        /// Overrides the damage value at runtime. Used by the player stat upgrade system
+        /// to apply melee/throw damage bonuses on top of the prefab's base damage.
+        /// </summary>
+        public void SetDamage(int value) {
+            damage = value;
+        }
+
         private readonly HashSet<Damageable> damagedObjects = new HashSet<Damageable>();
 
         private void Awake() {

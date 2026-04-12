@@ -482,6 +482,7 @@ MonoBehaviour:
   shieldDuration: 10
   shieldPulsateTime: 3
   swordAttackArea: {fileID: 2945355596670905074}
+  swordAttackDamager: {fileID: 1925743917410454019}
   armedAnimator: {fileID: 9100000, guid: 15452c8f5b5d1294aae1e2825f20f3fc, type: 2}
   unarmedAnimator: {fileID: 9100000, guid: da7b63019bcab78479068d687e4267ef, type: 2}
 --- !u!61 &3756431542319373597

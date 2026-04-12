@@ -18,6 +18,11 @@ MonoBehaviour:
     type: 0
     cooldown: 0
     uid: 7664800605724c7c80fef10863b5e76b
+  - id: DiamondBlue
+    icon: {fileID: 0}
+    type: 0
+    cooldown: 0
+    uid: cdc3f72bb4c84b038151b7321886e001
   - id: MediumHealthPotion
     icon: {fileID: 21300000, guid: 55263992aed645244834c325daf422f5, type: 3}
     type: 2

@@ -91,6 +91,9 @@ namespace Game.Features.Characters.Hero {
         [SerializeField]
         private GameObject swordAttackArea;
 
+        [SerializeField, Tooltip("Damager on the swordAttackArea. Used to apply melee damage stat upgrades.")]
+        private Damager swordAttackDamager;
+
         [SerializeField]
         private RuntimeAnimatorController armedAnimator;
 
@@ -142,6 +145,10 @@ namespace Game.Features.Characters.Hero {
         private ItemUseService itemUseService;
         private ItemUseService perkUseService;
         private HeroAttackType lastAttackType = HeroAttackType.Pierce;
+
+        // Cached prefab/base damage values, captured before any stat bonuses are applied,
+        // so upgrade levels can be reapplied additively at any time.
+        private int baseMeleeDamage;
 
         protected override void Awake() {
             base.Awake();
@@ -209,8 +216,46 @@ namespace Game.Features.Characters.Hero {
         }
 
         private void InitFromState(PlayerState playerState) {
+            if (swordAttackDamager != null) {
+                baseMeleeDamage = swordAttackDamager.Damage;
+            }
+
             damageable.maxHealth = playerState.GetMaxHealth();
             damageable.SetHealth(playerState.currentHealth);
+            ApplyMeleeStat();
+        }
+
+        /// <summary>
+        /// Re-applies all current hero stat upgrades from <see cref="PlayerState"/> to the
+        /// live components (max health, melee damage). Current HP is preserved and only
+        /// clamped down if the new max is lower. Called after a stat is upgraded or
+        /// restored from save state.
+        /// </summary>
+        public void ApplyCurrentStats() {
+            var newMax = state.GetMaxHealth();
+            damageable.maxHealth = newMax;
+            if (damageable.Health > newMax) {
+                damageable.SetHealth(newMax);
+            }
+            state.currentHealth = damageable.Health;
+            ApplyMeleeStat();
+        }
+
+        /// <summary>
+        /// Fully heals the player to current max health. Called by the stat shop as the
+        /// reward for buying a Health upgrade.
+        /// </summary>
+        public void HealToFull() {
+            damageable.SetHealth(damageable.maxHealth);
+            state.currentHealth = damageable.Health;
+        }
+
+        private void ApplyMeleeStat() {
+            if (swordAttackDamager == null) {
+                return;
+            }
+
+            swordAttackDamager.SetDamage(baseMeleeDamage + state.GetMeleeDamageBonus());
         }
 
         private void InitItemUseService() {
@@ -393,6 +438,12 @@ namespace Game.Features.Characters.Hero {
         /// </summary>
         private void ThrowSword() {
             var sword = swordSpawner.SpawnInstance();
+
+            // Apply throw damage stat upgrade on top of the projectile prefab's base damage.
+            if (sword.TryGetComponent<Damager>(out var damager)) {
+                damager.SetDamage(damager.Damage + state.GetThrowDamageBonus());
+            }
+
             Facing.ApplyTo(sword);
             state.InventoryModel.Remove(ItemIds.Sword, 1);
             UpdateAnimatorController();

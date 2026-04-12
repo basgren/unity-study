@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Game.Configs;
 using Game.Core.Models.Inventory;
+using Game.Core.Models.Shop;
 using UnityEngine;
 
 namespace Game.Features.Characters.Hero {
@@ -22,6 +23,17 @@ namespace Game.Features.Characters.Hero {
 
         [SerializeField]
         private List<int> shopPurchaseValues = new();
+
+        /// <summary>
+        /// Levels of upgradeable hero stats. Parallel lists: keys are <see cref="StatId"/>
+        /// names, values are the current level (default 0). Same shape as
+        /// <see cref="shopPurchaseKeys"/> so it survives Unity serialization.
+        /// </summary>
+        [SerializeField]
+        private List<string> statLevelKeys = new();
+
+        [SerializeField]
+        private List<int> statLevelValues = new();
 
         [SerializeField]
         private bool isArmed;
@@ -64,7 +76,44 @@ namespace Game.Features.Characters.Hero {
         /// Current max health taking into accounts all buffs and level-ups.
         /// </summary>
         public float GetMaxHealth() {
-            return baseMaxHealth;
+            return baseMaxHealth + GetStatLevel(StatId.Health);
+        }
+
+        /// <summary>
+        /// Bonus melee damage from stat upgrades. Added on top of the weapon's base damage.
+        /// </summary>
+        public int GetMeleeDamageBonus() {
+            return GetStatLevel(StatId.MeleeDamage);
+        }
+
+        /// <summary>
+        /// Bonus throw damage from stat upgrades. Added on top of the projectile's base damage.
+        /// </summary>
+        public int GetThrowDamageBonus() {
+            return GetStatLevel(StatId.ThrowDamage);
+        }
+
+        /// <summary>
+        /// Returns the current level of the given stat. 0 if it has never been upgraded.
+        /// </summary>
+        public int GetStatLevel(StatId stat) {
+            var key = stat.ToString();
+            int index = statLevelKeys.IndexOf(key);
+            return index >= 0 ? statLevelValues[index] : 0;
+        }
+
+        /// <summary>
+        /// Sets the current level of the given stat (used by saving/restoring and the stat shop).
+        /// </summary>
+        public void SetStatLevel(StatId stat, int level) {
+            var key = stat.ToString();
+            int index = statLevelKeys.IndexOf(key);
+            if (index >= 0) {
+                statLevelValues[index] = level;
+            } else {
+                statLevelKeys.Add(key);
+                statLevelValues.Add(level);
+            }
         }
 
         /// <summary>
