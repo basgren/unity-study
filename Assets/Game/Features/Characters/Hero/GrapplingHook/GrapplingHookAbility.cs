@@ -146,6 +146,15 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 return;
             }
 
+            // Shorten rope as player gets closer to anchor (self-tightening)
+            if (swingJoint != null) {
+                float currentDist = Vector2.Distance(playerRb.position, swingJoint.connectedAnchor);
+                if (currentDist < swingJoint.distance) {
+                    swingJoint.distance = currentDist;
+                    activeRope?.LockLength(currentDist);
+                }
+            }
+
             // Apply swing force from horizontal input
             var dir = player.Actions.Move.ReadValue<Vector2>();
             if (Mathf.Abs(dir.x) > 0.1f) {
