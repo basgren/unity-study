@@ -450,11 +450,17 @@ namespace Game.Features.Characters.Hero {
             UpdateAnimatorController();
         }
 
-        public void SetDragMode(bool dragging, float speedMultiplier) {
+        public void SetDragMode(bool dragging, float barrelX) {
             isDragging = dragging;
 
             if (isDragging) {
                 CancelAttack();
+                // Face toward the barrel while dragging.
+                Facing.SetByX(barrelX - transform.position.x);
+                // Show unarmed visuals while dragging.
+                MyAnimator.runtimeAnimatorController = unarmedAnimator;
+            } else {
+                UpdateAnimatorController();
             }
         }
 
@@ -500,7 +506,7 @@ namespace Game.Features.Characters.Hero {
 
             // Check `isAttacking` flag to prevent player from changing direction while attack effect is played,
             // otherwise the effect will turn together with player.
-            SetDirection(dir, isAttacking);
+            SetDirection(dir, isAttacking || isDragging);
         }
 
         #region Jump

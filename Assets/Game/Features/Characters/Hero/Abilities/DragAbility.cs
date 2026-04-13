@@ -164,7 +164,7 @@ namespace Game.Features.Characters.Hero.Abilities {
             dragJoint.connectedBody = draggedBottom.Body;
             dragJoint.enableCollision = true;
 
-            player.SetDragMode(true, dragSpeedMultiplier);
+            player.SetDragMode(true, draggedBottom.transform.position.x);
         }
 
         private DraggableBarrel GetBarrelAtInteractPoint() {
@@ -214,7 +214,7 @@ namespace Game.Features.Characters.Hero.Abilities {
             }
 
             if (player != null) {
-                player.SetDragMode(false, 1f);
+                player.SetDragMode(false, 0f);
             }
 
             // Release the modal handle so the resolver resumes normal candidate
