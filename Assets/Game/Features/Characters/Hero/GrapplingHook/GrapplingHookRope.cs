@@ -9,9 +9,9 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
     public class GrapplingHookRope : MonoBehaviour {
         [SerializeField] private GameObject segmentPrefab;
         [SerializeField] private int segmentCount = 10;
-        [SerializeField] private int constraintIterations = 5;
+        [SerializeField] private int constraintIterations = 8;
         [SerializeField] private float gravityScale = 20f;
-        [SerializeField] private float damping = 0.98f;
+        [SerializeField] private float damping = 0.9f;
 
         private Vector2[] currentPos;
         private Vector2[] previousPos;
@@ -20,28 +20,26 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         private bool initialized;
 
         /// <summary>
-        /// Creates the rope between two world-space points.
+        /// Creates the rope with all points collapsed at a single starting position.
+        /// The rope will extend naturally as <see cref="UpdateEndpoints"/> moves the
+        /// anchor endpoint away.
         /// </summary>
-        public void Initialize(Vector2 anchorPoint, Vector2 heroPoint) {
+        public void Initialize(Vector2 startPosition) {
             int pointCount = segmentCount + 1;
             currentPos = new Vector2[pointCount];
             previousPos = new Vector2[pointCount];
             segments = new Transform[segmentCount];
 
-            // Distribute points evenly between anchor and hero
             for (int i = 0; i < pointCount; i++) {
-                float t = (float)i / segmentCount;
-                var pos = Vector2.Lerp(anchorPoint, heroPoint, t);
-                currentPos[i] = pos;
-                previousPos[i] = pos;
+                currentPos[i] = startPosition;
+                previousPos[i] = startPosition;
             }
 
-            segmentLength = Vector2.Distance(anchorPoint, heroPoint) / segmentCount;
+            segmentLength = 0f;
 
-            // Instantiate segment sprites
             for (int i = 0; i < segmentCount; i++) {
                 if (segmentPrefab != null) {
-                    var go = Instantiate(segmentPrefab, currentPos[i], Quaternion.identity, transform);
+                    var go = Instantiate(segmentPrefab, startPosition, Quaternion.identity, transform);
                     segments[i] = go.transform;
                 }
             }
@@ -50,7 +48,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         }
 
         /// <summary>
-        /// Updates the pinned endpoints each frame. Point 0 is the anchor end,
+        /// Updates the pinned endpoints each frame. Point 0 is the anchor/hook end,
         /// point N is the hero end.
         /// </summary>
         public void UpdateEndpoints(Vector2 anchorPoint, Vector2 heroPoint) {
@@ -60,10 +58,14 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
             currentPos[0] = anchorPoint;
             currentPos[currentPos.Length - 1] = heroPoint;
+        }
 
-            // Recalculate rest length based on current endpoint distance
-            float dist = Vector2.Distance(anchorPoint, heroPoint);
-            segmentLength = dist / segmentCount;
+        /// <summary>
+        /// Locks the rope rest length to the current endpoint distance.
+        /// Call once when the hook attaches to the anchor.
+        /// </summary>
+        public void LockLength(float totalLength) {
+            segmentLength = totalLength / segmentCount;
         }
 
         /// <summary>
@@ -73,6 +75,13 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             if (!initialized) {
                 return;
             }
+
+            // While segment length is not locked, derive it from current endpoint distance
+            // (during shooting/retracting the rope stretches with the projectile)
+            float currentDist = Vector2.Distance(currentPos[0], currentPos[currentPos.Length - 1]);
+            float activeSegmentLength = segmentLength > 0f
+                ? segmentLength
+                : currentDist / segmentCount;
 
             var gravity = new Vector2(0f, -gravityScale);
 
@@ -85,12 +94,12 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 currentPos[i] = cur + velocity + gravity * (fixedDelta * fixedDelta);
             }
 
-            // Pin endpoints
-            currentPos[0] = currentPos[0]; // anchor (already set by UpdateEndpoints)
-            // hero endpoint is already set by UpdateEndpoints
-
             // Distance constraint solver
             for (int iter = 0; iter < constraintIterations; iter++) {
+                // Pin endpoints
+                currentPos[0] = currentPos[0];
+                currentPos[currentPos.Length - 1] = currentPos[currentPos.Length - 1];
+
                 for (int i = 0; i < currentPos.Length - 1; i++) {
                     var a = currentPos[i];
                     var b = currentPos[i + 1];
@@ -101,7 +110,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                         continue;
                     }
 
-                    float error = (dist - segmentLength) / dist;
+                    float error = (dist - activeSegmentLength) / dist;
                     var correction = delta * (0.5f * error);
 
                     // Pin first and last points

@@ -8,11 +8,15 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
     /// PlayerController (SetHookSwingMode).
     /// </summary>
     public class GrapplingHookAbility : MonoBehaviour {
-        private const float ArrivalThreshold = 0.1f;
         private const int MaxAnchorCandidates = 8;
+        private const int GizmoArcSegments = 20;
 
         [Header("Detection")]
         [SerializeField] private float hookRadius = 8f;
+
+        [SerializeField, Range(10f, 360f), Tooltip("Full sector angle in degrees. 180 = half-circle in front of player.")]
+        private float sectorAngle = 180f;
+
         [SerializeField] private LayerMask anchorLayer;
 
         [Header("Prefabs")]
@@ -20,7 +24,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         [SerializeField] private GameObject ropePrefab;
 
         [Header("Swing")]
-        [SerializeField] private float swingInfluenceForce = 150f;
+        [SerializeField] private float swingInfluenceForce = 80f;
 
         public HookState State => fsm.State;
 
@@ -77,11 +81,11 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             activeHook = hookGo.GetComponent<GrapplingHookProjectile>();
             activeHook.LaunchToward(anchorPos);
 
-            // Spawn rope visual
+            // Spawn rope visual — all points start at hero, extends as hook travels
             if (ropePrefab != null) {
                 var ropeGo = Instantiate(ropePrefab, Vector3.zero, Quaternion.identity);
                 activeRope = ropeGo.GetComponent<GrapplingHookRope>();
-                activeRope.Initialize(heroPos, anchorPos);
+                activeRope.Initialize(heroPos);
             }
 
             isPerkButtonHeld = true;
@@ -160,19 +164,24 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         private void AttachToAnchor() {
             var anchorPos = (Vector2)targetAnchor.transform.position;
             var heroPos = (Vector2)player.transform.position;
+            float ropeLength = Vector2.Distance(heroPos, anchorPos);
 
             swingJoint = player.gameObject.AddComponent<DistanceJoint2D>();
             swingJoint.autoConfigureDistance = false;
-            swingJoint.distance = Vector2.Distance(heroPos, anchorPos);
+            swingJoint.distance = ropeLength;
             swingJoint.maxDistanceOnly = true;
             swingJoint.enableCollision = false;
             swingJoint.connectedBody = null;
             swingJoint.connectedAnchor = anchorPos;
 
+            // Lock rope visual length so it stops being elastic
+            if (activeRope != null) {
+                activeRope.LockLength(ropeLength);
+            }
+
             player.SetHookSwingMode(true);
 
             // Destroy the hook projectile visually — it's now "stuck" at the anchor.
-            // Keep the anchor reference for the rope endpoint.
             if (activeHook != null) {
                 Destroy(activeHook.gameObject);
                 activeHook = null;
@@ -182,7 +191,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         }
 
         private void StartRetract() {
-            // Remove swing constraint
             if (swingJoint != null) {
                 Destroy(swingJoint);
                 swingJoint = null;
@@ -194,7 +202,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 activeHook.ReturnTo(player.transform);
                 fsm.Go(HookState.Retracting);
             } else {
-                // Hook was already destroyed (e.g. was in Attached state) — go idle immediately
                 CleanupAndGoIdle();
             }
         }
@@ -224,12 +231,10 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         // --- Helpers ---
 
         private bool ShouldForceAbort() {
-            // Anchor destroyed
             if (targetAnchor == null) {
                 return true;
             }
 
-            // Hero took damage
             if (player.Damageable.IsHitThisFrame) {
                 return true;
             }
@@ -238,12 +243,10 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         }
 
         private Vector2 GetHookEndpoint() {
-            // While attached, the rope endpoint is the anchor itself (hook was destroyed)
             if (fsm.State == HookState.Attached && targetAnchor != null) {
                 return targetAnchor.transform.position;
             }
 
-            // Otherwise it's the projectile position
             if (activeHook != null) {
                 return activeHook.Position;
             }
@@ -255,6 +258,13 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             return player.transform.position;
         }
 
+        /// <summary>
+        /// Returns the world-space facing direction of the player (right or left).
+        /// </summary>
+        private Vector2 GetFacingDirection() {
+            return player.GetFacingDirSign() >= 0 ? Vector2.right : Vector2.left;
+        }
+
         private GrapplingHookAnchor FindNearestAnchor() {
             int count = Physics2D.OverlapCircleNonAlloc(
                 player.transform.position, hookRadius, anchorCandidates, anchorLayer
@@ -264,9 +274,12 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 return null;
             }
 
+            float halfAngle = sectorAngle * 0.5f;
+            var facing = GetFacingDirection();
+            var heroPos = (Vector2)player.transform.position;
+
             GrapplingHookAnchor nearest = null;
             float nearestSqrDist = float.MaxValue;
-            var heroPos = (Vector2)player.transform.position;
 
             for (int i = 0; i < count; i++) {
                 var anchor = anchorCandidates[i].GetComponent<GrapplingHookAnchor>();
@@ -274,7 +287,17 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                     continue;
                 }
 
-                float sqrDist = ((Vector2)anchor.transform.position - heroPos).sqrMagnitude;
+                var toAnchor = (Vector2)anchor.transform.position - heroPos;
+
+                // Sector check: skip anchors outside the forward sector
+                if (sectorAngle < 360f) {
+                    float angle = Vector2.Angle(facing, toAnchor);
+                    if (angle > halfAngle) {
+                        continue;
+                    }
+                }
+
+                float sqrDist = toAnchor.sqrMagnitude;
                 if (sqrDist < nearestSqrDist) {
                     nearestSqrDist = sqrDist;
                     nearest = anchor;
@@ -284,9 +307,51 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             return nearest;
         }
 
+        // --- Gizmo ---
+
         private void OnDrawGizmosSelected() {
-            Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.4f);
-            Gizmos.DrawWireSphere(transform.position, hookRadius);
+            DrawSectorGizmo();
+        }
+
+        private void DrawSectorGizmo() {
+            var center = (Vector2)transform.position;
+            var color = new Color(0.2f, 0.8f, 1f, 0.4f);
+            Gizmos.color = color;
+
+            if (sectorAngle >= 360f) {
+                Gizmos.DrawWireSphere(center, hookRadius);
+                return;
+            }
+
+            // Determine facing direction — in editor without player, default to right
+            var facing = Vector2.right;
+            if (Application.isPlaying && player != null) {
+                facing = GetFacingDirection();
+            }
+
+            float halfAngle = sectorAngle * 0.5f;
+            float startAngle = Mathf.Atan2(facing.y, facing.x) * Mathf.Rad2Deg - halfAngle;
+
+            // Draw arc
+            var prevPoint = center + GetArcPoint(startAngle) * hookRadius;
+            for (int i = 1; i <= GizmoArcSegments; i++) {
+                float t = (float)i / GizmoArcSegments;
+                float angle = startAngle + sectorAngle * t;
+                var point = center + GetArcPoint(angle) * hookRadius;
+                Gizmos.DrawLine(prevPoint, point);
+                prevPoint = point;
+            }
+
+            // Draw sector edges
+            var edgeStart = center + GetArcPoint(startAngle) * hookRadius;
+            var edgeEnd = center + GetArcPoint(startAngle + sectorAngle) * hookRadius;
+            Gizmos.DrawLine(center, edgeStart);
+            Gizmos.DrawLine(center, edgeEnd);
+        }
+
+        private static Vector2 GetArcPoint(float angleDeg) {
+            float rad = angleDeg * Mathf.Deg2Rad;
+            return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
         }
     }
 }
