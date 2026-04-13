@@ -12,6 +12,7 @@ using Game.Defs;
 using Game.Features.Characters._Shared;
 using Game.Features.Characters.Hero.Interaction;
 using Game.Features.Characters.Hero.ItemUse;
+using Game.Features.Characters.Hero.GrapplingHook;
 using Game.Features.Characters.Parrot;
 using Game.Features.Interactive.Bonfire;
 using UnityEngine;
@@ -131,6 +132,7 @@ namespace Game.Features.Characters.Hero {
         private bool isDead;
 
         private bool isDragging;
+        private bool isHookSwinging;
         private bool isAttacking;
         private bool isAttackAnimationInitiated;
         private readonly float attackCooldownTime = 0.2f;
@@ -268,6 +270,11 @@ namespace Game.Features.Characters.Hero {
             perkUseService = new ItemUseService(state.PerkPanelModel);
             perkUseService.Register(new ProtectionMaskStrategy(this, shieldAuraPrefab, auraSpawnPoint, shieldDuration, shieldPulsateTime));
             perkUseService.Register(new ParrotDeployStrategy(this, parrotPrefab));
+
+            var hookAbility = GetComponent<GrapplingHookAbility>();
+            if (hookAbility != null) {
+                perkUseService.Register(new GrapplingHookStrategy(this, hookAbility));
+            }
         }
 
         private void UpdateAnimatorController() {
@@ -450,6 +457,10 @@ namespace Game.Features.Characters.Hero {
             UpdateAnimatorController();
         }
 
+        public void SetHookSwingMode(bool swinging) {
+            isHookSwinging = swinging;
+        }
+
         public void SetDragMode(bool dragging, float barrelX) {
             isDragging = dragging;
 
@@ -502,6 +513,10 @@ namespace Game.Features.Characters.Hero {
         }
 
         private void CheckHorizontalMovement() {
+            if (isHookSwinging) {
+                return; // movement handled by GrapplingHookAbility via forces
+            }
+
             Vector2 dir = Actions.Move.ReadValue<Vector2>().normalized;
 
             // Check `isAttacking` flag to prevent player from changing direction while attack effect is played,
@@ -565,7 +580,7 @@ namespace Game.Features.Characters.Hero {
 
         private bool CanJump() {
             // Do not allow to jump if we're doing ground attack.
-            return (IsGrounded || coyoteTimer > 0) && !isAttacking;
+            return (IsGrounded || coyoteTimer > 0 || isHookSwinging) && !isAttacking;
         }
 
         #endregion
