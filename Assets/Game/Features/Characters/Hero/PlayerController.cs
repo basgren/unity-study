@@ -130,6 +130,7 @@ namespace Game.Features.Characters.Hero {
         private bool isDiedThisFrame;
         private bool isDead;
 
+        private bool isDragging;
         private bool isAttacking;
         private bool isAttackAnimationInitiated;
         private readonly float attackCooldownTime = 0.2f;
@@ -375,7 +376,7 @@ namespace Game.Features.Characters.Hero {
         }
 
         private bool CanAttack() {
-            return IsArmed && !isAttacking && IsGrounded && attackCooldownTimer <= 0;
+            return IsArmed && !isAttacking && !isDragging && IsGrounded && attackCooldownTimer <= 0;
         }
 
         /// <summary>
@@ -450,14 +451,11 @@ namespace Game.Features.Characters.Hero {
         }
 
         public void SetDragMode(bool dragging, float speedMultiplier) {
-            // TODO: [BG] we'll need this flag later for animations
-            // if (dragging) {
-            //     dragStarted = true;
-            //     // currentMoveSpeed = baseMoveSpeed * speedMultiplier;
-            // } else {
-            //     dragStarted = false;
-            //     // currentMoveSpeed = baseMoveSpeed;
-            // }
+            isDragging = dragging;
+
+            if (isDragging) {
+                CancelAttack();
+            }
         }
 
         protected override void CheckGround() {
