@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   segmentPrefab: {fileID: 5966730143745019385, guid: 76030a4b6cb8a3f4cb10b1b7ac0b1df8,
     type: 3}
-  segmentCount: 10
+  segmentCount: 15
   constraintIterations: 5
-  gravityScale: 20
-  damping: 0.98
+  gravityScale: 15
+  damping: 0.99

@@ -36,6 +36,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         private GrapplingHookAnchor targetAnchor;
         private DistanceJoint2D swingJoint;
         private bool isPerkButtonHeld;
+        private bool jumpDetachPending;
 
         private readonly Collider2D[] anchorCandidates = new Collider2D[MaxAnchorCandidates];
 
@@ -141,8 +142,24 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         }
 
         private void UpdateAttached() {
+            // Deferred detach: the jump was detected last frame, CheckJump already
+            // fired the jump with swing momentum — now clean up the hook.
+            if (jumpDetachPending) {
+                jumpDetachPending = false;
+                CleanupAndGoIdle();
+                return;
+            }
+
             if (!isPerkButtonHeld) {
-                StartRetract();
+                CleanupAndGoIdle();
+                return;
+            }
+
+            // Jump pressed: defer detach to next frame so CheckJump (which runs
+            // after Tick in the same Update) can fire the jump while isHookSwinging
+            // is still true, preserving swing velocity.
+            if (player.Actions.Jump.WasPerformedThisFrame()) {
+                jumpDetachPending = true;
                 return;
             }
 

@@ -580,7 +580,7 @@ namespace Game.Features.Characters.Hero {
 
         private bool CanJump() {
             // Do not allow to jump if we're doing ground attack.
-            return (IsGrounded || coyoteTimer > 0) && !isAttacking;
+            return (IsGrounded || coyoteTimer > 0 || isHookSwinging) && !isAttacking;
         }
 
         #endregion

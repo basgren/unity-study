@@ -6602,6 +6602,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6226199600357803642, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
+      propertyPath: hookRadius
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6226199600357803642, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
+        type: 3}
       propertyPath: sectorAngle
       value: 197
       objectReference: {fileID: 0}
