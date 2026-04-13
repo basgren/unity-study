@@ -27,7 +27,7 @@ TagManager:
   - EnemyTriggers
   - PlayerTriggers
   - HitOnlyTargets
-  - 
+  - HookAnchor
   - 
   - 
   - 

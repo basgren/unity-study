@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7930031377156969613}
   - component: {fileID: 2478247899869276953}
   - component: {fileID: 4569510441651251953}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: GrapplingHookAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -576848129
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: dac9886f72e07284bb753f68c9357532, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
