@@ -32,6 +32,7 @@ namespace Game.UI.Inventory {
 
         private const float CooldownEndEffectDuration = 0.5f;
         private const float CooldownEndEffectStartAlpha = 1f;
+        private const float DisabledIconAlpha = 0.5f;
 
         private InventoryItem item;
         public InventoryItem Item => item;
@@ -63,6 +64,16 @@ namespace Game.UI.Inventory {
 
         public void SetSelected(bool selected) {
             selectionObject.SetActive(selected);
+        }
+
+        /// <summary>
+        /// Dims the icon when the item cannot currently be used (e.g. grappling
+        /// hook while grounded). Mirrors the shop "unaffordable" visual.
+        /// </summary>
+        public void SetEnabled(bool enabled) {
+            var c = icon.color;
+            c.a = enabled ? 1f : DisabledIconAlpha;
+            icon.color = c;
         }
 
         /// <summary>

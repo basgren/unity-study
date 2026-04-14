@@ -13,6 +13,9 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         [SerializeField] private float gravityScale = 20f;
         [SerializeField] private float damping = 0.9f;
 
+        [SerializeField, Range(0f, 1f), Tooltip("How strongly a taut rope pulls points toward the straight line between endpoints. 0 = pure Verlet, 1 = instantly straight under tension.")]
+        private float tautnessBlend = 0.4f;
+
         private Vector2[] currentPos;
         private Vector2[] previousPos;
         private Transform[] segments;
@@ -83,7 +86,13 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 ? segmentLength
                 : currentDist / segmentCount;
 
-            var gravity = new Vector2(0f, -gravityScale);
+            // Scale gravity by slack: taut rope -> no sag, slack rope -> full sag.
+            // slack = (total rope length - endpoint distance) / total rope length, clamped 0..1.
+            float totalRopeLength = activeSegmentLength * segmentCount;
+            float slack = totalRopeLength > 0f
+                ? Mathf.Clamp01((totalRopeLength - currentDist) / totalRopeLength)
+                : 0f;
+            var gravity = new Vector2(0f, -gravityScale * slack);
 
             // Verlet integration for non-pinned points
             for (int i = 1; i < currentPos.Length - 1; i++) {
@@ -92,6 +101,22 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 var velocity = (cur - prev) * damping;
                 previousPos[i] = cur;
                 currentPos[i] = cur + velocity + gravity * (fixedDelta * fixedDelta);
+            }
+
+            // Tautness: blend points toward the straight line between endpoints.
+            // Scales with (1 - slack), so a rope under tension visibly rigidifies
+            // while a slack rope keeps its natural sag.
+            float tautness = 1f - slack;
+            if (tautness > 0.01f && tautnessBlend > 0f) {
+                var start = currentPos[0];
+                var end = currentPos[currentPos.Length - 1];
+                int lastIdx = currentPos.Length - 1;
+                float blend = tautness * tautnessBlend;
+                for (int i = 1; i < lastIdx; i++) {
+                    float t = (float)i / lastIdx;
+                    var straightPos = Vector2.Lerp(start, end, t);
+                    currentPos[i] = Vector2.Lerp(currentPos[i], straightPos, blend);
+                }
             }
 
             // Distance constraint solver
@@ -141,7 +166,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
                 var pos = currentPos[i];
                 var next = currentPos[i + 1];
-                segments[i].position = (Vector3)pos;
+                segments[i].position = pos;
 
                 var dir = next - pos;
                 if (dir.sqrMagnitude > 0.0001f) {
