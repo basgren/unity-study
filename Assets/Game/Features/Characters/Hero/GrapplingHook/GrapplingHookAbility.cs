@@ -11,7 +11,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
     public class GrapplingHookAbility : MonoBehaviour {
         private const int MaxAnchorCandidates = 8;
         private const int GizmoArcSegments = 20;
-        private const float MinRopeLength = 1f;
 
         [Header("Detection")]
         [FormerlySerializedAs("hookRadius")]
@@ -35,6 +34,9 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
         [SerializeField, Tooltip("How fast the rope shortens/lengthens when the player presses up/down (units per second).")]
         private float ropeClimbSpeed = 4f;
+
+        [SerializeField, Tooltip("Minimum rope length when the player climbs all the way up. Keep above 0 to avoid degenerate joint state — low values let the hero hang right at the anchor.")]
+        private float minRopeLength = 0.2f;
 
         public HookState State => fsm.State;
 
@@ -167,7 +169,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             // Up/down climbs the rope: up pulls hero closer, down extends up to max.
             if (swingJoint != null && Mathf.Abs(dir.y) > 0.1f) {
                 float delta = -dir.y * ropeClimbSpeed * Time.deltaTime;
-                float newLength = Mathf.Clamp(swingJoint.distance + delta, MinRopeLength, maxRopeLength);
+                float newLength = Mathf.Clamp(swingJoint.distance + delta, minRopeLength, maxRopeLength);
                 swingJoint.distance = newLength;
                 activeRope?.LockLength(newLength);
             }
