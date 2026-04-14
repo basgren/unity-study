@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Features.Characters.Hero.GrapplingHook {
     /// <summary>
@@ -10,9 +11,12 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
     public class GrapplingHookAbility : MonoBehaviour {
         private const int MaxAnchorCandidates = 8;
         private const int GizmoArcSegments = 20;
+        private const float MinRopeLength = 1f;
 
         [Header("Detection")]
-        [SerializeField] private float hookRadius = 8f;
+        [FormerlySerializedAs("hookRadius")]
+        [SerializeField, Tooltip("Max rope length. Also the detection radius for anchors — an anchor beyond this distance cannot be grabbed.")]
+        private float maxRopeLength = 8f;
 
         [SerializeField, Range(10f, 360f), Tooltip("Full sector angle in degrees. 180 = half-circle in front of player.")]
         private float sectorAngle = 180f;
@@ -26,6 +30,12 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         [Header("Swing")]
         [SerializeField] private float swingInfluenceForce = 80f;
 
+        [SerializeField, Tooltip("Linear drag applied to the player Rigidbody2D while swinging. Higher = swing decays faster.")]
+        private float swingLinearDrag = 1.5f;
+
+        [SerializeField, Tooltip("How fast the rope shortens/lengthens when the player presses up/down (units per second).")]
+        private float ropeClimbSpeed = 4f;
+
         public HookState State => fsm.State;
 
         private PlayerController player;
@@ -37,6 +47,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         private GrapplingHookAnchor highlightedAnchor;
         private DistanceJoint2D swingJoint;
         private bool jumpDetachPending;
+        private float originalLinearDrag;
 
         private readonly Collider2D[] anchorCandidates = new Collider2D[MaxAnchorCandidates];
 
@@ -151,17 +162,17 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 return;
             }
 
-            // Shorten rope as player gets closer to anchor (self-tightening)
-            if (swingJoint != null) {
-                float currentDist = Vector2.Distance(playerRb.position, swingJoint.connectedAnchor);
-                if (currentDist < swingJoint.distance) {
-                    swingJoint.distance = currentDist;
-                    activeRope?.LockLength(currentDist);
-                }
+            var dir = player.Actions.Move.ReadValue<Vector2>();
+
+            // Up/down climbs the rope: up pulls hero closer, down extends up to max.
+            if (swingJoint != null && Mathf.Abs(dir.y) > 0.1f) {
+                float delta = -dir.y * ropeClimbSpeed * Time.deltaTime;
+                float newLength = Mathf.Clamp(swingJoint.distance + delta, MinRopeLength, maxRopeLength);
+                swingJoint.distance = newLength;
+                activeRope?.LockLength(newLength);
             }
 
             // Apply swing force from horizontal input
-            var dir = player.Actions.Move.ReadValue<Vector2>();
             if (Mathf.Abs(dir.x) > 0.1f) {
                 playerRb.AddForce(new Vector2(dir.x * swingInfluenceForce, 0f));
             }
@@ -172,7 +183,8 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         private void AttachToAnchor() {
             var anchorPos = (Vector2)targetAnchor.transform.position;
             var heroPos = (Vector2)player.transform.position;
-            float ropeLength = Vector2.Distance(heroPos, anchorPos);
+            // Clamp to max rope length in case the anchor was barely inside detection range.
+            float ropeLength = Mathf.Min(Vector2.Distance(heroPos, anchorPos), maxRopeLength);
 
             swingJoint = player.gameObject.AddComponent<DistanceJoint2D>();
             swingJoint.autoConfigureDistance = false;
@@ -187,6 +199,10 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 activeRope.LockLength(ropeLength);
             }
 
+            // Apply swing drag; restored in CleanupAndGoIdle.
+            originalLinearDrag = playerRb.drag;
+            playerRb.drag = swingLinearDrag;
+
             player.SetHookSwingMode(true);
 
             // Destroy the hook projectile visually — it's now "stuck" at the anchor.
@@ -200,6 +216,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
         private void CleanupAndGoIdle() {
             if (swingJoint != null) {
+                playerRb.drag = originalLinearDrag;
                 Destroy(swingJoint);
                 swingJoint = null;
             }
@@ -298,7 +315,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
         private GrapplingHookAnchor FindNearestAnchor() {
             int count = Physics2D.OverlapCircleNonAlloc(
-                player.transform.position, hookRadius, anchorCandidates, anchorLayer
+                player.transform.position, maxRopeLength, anchorCandidates, anchorLayer
             );
 
             if (count == 0) {
@@ -350,7 +367,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             Gizmos.color = color;
 
             if (sectorAngle >= 360f) {
-                Gizmos.DrawWireSphere(center, hookRadius);
+                Gizmos.DrawWireSphere(center, maxRopeLength);
                 return;
             }
 
@@ -364,18 +381,18 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             float startAngle = Mathf.Atan2(facing.y, facing.x) * Mathf.Rad2Deg - halfAngle;
 
             // Draw arc
-            var prevPoint = center + GetArcPoint(startAngle) * hookRadius;
+            var prevPoint = center + GetArcPoint(startAngle) * maxRopeLength;
             for (int i = 1; i <= GizmoArcSegments; i++) {
                 float t = (float)i / GizmoArcSegments;
                 float angle = startAngle + sectorAngle * t;
-                var point = center + GetArcPoint(angle) * hookRadius;
+                var point = center + GetArcPoint(angle) * maxRopeLength;
                 Gizmos.DrawLine(prevPoint, point);
                 prevPoint = point;
             }
 
             // Draw sector edges
-            var edgeStart = center + GetArcPoint(startAngle) * hookRadius;
-            var edgeEnd = center + GetArcPoint(startAngle + sectorAngle) * hookRadius;
+            var edgeStart = center + GetArcPoint(startAngle) * maxRopeLength;
+            var edgeEnd = center + GetArcPoint(startAngle + sectorAngle) * maxRopeLength;
             Gizmos.DrawLine(center, edgeStart);
             Gizmos.DrawLine(center, edgeEnd);
         }

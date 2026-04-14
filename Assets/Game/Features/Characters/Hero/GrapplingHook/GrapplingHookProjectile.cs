@@ -58,6 +58,14 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
         private void MoveToward(Vector2 destination) {
             var pos = rb.position;
+            var dir = destination - pos;
+
+            // Orient the hook sprite along its travel direction (sprite assumed to face +X).
+            if (dir.sqrMagnitude > 0.0001f) {
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                rb.MoveRotation(angle);
+            }
+
             var step = travelSpeed * Time.fixedDeltaTime;
             var newPos = Vector2.MoveTowards(pos, destination, step);
             rb.MovePosition(newPos);

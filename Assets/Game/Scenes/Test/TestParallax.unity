@@ -7095,6 +7095,11 @@ PrefabInstance:
       propertyPath: sectorAngle
       value: 197
       objectReference: {fileID: 0}
+    - target: {fileID: 6226199600357803642, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
+        type: 3}
+      propertyPath: maxRopeLength
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7834512391048576123, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: saveId
