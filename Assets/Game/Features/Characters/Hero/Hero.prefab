@@ -783,7 +783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90e86ff6a6b21f3448d26a7386160656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hookRadius: 8
+  maxRopeLength: 8
   sectorAngle: 180
   anchorLayer:
     serializedVersion: 2
@@ -793,6 +793,8 @@ MonoBehaviour:
   ropePrefab: {fileID: 8804120717180790289, guid: 560b304319221b948b170707115beb1b,
     type: 3}
   swingInfluenceForce: 10
+  swingLinearDrag: 0.5
+  ropeClimbSpeed: 2
 --- !u!1 &4688011009432296853
 GameObject:
   m_ObjectHideFlags: 0
