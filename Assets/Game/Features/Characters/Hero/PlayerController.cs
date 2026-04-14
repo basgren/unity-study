@@ -514,7 +514,14 @@ namespace Game.Features.Characters.Hero {
 
         private void CheckHorizontalMovement() {
             if (isHookSwinging) {
-                return; // movement handled by GrapplingHookAbility via forces
+                // Movement velocity is handled by GrapplingHookAbility via forces,
+                // but we still let horizontal input flip facing so the hero looks
+                // where the player is steering.
+                Vector2 swingDir = Actions.Move.ReadValue<Vector2>();
+                if (Mathf.Abs(swingDir.x) > 0.1f) {
+                    Facing.SetByX(swingDir.x);
+                }
+                return;
             }
 
             Vector2 dir = Actions.Move.ReadValue<Vector2>().normalized;

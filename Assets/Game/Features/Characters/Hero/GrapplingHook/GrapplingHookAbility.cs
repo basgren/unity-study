@@ -34,6 +34,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         private GrapplingHookProjectile activeHook;
         private GrapplingHookRope activeRope;
         private GrapplingHookAnchor targetAnchor;
+        private GrapplingHookAnchor highlightedAnchor;
         private DistanceJoint2D swingJoint;
         private bool isPerkButtonHeld;
         private bool jumpDetachPending;
@@ -96,6 +97,8 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         }
 
         public void Tick(float deltaTime) {
+            UpdateAnchorHighlight();
+
             if (fsm.State == HookState.Idle) {
                 return;
             }
@@ -267,7 +270,47 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 return true;
             }
 
+            // Landing while the hook is active detaches immediately — same outcome
+            // as releasing the use key. Prevents lingering rope after the player
+            // swings down onto a platform.
+            if (player.IsGrounded) {
+                return true;
+            }
+
             return false;
+        }
+
+        /// <summary>
+        /// Swaps the active-sprite highlight on whichever anchor is the current
+        /// hook target. While idle, that's the nearest anchor in the forward sector;
+        /// while engaged, it's the locked <see cref="targetAnchor"/>. Only one
+        /// anchor is highlighted at a time — the previous one is cleared first.
+        /// </summary>
+        private void UpdateAnchorHighlight() {
+            var desired = fsm.State == HookState.Idle
+                ? FindNearestAnchor()
+                : targetAnchor;
+
+            if (desired == highlightedAnchor) {
+                return;
+            }
+
+            if (highlightedAnchor != null) {
+                highlightedAnchor.SetHighlighted(false);
+            }
+
+            highlightedAnchor = desired;
+
+            if (highlightedAnchor != null) {
+                highlightedAnchor.SetHighlighted(true);
+            }
+        }
+
+        private void OnDestroy() {
+            if (highlightedAnchor != null) {
+                highlightedAnchor.SetHighlighted(false);
+                highlightedAnchor = null;
+            }
         }
 
         private Vector2 GetHookEndpoint() {
