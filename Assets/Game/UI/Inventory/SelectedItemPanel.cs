@@ -44,6 +44,7 @@ namespace Game.UI.Inventory {
 
         private void Update() {
             UpdateCooldown();
+            UpdateEnabledState();
         }
 
         private void OnDestroy() {
@@ -78,6 +79,18 @@ namespace Game.UI.Inventory {
             }
 
             itemBox.SetCooldownProgress(useService.GetCooldownProgress(selected.id));
+        }
+
+        private void UpdateEnabledState() {
+            var selected = panelModel.SelectedItem;
+            var useService = GetUseService();
+
+            bool canUse = selected == null || useService == null || useService.CanUse(selected.id);
+            itemBox.SetEnabled(canUse);
+
+            if (keyHint != null) {
+                keyHint.SetEnabled(canUse);
+            }
         }
 
         private void OnSchemeChanged() {

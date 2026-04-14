@@ -57,6 +57,15 @@ namespace Game.Features.Characters.Hero.ItemUse {
         }
 
         /// <summary>
+        /// Returns whether the registered strategy currently reports it can be used.
+        /// Does not account for cooldown — that is handled separately by the UI.
+        /// Returns true for unknown items so they don't appear disabled by default.
+        /// </summary>
+        public bool CanUse(ItemId itemId) {
+            return !strategies.TryGetValue(itemId, out var strategy) || strategy.CanUse();
+        }
+
+        /// <summary>
         /// Returns cooldown progress from 0 (just started) to 1 (complete/no cooldown).
         /// </summary>
         public float GetCooldownProgress(ItemId itemId) {

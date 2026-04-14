@@ -65,7 +65,9 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         // --- Public API called by GrapplingHookStrategy ---
 
         public bool CanActivate() {
-            return fsm.State == HookState.Idle && FindNearestAnchor() != null;
+            return fsm.State == HookState.Idle
+                   && !player.IsGrounded
+                   && FindNearestAnchor() != null;
         }
 
         public void Activate() {

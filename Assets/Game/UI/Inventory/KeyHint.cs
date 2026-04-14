@@ -13,6 +13,7 @@ namespace Game.UI.Inventory {
 
     public class KeyHint : MonoBehaviour {
         private const string GamepadGroup = "Gamepad";
+        private const float DisabledAlpha = 0.5f;
 
         [SerializeField]
         private Image keyImage;
@@ -46,6 +47,21 @@ namespace Game.UI.Inventory {
                 bindingGroup
             );
             ShowKeyText(display);
+        }
+
+        /// <summary>
+        /// Dims the key icon and label to indicate the bound action cannot be used.
+        /// </summary>
+        public void SetEnabled(bool enabled) {
+            float a = enabled ? 1f : DisabledAlpha;
+
+            var imgColor = keyImage.color;
+            imgColor.a = a;
+            keyImage.color = imgColor;
+
+            var txtColor = keyText.color;
+            txtColor.a = a;
+            keyText.color = txtColor;
         }
 
         private void ShowControllerSprite(Sprite sprite) {

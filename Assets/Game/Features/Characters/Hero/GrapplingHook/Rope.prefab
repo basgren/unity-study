@@ -48,5 +48,5 @@ MonoBehaviour:
     type: 3}
   segmentCount: 15
   constraintIterations: 5
-  gravityScale: 15
-  damping: 0.99
+  gravityScale: 20
+  damping: 0.9

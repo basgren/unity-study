@@ -7,5 +7,11 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
     /// with a trigger collider for detection.
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
-    public class GrapplingHookAnchor : MonoBehaviour { }
+    public class GrapplingHookAnchor : MonoBehaviour {
+        [SerializeField]
+        private Sprite anchorSprite;
+
+        [SerializeField]
+        private Sprite anchorActiveSprite;
+    }
 }
