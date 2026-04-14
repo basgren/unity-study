@@ -36,7 +36,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         private GrapplingHookAnchor targetAnchor;
         private GrapplingHookAnchor highlightedAnchor;
         private DistanceJoint2D swingJoint;
-        private bool isPerkButtonHeld;
         private bool jumpDetachPending;
 
         private readonly Collider2D[] anchorCandidates = new Collider2D[MaxAnchorCandidates];
@@ -92,7 +91,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 activeRope.Initialize(heroPos);
             }
 
-            isPerkButtonHeld = true;
             fsm.Go(HookState.Shooting);
         }
 
@@ -103,12 +101,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 return;
             }
 
-            // Track input release
-            if (player.Actions.UsePerk.WasReleasedThisFrame()) {
-                isPerkButtonHeld = false;
-            }
-
-            // Forced abort: hero hit or anchor destroyed during active states
+            // Forced abort: hero hit, grounded, or anchor destroyed during active states
             if (ShouldForceAbort()) {
                 CleanupAndGoIdle();
                 return;
@@ -120,9 +113,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                     break;
                 case HookState.Attached:
                     UpdateAttached();
-                    break;
-                case HookState.Retracting:
-                    UpdateRetracting();
                     break;
             }
 
@@ -139,11 +129,9 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 return;
             }
 
-            if (isPerkButtonHeld && targetAnchor != null) {
-                AttachToAnchor();
-            } else {
-                StartRetract();
-            }
+            // targetAnchor is guaranteed non-null here — ShouldForceAbort bails
+            // out earlier if it was destroyed mid-flight.
+            AttachToAnchor();
         }
 
         private void UpdateAttached() {
@@ -151,11 +139,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             // fired the jump with swing momentum — now clean up the hook.
             if (jumpDetachPending) {
                 jumpDetachPending = false;
-                CleanupAndGoIdle();
-                return;
-            }
-
-            if (!isPerkButtonHeld) {
                 CleanupAndGoIdle();
                 return;
             }
@@ -181,12 +164,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             var dir = player.Actions.Move.ReadValue<Vector2>();
             if (Mathf.Abs(dir.x) > 0.1f) {
                 playerRb.AddForce(new Vector2(dir.x * swingInfluenceForce, 0f));
-            }
-        }
-
-        private void UpdateRetracting() {
-            if (activeHook != null && activeHook.HasReturned) {
-                CleanupAndGoIdle();
             }
         }
 
@@ -221,22 +198,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             fsm.Go(HookState.Attached);
         }
 
-        private void StartRetract() {
-            if (swingJoint != null) {
-                Destroy(swingJoint);
-                swingJoint = null;
-            }
-
-            player.SetHookSwingMode(false);
-
-            if (activeHook != null) {
-                activeHook.ReturnTo(player.transform);
-                fsm.Go(HookState.Retracting);
-            } else {
-                CleanupAndGoIdle();
-            }
-        }
-
         private void CleanupAndGoIdle() {
             if (swingJoint != null) {
                 Destroy(swingJoint);
@@ -255,7 +216,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
             player.SetHookSwingMode(false);
             targetAnchor = null;
-            isPerkButtonHeld = false;
             fsm.ResetTo(HookState.Idle);
         }
 

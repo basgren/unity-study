@@ -50,3 +50,4 @@ MonoBehaviour:
   constraintIterations: 5
   gravityScale: 20
   damping: 0.9
+  tautnessBlend: 0.16

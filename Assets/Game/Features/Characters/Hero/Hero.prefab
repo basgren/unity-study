@@ -792,7 +792,7 @@ MonoBehaviour:
     type: 3}
   ropePrefab: {fileID: 8804120717180790289, guid: 560b304319221b948b170707115beb1b,
     type: 3}
-  swingInfluenceForce: 1.5
+  swingInfluenceForce: 10
 --- !u!1 &4688011009432296853
 GameObject:
   m_ObjectHideFlags: 0
