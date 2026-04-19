@@ -122,7 +122,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -295,7 +295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectileSpawner: {fileID: 3664229135569229136}
-  shootCooldown: 2
+  projectileLifetime: 5
   shotSound: {fileID: 11400000, guid: dc7c5bc6e7c5f824e988016dab254af9, type: 2}
 --- !u!114 &-8922686484826777971
 MonoBehaviour:

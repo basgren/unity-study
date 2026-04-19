@@ -224,6 +224,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Helm_7
       objectReference: {fileID: 0}
+    - target: {fileID: 7322997550620335432, guid: 1767eec503b79f84181a5e8e0e86f9a1,
+        type: 3}
+      propertyPath: saveId
+      value: Helm_80
+      objectReference: {fileID: 0}
     - target: {fileID: 8852871639174661363, guid: 1767eec503b79f84181a5e8e0e86f9a1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -287,6 +292,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_25
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -497,6 +507,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_53
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -639,6 +654,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_17
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -910,6 +930,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StoneDoor_4
       objectReference: {fileID: 0}
+    - target: {fileID: 7007661368979973105, guid: 684f3a08ce5cb9d4480ab909bdb04b37,
+        type: 3}
+      propertyPath: saveId
+      value: StoneDoor_71
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1163,6 +1188,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Helm_6
       objectReference: {fileID: 0}
+    - target: {fileID: 7322997550620335432, guid: 1767eec503b79f84181a5e8e0e86f9a1,
+        type: 3}
+      propertyPath: saveId
+      value: Helm_79
+      objectReference: {fileID: 0}
     - target: {fileID: 8852871639174661363, guid: 1767eec503b79f84181a5e8e0e86f9a1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1226,6 +1256,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_35
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -1294,6 +1329,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_14
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1546,6 +1586,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_9
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1774,6 +1819,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_40
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -1916,6 +1966,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 1755638677351726832, guid: 6627cbd6a3380434cbb44a7cc67d9860,
+        type: 3}
+      propertyPath: saveId
+      value: PotionSmall_60
+      objectReference: {fileID: 0}
     - target: {fileID: 6984090045565500870, guid: 6627cbd6a3380434cbb44a7cc67d9860,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2664,6 +2719,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1758995921}
     m_Modifications:
+    - target: {fileID: -3832196192249431684, guid: 4152606e3052ee04dbf17395fb5ab019,
+        type: 3}
+      propertyPath: saveId
+      value: Sharky_66
+      objectReference: {fileID: 0}
     - target: {fileID: 1260341882089066869, guid: 4152606e3052ee04dbf17395fb5ab019,
         type: 3}
       propertyPath: points.Array.size
@@ -2845,6 +2905,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3326566496236829332, guid: a3a751dd178ec0d48951dcdb7d8cd024,
+        type: 3}
+      propertyPath: saveId
+      value: Barrel_85
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3072,7 +3137,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10970,6 +11035,11 @@ PrefabInstance:
       propertyPath: itemId.value
       value: Coin
       objectReference: {fileID: 0}
+    - target: {fileID: 3095911836186864961, guid: 7c8336203ccf34c40ab8531105aa6856,
+        type: 3}
+      propertyPath: saveId
+      value: PotionMedium_56
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10983,6 +11053,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_23
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -11260,6 +11335,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StoneDoor_5
       objectReference: {fileID: 0}
+    - target: {fileID: 7007661368979973105, guid: 684f3a08ce5cb9d4480ab909bdb04b37,
+        type: 3}
+      propertyPath: saveId
+      value: StoneDoor_77
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11409,6 +11489,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_45
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -11537,6 +11622,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: StoneDoor_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7007661368979973105, guid: 684f3a08ce5cb9d4480ab909bdb04b37,
+        type: 3}
+      propertyPath: saveId
+      value: StoneDoor_70
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12082,6 +12172,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_42
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -12204,6 +12299,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3326566496236829332, guid: a3a751dd178ec0d48951dcdb7d8cd024,
+        type: 3}
+      propertyPath: saveId
+      value: Barrel_88
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12455,6 +12555,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_10
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12529,6 +12634,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_22
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -12689,6 +12799,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1933317284}
     m_Modifications:
+    - target: {fileID: -7183454011982891441, guid: c149d1ca663943f409e18b25df01fa0a,
+        type: 3}
+      propertyPath: saveId
+      value: BarrelDestructable_84
+      objectReference: {fileID: 0}
     - target: {fileID: 2986219559809948898, guid: c149d1ca663943f409e18b25df01fa0a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12763,6 +12878,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 1755638677351726832, guid: 6627cbd6a3380434cbb44a7cc67d9860,
+        type: 3}
+      propertyPath: saveId
+      value: PotionSmall_63
+      objectReference: {fileID: 0}
     - target: {fileID: 6984090045565500870, guid: 6627cbd6a3380434cbb44a7cc67d9860,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -13040,6 +13160,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 4701318569975424204, guid: f8053d59cad38cb4aa049e1c36d326e9,
+        type: 3}
+      propertyPath: saveId
+      value: SwordPickup_8
+      objectReference: {fileID: 0}
     - target: {fileID: 6308338862311096016, guid: f8053d59cad38cb4aa049e1c36d326e9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -13120,6 +13245,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_13
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -13305,6 +13435,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_54
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -13478,6 +13613,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1933317284}
     m_Modifications:
+    - target: {fileID: -7183454011982891441, guid: c149d1ca663943f409e18b25df01fa0a,
+        type: 3}
+      propertyPath: saveId
+      value: BarrelDestructable_82
+      objectReference: {fileID: 0}
     - target: {fileID: 2986219559809948898, guid: c149d1ca663943f409e18b25df01fa0a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -13626,6 +13766,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1933317284}
     m_Modifications:
+    - target: {fileID: -7183454011982891441, guid: c149d1ca663943f409e18b25df01fa0a,
+        type: 3}
+      propertyPath: saveId
+      value: BarrelDestructable_83
+      objectReference: {fileID: 0}
     - target: {fileID: 2986219559809948898, guid: c149d1ca663943f409e18b25df01fa0a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -13706,6 +13851,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_32
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -13780,6 +13930,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_52
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -13937,6 +14092,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_18
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -14047,6 +14207,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_37
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -14243,6 +14408,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_48
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -14385,6 +14555,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_33
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -14507,6 +14682,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: StoneDoor_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7007661368979973105, guid: 684f3a08ce5cb9d4480ab909bdb04b37,
+        type: 3}
+      propertyPath: saveId
+      value: StoneDoor_69
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -14727,6 +14907,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Helm_1
       objectReference: {fileID: 0}
+    - target: {fileID: 7322997550620335432, guid: 1767eec503b79f84181a5e8e0e86f9a1,
+        type: 3}
+      propertyPath: saveId
+      value: Helm_72
+      objectReference: {fileID: 0}
     - target: {fileID: 8852871639174661363, guid: 1767eec503b79f84181a5e8e0e86f9a1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -14946,6 +15131,11 @@ PrefabInstance:
         type: 3}
       propertyPath: dir
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4378280901850321434, guid: f18bc96b8c80a2d48a741127ca059f3f,
+        type: 3}
+      propertyPath: saveId
+      value: Pinky_65
       objectReference: {fileID: 0}
     - target: {fileID: 6189892179132693590, guid: f18bc96b8c80a2d48a741127ca059f3f,
         type: 3}
@@ -15299,6 +15489,11 @@ PrefabInstance:
         type: 3}
       propertyPath: itemId.value
       value: Coin
+      objectReference: {fileID: 0}
+    - target: {fileID: 3095911836186864961, guid: 7c8336203ccf34c40ab8531105aa6856,
+        type: 3}
+      propertyPath: saveId
+      value: PotionMedium_58
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15777,6 +15972,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StoneDoor_6
       objectReference: {fileID: 0}
+    - target: {fileID: 7007661368979973105, guid: 684f3a08ce5cb9d4480ab909bdb04b37,
+        type: 3}
+      propertyPath: saveId
+      value: StoneDoor_78
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15899,6 +16099,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_49
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -16181,6 +16386,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_39
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -16249,6 +16459,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 1755638677351726832, guid: 6627cbd6a3380434cbb44a7cc67d9860,
+        type: 3}
+      propertyPath: saveId
+      value: PotionSmall_62
+      objectReference: {fileID: 0}
     - target: {fileID: 6984090045565500870, guid: 6627cbd6a3380434cbb44a7cc67d9860,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -16391,6 +16606,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_50
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -16527,6 +16747,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_27
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -16675,6 +16900,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_36
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -16939,7 +17169,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -17014,6 +17244,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_31
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -17408,6 +17643,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_51
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -17544,6 +17784,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_20
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -17642,6 +17887,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_24
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -17784,6 +18034,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_12
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -17892,6 +18147,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Helm_5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7322997550620335432, guid: 1767eec503b79f84181a5e8e0e86f9a1,
+        type: 3}
+      propertyPath: saveId
+      value: Helm_76
       objectReference: {fileID: 0}
     - target: {fileID: 8852871639174661363, guid: 1767eec503b79f84181a5e8e0e86f9a1,
         type: 3}
@@ -18173,7 +18433,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -18384,6 +18644,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4378280901850321434, guid: f18bc96b8c80a2d48a741127ca059f3f,
+        type: 3}
+      propertyPath: saveId
+      value: Pinky_64
+      objectReference: {fileID: 0}
     - target: {fileID: 6189892179132693590, guid: f18bc96b8c80a2d48a741127ca059f3f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -18536,6 +18801,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 1755638677351726832, guid: 6627cbd6a3380434cbb44a7cc67d9860,
+        type: 3}
+      propertyPath: saveId
+      value: PotionSmall_59
+      objectReference: {fileID: 0}
     - target: {fileID: 6984090045565500870, guid: 6627cbd6a3380434cbb44a7cc67d9860,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -18874,6 +19144,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_19
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -18960,6 +19235,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_21
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -19040,6 +19320,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 1755638677351726832, guid: 6627cbd6a3380434cbb44a7cc67d9860,
+        type: 3}
+      propertyPath: saveId
+      value: PotionSmall_61
+      objectReference: {fileID: 0}
     - target: {fileID: 6984090045565500870, guid: 6627cbd6a3380434cbb44a7cc67d9860,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -19108,6 +19393,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_41
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -19570,6 +19860,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_28
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -19644,6 +19939,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_30
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -19769,6 +20069,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 4701318569975424204, guid: f8053d59cad38cb4aa049e1c36d326e9,
+        type: 3}
+      propertyPath: saveId
+      value: SwordPickup_5
+      objectReference: {fileID: 0}
     - target: {fileID: 6308338862311096016, guid: f8053d59cad38cb4aa049e1c36d326e9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -20179,6 +20484,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Helm_8
       objectReference: {fileID: 0}
+    - target: {fileID: 7322997550620335432, guid: 1767eec503b79f84181a5e8e0e86f9a1,
+        type: 3}
+      propertyPath: saveId
+      value: Helm_81
+      objectReference: {fileID: 0}
     - target: {fileID: 8852871639174661363, guid: 1767eec503b79f84181a5e8e0e86f9a1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -20332,6 +20642,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Helm_4
       objectReference: {fileID: 0}
+    - target: {fileID: 7322997550620335432, guid: 1767eec503b79f84181a5e8e0e86f9a1,
+        type: 3}
+      propertyPath: saveId
+      value: Helm_75
+      objectReference: {fileID: 0}
     - target: {fileID: 8852871639174661363, guid: 1767eec503b79f84181a5e8e0e86f9a1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -20407,6 +20722,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_55
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -20603,6 +20923,11 @@ PrefabInstance:
       propertyPath: itemId.value
       value: Coin
       objectReference: {fileID: 0}
+    - target: {fileID: 3095911836186864961, guid: 7c8336203ccf34c40ab8531105aa6856,
+        type: 3}
+      propertyPath: saveId
+      value: PotionMedium_57
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20724,6 +21049,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5488970526600631103, guid: de4bcf0bdcf849b4fa9025940c177b2a,
+        type: 3}
+      propertyPath: saveId
+      value: Seashell_4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20743,6 +21073,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_43
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -20879,6 +21214,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_26
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -21292,6 +21632,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3326566496236829332, guid: a3a751dd178ec0d48951dcdb7d8cd024,
+        type: 3}
+      propertyPath: saveId
+      value: Barrel_87
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21445,6 +21790,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: StoneDoor_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7007661368979973105, guid: 684f3a08ce5cb9d4480ab909bdb04b37,
+        type: 3}
+      propertyPath: saveId
+      value: StoneDoor_68
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -21631,6 +21981,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_44
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -21810,6 +22165,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3326566496236829332, guid: a3a751dd178ec0d48951dcdb7d8cd024,
+        type: 3}
+      propertyPath: saveId
+      value: Barrel_86
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21841,6 +22201,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_15
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -21949,6 +22314,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 6413417521712154668, guid: 6c68941588b8e714ebb69081c50949f6,
+        type: 3}
+      propertyPath: saveId
+      value: CoinGold_11
+      objectReference: {fileID: 0}
     - target: {fileID: 7731894230931129530, guid: 6c68941588b8e714ebb69081c50949f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -22159,6 +22529,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Helm_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7322997550620335432, guid: 1767eec503b79f84181a5e8e0e86f9a1,
+        type: 3}
+      propertyPath: saveId
+      value: Helm_73
       objectReference: {fileID: 0}
     - target: {fileID: 8852871639174661363, guid: 1767eec503b79f84181a5e8e0e86f9a1,
         type: 3}
@@ -22710,6 +23085,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_46
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -23080,6 +23460,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 4701318569975424204, guid: f8053d59cad38cb4aa049e1c36d326e9,
+        type: 3}
+      propertyPath: saveId
+      value: SwordPickup_7
+      objectReference: {fileID: 0}
     - target: {fileID: 6308338862311096016, guid: f8053d59cad38cb4aa049e1c36d326e9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -23201,6 +23586,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_38
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -23269,6 +23659,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_29
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -23450,6 +23845,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1857425453}
     m_Modifications:
+    - target: {fileID: -3832196192249431684, guid: 4152606e3052ee04dbf17395fb5ab019,
+        type: 3}
+      propertyPath: saveId
+      value: Sharky_2
+      objectReference: {fileID: 0}
     - target: {fileID: 3756431542319373569, guid: 4152606e3052ee04dbf17395fb5ab019,
         type: 3}
       propertyPath: m_RootOrder
@@ -23737,6 +24137,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3326566496236829332, guid: a3a751dd178ec0d48951dcdb7d8cd024,
+        type: 3}
+      propertyPath: saveId
+      value: Barrel_67
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -23842,6 +24247,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_47
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -23958,7 +24368,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -49473,6 +49883,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_34
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -49843,6 +50258,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4728321442296951619, guid: 83c66b5d8681fc4468ad111364888566,
+        type: 3}
+      propertyPath: saveId
+      value: Cannon_3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -50329,6 +50749,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Chest_1
       objectReference: {fileID: 0}
+    - target: {fileID: 8926185346270837195, guid: cc6c8709ce7c00f4991b5e6569695ac5,
+        type: 3}
+      propertyPath: saveId
+      value: Chest_6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -50342,6 +50767,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 432232146}
     m_Modifications:
+    - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
+        type: 3}
+      propertyPath: saveId
+      value: CoinSilver_16
+      objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: m_Name
@@ -50455,6 +50885,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Helm_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7322997550620335432, guid: 1767eec503b79f84181a5e8e0e86f9a1,
+        type: 3}
+      propertyPath: saveId
+      value: Helm_74
       objectReference: {fileID: 0}
     - target: {fileID: 8852871639174661363, guid: 1767eec503b79f84181a5e8e0e86f9a1,
         type: 3}
@@ -50827,6 +51262,11 @@ PrefabInstance:
         type: 3}
       propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7834512391048576123, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
+        type: 3}
+      propertyPath: saveId
+      value: Hero_1
       objectReference: {fileID: 0}
     - target: {fileID: 7955825364520398428, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
