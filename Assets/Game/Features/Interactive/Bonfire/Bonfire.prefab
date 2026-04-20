@@ -367,7 +367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionCollider: {fileID: 3891102520603796445}
-  interactionPriority: 0
+  interactionPriority: 10
   actionText:
     m_TableReference:
       m_TableCollectionName: GUID:c33ce59ea9c687f478f3c689c642afc6

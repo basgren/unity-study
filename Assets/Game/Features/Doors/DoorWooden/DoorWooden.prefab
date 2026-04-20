@@ -221,9 +221,9 @@ MonoBehaviour:
   interactionPriority: 0
   actionText:
     m_TableReference:
-      m_TableCollectionName: 
+      m_TableCollectionName: GUID:c33ce59ea9c687f478f3c689c642afc6
     m_TableEntryReference:
-      m_KeyId: 0
+      m_KeyId: 5457658069864448
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0

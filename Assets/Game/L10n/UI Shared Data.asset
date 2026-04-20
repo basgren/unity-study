@@ -91,6 +91,10 @@ MonoBehaviour:
     m_Key: ui.interaction.offer_gifts
     m_Metadata:
       m_Items: []
+  - m_Id: 5457658069864448
+    m_Key: ui.interaction.enter
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

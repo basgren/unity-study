@@ -98,6 +98,10 @@ MonoBehaviour:
     m_Localized: Offer gifts
     m_Metadata:
       m_Items: []
+  - m_Id: 5457658069864448
+    m_Localized: Enter
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
