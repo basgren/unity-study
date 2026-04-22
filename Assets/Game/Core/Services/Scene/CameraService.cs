@@ -1,4 +1,5 @@
 using Cinemachine;
+using Game.Features.Effects.Camera;
 using UnityEngine;
 
 namespace Game.Core.Services.Scene {
@@ -90,6 +91,11 @@ namespace Game.Core.Services.Scene {
             }
 
             return applied;
+        }
+        
+        public void ShakeCamera() {
+            var vcam = FindAnyObjectByType<CameraShakeEffect>();
+            vcam.Shake();
         }
     }
 }

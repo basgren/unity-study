@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6836785096376548313}
   - component: {fileID: 6836785096376548312}
   - component: {fileID: 6836785096376548315}
+  - component: {fileID: 753815626166125076}
   m_Layer: 0
   m_Name: CM vcam1
   m_TagString: Untagged
@@ -90,6 +91,20 @@ MonoBehaviour:
   m_BoundingShape2D: {fileID: 0}
   m_ConfineScreenEdges: 1
   m_Damping: 0
+--- !u!114 &753815626166125076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6836785096376548294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47405fed972a5114da845a6bc0194f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.3
+  frequency: 3
 --- !u!1 &6836785096633589312
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,6 +299,7 @@ GameObject:
   - component: {fileID: 6836785096905509859}
   - component: {fileID: 6836785096905509861}
   - component: {fileID: 6836785096905509858}
+  - component: {fileID: 9097375419083307282}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -361,6 +377,23 @@ MonoBehaviour:
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 1
   m_MaximumOrthoSize: 5000
+--- !u!114 &9097375419083307282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6836785096905509856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  m_PivotOffset: {x: 0, y: 0, z: 0}
+  m_AmplitudeGain: 1
+  m_FrequencyGain: 0
+  mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &6836785097171975456
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,7 +490,7 @@ Transform:
   m_GameObject: {fileID: 6836785097826028693}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -218.43001, y: 75.43, z: -10}
+  m_LocalPosition: {x: -204.55476, y: 70.735954, z: -100.27804}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -490,10 +523,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+    x: 0.059674505
+    y: 0.31350482
+    width: 0.43399638
+    height: 0.43408358
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
