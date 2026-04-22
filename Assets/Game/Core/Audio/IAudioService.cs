@@ -26,5 +26,32 @@ namespace Game.Core.Audio {
         IAudioLoopHandle PlayLoopFollow(AudioCue cue, Transform follow, bool is3D = true);
 
         IAudioLoopHandle PlayLoopAt(AudioCue cue, Vector3 worldPosition, bool is3D = true);
+
+        /// <summary>
+        /// Assigns the current level's looped music cue and starts playing it. Typically
+        /// called by a per-scene component (e.g. <c>LevelEntryPoint</c>) in <c>Start</c>.
+        /// Stopping an existing track is handled internally so each level has a single
+        /// active music handle.
+        /// </summary>
+        void SetLevelMusic(AudioCue cue);
+
+        /// <summary>
+        /// Stops the current level music (with optional fade-out) and forgets the assigned cue.
+        /// Called when the level is torn down.
+        /// </summary>
+        void ClearLevelMusic(float fadeOutSeconds = 0.25f);
+
+        /// <summary>
+        /// Ducks the currently assigned level music without clearing the assignment.
+        /// Pair with <see cref="StartLevelMusic"/> to bring the same cue back.
+        /// Intended for events like hero death that want to silence the track temporarily.
+        /// </summary>
+        void StopLevelMusic(float fadeOutSeconds = 0.25f);
+
+        /// <summary>
+        /// Re-starts the currently assigned level music from the beginning. No-op when
+        /// no cue has been assigned.
+        /// </summary>
+        void StartLevelMusic();
     }
 }

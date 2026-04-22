@@ -1,4 +1,4 @@
-﻿using Game.Configs;
+using Game.Configs;
 using Game.Core.Audio;
 using Game.Core.Services;
 using Game.Core.Services.Dialog;
@@ -7,6 +7,7 @@ using Game.Core.Services.Locale;
 using Game.Core.Services.Scene;
 using Game.Core.Services.SceneState;
 using Game.Core.Services.Tween;
+using Game.Features.Effects.DeathScreen;
 
 namespace Game.Core.Bootstrap {
     /// <summary>
@@ -35,5 +36,6 @@ namespace Game.Core.Bootstrap {
         public static SceneTravelService SceneTravel { get; internal set; }
         public static SceneStateService SceneState { get; internal set; }
         public static CameraService Camera { get; internal set; }
+        public static DeathScreenEffect DeathEffect { get; internal set; }
     }
 }

@@ -7,6 +7,7 @@ using Game.Core.Services.Dialog;
 using Game.Core.Services.Locale;
 using Game.Core.Services.Scene;
 using Game.Core.Services.Tween;
+using Game.Features.Effects.DeathScreen;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -50,6 +51,8 @@ namespace Game.Core.Bootstrap {
             G.Tween = GetOrCreate<TweenService>("TweenService");
             G.Locale = GetOrCreate<LocaleService>("LocaleService");
             G.Dialog = GetOrCreate<DialogService>("DialogService");
+            G.DeathEffect = GetOrCreate<DeathScreenEffect>("DeathScreenEffect");
+            G.DeathEffect.Init(mainConfig.DeathScreen);
             G.Game.playerConfig = mainConfig.Player;
             G.Game.Init();
 

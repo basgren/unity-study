@@ -1,6 +1,7 @@
 using Game.Audio.Dialog;
 using Game.Core.Services.SceneState;
 using Game.Core.UI;
+using Game.Features.Effects.DeathScreen;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
@@ -35,6 +36,9 @@ namespace Game.Configs {
         
         [Header("Scene State")]
         public SceneCatalog SceneCatalog;
+
+        [Header("Effects")]
+        public DeathScreenSettings DeathScreen = new DeathScreenSettings();
 
         [Header("Debug")]
         public bool EscQuitsImmediately;

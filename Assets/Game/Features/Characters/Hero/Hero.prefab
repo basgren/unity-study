@@ -558,6 +558,7 @@ MonoBehaviour:
   groundDustPrefab: {fileID: 1526976483526385961, guid: e10df518c928ddd409277f7fc43929e9,
     type: 3}
   deadGroundedSound: {fileID: 0}
+  deathJingleCue: {fileID: 11400000, guid: b6e25b6253ca849459b9d4d106dc2479, type: 2}
   parrotPrefab: {fileID: 4342028724218311932, guid: b5cd547685304ed43bace093d73b58a2,
     type: 3}
   shieldAuraPrefab: {fileID: 343861194092680416, guid: 00a44931322ccec4fb8ee5dcbdf64436,

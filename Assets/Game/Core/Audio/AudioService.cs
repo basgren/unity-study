@@ -34,6 +34,9 @@ namespace Game.Core.Audio {
 
         private AudioListener cachedListener;
         private Transform cachedListenerTransform;
+
+        private AudioCue currentMusicCue;
+        private IAudioLoopHandle musicHandle;
         
         /// <summary>
         /// Initializes the pool root and pre-creates a set of AudioSources.
@@ -159,6 +162,36 @@ namespace Game.Core.Audio {
             source.Play();
 
             return new AudioLoopHandle(this, source);
+        }
+
+        public void SetLevelMusic(AudioCue cue) {
+            currentMusicCue = cue;
+            StartLevelMusic();
+        }
+
+        public void ClearLevelMusic(float fadeOutSeconds = 0.25f) {
+            StopLevelMusic(fadeOutSeconds);
+            currentMusicCue = null;
+        }
+
+        public void StopLevelMusic(float fadeOutSeconds = 0.25f) {
+            if (musicHandle == null) {
+                return;
+            }
+
+            musicHandle.Stop(fadeOutSeconds);
+            musicHandle = null;
+        }
+
+        public void StartLevelMusic() {
+            // Always drop a previous handle so we end up with a single active loop.
+            StopLevelMusic(0f);
+
+            if (currentMusicCue == null) {
+                return;
+            }
+
+            musicHandle = PlayLoopAt(currentMusicCue, Vector3.zero, is3D: false);
         }
 
         public IAudioLoopHandle PlayLoopFollow(AudioCue cue, Transform follow, bool is3D = true) {

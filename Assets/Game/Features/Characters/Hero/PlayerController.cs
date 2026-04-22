@@ -43,7 +43,6 @@ namespace Game.Features.Characters.Hero {
         private const string SwordThrowPointObjectName = "SwordThrowPoint";
         private const float MinFallHeightForDustEffect = 2.8f;
         private const float WaitBeforeRespawn = 1.5f;
-        private const float WaitBeforeRestart = 2.5f;
 
         [Header("Jump")]
         [SerializeField]
@@ -70,6 +69,9 @@ namespace Game.Features.Characters.Hero {
         
         [SerializeField]
         private AudioCue deadGroundedSound;
+
+        [SerializeField, Tooltip("One-shot jingle played when the hero dies (scene-reload / checkpoint respawn).")]
+        private AudioCue deathJingleCue;
 
         [Header("Companions")]
         [SerializeField]
@@ -193,7 +195,7 @@ namespace Game.Features.Characters.Hero {
                 var bonfire = BonfireUtils.FindByIdInScene(gameObject.scene, checkpointRef.LocalId);
                 
                 if (bonfire != null) {
-                    transform.position = bonfire.GetSpawnPosition();
+                    TeleportAndNotifyCamera(bonfire.GetSpawnPosition());
                 } else {
                     Debug.LogWarning($"Checkpoint bonfire '{checkpointRef.LocalId}' not found after scene load.");
                 }
@@ -207,6 +209,10 @@ namespace Game.Features.Characters.Hero {
                     SetCanTakeDamage(true);
                     SetControlsEnabled(true);
                 }
+            } else {
+                // Fresh scene load (including post-death scene reload). The shared input
+                // action map is disabled globally when the hero dies, so re-enable it here.
+                SetControlsEnabled(true);
             }
         }
 
@@ -679,7 +685,11 @@ namespace Game.Features.Characters.Hero {
             isDead = true;
             isDiedThisFrame = true;
             damageable.IgnoreDamage = true;
-            StartCoroutine(WaitAndRestart(WaitBeforeRestart));
+            PlayDeathJingle();
+            // TODO: [BG] Leave for refactor - move to some service like game manager.
+            //   player should not manage own death or even respawn. I should throw some message
+            //   and game manager should decide what to do.
+            G.DeathEffect.Play(transform, () => G.SceneTravel.ReloadActiveScene());
         }
 
         private void ShowHitAndRespawnAtSafePoint() {
@@ -690,14 +700,6 @@ namespace Game.Features.Characters.Hero {
             StartCoroutine(WaitAndRespawn(WaitBeforeRespawn));
         }
 
-        private IEnumerator WaitAndRestart(float seconds) {
-            yield return new WaitForSeconds(seconds);
-            // TODO: [BG] Leave for refactor - move to some service like game manager.
-            //   player should not manage own death or even respawn. I should throw some message
-            //   and game manager should decide what to do.
-            G.SceneTravel.ReloadActiveScene();
-        }
-
         private IEnumerator WaitAndRespawn(float seconds) {
             yield return new WaitForSeconds(seconds);
             RespawnAtSafePoint();
@@ -705,9 +707,22 @@ namespace Game.Features.Characters.Hero {
 
         private void RespawnAtSafePoint() {
             isDead = false;
-            transform.position = safePointTracker.LastSafePosition;
+            TeleportAndNotifyCamera(safePointTracker.LastSafePosition);
             damageable.IgnoreDamage = false;
             Actions.Enable();
+        }
+
+        /// <summary>
+        /// Moves the hero to <paramref name="position"/> and tells Cinemachine the follow
+        /// target warped, so the camera cuts instantly instead of interpolating from the
+        /// previous location (would otherwise be visible as a pan after a distant respawn).
+        /// </summary>
+        private void TeleportAndNotifyCamera(Vector3 position) {
+            var delta = position - transform.position;
+            transform.position = position;
+            if (G.Camera != null) {
+                G.Camera.NotifyTargetTeleported(transform, delta);
+            }
         }
 
         private void ShowHitAndRespawnAtCheckpoint() {
@@ -715,12 +730,25 @@ namespace Game.Features.Characters.Hero {
             isDead = true;
             isDiedThisFrame = true;
             damageable.IgnoreDamage = true;
-            StartCoroutine(WaitAndRespawnAtCheckpoint(WaitBeforeRestart));
+            PlayDeathJingle();
+            G.DeathEffect.Play(transform, RespawnAtCheckpointNow);
         }
 
-        private IEnumerator WaitAndRespawnAtCheckpoint(float seconds) {
-            yield return new WaitForSeconds(seconds);
+        /// <summary>
+        /// Ducks the level music and plays the one-shot death jingle. Used by both full-death
+        /// paths (scene reload and checkpoint respawn). Cross-scene reloads don't need to
+        /// restart music manually — the new scene's <c>LevelEntryPoint</c> re-assigns music
+        /// on its own.
+        /// </summary>
+        private void PlayDeathJingle() {
+            G.Audio.StopLevelMusic();
 
+            if (deathJingleCue != null) {
+                G.Audio.Play2D(deathJingleCue);
+            }
+        }
+
+        private void RespawnAtCheckpointNow() {
             var checkpointRef = G.Checkpoint.Current.Value;
             var checkpointSceneName = checkpointRef.Scene.GetSceneName();
             var currentScene = SceneManager.GetActiveScene().name;
@@ -729,6 +757,8 @@ namespace Game.Features.Characters.Hero {
                 var bonfire = BonfireUtils.FindByIdInScene(gameObject.scene, checkpointRef.LocalId);
                 if (bonfire != null) {
                     RespawnAtPosition(bonfire.GetSpawnPosition());
+                    // Same-scene respawn does not trigger AfterTransition, so clear overlay manually.
+                    G.DeathEffect.ResetVisuals();
                 } else {
                     Debug.LogWarning($"Checkpoint bonfire '{checkpointRef.LocalId}' not found in scene '{currentScene}'.");
                 }
@@ -739,10 +769,12 @@ namespace Game.Features.Characters.Hero {
         }
 
         private void RespawnAtPosition(Vector2 position) {
-            transform.position = position;
+            TeleportAndNotifyCamera(position);
             RestoreHealthAfterRespawn();
             SetCanTakeDamage(true);
             SetControlsEnabled(true);
+            // Same-scene respawn keeps the existing music assignment; bring it back.
+            G.Audio.StartLevelMusic();
         }
 
         private void RestoreHealthAfterRespawn() {
