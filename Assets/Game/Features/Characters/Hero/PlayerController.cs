@@ -744,8 +744,13 @@ namespace Game.Features.Characters.Hero {
             G.Audio.StopLevelMusic();
 
             if (deathJingleCue != null) {
-                G.Audio.Play2D(deathJingleCue);
+                StartCoroutine(DoPlayDeathJingle());
             }
+        }
+
+        private IEnumerator DoPlayDeathJingle() {
+            yield return new WaitForSeconds(0.5f);
+            G.Audio.Play2D(deathJingleCue);
         }
 
         private void RespawnAtCheckpointNow() {

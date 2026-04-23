@@ -39,7 +39,7 @@ MonoBehaviour:
     DesaturateDuration: 1
     InitialRadius: 1
     FinalRadius: 0.1
-    IrisStartDelay: 0
+    IrisStartDelay: 0.5
     IrisShrinkDuration: 1
     VignetteDarkness: 1
     EdgeWidth: 0.05
