@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1290938051147762994
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6934113165172886074}
+  - component: {fileID: -1144834375147217311}
+  - component: {fileID: 2990067969367480825}
+  - component: {fileID: 6285042971051317519}
+  m_Layer: 0
+  m_Name: SpectralSword
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6934113165172886074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290938051147762994}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-1144834375147217311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290938051147762994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee1da0eed5f34e4f9629895bc6a72fc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dir: 1
+--- !u!212 &2990067969367480825
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290938051147762994}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 140021888, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 2, y: 2}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &6285042971051317519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290938051147762994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fdb43fb6e0c4b1bbfa67c522ab9e231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frameRate: 10
+  playOnStart: 1
+  randomStartFrame: 0
+  destroyOnComplete: 0
+  clips:
+  - name: Spawn
+    sprites:
+    - {fileID: -475851966, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: -530207029, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: 1544943323, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: 522619555, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: -2051182578, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: 1674078604, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    loop: 0
+    allowNextClip: 1
+    onComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  - name: Idle
+    sprites:
+    - {fileID: 140021888, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: -1010409810, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: -2059383452, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: 419657692, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    loop: 1
+    allowNextClip: 0
+    onComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  - name: Destroy
+    sprites:
+    - {fileID: -1689996870, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: 304010767, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: 964091277, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: 1694690624, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: -1193075128, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    - {fileID: 1141965026, guid: 55bb91cbbd8ba634d9ff1e35be9c1de0, type: 3}
+    loop: 0
+    allowNextClip: 0
+    onComplete:
+      m_PersistentCalls:
+        m_Calls: []
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  onNewFrame:
+    m_PersistentCalls:
+      m_Calls: []
