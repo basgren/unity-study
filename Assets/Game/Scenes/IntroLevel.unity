@@ -51429,6 +51429,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8dea58ace78f33d4fba9d846c763fde1, type: 3}
+--- !u!114 &842264268 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4593274046022195235, guid: 982d30b7d08d281419c8a12d7ca864c1,
+    type: 3}
+  m_PrefabInstance: {fileID: 640329278373858082}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadc0b1c6b7298a4e99bba15233cd293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &842350584 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4915699577960438699, guid: 8dea58ace78f33d4fba9d846c763fde1,
@@ -106814,6 +106826,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: VengefulSpirit
       objectReference: {fileID: 0}
+    - target: {fileID: 7928936516301895556, guid: 982d30b7d08d281419c8a12d7ca864c1,
+        type: 3}
+      propertyPath: controlSource
+      value: 
+      objectReference: {fileID: 842264268}
     - target: {fileID: 8275140094215272945, guid: 982d30b7d08d281419c8a12d7ca864c1,
         type: 3}
       propertyPath: m_LocalPosition.x
