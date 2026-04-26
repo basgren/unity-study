@@ -92,6 +92,11 @@ When changing code:
 - do not rename things casually
 - do not move files unless required
 
+## Documentation Rules
+- For diagrams in Markdown documents (planning docs, design notes, READMEs), use Mermaid fenced code blocks (```` ```mermaid ````). Do not use ASCII-art diagrams
+- Pick the appropriate Mermaid diagram type for the content: `sequenceDiagram` for call/message flows, `stateDiagram-v2` for state machines, `flowchart` for general control flow, `classDiagram` for type relationships
+- Keep node and participant labels short; put detail in surrounding prose, not inside the diagram
+
 ## Risk Areas
 Be extra careful with:
 - serialized fields
