@@ -10,10 +10,11 @@ namespace Game.Features.Bosses.VengefulSpirit {
     /// - Move     : fly (X/Y) — WASD + arrows
     /// - Interact : melee attack (C key) — temporary stand-in for a dedicated boss "Attack" action
     /// - UseItem  : spawn shield (A key) — temporary stand-in for a dedicated boss cast action
+    /// - UsePerk  : cast spectral swords (S key / RT) — temporary stand-in for a dedicated boss cast action
     ///
-    /// The Interact/UseItem choice is only to avoid modifying the shared InputActions asset during
-    /// stage 1 prototyping. When the boss moves past debug input, add dedicated BossAttack /
-    /// BossSpawnShield actions and swap the references here.
+    /// The Interact/UseItem/UsePerk choice is only to avoid modifying the shared InputActions asset
+    /// during stage 1 prototyping. When the boss moves past debug input, add dedicated BossAttack /
+    /// BossSpawnShield / BossCastSwords actions and swap the references here.
     /// </summary>
     public class VengefulSpiritInputControlSource : VengefulSpiritControlSource {
         private InputActions.PlayerActions playerActions;
@@ -30,8 +31,9 @@ namespace Game.Features.Bosses.VengefulSpirit {
 
             bool attack = playerActions.Interact.WasPressedThisFrame();
             bool spawnShield = playerActions.UseItem.WasPressedThisFrame();
+            bool castSwords = playerActions.UsePerk.WasPressedThisFrame();
 
-            currentCommand = new VengefulSpiritCommand(x, y, attack, spawnShield);
+            currentCommand = new VengefulSpiritCommand(x, y, attack, spawnShield, castSwords);
         }
 
         public override VengefulSpiritCommand? GetCommand() {

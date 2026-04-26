@@ -236,6 +236,7 @@ MonoBehaviour:
   shieldPrefab: {fileID: 8841868304860845073, guid: 5ac87a2e6b2540e47982f39d94cc0a19,
     type: 3}
   shieldSpawnPoint: {fileID: 4967578808239809182}
+  defaultSwordAnchor: {fileID: 0}
 --- !u!114 &4593274046022195235
 MonoBehaviour:
   m_ObjectHideFlags: 0

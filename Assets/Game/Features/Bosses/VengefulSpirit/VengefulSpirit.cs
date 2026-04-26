@@ -1,6 +1,7 @@
 using Core.Components.Base2D;
 using Game.Core.Components.Base2D;
 using Game.Core.Components.Damage;
+using Game.Features.Bosses.VengefulSpirit.SpectralSwords;
 using Game.Features.Characters.PinkStar;
 using UnityEngine;
 
@@ -19,7 +20,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
     /// </summary>
     internal enum VengefulSpiritCastAction {
         None,
-        SpawnShield
+        SpawnShield,
+        CastSwords
     }
 
     /// <summary>
@@ -30,12 +32,14 @@ namespace Game.Features.Bosses.VengefulSpirit {
         public readonly int YDirection;   // -1 down, 0 idle, +1 up
         public readonly bool Attack;      // one-shot melee thrust trigger
         public readonly bool SpawnShield; // one-shot cast: spawn the spectral shield
+        public readonly bool CastSwords;  // one-shot cast: launch a spectral-sword wave
 
-        public VengefulSpiritCommand(int xDirection, int yDirection, bool attack, bool spawnShield) {
+        public VengefulSpiritCommand(int xDirection, int yDirection, bool attack, bool spawnShield, bool castSwords) {
             XDirection = xDirection;
             YDirection = yDirection;
             Attack = attack;
             SpawnShield = spawnShield;
+            CastSwords = castSwords;
         }
     }
 
@@ -84,6 +88,11 @@ namespace Game.Features.Bosses.VengefulSpirit {
 
         [SerializeField]
         private Transform shieldSpawnPoint;
+
+        [Header("Spectral Swords")]
+        [Tooltip("Anchors available to sword casts, keyed by name. The Default entry is fired by the input-driven debug cast; AI picks a name at runtime via GetSwordAnchor.")]
+        [SerializeField]
+        private SpectralSwordAnchorBinding[] swordAnchors;
 
         private Rigidbody2D myRigidbody;
         private Animator myAnimator;
@@ -136,6 +145,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 isAttacking = false;
                 isAttackDecelerating = false;
                 attackElapsed = 0f;
+                CancelAllSwordCasts();
                 StopMovement();
             }
         }
@@ -178,6 +188,11 @@ namespace Game.Features.Bosses.VengefulSpirit {
 
             if (value.SpawnShield) {
                 BeginCast(VengefulSpiritCastAction.SpawnShield);
+                return;
+            }
+
+            if (value.CastSwords) {
+                BeginCast(VengefulSpiritCastAction.CastSwords);
                 return;
             }
 
@@ -242,7 +257,59 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 case VengefulSpiritCastAction.SpawnShield:
                     SpawnShield();
                     break;
+                case VengefulSpiritCastAction.CastSwords:
+                    BeginSwordWave();
+                    break;
             }
+        }
+
+        // Anchor name used by the input-driven debug cast. AI picks other names via GetSwordAnchor.
+        private const string DefaultSwordAnchorName = "Default";
+
+        private void BeginSwordWave() {
+            SpectralSwordSpawnAnchor anchor = GetSwordAnchor(DefaultSwordAnchorName);
+            if (anchor == null) {
+                Debug.LogError($"[VengefulSpirit] No SpectralSwordSpawnAnchor wired for name '{DefaultSwordAnchorName}'. Cast aborted — check the Sword Anchors array on this boss.", this);
+                // Wiring missing — never strand the cast in isCasting=true.
+                OnSwordCastComplete();
+                return;
+            }
+            anchor.Cast(OnSwordCastComplete);
+        }
+
+        /// <summary>
+        /// Returns the anchor wired for the given name, or <c>null</c> if no entry matches.
+        /// AI / state code calls this to pick a situational anchor by name. Names are
+        /// author-defined per boss in the inspector; comparison is case-sensitive. Silent
+        /// on miss — callers that intend to fire the cast should log on null.
+        /// </summary>
+        public SpectralSwordSpawnAnchor GetSwordAnchor(string name) {
+            if (swordAnchors == null || string.IsNullOrEmpty(name)) {
+                return null;
+            }
+            for (int i = 0; i < swordAnchors.Length; i++) {
+                if (swordAnchors[i].name == name) {
+                    return swordAnchors[i].anchor;
+                }
+            }
+            return null;
+        }
+
+        private void CancelAllSwordCasts() {
+            if (swordAnchors == null) {
+                return;
+            }
+            for (int i = 0; i < swordAnchors.Length; i++) {
+                SpectralSwordSpawnAnchor a = swordAnchors[i].anchor;
+                if (a != null) {
+                    a.CancelActiveCast();
+                }
+            }
+        }
+
+        private void OnSwordCastComplete() {
+            isCasting = false;
+            pendingCastAction = VengefulSpiritCastAction.None;
         }
 
         /// <summary>
