@@ -1,4 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using Core.Components.Base2D;
+using Game.Core.Bootstrap;
 using Game.Core.Components.Base2D;
 using Game.Core.Components.Damage;
 using Game.Features.Bosses.VengefulSpirit.SpectralSwords;
@@ -97,6 +100,12 @@ namespace Game.Features.Bosses.VengefulSpirit {
         [SerializeField]
         private SpectralSwordAnchorBinding[] swordAnchors;
 
+        [Tooltip("Time the boss holds the Charge state before swords actually fire. Lets the " +
+                 "telegraph be tuned independently of the cast clip length. The Charge animation " +
+                 "loops, so any value works visually.")]
+        [SerializeField]
+        private float swordCastChargeDuration = 1.5f;
+
         [Header("Teleport")]
         [SerializeField]
         private SpiritTeleporter teleporter;
@@ -106,13 +115,27 @@ namespace Game.Features.Bosses.VengefulSpirit {
         [SerializeField]
         private TeleportAnchorBinding[] teleportAnchors;
 
+        [Header("Encounter")]
+        [Tooltip("If on, the boss engages BossFightService on enable so the boss health bar appears " +
+                 "automatically. Turn off when the encounter is gated by a cutscene or trigger that " +
+                 "calls G.BossFight.EngageBoss explicitly.")]
+        [SerializeField]
+        private bool autoEngageOnEnable = true;
+
         private Rigidbody2D myRigidbody;
         private Animator myAnimator;
         private Facing2D facing;
         private Damageable damageable;
+        private Damageable currentShieldDamageable;
 
         private bool isCasting;
         private VengefulSpiritCastAction pendingCastAction;
+        // Anchor name to use for the next sword cast. AI sets this via RequestSwordCast;
+        // unset means the cast falls back to DefaultSwordAnchorName.
+        private string nextSwordAnchorName;
+        // Sword casts run their own charge timer instead of using the animation event so
+        // the telegraph length is tunable. Held here for cancellation on death.
+        private Coroutine swordCastChargeRoutine;
         private bool isAttacking;
         private bool isAttackDecelerating;
         private float attackElapsed;
@@ -122,11 +145,40 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private bool wasHitThisFrame;
         private bool diedThisFrame;
 
+        public bool IsAttacking => isAttacking;
+        public bool IsCasting => isCasting;
+        public bool IsTeleporting => isTeleporting;
+        public bool IsBusy => isAttacking || isCasting || isTeleporting;
+        public bool IsDead => isDead;
+        public Damageable Damageable => damageable;
+
         private void Awake() {
             myRigidbody = GetComponent<Rigidbody2D>();
             myAnimator = GetComponent<Animator>();
             facing = GetComponent<Facing2D>();
             damageable = GetComponent<Damageable>();
+        }
+
+        private void OnEnable() {
+            if (!autoEngageOnEnable) {
+                return;
+            }
+
+            if (damageable == null) {
+                damageable = GetComponent<Damageable>();
+            }
+
+            if (damageable != null && G.BossFight != null) {
+                G.BossFight.EngageBoss(damageable);
+            }
+        }
+
+        private void OnDisable() {
+            DetachShieldDamageable();
+
+            if (G.BossFight != null) {
+                G.BossFight.DisengageBoss();
+            }
         }
 
         private void Update() {
@@ -155,6 +207,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 diedThisFrame = true;
                 isCasting = false;
                 pendingCastAction = VengefulSpiritCastAction.None;
+                StopSwordCastChargeRoutine();
                 isAttacking = false;
                 isAttackDecelerating = false;
                 attackElapsed = 0f;
@@ -167,6 +220,11 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 damageable.IgnoreDamage = false;
                 CancelAllSwordCasts();
                 StopMovement();
+
+                DetachShieldDamageable();
+                if (G.BossFight != null) {
+                    G.BossFight.DisengageBoss();
+                }
             }
         }
 
@@ -234,6 +292,35 @@ namespace Game.Features.Bosses.VengefulSpirit {
             isCasting = true;
             pendingCastAction = action;
             StopMovement();
+
+            if (action == VengefulSpiritCastAction.CastSwords) {
+                // Sword cast charge is timed in code, not by the animation event. The
+                // animation event is ignored for sword casts; SpawnShield still uses it.
+                StopSwordCastChargeRoutine();
+                swordCastChargeRoutine = StartCoroutine(SwordCastChargeRoutine());
+            }
+        }
+
+        private IEnumerator SwordCastChargeRoutine() {
+            float duration = Mathf.Max(0f, swordCastChargeDuration);
+            if (duration > 0f) {
+                yield return new WaitForSeconds(duration);
+            }
+            swordCastChargeRoutine = null;
+
+            // Cancelled (death cleanup clears pendingCastAction).
+            if (pendingCastAction != VengefulSpiritCastAction.CastSwords) {
+                yield break;
+            }
+            pendingCastAction = VengefulSpiritCastAction.None;
+            BeginSwordWave();
+        }
+
+        private void StopSwordCastChargeRoutine() {
+            if (swordCastChargeRoutine != null) {
+                StopCoroutine(swordCastChargeRoutine);
+                swordCastChargeRoutine = null;
+            }
         }
 
         private void BeginAttack() {
@@ -276,36 +363,62 @@ namespace Game.Features.Bosses.VengefulSpirit {
 
         /// <summary>
         /// Animation event hook. Called from the cast animation at the moment the
-        /// queued cast action should take effect. Dispatches based on the action
-        /// requested when the cast was initiated, then consumes the slot so a looping
-        /// clip cannot fire the effect a second time.
+        /// queued cast action should take effect. SpawnShield still uses this path;
+        /// CastSwords is timed by <see cref="SwordCastChargeRoutine"/> instead, so the
+        /// animation event is a no-op for sword casts (the Charge clip loops).
         /// </summary>
         public void OnCastEffect() {
-            VengefulSpiritCastAction action = pendingCastAction;
-            pendingCastAction = VengefulSpiritCastAction.None;
-
-            switch (action) {
-                case VengefulSpiritCastAction.SpawnShield:
-                    SpawnShield();
-                    break;
-                case VengefulSpiritCastAction.CastSwords:
-                    BeginSwordWave();
-                    break;
+            if (pendingCastAction == VengefulSpiritCastAction.SpawnShield) {
+                pendingCastAction = VengefulSpiritCastAction.None;
+                SpawnShield();
             }
         }
 
-        // Anchor name used by the input-driven debug cast. AI picks other names via GetSwordAnchor.
+        // Anchor name used by the input-driven debug cast. AI picks other names via RequestSwordCast.
         private const string DefaultSwordAnchorName = "Default";
 
         private void BeginSwordWave() {
-            SpectralSwordSpawnAnchor anchor = GetSwordAnchor(DefaultSwordAnchorName);
+            string anchorName = !string.IsNullOrEmpty(nextSwordAnchorName)
+                ? nextSwordAnchorName
+                : DefaultSwordAnchorName;
+            nextSwordAnchorName = null;
+
+            SpectralSwordSpawnAnchor anchor = GetSwordAnchor(anchorName);
             if (anchor == null) {
-                Debug.LogError($"[VengefulSpirit] No SpectralSwordSpawnAnchor wired for name '{DefaultSwordAnchorName}'. Cast aborted — check the Sword Anchors array on this boss.", this);
+                Debug.LogError($"[VengefulSpirit] No SpectralSwordSpawnAnchor wired for name '{anchorName}'. Cast aborted — check the Sword Anchors array on this boss.", this);
                 // Wiring missing — never strand the cast in isCasting=true.
                 OnSwordCastComplete();
                 return;
             }
             anchor.Cast(OnSwordCastComplete);
+        }
+
+        /// <summary>
+        /// AI-facing: trigger a sword cast that fires from the named anchor instead of the
+        /// default. Goes through the same charge-and-animate cast lifecycle as the
+        /// command-driven cast — early-returns if the boss is currently busy.
+        /// </summary>
+        public void RequestSwordCast(string anchorName) {
+            if (isCasting || isAttacking || isTeleporting || isDead) {
+                return;
+            }
+            nextSwordAnchorName = anchorName;
+            BeginCast(VengefulSpiritCastAction.CastSwords);
+        }
+
+        /// <summary>
+        /// AI-facing: enumerate every wired sword anchor (skipping null bindings).
+        /// Caller may inspect each anchor's <c>Position</c> to make situational picks.
+        /// </summary>
+        public IEnumerable<SpectralSwordAnchorBinding> EnumerateSwordAnchors() {
+            if (swordAnchors == null) {
+                yield break;
+            }
+            for (int i = 0; i < swordAnchors.Length; i++) {
+                if (swordAnchors[i].anchor != null) {
+                    yield return swordAnchors[i];
+                }
+            }
         }
 
         /// <summary>
@@ -344,7 +457,10 @@ namespace Game.Features.Bosses.VengefulSpirit {
         }
 
         private void BeginTeleport() {
-            TeleportAnchor target = PickTeleportDestination();
+            BeginTeleportTo(PickTeleportDestination());
+        }
+
+        private void BeginTeleportTo(TeleportAnchor target) {
             if (target == null || teleporter == null) {
                 // Wiring missing — silently no-op rather than locking the boss.
                 return;
@@ -358,6 +474,33 @@ namespace Game.Features.Bosses.VengefulSpirit {
             // hit during the first slice of the fade-out. The teleporter calls
             // OnTeleportDamageGraceElapsed() once the grace window expires.
             teleporter.Run(target.transform.position, OnTeleportDamageGraceElapsed, OnTeleportComplete);
+        }
+
+        /// <summary>
+        /// AI-facing: trigger the teleport sequence to the specified anchor, bypassing
+        /// the default random selection. Early-returns if the boss is currently busy.
+        /// </summary>
+        public void RequestTeleport(TeleportAnchor target) {
+            if (isCasting || isAttacking || isTeleporting || isDead) {
+                return;
+            }
+            BeginTeleportTo(target);
+        }
+
+        /// <summary>
+        /// AI-facing: enumerate every wired teleport anchor (skipping null bindings).
+        /// Caller may inspect each anchor's transform to make situational picks
+        /// (closest / farthest from a target, behind player, etc.).
+        /// </summary>
+        public IEnumerable<TeleportAnchorBinding> EnumerateTeleportAnchors() {
+            if (teleportAnchors == null) {
+                yield break;
+            }
+            for (int i = 0; i < teleportAnchors.Length; i++) {
+                if (teleportAnchors[i].anchor != null) {
+                    yield return teleportAnchors[i];
+                }
+            }
         }
 
         private void OnTeleportDamageGraceElapsed() {
@@ -447,8 +590,19 @@ namespace Game.Features.Bosses.VengefulSpirit {
         /// <summary>
         /// Animation event hook. Called at the end of the cast animation. Releases
         /// the cast lock so the boss can act again.
+        ///
+        /// Sword casts are timed by <see cref="SwordCastChargeRoutine"/>, which holds
+        /// the cast lifecycle for <c>swordCastChargeDuration</c> regardless of clip
+        /// length. The Charge clip loops, and its animation event fires every loop —
+        /// if we let it clear the cast state here, the in-flight charge coroutine
+        /// would wake up to see <c>pendingCastAction = None</c> and bail without
+        /// spawning swords. So while a sword cast is charging, this hook is a no-op.
+        /// Shield casts still flow through normally.
         /// </summary>
         public void OnCastAnimationEnd() {
+            if (swordCastChargeRoutine != null) {
+                return;
+            }
             isCasting = false;
             pendingCastAction = VengefulSpiritCastAction.None;
         }
@@ -463,6 +617,35 @@ namespace Game.Features.Bosses.VengefulSpirit {
             // and the shield's reflection must always render from the same side.
             GameObject instance = Instantiate(shieldPrefab, shieldSpawnPoint.position, Quaternion.identity);
             instance.AddComponent<TransformFollow2D>().Target = shieldSpawnPoint;
+
+            DetachShieldDamageable();
+            currentShieldDamageable = instance.GetComponent<Damageable>();
+            if (currentShieldDamageable != null) {
+                currentShieldDamageable.OnHealthChanged += HandleShieldHealthChanged;
+                if (G.BossFight != null) {
+                    G.BossFight.EngageShield(currentShieldDamageable);
+                }
+            }
+        }
+
+        private void HandleShieldHealthChanged(float newHealth) {
+            if (newHealth > 0f) {
+                return;
+            }
+
+            DetachShieldDamageable();
+            if (G.BossFight != null) {
+                G.BossFight.DisengageShield();
+            }
+        }
+
+        private void DetachShieldDamageable() {
+            if (currentShieldDamageable == null) {
+                return;
+            }
+
+            currentShieldDamageable.OnHealthChanged -= HandleShieldHealthChanged;
+            currentShieldDamageable = null;
         }
 
         private void ApplyMovement(int xDir, int yDir) {

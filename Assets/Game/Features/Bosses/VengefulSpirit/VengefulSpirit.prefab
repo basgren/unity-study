@@ -16,8 +16,8 @@ GameObject:
   - component: {fileID: 5223937638513023395}
   - component: {fileID: 4885581648679665941}
   - component: {fileID: 7928936516301895556}
-  - component: {fileID: 4593274046022195235}
   - component: {fileID: 3339738452761767103}
+  - component: {fileID: 5041671256731797226}
   m_Layer: 15
   m_Name: VengefulSpirit
   m_TagString: Untagged
@@ -240,18 +240,6 @@ MonoBehaviour:
   swordAnchors: []
   teleporter: {fileID: 3339738452761767103}
   teleportAnchors: []
---- !u!114 &4593274046022195235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1748432154551571425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cadc0b1c6b7298a4e99bba15233cd293, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3339738452761767103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,6 +258,33 @@ MonoBehaviour:
   damageGraceDuration: 0.1
   hiddenDuration: 2
   fadeInDuration: 1
+--- !u!114 &5041671256731797226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748432154551571425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c187b48c2dcd7441b2948db0bbb55e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boss: {fileID: 0}
+  centerAnchorName: Center
+  phaseShiftHealthFraction: 0.5
+  phase1Cadence: 2
+  phase1ShieldHealthThreshold: 0.8
+  phase1CrowdingDistance: 3
+  phase1CrowdingTime: 1
+  phase2Cadence: 1
+  phase2SwordWallSpacing: 0.5
+  phase2ReactiveTeleportCooldown: 4
+  phase2ReactiveDistance: 1.5
+  phase2ReactiveHitWindow: 0.3
+  meleeApproachDuration: 0.5
+  shieldRespawnCooldown: 8
+  warmupDelay: 1
 --- !u!1 &2404865273855181125
 GameObject:
   m_ObjectHideFlags: 0

@@ -53,6 +53,7 @@ namespace Game.Core.Bootstrap {
             G.Dialog = GetOrCreate<DialogService>("DialogService");
             G.DeathEffect = GetOrCreate<DeathScreenEffect>("DeathScreenEffect");
             G.DeathEffect.Init(mainConfig.DeathScreen);
+            G.BossFight = GetOrCreate<BossFightService>("BossFightService");
             G.Game.playerConfig = mainConfig.Player;
             G.Game.Init();
 
