@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 4885581648679665941}
   - component: {fileID: 7928936516301895556}
   - component: {fileID: 4593274046022195235}
+  - component: {fileID: 3339738452761767103}
   m_Layer: 15
   m_Name: VengefulSpirit
   m_TagString: Untagged
@@ -236,7 +237,9 @@ MonoBehaviour:
   shieldPrefab: {fileID: 8841868304860845073, guid: 5ac87a2e6b2540e47982f39d94cc0a19,
     type: 3}
   shieldSpawnPoint: {fileID: 4967578808239809182}
-  defaultSwordAnchor: {fileID: 0}
+  swordAnchors: []
+  teleporter: {fileID: 3339738452761767103}
+  teleportAnchors: []
 --- !u!114 &4593274046022195235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,6 +252,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cadc0b1c6b7298a4e99bba15233cd293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3339738452761767103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748432154551571425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8df8498df5c5cd846a27cc03adcb69b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 8314647025852165948}
+  teleportRoot: {fileID: 8275140094215272945}
+  fadeOutDuration: 1
+  damageGraceDuration: 0.1
+  hiddenDuration: 2
+  fadeInDuration: 1
 --- !u!1 &2404865273855181125
 GameObject:
   m_ObjectHideFlags: 0

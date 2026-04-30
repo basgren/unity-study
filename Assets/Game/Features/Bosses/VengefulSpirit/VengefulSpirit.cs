@@ -2,6 +2,7 @@ using Core.Components.Base2D;
 using Game.Core.Components.Base2D;
 using Game.Core.Components.Damage;
 using Game.Features.Bosses.VengefulSpirit.SpectralSwords;
+using Game.Features.Bosses.VengefulSpirit.Teleport;
 using Game.Features.Characters.PinkStar;
 using UnityEngine;
 
@@ -33,13 +34,15 @@ namespace Game.Features.Bosses.VengefulSpirit {
         public readonly bool Attack;      // one-shot melee thrust trigger
         public readonly bool SpawnShield; // one-shot cast: spawn the spectral shield
         public readonly bool CastSwords;  // one-shot cast: launch a spectral-sword wave
+        public readonly bool Teleport;    // one-shot: fade out, relocate, fade in
 
-        public VengefulSpiritCommand(int xDirection, int yDirection, bool attack, bool spawnShield, bool castSwords) {
+        public VengefulSpiritCommand(int xDirection, int yDirection, bool attack, bool spawnShield, bool castSwords, bool teleport) {
             XDirection = xDirection;
             YDirection = yDirection;
             Attack = attack;
             SpawnShield = spawnShield;
             CastSwords = castSwords;
+            Teleport = teleport;
         }
     }
 
@@ -94,6 +97,15 @@ namespace Game.Features.Bosses.VengefulSpirit {
         [SerializeField]
         private SpectralSwordAnchorBinding[] swordAnchors;
 
+        [Header("Teleport")]
+        [SerializeField]
+        private SpiritTeleporter teleporter;
+
+        [Tooltip("Predefined teleport destinations. AI / debug picks one by name; if no name " +
+                 "is supplied, a random anchor different from the closest one to the boss is used.")]
+        [SerializeField]
+        private TeleportAnchorBinding[] teleportAnchors;
+
         private Rigidbody2D myRigidbody;
         private Animator myAnimator;
         private Facing2D facing;
@@ -105,6 +117,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private bool isAttackDecelerating;
         private float attackElapsed;
         private float attackInitialSpeed;
+        private bool isTeleporting;
         private bool isDead;
         private bool wasHitThisFrame;
         private bool diedThisFrame;
@@ -145,6 +158,13 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 isAttacking = false;
                 isAttackDecelerating = false;
                 attackElapsed = 0f;
+                isTeleporting = false;
+                if (teleporter != null) {
+                    // Snap alpha back to 1 so the death animation isn't played on an invisible sprite.
+                    teleporter.Cancel();
+                }
+                // Re-enable damage in case death lands during the teleport's immune window.
+                damageable.IgnoreDamage = false;
                 CancelAllSwordCasts();
                 StopMovement();
             }
@@ -181,19 +201,30 @@ namespace Game.Features.Bosses.VengefulSpirit {
 
             VengefulSpiritCommand value = command.Value;
 
-            if (value.Attack) {
-                BeginAttack();
-                return;
-            }
+            // While teleporting the boss still processes movement (so it may keep
+            // coasting, change direction, or stop), but action flags are skipped.
+            // The control source is contracted not to send actions during a
+            // teleport; the !isTeleporting gate here is defensive.
+            if (!isTeleporting) {
+                if (value.Attack) {
+                    BeginAttack();
+                    return;
+                }
 
-            if (value.SpawnShield) {
-                BeginCast(VengefulSpiritCastAction.SpawnShield);
-                return;
-            }
+                if (value.SpawnShield) {
+                    BeginCast(VengefulSpiritCastAction.SpawnShield);
+                    return;
+                }
 
-            if (value.CastSwords) {
-                BeginCast(VengefulSpiritCastAction.CastSwords);
-                return;
+                if (value.CastSwords) {
+                    BeginCast(VengefulSpiritCastAction.CastSwords);
+                    return;
+                }
+
+                if (value.Teleport) {
+                    BeginTeleport();
+                    return;
+                }
             }
 
             ApplyMovement(value.XDirection, value.YDirection);
@@ -310,6 +341,107 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private void OnSwordCastComplete() {
             isCasting = false;
             pendingCastAction = VengefulSpiritCastAction.None;
+        }
+
+        private void BeginTeleport() {
+            TeleportAnchor target = PickTeleportDestination();
+            if (target == null || teleporter == null) {
+                // Wiring missing — silently no-op rather than locking the boss.
+                return;
+            }
+
+            isTeleporting = true;
+            // Velocity is intentionally NOT reset — the spirit may keep coasting at its
+            // current speed during the fade-out, hidden hold, and fade-in.
+
+            // IgnoreDamage is NOT flipped here — the boss can still take a final
+            // hit during the first slice of the fade-out. The teleporter calls
+            // OnTeleportDamageGraceElapsed() once the grace window expires.
+            teleporter.Run(target.transform.position, OnTeleportDamageGraceElapsed, OnTeleportComplete);
+        }
+
+        private void OnTeleportDamageGraceElapsed() {
+            if (damageable != null) {
+                damageable.IgnoreDamage = true;
+            }
+        }
+
+        private void OnTeleportComplete() {
+            isTeleporting = false;
+            if (damageable != null) {
+                damageable.IgnoreDamage = false;
+            }
+        }
+
+        /// <summary>
+        /// Returns the teleport anchor wired for the given name, or <c>null</c> if no
+        /// entry matches. Case-sensitive. AI / state code uses this to pick a specific
+        /// destination; the input-driven path falls back to <see cref="PickTeleportDestination"/>.
+        /// </summary>
+        public TeleportAnchor GetTeleportAnchor(string name) {
+            if (teleportAnchors == null || string.IsNullOrEmpty(name)) {
+                return null;
+            }
+            for (int i = 0; i < teleportAnchors.Length; i++) {
+                if (teleportAnchors[i].name == name) {
+                    return teleportAnchors[i].anchor;
+                }
+            }
+            return null;
+        }
+
+        // Picks a random anchor that is NOT the closest one to the boss's current position.
+        // Falls back to the closest anchor if it is the only one wired.
+        private TeleportAnchor PickTeleportDestination() {
+            if (teleportAnchors == null || teleportAnchors.Length == 0) {
+                return null;
+            }
+
+            int closestIndex = -1;
+            float closestSqr = float.PositiveInfinity;
+            for (int i = 0; i < teleportAnchors.Length; i++) {
+                TeleportAnchor a = teleportAnchors[i].anchor;
+                if (a == null) {
+                    continue;
+                }
+                float d = (a.transform.position - transform.position).sqrMagnitude;
+                if (d < closestSqr) {
+                    closestSqr = d;
+                    closestIndex = i;
+                }
+            }
+
+            int candidateCount = 0;
+            for (int i = 0; i < teleportAnchors.Length; i++) {
+                if (i == closestIndex) {
+                    continue;
+                }
+                if (teleportAnchors[i].anchor != null) {
+                    candidateCount++;
+                }
+            }
+
+            if (candidateCount == 0) {
+                return closestIndex >= 0 ? teleportAnchors[closestIndex].anchor : null;
+            }
+
+            int pick = UnityEngine.Random.Range(0, candidateCount);
+            int seen = 0;
+            for (int i = 0; i < teleportAnchors.Length; i++) {
+                if (i == closestIndex) {
+                    continue;
+                }
+                TeleportAnchor a = teleportAnchors[i].anchor;
+                if (a == null) {
+                    continue;
+                }
+                if (seen == pick) {
+                    return a;
+                }
+                seen++;
+            }
+
+            return null;
         }
 
         /// <summary>
