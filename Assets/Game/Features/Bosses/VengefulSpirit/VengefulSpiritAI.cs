@@ -86,7 +86,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
     /// gates chasing in the burst-movement system, so the boss has no
     /// reason to close distance while it cannot punish.</description></item>
     /// <item><description><b>Shield</b> (<c>shieldRespawnCooldown</c>):
-    /// minimum time between SpawnShield casts.</description></item>
+    /// minimum time between the destruction of one shield and the cast of
+    /// another. While a shield is alive, a new cast is blocked outright.</description></item>
     /// <item><description><b>Reactive teleport</b>
     /// (<c>phase2ReactiveTeleportCooldown</c>): floor on how often the
     /// hit-triggered escape can fire, so a stunlocked player still gets
@@ -158,9 +159,10 @@ namespace Game.Features.Bosses.VengefulSpirit {
         [SerializeField]
         private float meleeApproachDuration = 0.5f;
 
-        [Tooltip("Minimum time between two shield casts. Prevents constant shielding.")]
+        [Tooltip("Cooldown after the active shield is destroyed before another may be spawned. " +
+                 "While a shield is alive a new one cannot be cast regardless of this value.")]
         [SerializeField]
-        private float shieldRespawnCooldown = 8f;
+        private float shieldRespawnCooldown = 30f;
 
         [Tooltip("Initial silence at fight start so the boss eases in.")]
         [SerializeField]
@@ -209,7 +211,11 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private bool phaseShiftDone;
         private Coroutine activeBehavior;
         private float nextActionTime;
-        private float lastShieldTime = float.NegativeInfinity;
+        // Stamped when a previously-active shield is destroyed; the cooldown is measured
+        // from this point, not from the spawn time, so the boss "rests" for the full window
+        // after losing a shield.
+        private float shieldEndedTime = float.NegativeInfinity;
+        private bool prevHasShield;
         private float lastMeleeTime = float.NegativeInfinity;
         private float lastReactiveTeleportTime = float.NegativeInfinity;
         private float playerCloseSince = float.PositiveInfinity;
@@ -240,7 +246,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
             nextActionTime = Time.time + warmupDelay;
             nextMovementDecisionTime = Time.time + warmupDelay;
             playerCloseSince = float.PositiveInfinity;
-            lastShieldTime = float.NegativeInfinity;
+            shieldEndedTime = float.NegativeInfinity;
+            prevHasShield = false;
             lastMeleeTime = float.NegativeInfinity;
             lastReactiveTeleportTime = float.NegativeInfinity;
             phaseShiftDone = false;
@@ -277,6 +284,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
 
             TrackPlayerProximity();
             TrackBossHits();
+            TrackShield();
             UpdatePhase();
 
             if (phase == VengefulSpiritPhase.Two) {
@@ -643,9 +651,10 @@ namespace Game.Features.Bosses.VengefulSpirit {
 
         // Phase 1/2 shield: pulses the SpawnShield flag for a single frame. The boss's
         // cast lifecycle takes over from there (animation event spawns the shield).
+        // The respawn cooldown is started from the moment the shield is destroyed
+        // (TrackShield), not from the cast pulse.
         private IEnumerator SpawnShieldBeat() {
             pendingSpawnShield = true;
-            lastShieldTime = Time.time;
             yield return WaitForBusyCycle();
         }
 
@@ -709,7 +718,6 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private IEnumerator ShieldBashCombo() {
             if (CanSpawnShield()) {
                 pendingSpawnShield = true;
-                lastShieldTime = Time.time;
                 yield return WaitForBusyCycle();
             }
 
@@ -861,6 +869,17 @@ namespace Game.Features.Bosses.VengefulSpirit {
             prevBossHealth = curHp;
         }
 
+        // Edge-detects the moment the active shield is destroyed and stamps shieldEndedTime.
+        // CanSpawnShield then measures the cooldown from that timestamp, so the boss waits the
+        // full window after losing a shield (not after spawning one).
+        private void TrackShield() {
+            bool curHasShield = boss != null && boss.HasActiveShield;
+            if (prevHasShield && !curHasShield) {
+                shieldEndedTime = Time.time;
+            }
+            prevHasShield = curHasShield;
+        }
+
         private bool IsMeleeReady() {
             return Time.time - lastMeleeTime >= meleeCooldown;
         }
@@ -873,6 +892,11 @@ namespace Game.Features.Bosses.VengefulSpirit {
             if (boss.Damageable == null) {
                 return false;
             }
+            // Hard physical gate: only one shield at a time. The boss enforces this too,
+            // but checking here keeps the AI from queueing a useless cast.
+            if (boss.HasActiveShield) {
+                return false;
+            }
             float maxHp = boss.Damageable.maxHealth;
             float curHp = boss.Damageable.Health;
             if (maxHp <= 0f) {
@@ -882,7 +906,10 @@ namespace Game.Features.Bosses.VengefulSpirit {
             bool hpGateMet = phase == VengefulSpiritPhase.Two
                 ? true
                 : curHp / maxHp <= phase1ShieldHealthThreshold;
-            return hpGateMet && Time.time - lastShieldTime >= shieldRespawnCooldown;
+            // Cooldown is measured from when the previous shield was destroyed, not spawned.
+            // shieldEndedTime starts at -Infinity so the first cast is unrestricted.
+            bool cooldownMet = Time.time - shieldEndedTime >= shieldRespawnCooldown;
+            return hpGateMet && cooldownMet;
         }
 
         // -------- Anchor selection --------

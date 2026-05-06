@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 5404996478625001672}
   - component: {fileID: 2022309755493545209}
   - component: {fileID: 5111614366329057176}
-  m_Layer: 16
+  - component: {fileID: 2567354405233010202}
+  m_Layer: 15
   m_Name: SpectralShield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +138,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.023441851}
@@ -162,9 +163,47 @@ MonoBehaviour:
   knockbackForce: 0
   onHit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2567354405233010202}
+        m_TargetAssemblyTypeName: Game.Features.Bosses.VengefulSpirit.SpectralShield.SpectralShield,
+          Assembly-CSharp
+        m_MethodName: OnHit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onDeath:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2567354405233010202}
+        m_TargetAssemblyTypeName: Game.Features.Bosses.VengefulSpirit.SpectralShield.SpectralShield,
+          Assembly-CSharp
+        m_MethodName: OnBeforeDestroy
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   hitSound: {fileID: 0}
   destroySound: {fileID: 0}
+--- !u!114 &2567354405233010202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8841868304860845073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 502a93f9e85c78341aa5c753662153e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

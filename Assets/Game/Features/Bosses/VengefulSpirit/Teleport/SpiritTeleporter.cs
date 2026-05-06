@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Features.Bosses.VengefulSpirit.Teleport {
@@ -41,7 +42,34 @@ namespace Game.Features.Bosses.VengefulSpirit.Teleport {
 
         private Coroutine activeRun;
 
+        // Extra renderers (e.g., the spectral shield) that fade together with the boss.
+        // Registered dynamically because the shield is spawned at runtime.
+        private readonly List<SpriteRenderer> additionalRenderers = new List<SpriteRenderer>();
+
         public bool IsRunning => activeRun != null;
+
+        /// <summary>
+        /// Registers an extra <see cref="SpriteRenderer"/> whose alpha will be driven in
+        /// lockstep with the main sprite during fade-in / fade-out. Used by the boss to
+        /// fade the active shield together with itself when teleporting.
+        /// </summary>
+        public void RegisterFader(SpriteRenderer renderer) {
+            if (renderer == null || additionalRenderers.Contains(renderer)) {
+                return;
+            }
+            additionalRenderers.Add(renderer);
+        }
+
+        /// <summary>
+        /// Reverses <see cref="RegisterFader"/>. Safe to call with a null or unknown
+        /// renderer.
+        /// </summary>
+        public void UnregisterFader(SpriteRenderer renderer) {
+            if (renderer == null) {
+                return;
+            }
+            additionalRenderers.Remove(renderer);
+        }
 
         /// <summary>
         /// Runs the full disappear/reposition/reappear sequence.
@@ -132,12 +160,26 @@ namespace Game.Features.Bosses.VengefulSpirit.Teleport {
         }
 
         private void SetAlpha(float a) {
-            if (spriteRenderer == null) {
+            ApplyAlpha(spriteRenderer, a);
+
+            for (int i = additionalRenderers.Count - 1; i >= 0; i--) {
+                SpriteRenderer r = additionalRenderers[i];
+                if (r == null) {
+                    // Renderer destroyed (e.g. shield despawned mid-fade) — drop it.
+                    additionalRenderers.RemoveAt(i);
+                    continue;
+                }
+                ApplyAlpha(r, a);
+            }
+        }
+
+        private static void ApplyAlpha(SpriteRenderer r, float a) {
+            if (r == null) {
                 return;
             }
-            Color c = spriteRenderer.color;
+            Color c = r.color;
             c.a = a;
-            spriteRenderer.color = c;
+            r.color = c;
         }
     }
 }

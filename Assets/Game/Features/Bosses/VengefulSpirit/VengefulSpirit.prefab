@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 7928936516301895556}
   - component: {fileID: 3339738452761767103}
   - component: {fileID: 5041671256731797226}
+  - component: {fileID: 1834633764671298695}
   m_Layer: 15
   m_Name: VengefulSpirit
   m_TagString: Untagged
@@ -238,8 +239,10 @@ MonoBehaviour:
     type: 3}
   shieldSpawnPoint: {fileID: 4967578808239809182}
   swordAnchors: []
+  swordCastChargeDuration: 1.5
   teleporter: {fileID: 3339738452761767103}
   teleportAnchors: []
+  autoEngageOnEnable: 1
 --- !u!114 &3339738452761767103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,9 +285,29 @@ MonoBehaviour:
   phase2ReactiveTeleportCooldown: 4
   phase2ReactiveDistance: 1.5
   phase2ReactiveHitWindow: 0.3
+  meleeCooldown: 6
   meleeApproachDuration: 0.5
   shieldRespawnCooldown: 8
   warmupDelay: 1
+  preferredDistanceMin: 4
+  preferredDistanceMax: 8
+  personalSpaceDistance: 2.5
+  movementDecisionInterval: {x: 2, y: 4}
+  chaseChanceComfortable: 0.15
+  chaseChanceFar: 0.4
+  sidewaysDriftChance: 0.15
+--- !u!114 &1834633764671298695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748432154551571425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadc0b1c6b7298a4e99bba15233cd293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2404865273855181125
 GameObject:
   m_ObjectHideFlags: 0

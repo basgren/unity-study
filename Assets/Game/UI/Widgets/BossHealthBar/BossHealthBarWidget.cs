@@ -172,6 +172,14 @@ namespace Game.UI.Widgets.BossHealthBar {
         }
 
         private void OnShieldHealthChanged(float newHealth) {
+            // The boss subscribes to the shield's OnHealthChanged before us, and on the
+            // fatal-hit invocation it disengages the shield (which unbinds us) before our
+            // handler runs. Guard against the now-null reference rather than depending on
+            // subscriber order.
+            if (shieldDamageable == null) {
+                return;
+            }
+
             shieldView.OnHealthChanged(newHealth, shieldDamageable.maxHealth);
         }
 

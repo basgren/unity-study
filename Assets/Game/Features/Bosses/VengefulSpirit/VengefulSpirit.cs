@@ -116,9 +116,9 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private TeleportAnchorBinding[] teleportAnchors;
 
         [Header("Encounter")]
-        [Tooltip("If on, the boss engages BossFightService on enable so the boss health bar appears " +
-                 "automatically. Turn off when the encounter is gated by a cutscene or trigger that " +
-                 "calls G.BossFight.EngageBoss explicitly.")]
+        [Tooltip("If on, the boss engages BossFightService on enable so the boss health bar appears " +                         
+                 "automatically. Turn off when the encounter is gated by a cutscene or trigger that " +                         
+                 "calls G.BossFight.EngageBoss explicitly.")]                       
         [SerializeField]
         private bool autoEngageOnEnable = true;
 
@@ -127,6 +127,15 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private Facing2D facing;
         private Damageable damageable;
         private Damageable currentShieldDamageable;
+        private SpriteRenderer[] currentShieldRenderers;
+        // The shield's animator clips use WriteDefaultValues, so the idle clip overwrites
+        // the SpriteRenderer alpha every frame. We disable these for the duration of a
+        // teleport so the teleporter's fade is the sole driver of the shield's alpha.
+        private Animator[] currentShieldAnimators;
+        // Composed inputs to Damageable.IgnoreDamage. Both states layer onto each other —
+        // a teleport that begins while a shield is active must keep the boss immune even
+        // after the teleport ends, and vice-versa.
+        private bool isTeleportImmune;
 
         private bool isCasting;
         private VengefulSpiritCastAction pendingCastAction;
@@ -151,12 +160,23 @@ namespace Game.Features.Bosses.VengefulSpirit {
         public bool IsBusy => isAttacking || isCasting || isTeleporting;
         public bool IsDead => isDead;
         public Damageable Damageable => damageable;
+        /// <summary>
+        /// True while a spectral shield instance is alive in the world. The boss component
+        /// gates shield spawning on this; AI may also read it to avoid stacking shield casts.
+        /// </summary>
+        public bool HasActiveShield => currentShieldDamageable != null;
+
+        // Tracks the controlSource value the boss has already synced sibling enable-flags to,
+        // so we only walk GetComponents when the assignment actually changes.
+        private VengefulSpiritControlSource lastSyncedControlSource;
 
         private void Awake() {
             myRigidbody = GetComponent<Rigidbody2D>();
             myAnimator = GetComponent<Animator>();
             facing = GetComponent<Facing2D>();
             damageable = GetComponent<Damageable>();
+            SyncControlSourceEnabled();
+            lastSyncedControlSource = controlSource;
         }
 
         private void OnEnable() {
@@ -174,7 +194,9 @@ namespace Game.Features.Bosses.VengefulSpirit {
         }
 
         private void OnDisable() {
+            isTeleportImmune = false;
             DetachShieldDamageable();
+            RefreshIgnoreDamage();
 
             if (G.BossFight != null) {
                 G.BossFight.DisengageBoss();
@@ -182,6 +204,15 @@ namespace Game.Features.Bosses.VengefulSpirit {
         }
 
         private void Update() {
+            // Pick up inspector-time / runtime swaps of the control source — the boss owns
+            // which source is active, so it also owns enabling the right one and disabling
+            // the rest. Sources stay naive and just don't tick when their MonoBehaviour is
+            // disabled.
+            if (controlSource != lastSyncedControlSource) {
+                SyncControlSourceEnabled();
+                lastSyncedControlSource = controlSource;
+            }
+
             CheckDamageState();
 
             if (isDead) {
@@ -189,6 +220,17 @@ namespace Game.Features.Bosses.VengefulSpirit {
             }
 
             ExecuteCommand();
+        }
+
+        // Walks every VengefulSpiritControlSource on this GameObject and enables only the
+        // one matching the assigned controlSource (others get disabled). Toggling
+        // MonoBehaviour.enabled stops their Update / coroutines and triggers OnDisable /
+        // OnEnable for clean state transitions.
+        private void SyncControlSourceEnabled() {
+            var sources = GetComponents<VengefulSpiritControlSource>();
+            for (int i = 0; i < sources.Length; i++) {
+                sources[i].enabled = sources[i] == controlSource;
+            }
         }
 
         private void CheckDamageState() {
@@ -212,16 +254,19 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 isAttackDecelerating = false;
                 attackElapsed = 0f;
                 isTeleporting = false;
+                isTeleportImmune = false;
                 if (teleporter != null) {
                     // Snap alpha back to 1 so the death animation isn't played on an invisible sprite.
                     teleporter.Cancel();
                 }
-                // Re-enable damage in case death lands during the teleport's immune window.
-                damageable.IgnoreDamage = false;
                 CancelAllSwordCasts();
                 StopMovement();
 
                 DetachShieldDamageable();
+                // Both immunity sources are now cleared; reapply so the death animation
+                // doesn't play on an invulnerable boss.
+                RefreshIgnoreDamage();
+
                 if (G.BossFight != null) {
                     G.BossFight.DisengageBoss();
                 }
@@ -474,6 +519,9 @@ namespace Game.Features.Bosses.VengefulSpirit {
             // hit during the first slice of the fade-out. The teleporter calls
             // OnTeleportDamageGraceElapsed() once the grace window expires.
             teleporter.Run(target.transform.position, OnTeleportDamageGraceElapsed, OnTeleportComplete);
+
+            // Pause the shield's animator so its idle clip doesn't overwrite the fade alpha.
+            SetShieldAnimatorsEnabled(false);
         }
 
         /// <summary>
@@ -504,16 +552,25 @@ namespace Game.Features.Bosses.VengefulSpirit {
         }
 
         private void OnTeleportDamageGraceElapsed() {
-            if (damageable != null) {
-                damageable.IgnoreDamage = true;
-            }
+            isTeleportImmune = true;
+            RefreshIgnoreDamage();
         }
 
         private void OnTeleportComplete() {
             isTeleporting = false;
-            if (damageable != null) {
-                damageable.IgnoreDamage = false;
+            isTeleportImmune = false;
+            RefreshIgnoreDamage();
+            SetShieldAnimatorsEnabled(true);
+        }
+
+        // Composes shield + teleport immunity into Damageable.IgnoreDamage. Both sources can
+        // overlap (e.g., a teleport that starts while a shield is active), so neither state
+        // can write IgnoreDamage directly without potentially clearing the other's effect.
+        private void RefreshIgnoreDamage() {
+            if (damageable == null) {
+                return;
             }
+            damageable.IgnoreDamage = HasActiveShield || isTeleportImmune;
         }
 
         /// <summary>
@@ -612,13 +669,19 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 return;
             }
 
+            // Physical restriction: only one shield may be active at a time. The AI guards
+            // against this in CanSpawnShield, but the cast lifecycle has its own
+            // entry point via OnCastEffect, so re-check here defensively.
+            if (HasActiveShield) {
+                return;
+            }
+
             // Spawn unparented and follow via TransformFollow2D. Parenting under the boss
             // would mirror the shield sprite when the boss faces left (its localScale.x = -1),
             // and the shield's reflection must always render from the same side.
             GameObject instance = Instantiate(shieldPrefab, shieldSpawnPoint.position, Quaternion.identity);
             instance.AddComponent<TransformFollow2D>().Target = shieldSpawnPoint;
 
-            DetachShieldDamageable();
             currentShieldDamageable = instance.GetComponent<Damageable>();
             if (currentShieldDamageable != null) {
                 currentShieldDamageable.OnHealthChanged += HandleShieldHealthChanged;
@@ -626,6 +689,21 @@ namespace Game.Features.Bosses.VengefulSpirit {
                     G.BossFight.EngageShield(currentShieldDamageable);
                 }
             }
+
+            // Register every SpriteRenderer on the shield so it fades in/out together with
+            // the boss during teleports. The shield is destroyed before any next teleport
+            // would otherwise re-touch it; UnregisterFader is also called on detach.
+            currentShieldRenderers = instance.GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
+            if (teleporter != null && currentShieldRenderers != null) {
+                for (int i = 0; i < currentShieldRenderers.Length; i++) {
+                    teleporter.RegisterFader(currentShieldRenderers[i]);
+                }
+            }
+
+            // Cache animators so we can pause them during teleport (see field comment).
+            currentShieldAnimators = instance.GetComponentsInChildren<Animator>(includeInactive: true);
+
+            RefreshIgnoreDamage();
         }
 
         private void HandleShieldHealthChanged(float newHealth) {
@@ -634,18 +712,42 @@ namespace Game.Features.Bosses.VengefulSpirit {
             }
 
             DetachShieldDamageable();
+            RefreshIgnoreDamage();
             if (G.BossFight != null) {
                 G.BossFight.DisengageShield();
             }
         }
 
         private void DetachShieldDamageable() {
-            if (currentShieldDamageable == null) {
-                return;
+            if (currentShieldDamageable != null) {
+                currentShieldDamageable.OnHealthChanged -= HandleShieldHealthChanged;
+                currentShieldDamageable = null;
             }
 
-            currentShieldDamageable.OnHealthChanged -= HandleShieldHealthChanged;
-            currentShieldDamageable = null;
+            if (currentShieldRenderers != null) {
+                if (teleporter != null) {
+                    for (int i = 0; i < currentShieldRenderers.Length; i++) {
+                        teleporter.UnregisterFader(currentShieldRenderers[i]);
+                    }
+                }
+                currentShieldRenderers = null;
+            }
+
+            currentShieldAnimators = null;
+        }
+
+        // Toggles the shield's animators. Called at teleport start/end so the fade isn't
+        // overwritten by Idle-clip default values. Safe to call when no shield is active.
+        private void SetShieldAnimatorsEnabled(bool isEnabled) {
+            if (currentShieldAnimators == null) {
+                return;
+            }
+            for (int i = 0; i < currentShieldAnimators.Length; i++) {
+                Animator a = currentShieldAnimators[i];
+                if (a != null) {
+                    a.enabled = isEnabled;
+                }
+            }
         }
 
         private void ApplyMovement(int xDir, int yDir) {
