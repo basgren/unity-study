@@ -50,6 +50,10 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         private DistanceJoint2D swingJoint;
         private bool jumpDetachPending;
         private float originalLinearDrag;
+        // Tracks the player's Health at the moment we last sampled it so OnHealthChanged
+        // (which also fires on heals) can be filtered to drops only.
+        private float lastObservedPlayerHealth;
+        private bool isSubscribedToPlayerHealth;
 
         private readonly Collider2D[] anchorCandidates = new Collider2D[MaxAnchorCandidates];
 
@@ -213,10 +217,33 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 activeHook = null;
             }
 
+            // Subscribe to player health to drop the rope synchronously when damage lands.
+            // OnHealthChanged fires inside ApplyDamage, so we react before the next Update tick
+            // and before LateUpdate clears Damageable.IsHitThisFrame.
+            if (player.Damageable != null) {
+                lastObservedPlayerHealth = player.Damageable.Health;
+                player.Damageable.OnHealthChanged += OnPlayerHealthChanged;
+                isSubscribedToPlayerHealth = true;
+            }
+
             fsm.Go(HookState.Attached);
         }
 
+        private void OnPlayerHealthChanged(float newHealth) {
+            // Heals also fire this event; only react to drops.
+            if (newHealth < lastObservedPlayerHealth && fsm.State != HookState.Idle) {
+                CleanupAndGoIdle();
+            }
+            lastObservedPlayerHealth = newHealth;
+        }
+
         private void CleanupAndGoIdle() {
+            if (isSubscribedToPlayerHealth && player.Damageable != null) {
+                player.Damageable.OnHealthChanged -= OnPlayerHealthChanged;
+            }
+
+            isSubscribedToPlayerHealth = false;
+
             if (swingJoint != null) {
                 playerRb.drag = originalLinearDrag;
                 Destroy(swingJoint);

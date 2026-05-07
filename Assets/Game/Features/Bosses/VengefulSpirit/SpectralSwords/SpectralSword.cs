@@ -1,3 +1,4 @@
+using Core.Components.Base2D;
 using Game.Core.Components.Animation;
 using UnityEngine;
 
@@ -9,7 +10,11 @@ namespace Game.Features.Bosses.VengefulSpirit.SpectralSwords {
     /// and despawns once that clip finishes. Damage is delivered by a Damager + trigger
     /// Collider2D placed on a child GameObject (e.g. SwordHitbox) so the hitbox can be
     /// rotated independently of the sword root.
+    /// Movement runs through a kinematic Rigidbody2D + MovePosition so trigger contacts
+    /// fire reliably even against stationary targets (e.g. a player hanging on the
+    /// grappling hook).
     /// </summary>
+    [RequireComponent(typeof(Rigidbody2D))]
     public class SpectralSword : MonoBehaviour {
         [Tooltip("Sprite animator that drives the sword's visuals. Auto-resolved via GetComponentInChildren if not set.")]
         [SerializeField]
@@ -30,22 +35,27 @@ namespace Game.Features.Bosses.VengefulSpirit.SpectralSwords {
         private bool isFlying;
         private bool isDestroying;
 
+        private Rigidbody2D myRigidbody;
+
         public void Configure(Vector2 direction, float speed, float telegraph, float maxDistance, float life) {
             flightDirection = direction.sqrMagnitude > 0f ? direction.normalized : Vector2.down;
             flightSpeed = speed;
             telegraphTime = telegraph;
             maxTravelDistance = maxDistance;
             lifetime = life;
+
+            GetComponent<Facing2D>().SetByX(flightDirection.x);
         }
 
         private void Awake() {
+            myRigidbody = GetComponent<Rigidbody2D>();
             if (spriteAnimator == null) {
                 spriteAnimator = GetComponentInChildren<MultiStateSpriteAnimator>(true);
             }
         }
 
-        private void Update() {
-            elapsed += Time.deltaTime;
+        private void FixedUpdate() {
+            elapsed += Time.fixedDeltaTime;
 
             if (isDestroying) {
                 return;
@@ -58,8 +68,8 @@ namespace Game.Features.Bosses.VengefulSpirit.SpectralSwords {
                 return;
             }
 
-            Vector2 step = flightDirection * (flightSpeed * Time.deltaTime);
-            transform.position += (Vector3)step;
+            Vector2 step = flightDirection * (flightSpeed * Time.fixedDeltaTime);
+            myRigidbody.MovePosition(myRigidbody.position + step);
             travelled += step.magnitude;
 
             if (travelled >= maxTravelDistance || elapsed >= telegraphTime + lifetime) {
