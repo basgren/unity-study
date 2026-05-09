@@ -11,7 +11,8 @@ using UnityEngine;
 
 namespace Game.Features.Bosses.VengefulSpirit {
     internal static class VengefulSpiritAnimKeys {
-        public static readonly int IsCharging = Animator.StringToHash("isCharging");
+        public static readonly int IsChargingAttack = Animator.StringToHash("isChargingAttack");
+        public static readonly int IsCasting = Animator.StringToHash("isCasting");
         public static readonly int OnAttack = Animator.StringToHash("onAttack");
         public static readonly int OnDeath = Animator.StringToHash("onDeath");
         public static readonly int OnHit = Animator.StringToHash("onHit");
@@ -768,7 +769,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
         }
 
         private void UpdateAnimator() {
-            myAnimator.SetBool(VengefulSpiritAnimKeys.IsCharging, isCasting);
+            myAnimator.SetBool(VengefulSpiritAnimKeys.IsCasting, isCasting);
 
             if (wasHitThisFrame) {
                 wasHitThisFrame = false;
