@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.Components.Base2D;
@@ -8,9 +9,14 @@ using Game.Features.Bosses.VengefulSpirit.SpectralSwords;
 using Game.Features.Bosses.VengefulSpirit.Teleport;
 using Game.Features.Characters.PinkStar;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Features.Bosses.VengefulSpirit {
     internal static class VengefulSpiritAnimKeys {
+        // Bool that gates the windup phase of the charge attack (ChargeAttack1 plays while
+        // true; ChargeAttack2 starts when it flips to false). Spec authoring calls this
+        // 'isChargeAttackStarted'; the underlying parameter is named 'isChargingAttack' in
+        // the controller — keep the existing parameter to avoid the rename + transition rewrite.
         public static readonly int IsChargingAttack = Animator.StringToHash("isChargingAttack");
         public static readonly int IsCasting = Animator.StringToHash("isCasting");
         public static readonly int OnAttack = Animator.StringToHash("onAttack");
@@ -71,20 +77,13 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private float moveSpeed = 4f;
 
         [Header("Attack")]
+        [Tooltip("How long the boss holds the attack state — animation plays, damage is dealt via " +
+                 "anim events on the attack damager, then the boss becomes free to act again. " +
+                 "Should match the Attack animation length. The attack is stationary; positioning " +
+                 "is the responsibility of the caller (typically a pattern that teleports first).")]
+        [FormerlySerializedAs("attackThrustDuration")]
         [SerializeField]
-        private float attackThrustSpeed = 10f;
-
-        [Tooltip("How long the boss thrusts forward during an attack. Should match the Attack animation length.")]
-        [SerializeField]
-        private float attackThrustDuration = 1.2f;
-
-        [Tooltip("Time to ramp thrust speed from the boss's current speed up to attackThrustSpeed.")]
-        [SerializeField]
-        private float attackThrustRampUpDuration = 0.2f;
-
-        [Tooltip("How quickly the boss decelerates after the thrust ends. Higher = faster stop.")]
-        [SerializeField]
-        private float attackStopDamping = 8f;
+        private float attackHoldDuration = 1.2f;
 
         [Header("Prefabs")]
         [SerializeField]
@@ -107,6 +106,38 @@ namespace Game.Features.Bosses.VengefulSpirit {
         [SerializeField]
         private float swordCastChargeDuration = 1.5f;
 
+        [Header("Damagers")]
+        [Tooltip("Damager toggled on only during the active common-attack hit frames. Driven " +
+                 "by the OnAttackHitStart / OnAttackHitEnd animation events on Attack.anim. " +
+                 "Leave null to keep the legacy contact-thrust behavior (no controlled window).")]
+        [SerializeField]
+        private Damager attackDamager;
+
+        [Tooltip("Damager toggled on only during the horizontal dash phase of the charge attack " +
+                 "(ChargeAttack2). Disabled by default; enabled by the action layer when the dash starts.")]
+        [SerializeField]
+        private Damager chargeDamager;
+
+        [Header("Charge Attack")]
+        [Tooltip("Time the boss holds ChargeAttack1 (windup) before the dash begins. The damager " +
+                 "is OFF during this window — the boss must not damage the player before the dash.")]
+        [SerializeField]
+        private float chargeWindUpDuration = 0.8f;
+
+        [Tooltip("Horizontal speed during the ChargeAttack2 dash phase.")]
+        [SerializeField]
+        private float chargeDashSpeed = 16f;
+
+        [Tooltip("Idle time after the dash ends before the boss is ready for the next pattern.")]
+        [SerializeField]
+        private float chargeIdleDuration = 1f;
+
+        [Tooltip("Safety cap on the dash duration. The dash also ends as soon as the boss reaches " +
+                 "the destination anchor's X coordinate; this cap only fires if something blocks " +
+                 "the path or the destination is unreachable.")]
+        [SerializeField]
+        private float chargeMaxDashDuration = 2f;
+
         [Header("Teleport")]
         [SerializeField]
         private SpiritTeleporter teleporter;
@@ -117,22 +148,45 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private TeleportAnchorBinding[] teleportAnchors;
 
         [Header("Encounter")]
-        [Tooltip("If on, the boss engages BossFightService on enable so the boss health bar appears " +                         
-                 "automatically. Turn off when the encounter is gated by a cutscene or trigger that " +                         
-                 "calls G.BossFight.EngageBoss explicitly.")]                       
+        [Tooltip("If on, the boss engages BossFightService on enable so the boss health bar appears " +
+                 "automatically. Turn off when the encounter is gated by a cutscene or trigger that " +
+                 "calls G.BossFight.EngageBoss explicitly.")]
         [SerializeField]
         private bool autoEngageOnEnable = true;
+
+        [Header("Shield Destruction Recovery")]
+        [Tooltip("Maximum time to wait for the spectral shield's destroy animation to complete " +
+                 "before forcing the boss to advance to the hit reaction. Safety against an " +
+                 "animation-event misconfiguration that would otherwise stall recovery.")]
+        [SerializeField]
+        private float shieldDestroyAnimMaxDuration = 3f;
+
+        [Tooltip("Time the boss spends in the OnHit reaction after the shield finishes shattering. " +
+                 "The boss is invulnerable for the entire recovery window — this is a forced " +
+                 "flinch, not a real damage event.")]
+        [SerializeField]
+        private float shieldDestroyHitReactionDuration = 1f;
 
         private Rigidbody2D myRigidbody;
         private Animator myAnimator;
         private Facing2D facing;
         private Damageable damageable;
         private Damageable currentShieldDamageable;
+        // Direct reference to the spectral shield's GameObject. Held alongside the
+        // Damageable so the recovery sequence can poll Unity's null-check to know when
+        // the shield's destroy animation has run to completion (OnDestroyAnimExit on
+        // SpectralShield calls Destroy(gameObject) at that point).
+        private GameObject currentShieldInstance;
         private SpriteRenderer[] currentShieldRenderers;
         // The shield's animator clips use WriteDefaultValues, so the idle clip overwrites
         // the SpriteRenderer alpha every frame. We disable these for the duration of a
         // teleport so the teleporter's fade is the sole driver of the shield's alpha.
         private Animator[] currentShieldAnimators;
+        // True for the brief window between the shield's HP hitting zero and the boss's
+        // OnHit reaction completing. While true the boss takes no damage and IsBusy is
+        // forced on so the AI / patterns leave it alone.
+        private bool isShieldDestructionRecovery;
+        private Coroutine shieldRecoveryRoutine;
         // Composed inputs to Damageable.IgnoreDamage. Both states layer onto each other —
         // a teleport that begins while a shield is active must keep the boss immune even
         // after the teleport ends, and vice-versa.
@@ -140,17 +194,29 @@ namespace Game.Features.Bosses.VengefulSpirit {
 
         private bool isCasting;
         private VengefulSpiritCastAction pendingCastAction;
-        // Anchor name to use for the next sword cast. AI sets this via RequestSwordCast;
-        // unset means the cast falls back to DefaultSwordAnchorName.
+        // Anchor name to use for the next sword cast (used by the input-driven debug path
+        // via DefaultSwordAnchorName fallback). Pattern code goes through nextSwordAnchorRef
+        // instead.
         private string nextSwordAnchorName;
+        // Direct-ref override for the next sword cast — preferred by pattern code so anchors
+        // can be wired in inspector without name-based lookup. Wins over nextSwordAnchorName.
+        private SpectralSwordSpawnAnchor nextSwordAnchorRef;
         // Sword casts run their own charge timer instead of using the animation event so
         // the telegraph length is tunable. Held here for cancellation on death.
         private Coroutine swordCastChargeRoutine;
         private bool isAttacking;
-        private bool isAttackDecelerating;
         private float attackElapsed;
-        private float attackInitialSpeed;
         private bool isTeleporting;
+        private bool isCharging;
+        private Coroutine chargeRoutine;
+        // Chase mode: a pattern is driving velocity directly each frame via ChaseStep.
+        // Intentionally NOT part of IsBusy so RequestCommonAttack still fires during a
+        // chase — the chase pattern relies on attacking the player when it gets close.
+        private bool isChasing;
+        // Set true between OnAttackHitStart and OnAttackHitEnd anim events while the
+        // boss is chasing. Once the swing commits to the active hit window the boss
+        // anchors in place — no more chase tracking through the strike.
+        private bool isAttackHitActive;
         private bool isDead;
         private bool wasHitThisFrame;
         private bool diedThisFrame;
@@ -158,7 +224,17 @@ namespace Game.Features.Bosses.VengefulSpirit {
         public bool IsAttacking => isAttacking;
         public bool IsCasting => isCasting;
         public bool IsTeleporting => isTeleporting;
-        public bool IsBusy => isAttacking || isCasting || isTeleporting;
+        public bool IsCharging => isCharging;
+        public bool IsChasing => isChasing;
+        public bool IsShieldDestructionRecovery => isShieldDestructionRecovery;
+        public bool IsBusy => isAttacking || isCasting || isTeleporting || isCharging || isShieldDestructionRecovery;
+
+        /// <summary>
+        /// Fires on the same frame the shield's HP reaches zero, BEFORE the shield's
+        /// destroy animation actually plays. The AI subscribes so it can stop the
+        /// currently running pattern; the boss handles the recovery sequence itself.
+        /// </summary>
+        public event Action OnShieldDestroyed;
         public bool IsDead => isDead;
         public Damageable Damageable => damageable;
         /// <summary>
@@ -176,6 +252,15 @@ namespace Game.Features.Bosses.VengefulSpirit {
             myAnimator = GetComponent<Animator>();
             facing = GetComponent<Facing2D>();
             damageable = GetComponent<Damageable>();
+            // Damagers must default to disabled — they are gated on by anim events
+            // (attackDamager) or by the charge-attack coroutine (chargeDamager).
+            // Defending against a prefab where the field was authored enabled.
+            if (attackDamager != null) {
+                attackDamager.enabled = false;
+            }
+            if (chargeDamager != null) {
+                chargeDamager.enabled = false;
+            }
             SyncControlSourceEnabled();
             lastSyncedControlSource = controlSource;
         }
@@ -196,7 +281,13 @@ namespace Game.Features.Bosses.VengefulSpirit {
 
         private void OnDisable() {
             isTeleportImmune = false;
+            isShieldDestructionRecovery = false;
+            if (shieldRecoveryRoutine != null) {
+                StopCoroutine(shieldRecoveryRoutine);
+                shieldRecoveryRoutine = null;
+            }
             DetachShieldDamageable();
+            currentShieldInstance = null;
             RefreshIgnoreDamage();
 
             if (G.BossFight != null) {
@@ -252,10 +343,24 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 pendingCastAction = VengefulSpiritCastAction.None;
                 StopSwordCastChargeRoutine();
                 isAttacking = false;
-                isAttackDecelerating = false;
                 attackElapsed = 0f;
                 isTeleporting = false;
                 isTeleportImmune = false;
+                isChasing = false;
+                isAttackHitActive = false;
+                isShieldDestructionRecovery = false;
+                if (shieldRecoveryRoutine != null) {
+                    StopCoroutine(shieldRecoveryRoutine);
+                    shieldRecoveryRoutine = null;
+                }
+                StopChargeRoutine();
+                // Both damagers must be off at death so the corpse never lands a posthumous hit.
+                if (attackDamager != null) {
+                    attackDamager.enabled = false;
+                }
+                if (chargeDamager != null) {
+                    chargeDamager.enabled = false;
+                }
                 if (teleporter != null) {
                     // Snap alpha back to 1 so the death animation isn't played on an invisible sprite.
                     teleporter.Cancel();
@@ -279,16 +384,31 @@ namespace Game.Features.Bosses.VengefulSpirit {
         }
 
         private void ExecuteCommand() {
-            // Attack locks the boss into a self-driven thrust for attackThrustDuration,
-            // then UpdateAttackThrust() damps velocity back to zero.
+            // Attack locks the boss in place for attackHoldDuration. The animation drives the
+            // visuals; damage is gated by OnAttackHitStart / OnAttackHitEnd anim events.
             if (isAttacking) {
-                UpdateAttackThrust();
+                UpdateAttack();
                 return;
             }
 
             // Casting locks the boss until OnCastAnimationEnd() fires from the cast clip.
             if (isCasting) {
                 StopMovement();
+                return;
+            }
+
+            // Charge owns velocity during windup/dash — without this gate the per-frame
+            // movement command would overwrite the dash velocity. Teleport phase of the
+            // charge sets isTeleporting too; movement during teleport is harmless (boss
+            // is invisible) so the gate covers all charge phases.
+            if (isCharging) {
+                return;
+            }
+
+            // Chase mode: a pattern is driving velocity each frame via ChaseStep. Same
+            // reasoning as isCharging — bail out so ApplyMovement doesn't clobber the
+            // pattern's velocity.
+            if (isChasing) {
                 return;
             }
 
@@ -371,39 +491,38 @@ namespace Game.Features.Bosses.VengefulSpirit {
 
         private void BeginAttack() {
             isAttacking = true;
-            isAttackDecelerating = false;
             attackElapsed = 0f;
-            attackInitialSpeed = myRigidbody.velocity.magnitude;
             isCasting = false;
+            // Reset the hit-active flag so a new attack starts fresh (it'll flip on at
+            // the next OnAttackHitStart anim event, if any).
+            isAttackHitActive = false;
+            // Defensive: if a prior attack was interrupted before OnAttackHitEnd fired,
+            // the damager could still be on. Force it off so the new attack starts with
+            // a clean window controlled by anim events.
+            if (attackDamager != null) {
+                attackDamager.enabled = false;
+            }
+            // While chasing, the boss keeps its momentum through the strike — the pattern
+            // wants the attack to read as a lunge, not a hard stop. Other contexts (blink,
+            // ground attack, debug input) still zero velocity so the strike is stationary.
+            if (!isChasing) {
+                StopMovement();
+            }
             myAnimator.SetTrigger(VengefulSpiritAnimKeys.OnAttack);
-            myRigidbody.velocity = facing.DirVector * attackInitialSpeed;
         }
 
-        private void UpdateAttackThrust() {
-            if (!isAttackDecelerating) {
-                attackElapsed += Time.deltaTime;
-                // Ramp from the speed the boss had when the attack began up to attackThrustSpeed,
-                // then hold max speed. Driving velocity directly each frame keeps gravity out of the thrust.
-                float speed = attackThrustSpeed;
-                if (attackThrustRampUpDuration > 0f && attackElapsed < attackThrustRampUpDuration) {
-                    float t = attackElapsed / attackThrustRampUpDuration;
-                    speed = Mathf.Lerp(attackInitialSpeed, attackThrustSpeed, t);
-                }
-                myRigidbody.velocity = facing.DirVector * speed;
-                if (attackElapsed >= attackThrustDuration) {
-                    isAttackDecelerating = true;
-                }
-                return;
+        private void UpdateAttack() {
+            // Three cases:
+            // - Not chasing: stationary attack, velocity stays at zero.
+            // - Chasing, swing committed (OnAttackHitStart fired): anchor in place so the
+            //   strike doesn't slide; pattern's ChaseStep is gated on the same flag.
+            // - Chasing, swing not yet committed: keep momentum, pattern drives velocity.
+            if (!isChasing || isAttackHitActive) {
+                StopMovement();
             }
-
-            // Damp velocity toward zero — completes the attack with a smooth stop.
-            Vector2 v = Vector2.Lerp(myRigidbody.velocity, Vector2.zero, attackStopDamping * Time.deltaTime);
-            myRigidbody.velocity = v;
-
-            if (v.sqrMagnitude < 0.0001f) {
-                myRigidbody.velocity = Vector2.zero;
+            attackElapsed += Time.deltaTime;
+            if (attackElapsed >= attackHoldDuration) {
                 isAttacking = false;
-                isAttackDecelerating = false;
             }
         }
 
@@ -424,14 +543,20 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private const string DefaultSwordAnchorName = "Default";
 
         private void BeginSwordWave() {
-            string anchorName = !string.IsNullOrEmpty(nextSwordAnchorName)
-                ? nextSwordAnchorName
-                : DefaultSwordAnchorName;
+            // Direct ref wins; fall back to name-based lookup; final fallback is the
+            // configured "Default" name (used by the input-driven debug cast).
+            SpectralSwordSpawnAnchor anchor = nextSwordAnchorRef;
+            nextSwordAnchorRef = null;
+            if (anchor == null) {
+                string anchorName = !string.IsNullOrEmpty(nextSwordAnchorName)
+                    ? nextSwordAnchorName
+                    : DefaultSwordAnchorName;
+                anchor = GetSwordAnchor(anchorName);
+            }
             nextSwordAnchorName = null;
 
-            SpectralSwordSpawnAnchor anchor = GetSwordAnchor(anchorName);
             if (anchor == null) {
-                Debug.LogError($"[VengefulSpirit] No SpectralSwordSpawnAnchor wired for name '{anchorName}'. Cast aborted — check the Sword Anchors array on this boss.", this);
+                Debug.LogError("[VengefulSpirit] No SpectralSwordSpawnAnchor available for cast. Cast aborted.", this);
                 // Wiring missing — never strand the cast in isCasting=true.
                 OnSwordCastComplete();
                 return;
@@ -440,15 +565,30 @@ namespace Game.Features.Bosses.VengefulSpirit {
         }
 
         /// <summary>
-        /// AI-facing: trigger a sword cast that fires from the named anchor instead of the
-        /// default. Goes through the same charge-and-animate cast lifecycle as the
-        /// command-driven cast — early-returns if the boss is currently busy.
+        /// Pattern-facing: trigger a sword cast from a direct anchor reference. Preferred
+        /// over the name-based overload — patterns wire their anchors in inspector and
+        /// pass refs through, no global lookup table needed.
+        /// </summary>
+        public void RequestSwordCast(SpectralSwordSpawnAnchor anchor) {
+            if (isCasting || isAttacking || isTeleporting || isDead || anchor == null) {
+                return;
+            }
+            nextSwordAnchorRef = anchor;
+            nextSwordAnchorName = null;
+            BeginCast(VengefulSpiritCastAction.CastSwords);
+        }
+
+        /// <summary>
+        /// AI-facing (legacy): trigger a sword cast by anchor name. Kept for the
+        /// input-driven debug cast and any code still wiring by name. New pattern code
+        /// should use the <see cref="RequestSwordCast(SpectralSwordSpawnAnchor)"/> overload.
         /// </summary>
         public void RequestSwordCast(string anchorName) {
             if (isCasting || isAttacking || isTeleporting || isDead) {
                 return;
             }
             nextSwordAnchorName = anchorName;
+            nextSwordAnchorRef = null;
             BeginCast(VengefulSpiritCastAction.CastSwords);
         }
 
@@ -519,10 +659,17 @@ namespace Game.Features.Bosses.VengefulSpirit {
             // IgnoreDamage is NOT flipped here — the boss can still take a final
             // hit during the first slice of the fade-out. The teleporter calls
             // OnTeleportDamageGraceElapsed() once the grace window expires.
-            teleporter.Run(target.transform.position, OnTeleportDamageGraceElapsed, OnTeleportComplete);
+            FacingDir destFacing = target.FacingDir;
+            teleporter.Run(
+                target.transform.position,
+                OnTeleportDamageGraceElapsed,
+                () => facing.SetDir(destFacing),
+                OnTeleportComplete);
 
-            // Pause the shield's animator so its idle clip doesn't overwrite the fade alpha.
-            SetShieldAnimatorsEnabled(false);
+            // Pause the shield's animator so its idle clip doesn't overwrite the fade
+            // alpha, AND make the shield ignore damage for the duration — avoids the
+            // shield shattering mid-fade while the boss is invisible.
+            SetShieldTeleportSuspended(true);
         }
 
         /// <summary>
@@ -534,6 +681,267 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 return;
             }
             BeginTeleportTo(target);
+        }
+
+        /// <summary>
+        /// AI-facing: trigger the teleport sequence to a runtime-computed world position
+        /// (instead of an anchor). Used by patterns that pick the destination dynamically
+        /// — e.g. BlinkAttackPattern computing a "behind the player" spot.
+        /// </summary>
+        public void RequestTeleport(Vector3 position, FacingDir destFacing) {
+            if (isCasting || isAttacking || isTeleporting || isDead || teleporter == null) {
+                return;
+            }
+            isTeleporting = true;
+            teleporter.Run(
+                position,
+                OnTeleportDamageGraceElapsed,
+                () => facing.SetDir(destFacing),
+                OnTeleportComplete);
+            SetShieldTeleportSuspended(true);
+        }
+
+        /// <summary>
+        /// AI-facing: trigger a common melee attack synchronously. Equivalent to pulsing
+        /// the command flag <see cref="VengefulSpiritCommand.Attack"/> on the next frame,
+        /// but safe to call without worrying about Update execution order. Early-returns
+        /// if the boss is currently busy.
+        /// </summary>
+        public void RequestCommonAttack() {
+            if (IsBusy || isDead) {
+                return;
+            }
+            BeginAttack();
+        }
+
+        /// <summary>
+        /// AI-facing: orient the boss toward the given world X coordinate. Used by patterns
+        /// to lock facing toward the player at the moment of a strike, in case the player
+        /// has moved since the boss was repositioned. No-op when the target X equals the
+        /// boss's own X.
+        /// </summary>
+        public void FaceTowards(float worldX) {
+            facing.SetByX(worldX - transform.position.x);
+        }
+
+        /// <summary>
+        /// Pattern-facing: enter chase mode. While chasing, the boss ignores the control
+        /// source's movement command — the pattern is responsible for driving velocity each
+        /// frame via <see cref="ChaseStep"/>. Attacks (RequestCommonAttack) still fire during
+        /// chase; the pattern can interleave strikes and resume chasing afterwards. Always
+        /// pair with <see cref="EndChase"/> before despawning or returning from the pattern.
+        /// </summary>
+        public void BeginChase() {
+            if (isDead || IsBusy) {
+                return;
+            }
+            isChasing = true;
+        }
+
+        /// <summary>
+        /// Pattern-facing: drive velocity in the given world-space direction at the given
+        /// speed for one frame. The direction is normalized internally; pass the raw
+        /// (toPlayer) vector. Updates facing from the X component so the boss looks where
+        /// it's going. No-op if not currently in chase mode or boss is dead.
+        /// </summary>
+        public void ChaseStep(Vector2 direction, float speed) {
+            if (!isChasing || isDead) {
+                return;
+            }
+            // Swing has committed (OnAttackHitStart fired). Hold the freeze that
+            // OnAttackHitStart established — the strike must not slide.
+            if (isAttackHitActive) {
+                return;
+            }
+            if (direction.sqrMagnitude < 0.0001f) {
+                myRigidbody.velocity = Vector2.zero;
+                return;
+            }
+            Vector2 dir = direction.normalized;
+            myRigidbody.velocity = dir * speed;
+            if (Mathf.Abs(dir.x) > 0.01f) {
+                facing.SetByX(dir.x);
+            }
+        }
+
+        /// <summary>
+        /// Pattern-facing: leave chase mode and zero velocity. Safe to call when not chasing.
+        /// </summary>
+        public void EndChase() {
+            if (!isChasing) {
+                return;
+            }
+            isChasing = false;
+            if (!isDead) {
+                StopMovement();
+            }
+        }
+
+        /// <summary>
+        /// AI-facing: trigger a spectral-shield cast synchronously. Goes through the same
+        /// cast lifecycle as the command-driven path. Early-returns if the boss is busy
+        /// or already has an active shield.
+        /// </summary>
+        public void RequestSpawnShield() {
+            if (IsBusy || isDead || HasActiveShield) {
+                return;
+            }
+            BeginCast(VengefulSpiritCastAction.SpawnShield);
+        }
+
+        /// <summary>
+        /// AI-facing: run the full charge-attack sequence — teleport to <paramref name="from"/>,
+        /// hold the windup (ChargeAttack1) for <c>chargeWindUpDuration</c>, dash horizontally
+        /// to <paramref name="to"/> with the dash damager active (ChargeAttack2), then idle
+        /// for <c>chargeIdleDuration</c>. Early-returns if the boss is busy or either anchor
+        /// is null. The dash damager is OFF during the windup — the boss never damages the
+        /// player before the dash actually begins.
+        /// </summary>
+        public void RequestChargeAttack(TeleportAnchor from, TeleportAnchor to) {
+            if (IsBusy || isDead || from == null || to == null || teleporter == null) {
+                return;
+            }
+            StopChargeRoutine();
+            chargeRoutine = StartCoroutine(ChargeAttackRoutine(from, to));
+        }
+
+        // Drives the full charge sequence as a single coroutine so cancellation on death
+        // collapses to one StopCoroutine call. The four phases of the sequence are gated
+        // by isCharging being true throughout, which keeps IsBusy true so the strategic
+        // layer cannot start another pattern in parallel.
+        private IEnumerator ChargeAttackRoutine(TeleportAnchor from, TeleportAnchor to) {
+            isCharging = true;
+
+            // Phase 1: teleport to start anchor. Reuses the standard teleport path so the
+            // damage-grace + shield-fader behavior is identical to a normal teleport.
+            // The at-destination callback sets facing toward the dash target — overrides
+            // the start anchor's authored facingDir, which is irrelevant for charge since
+            // the boss must face the dash direction by construction.
+            isTeleporting = true;
+            bool teleportDone = false;
+            int dashDirSign = to.transform.position.x > from.transform.position.x ? 1 : -1;
+            teleporter.Run(
+                from.transform.position,
+                OnTeleportDamageGraceElapsed,
+                () => facing.SetByX(dashDirSign),
+                () => { teleportDone = true; });
+            SetShieldTeleportSuspended(true);
+            while (!teleportDone) {
+                if (isDead) {
+                    yield break;
+                }
+                yield return null;
+            }
+            // Mirror OnTeleportComplete inline rather than calling it — we do not want
+            // isCharging cleared here; only isTeleporting flips off.
+            isTeleporting = false;
+            isTeleportImmune = false;
+            RefreshIgnoreDamage();
+            SetShieldTeleportSuspended(false);
+
+            StopMovement();
+
+            // Phase 2: ChargeAttack1 windup. Damager stays OFF — the player must not be
+            // damaged before the dash actually begins.
+            myAnimator.SetBool(VengefulSpiritAnimKeys.IsChargingAttack, true);
+            float t = 0f;
+            while (t < chargeWindUpDuration) {
+                if (isDead) {
+                    yield break;
+                }
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            // Phase 3: ChargeAttack2 dash. Flip the bool, enable the dash damager,
+            // drive horizontal velocity until either the destination X is reached or the
+            // safety cap fires.
+            myAnimator.SetBool(VengefulSpiritAnimKeys.IsChargingAttack, false);
+            if (chargeDamager != null) {
+                chargeDamager.enabled = true;
+            }
+            float targetX = to.transform.position.x;
+            float dashDir = Mathf.Sign(targetX - transform.position.x);
+            float dashStart = Time.time;
+            while (Time.time - dashStart < chargeMaxDashDuration) {
+                if (isDead) {
+                    if (chargeDamager != null) {
+                        chargeDamager.enabled = false;
+                    }
+                    yield break;
+                }
+                float curX = transform.position.x;
+                if ((dashDir > 0f && curX >= targetX) || (dashDir < 0f && curX <= targetX)) {
+                    break;
+                }
+                myRigidbody.velocity = new Vector2(dashDir * chargeDashSpeed, 0f);
+                yield return null;
+            }
+            if (chargeDamager != null) {
+                chargeDamager.enabled = false;
+            }
+            StopMovement();
+
+            // Phase 4: idle hold so the player has a beat to react before the next pattern.
+            t = 0f;
+            while (t < chargeIdleDuration) {
+                if (isDead) {
+                    yield break;
+                }
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            isCharging = false;
+            chargeRoutine = null;
+        }
+
+        // Cancellation entry point for death cleanup. Safe to call when no charge is in
+        // flight. Always clears the animator bool so the boss does not freeze in
+        // ChargeAttack1 if killed during windup.
+        private void StopChargeRoutine() {
+            if (chargeRoutine != null) {
+                StopCoroutine(chargeRoutine);
+                chargeRoutine = null;
+            }
+            if (chargeDamager != null) {
+                chargeDamager.enabled = false;
+            }
+            if (myAnimator != null) {
+                myAnimator.SetBool(VengefulSpiritAnimKeys.IsChargingAttack, false);
+            }
+            isCharging = false;
+        }
+
+        /// <summary>
+        /// Animation event hook on Attack.anim. Enables the attack damager at the start
+        /// of the active hit frames so the player only takes damage during the controlled
+        /// hit window, not for the entire attack animation. No-op if no damager is wired
+        /// (legacy contact-thrust behavior).
+        ///
+        /// While chasing, this also anchors the boss in place for the remainder of the
+        /// strike — the swing has committed, so the pattern stops tracking the player.
+        /// </summary>
+        public void OnAttackHitStart() {
+            if (attackDamager != null && !isDead) {
+                attackDamager.enabled = true;
+            }
+            if (isChasing) {
+                isAttackHitActive = true;
+                StopMovement();
+            }
+        }
+
+        /// <summary>
+        /// Animation event hook on Attack.anim. Closes the attack damage window. Always
+        /// safe to call — also serves as a defensive "off" if the death cleanup raced the
+        /// end-of-attack event.
+        /// </summary>
+        public void OnAttackHitEnd() {
+            if (attackDamager != null) {
+                attackDamager.enabled = false;
+            }
+            isAttackHitActive = false;
         }
 
         /// <summary>
@@ -561,17 +969,18 @@ namespace Game.Features.Bosses.VengefulSpirit {
             isTeleporting = false;
             isTeleportImmune = false;
             RefreshIgnoreDamage();
-            SetShieldAnimatorsEnabled(true);
+            SetShieldTeleportSuspended(false);
         }
 
-        // Composes shield + teleport immunity into Damageable.IgnoreDamage. Both sources can
-        // overlap (e.g., a teleport that starts while a shield is active), so neither state
-        // can write IgnoreDamage directly without potentially clearing the other's effect.
+        // Composes shield + teleport + shield-destruction immunity into Damageable.IgnoreDamage.
+        // Sources can overlap (e.g., a teleport that starts while a shield is active), so
+        // neither state can write IgnoreDamage directly without potentially clearing the
+        // other's effect.
         private void RefreshIgnoreDamage() {
             if (damageable == null) {
                 return;
             }
-            damageable.IgnoreDamage = HasActiveShield || isTeleportImmune;
+            damageable.IgnoreDamage = HasActiveShield || isTeleportImmune || isShieldDestructionRecovery;
         }
 
         /// <summary>
@@ -683,6 +1092,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
             GameObject instance = Instantiate(shieldPrefab, shieldSpawnPoint.position, Quaternion.identity);
             instance.AddComponent<TransformFollow2D>().Target = shieldSpawnPoint;
 
+            currentShieldInstance = instance;
             currentShieldDamageable = instance.GetComponent<Damageable>();
             if (currentShieldDamageable != null) {
                 currentShieldDamageable.OnHealthChanged += HandleShieldHealthChanged;
@@ -712,11 +1122,100 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 return;
             }
 
+            // Capture the shield's GameObject before detaching — DetachShieldDamageable
+            // tears down our references, but the recovery sequence still needs to know
+            // when the shield's destroy animation actually finishes (Destroy(gameObject)
+            // is fired by an OnDestroyAnimExit anim event on the Destroy clip).
+            GameObject instanceToWatch = currentShieldInstance;
+            currentShieldInstance = null;
+
             DetachShieldDamageable();
-            RefreshIgnoreDamage();
             if (G.BossFight != null) {
                 G.BossFight.DisengageShield();
             }
+
+            // Stop everything in flight, become invulnerable, and run the shield-shatter
+            // → boss-flinch sequence. RefreshIgnoreDamage is called from inside Begin/End.
+            BeginShieldDestructionRecovery();
+            if (shieldRecoveryRoutine != null) {
+                StopCoroutine(shieldRecoveryRoutine);
+            }
+            shieldRecoveryRoutine = StartCoroutine(ShieldRecoverySequence(instanceToWatch));
+
+            OnShieldDestroyed?.Invoke();
+        }
+
+        // Cancels everything the boss had in flight and locks it into the recovery state.
+        // Damager flags are explicitly forced off so a coroutine that was killed mid-window
+        // can't leave them on. The animator's charge bool is also cleared so a death cleanup
+        // racing with this routine doesn't freeze the visual on ChargeAttack1.
+        private void BeginShieldDestructionRecovery() {
+            StopChargeRoutine();
+            StopSwordCastChargeRoutine();
+            isCasting = false;
+            pendingCastAction = VengefulSpiritCastAction.None;
+            isAttacking = false;
+            attackElapsed = 0f;
+            isAttackHitActive = false;
+            isChasing = false;
+            StopMovement();
+            if (attackDamager != null) {
+                attackDamager.enabled = false;
+            }
+            if (chargeDamager != null) {
+                chargeDamager.enabled = false;
+            }
+            if (myAnimator != null) {
+                myAnimator.SetBool(VengefulSpiritAnimKeys.IsChargingAttack, false);
+            }
+
+            isShieldDestructionRecovery = true;
+            RefreshIgnoreDamage();
+        }
+
+        private IEnumerator ShieldRecoverySequence(GameObject shieldInstance) {
+            // Phase 1: wait for the shield's destroy clip to finish — the prefab's onDeath
+            // UnityEvent triggers the Destroy clip which ends with Destroy(gameObject) via
+            // OnDestroyAnimExit. Unity's overloaded null check flips when the GameObject
+            // is actually destroyed.
+            float deadline = Time.time + shieldDestroyAnimMaxDuration;
+            while (shieldInstance != null && Time.time < deadline) {
+                if (isDead) {
+                    EndShieldDestructionRecovery();
+                    yield break;
+                }
+                yield return null;
+            }
+            if (isDead) {
+                EndShieldDestructionRecovery();
+                yield break;
+            }
+
+            // Phase 2: forced flinch. The OnHit trigger drives the existing hit anim; the
+            // boss is invulnerable so the player can't chain a real hit on top.
+            if (myAnimator != null) {
+                myAnimator.SetTrigger(VengefulSpiritAnimKeys.OnHit);
+            }
+            float t = 0f;
+            while (t < shieldDestroyHitReactionDuration) {
+                if (isDead) {
+                    break;
+                }
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            EndShieldDestructionRecovery();
+        }
+        
+        public void OnBeforeDie() {
+            myRigidbody.gravityScale = 1f;
+        }
+
+        private void EndShieldDestructionRecovery() {
+            isShieldDestructionRecovery = false;
+            shieldRecoveryRoutine = null;
+            RefreshIgnoreDamage();
         }
 
         private void DetachShieldDamageable() {
@@ -734,7 +1233,20 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 currentShieldRenderers = null;
             }
 
-            currentShieldAnimators = null;
+            // Re-enable any animator we paused for a teleport before letting go of the
+            // reference. Otherwise a shield killed while the boss was mid-teleport would
+            // be left with its Animator disabled — its onDestroy trigger fires but the
+            // Destroy clip never runs, OnDestroyAnimExit never executes, the GameObject
+            // never gets Destroy()ed, and the shield lingers in the scene.
+            if (currentShieldAnimators != null) {
+                for (int i = 0; i < currentShieldAnimators.Length; i++) {
+                    Animator a = currentShieldAnimators[i];
+                    if (a != null) {
+                        a.enabled = true;
+                    }
+                }
+                currentShieldAnimators = null;
+            }
         }
 
         // Toggles the shield's animators. Called at teleport start/end so the fade isn't
@@ -748,6 +1260,18 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 if (a != null) {
                     a.enabled = isEnabled;
                 }
+            }
+        }
+
+        // Single switch for both consequences of "boss is teleporting":
+        // - shield animator stays paused so the teleporter's fade controls alpha,
+        // - shield ignores damage so the player can't destroy it during the fade-out
+        //   (avoids the awkward case where the shield shatters while the boss is invisible).
+        // Called at every teleport boundary in place of the bare animator toggle.
+        private void SetShieldTeleportSuspended(bool suspended) {
+            SetShieldAnimatorsEnabled(!suspended);
+            if (currentShieldDamageable != null) {
+                currentShieldDamageable.IgnoreDamage = suspended;
             }
         }
 

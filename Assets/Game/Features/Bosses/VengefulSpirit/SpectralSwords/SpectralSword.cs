@@ -23,6 +23,9 @@ namespace Game.Features.Bosses.VengefulSpirit.SpectralSwords {
         [Tooltip("Clip on the animator to play at end of life. Sword despawns once the clip's OnComplete fires.")]
         [SerializeField]
         private string destroyClipName = "Destroy";
+        
+        [SerializeField]
+        private Collider2D hitbox;
 
         private Vector2 flightDirection;
         private float flightSpeed;
@@ -88,6 +91,8 @@ namespace Game.Features.Bosses.VengefulSpirit.SpectralSwords {
             }
 
             spriteAnimator.SetClip(destroyClipName);
+            hitbox.enabled = false;
+
             StateAnimationClip clip = spriteAnimator.CurrentClip;
             if (clip == null || clip.Name != destroyClipName || clip.Loop) {
                 Destroy(gameObject);

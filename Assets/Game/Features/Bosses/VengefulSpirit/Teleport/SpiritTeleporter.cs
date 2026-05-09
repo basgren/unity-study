@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Components.Base2D;
 using UnityEngine;
 
 namespace Game.Features.Bosses.VengefulSpirit.Teleport {
@@ -75,14 +76,18 @@ namespace Game.Features.Bosses.VengefulSpirit.Teleport {
         /// Runs the full disappear/reposition/reappear sequence.
         /// <paramref name="onDamageGraceElapsed"/> fires once, partway through
         /// the fade-out, when the boss should become damage-immune.
+        /// <paramref name="onAtDestination"/> fires once after the boss is fully invisible
+        /// at the destination, BEFORE the hidden hold and fade-in. Use it to apply visual
+        /// state that should be in place when the boss reappears (facing direction,
+        /// animator parameters, etc.). May be <c>null</c>.
         /// <paramref name="onComplete"/> fires once when alpha is fully restored.
         /// No-op if a run is already in progress.
         /// </summary>
-        public void Run(Vector3 destination, Action onDamageGraceElapsed, Action onComplete) {
+        public void Run(Vector3 destination, Action onDamageGraceElapsed, Action onAtDestination, Action onComplete) {
             if (activeRun != null) {
                 return;
             }
-            activeRun = StartCoroutine(RunSequence(destination, onDamageGraceElapsed, onComplete));
+            activeRun = StartCoroutine(RunSequence(destination, onDamageGraceElapsed, onAtDestination, onComplete));
         }
 
         /// <summary>
@@ -98,13 +103,17 @@ namespace Game.Features.Bosses.VengefulSpirit.Teleport {
             SetAlpha(1f);
         }
 
-        private IEnumerator RunSequence(Vector3 destination, Action onDamageGraceElapsed, Action onComplete) {
+        private IEnumerator RunSequence(Vector3 destination, Action onDamageGraceElapsed, Action onAtDestination, Action onComplete) {
             yield return FadeOutWithGrace(onDamageGraceElapsed);
 
             // Reposition while invisible — no visual seam.
             if (teleportRoot != null) {
                 teleportRoot.position = destination;
             }
+
+            // Apply at-destination visual state (facing, etc.) while still fully invisible
+            // so the boss reappears already configured.
+            onAtDestination?.Invoke();
 
             if (hiddenDuration > 0f) {
                 yield return new WaitForSeconds(hiddenDuration);

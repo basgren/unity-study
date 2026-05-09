@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Core.Components.Collisions {
+namespace Game.Core.Components.Collisions {
     /// <summary>
     /// Checks if a Collider2D is currently colliding with specified layers.
     /// </summary>

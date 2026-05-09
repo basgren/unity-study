@@ -305,3 +305,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteAnimator: {fileID: 6285042971051317519}
   destroyClipName: Destroy
+  hitbox: {fileID: 8311086086080457241}

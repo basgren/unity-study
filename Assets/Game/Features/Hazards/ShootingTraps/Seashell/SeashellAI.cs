@@ -1,4 +1,5 @@
 ﻿using Core.Components.Collisions;
+using Game.Core.Components.Collisions;
 using UnityEngine;
 
 namespace Game.Features.Hazards.ShootingTraps.Seashell {
