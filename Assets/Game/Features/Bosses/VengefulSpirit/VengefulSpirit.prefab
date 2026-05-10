@@ -18,7 +18,6 @@ GameObject:
   - component: {fileID: 7928936516301895556}
   - component: {fileID: 3339738452761767103}
   - component: {fileID: 5041671256731797226}
-  - component: {fileID: 1834633764671298695}
   - component: {fileID: 3021851658094658074}
   - component: {fileID: 1856125482954814423}
   - component: {fileID: 6336187217319622026}
@@ -186,8 +185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bbb9950d091b50438d5ec322d3cd97a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 5
-  currentHealth: 5
+  maxHealth: 20
+  currentHealth: 20
   invulnerabilityTime: 0.5
   hasKnockback: 1
   knockbackForce: 13
@@ -273,7 +272,7 @@ MonoBehaviour:
   chargeMaxDashDuration: 2
   teleporter: {fileID: 3339738452761767103}
   teleportAnchors: []
-  autoEngageOnEnable: 1
+  autoEngageOnEnable: 0
   shieldDestroyAnimMaxDuration: 3
   shieldDestroyHitReactionDuration: 1
 --- !u!114 &3339738452761767103
@@ -316,18 +315,6 @@ MonoBehaviour:
   cycleStallDuration: 4
   phase1Patterns: []
   phase2Patterns: []
---- !u!114 &1834633764671298695
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1748432154551571425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cadc0b1c6b7298a4e99bba15233cd293, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3021851658094658074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -405,6 +392,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   centerAnchor: {fileID: 0}
+  longHiddenDuration: 2.5
+  dramaticPause: 1.5
+  castHoldDuration: 2.5
+  postSpawnPause: 1
+  castParticlesPrefab: {fileID: 4461717866713813598, guid: dae7ee856d7223e47baf675d0d15b465,
+    type: 3}
+  castStartCue: {fileID: 11400000, guid: 2c5e8a2271f3b204ba54d4fec3c807aa, type: 2}
 --- !u!114 &1913282979006039845
 MonoBehaviour:
   m_ObjectHideFlags: 0

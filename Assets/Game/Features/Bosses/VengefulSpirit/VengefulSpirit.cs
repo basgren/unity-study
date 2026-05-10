@@ -193,6 +193,10 @@ namespace Game.Features.Bosses.VengefulSpirit {
         private bool isTeleportImmune;
 
         private bool isCasting;
+        // Set true while a pattern is driving the cast lifecycle (RequestBeginShieldCast →
+        // RequestFinishShieldCastAndSpawn). Suppresses the OnCastAnimationEnd hook so the
+        // boss stays in the casting loop until the pattern explicitly ends it.
+        private bool isCastHoldActive;
         private VengefulSpiritCastAction pendingCastAction;
         // Anchor name to use for the next sword cast (used by the input-driven debug path
         // via DefaultSwordAnchorName fallback). Pattern code goes through nextSwordAnchorRef
@@ -340,6 +344,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 isDead = true;
                 diedThisFrame = true;
                 isCasting = false;
+                isCastHoldActive = false;
                 pendingCastAction = VengefulSpiritCastAction.None;
                 StopSwordCastChargeRoutine();
                 isAttacking = false;
@@ -493,6 +498,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
             isAttacking = true;
             attackElapsed = 0f;
             isCasting = false;
+            isCastHoldActive = false;
             // Reset the hit-active flag so a new attack starts fresh (it'll flip on at
             // the next OnAttackHitStart anim event, if any).
             isAttackHitActive = false;
@@ -643,10 +649,10 @@ namespace Game.Features.Bosses.VengefulSpirit {
         }
 
         private void BeginTeleport() {
-            BeginTeleportTo(PickTeleportDestination());
+            BeginTeleportTo(PickTeleportDestination(), -1f);
         }
 
-        private void BeginTeleportTo(TeleportAnchor target) {
+        private void BeginTeleportTo(TeleportAnchor target, float hiddenDurationOverride) {
             if (target == null || teleporter == null) {
                 // Wiring missing — silently no-op rather than locking the boss.
                 return;
@@ -664,7 +670,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 target.transform.position,
                 OnTeleportDamageGraceElapsed,
                 () => facing.SetDir(destFacing),
-                OnTeleportComplete);
+                OnTeleportComplete,
+                hiddenDurationOverride);
 
             // Pause the shield's animator so its idle clip doesn't overwrite the fade
             // alpha, AND make the shield ignore damage for the duration — avoids the
@@ -675,12 +682,31 @@ namespace Game.Features.Bosses.VengefulSpirit {
         /// <summary>
         /// AI-facing: trigger the teleport sequence to the specified anchor, bypassing
         /// the default random selection. Early-returns if the boss is currently busy.
+        /// <paramref name="hiddenDurationOverride"/> overrides the teleporter's configured
+        /// hidden hold for this single call (negative = use default).
         /// </summary>
-        public void RequestTeleport(TeleportAnchor target) {
+        public void RequestTeleport(TeleportAnchor target, float hiddenDurationOverride = -1f) {
             if (isCasting || isAttacking || isTeleporting || isDead) {
                 return;
             }
-            BeginTeleportTo(target);
+            BeginTeleportTo(target, hiddenDurationOverride);
+        }
+
+        /// <summary>
+        /// Pattern-facing: fade the boss out where it stands and leave it invisible. No
+        /// reposition, no fade-in. The boss stays damage-immune until the next teleport
+        /// fades it back in. Used by scripted sequences (e.g. the phase-2 opener cutscene)
+        /// that want the skeleton to vanish at the end without choosing an exit anchor.
+        /// </summary>
+        public void RequestFadeOutInPlace() {
+            if (isCasting || isAttacking || isTeleporting || isDead || teleporter == null) {
+                return;
+            }
+            isTeleporting = true;
+            teleporter.FadeOutInPlace(
+                OnTeleportDamageGraceElapsed,
+                OnFadeOutInPlaceComplete);
+            SetShieldTeleportSuspended(true);
         }
 
         /// <summary>
@@ -787,6 +813,39 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 return;
             }
             BeginCast(VengefulSpiritCastAction.SpawnShield);
+        }
+
+        /// <summary>
+        /// Pattern-facing: enter the casting pose without arming an automatic shield spawn.
+        /// The boss stays in the casting loop indefinitely until the pattern calls
+        /// <see cref="RequestFinishShieldCastAndSpawn"/>. Used by scripted sequences that
+        /// want to control the casting → spawn timing in code instead of via animation events.
+        /// </summary>
+        public void RequestBeginShieldCast() {
+            if (IsBusy || isDead || HasActiveShield) {
+                return;
+            }
+            isCasting = true;
+            isCastHoldActive = true;
+            pendingCastAction = VengefulSpiritCastAction.None;
+            StopMovement();
+        }
+
+        /// <summary>
+        /// Pattern-facing: end the held casting pose, instantiate the shield (its own
+        /// Spawn animation plays), and release the cast lock. Pairs with
+        /// <see cref="RequestBeginShieldCast"/>.
+        /// </summary>
+        public void RequestFinishShieldCastAndSpawn() {
+            if (isDead) {
+                return;
+            }
+            if (!HasActiveShield) {
+                SpawnShield();
+            }
+            isCasting = false;
+            isCastHoldActive = false;
+            pendingCastAction = VengefulSpiritCastAction.None;
         }
 
         /// <summary>
@@ -972,6 +1031,14 @@ namespace Game.Features.Bosses.VengefulSpirit {
             SetShieldTeleportSuspended(false);
         }
 
+        // After fade-out-in-place: boss is at alpha 0 and no longer in transit, but stays
+        // damage-immune (and the shield stays suspended) until the next teleport fades
+        // the boss back in. The next teleport's OnTeleportComplete clears both flags.
+        private void OnFadeOutInPlaceComplete() {
+            isTeleporting = false;
+            RefreshIgnoreDamage();
+        }
+
         // Composes shield + teleport + shield-destruction immunity into Damageable.IgnoreDamage.
         // Sources can overlap (e.g., a teleport that starts while a shield is active), so
         // neither state can write IgnoreDamage directly without potentially clearing the
@@ -1070,6 +1137,11 @@ namespace Game.Features.Bosses.VengefulSpirit {
             if (swordCastChargeRoutine != null) {
                 return;
             }
+            // Pattern is holding the casting pose — only RequestFinishShieldCastAndSpawn
+            // ends it, so leave the state untouched.
+            if (isCastHoldActive) {
+                return;
+            }
             isCasting = false;
             pendingCastAction = VengefulSpiritCastAction.None;
         }
@@ -1153,6 +1225,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
             StopChargeRoutine();
             StopSwordCastChargeRoutine();
             isCasting = false;
+            isCastHoldActive = false;
             pendingCastAction = VengefulSpiritCastAction.None;
             isAttacking = false;
             attackElapsed = 0f;

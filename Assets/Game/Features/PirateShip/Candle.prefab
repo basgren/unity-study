@@ -99,7 +99,7 @@ MonoBehaviour:
   - {fileID: 6713194110246969877}
   shakeAmplitude: {x: 0.03, y: 0.03}
   shakeFrequency: 4
-  intensityVariation: 0.05
+  intensityVariation: 0.03
   flickerFrequency: 6
   enableBursts: 0
   burstChancePerSecond: 0.5
@@ -116,6 +116,7 @@ GameObject:
   - component: {fileID: 6633848957812466427}
   - component: {fileID: 6633848957812466425}
   - component: {fileID: 6633848957812466426}
+  - component: {fileID: -1967324201179632271}
   m_Layer: 12
   m_Name: Candle
   m_TagString: Untagged
@@ -218,6 +219,24 @@ MonoBehaviour:
   onComplete:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-1967324201179632271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6633848957812466428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a833769b0eaac4f4687c7e2b680c9f53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodyRenderer: {fileID: 6633848957812466425}
+  unlitSprite: {fileID: 21300000, guid: dac9886f72e07284bb753f68c9357532, type: 3}
+  bodyAnimator: {fileID: 6633848957812466426}
+  lightSprite: {fileID: 6633848958830105695}
+  lightObject: {fileID: 558784526959888216}
+  startLit: 1
 --- !u!1 &6633848958830105695
 GameObject:
   m_ObjectHideFlags: 0

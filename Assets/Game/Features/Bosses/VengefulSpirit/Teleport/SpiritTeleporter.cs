@@ -81,13 +81,29 @@ namespace Game.Features.Bosses.VengefulSpirit.Teleport {
         /// state that should be in place when the boss reappears (facing direction,
         /// animator parameters, etc.). May be <c>null</c>.
         /// <paramref name="onComplete"/> fires once when alpha is fully restored.
+        /// <paramref name="hiddenDurationOverride"/> replaces the configured
+        /// <c>hiddenDuration</c> for this run when non-negative. Pass a negative value
+        /// to use the inspector default.
         /// No-op if a run is already in progress.
         /// </summary>
-        public void Run(Vector3 destination, Action onDamageGraceElapsed, Action onAtDestination, Action onComplete) {
+        public void Run(Vector3 destination, Action onDamageGraceElapsed, Action onAtDestination, Action onComplete, float hiddenDurationOverride = -1f) {
             if (activeRun != null) {
                 return;
             }
-            activeRun = StartCoroutine(RunSequence(destination, onDamageGraceElapsed, onAtDestination, onComplete));
+            activeRun = StartCoroutine(RunSequence(destination, onDamageGraceElapsed, onAtDestination, onComplete, hiddenDurationOverride));
+        }
+
+        /// <summary>
+        /// Runs only the fade-out half of the sequence — no reposition, no hidden hold,
+        /// no fade-in. Leaves the sprite (and any registered fader renderers) at alpha 0.
+        /// The caller is responsible for reappearing later via <see cref="Run"/>.
+        /// <paramref name="onDamageGraceElapsed"/> fires the same way as in <see cref="Run"/>.
+        /// </summary>
+        public void FadeOutInPlace(Action onDamageGraceElapsed, Action onComplete) {
+            if (activeRun != null) {
+                return;
+            }
+            activeRun = StartCoroutine(FadeOutInPlaceSequence(onDamageGraceElapsed, onComplete));
         }
 
         /// <summary>
@@ -103,7 +119,7 @@ namespace Game.Features.Bosses.VengefulSpirit.Teleport {
             SetAlpha(1f);
         }
 
-        private IEnumerator RunSequence(Vector3 destination, Action onDamageGraceElapsed, Action onAtDestination, Action onComplete) {
+        private IEnumerator RunSequence(Vector3 destination, Action onDamageGraceElapsed, Action onAtDestination, Action onComplete, float hiddenDurationOverride) {
             yield return FadeOutWithGrace(onDamageGraceElapsed);
 
             // Reposition while invisible — no visual seam.
@@ -115,8 +131,9 @@ namespace Game.Features.Bosses.VengefulSpirit.Teleport {
             // so the boss reappears already configured.
             onAtDestination?.Invoke();
 
-            if (hiddenDuration > 0f) {
-                yield return new WaitForSeconds(hiddenDuration);
+            float effectiveHidden = hiddenDurationOverride >= 0f ? hiddenDurationOverride : hiddenDuration;
+            if (effectiveHidden > 0f) {
+                yield return new WaitForSeconds(effectiveHidden);
             }
 
             yield return Fade(0f, 1f, fadeInDuration);
@@ -125,10 +142,19 @@ namespace Game.Features.Bosses.VengefulSpirit.Teleport {
             onComplete?.Invoke();
         }
 
+        private IEnumerator FadeOutInPlaceSequence(Action onDamageGraceElapsed, Action onComplete) {
+            yield return FadeOutWithGrace(onDamageGraceElapsed);
+            activeRun = null;
+            onComplete?.Invoke();
+        }
+
         // Single fade pass that also fires the grace callback at the right moment.
         // Splitting this into two Fade(...) calls would double-write alpha at the
         // boundary and risk a 1-frame visual hiccup, hence the inline loop.
+        // Starts the fade from the current alpha so a follow-up teleport that begins
+        // with the boss already invisible doesn't snap the sprite back to opaque.
         private IEnumerator FadeOutWithGrace(Action onDamageGraceElapsed) {
+            float startAlpha = GetCurrentAlpha();
             float grace = Mathf.Clamp(damageGraceDuration, 0f, fadeOutDuration);
             bool graceFired = false;
 
@@ -141,7 +167,7 @@ namespace Game.Features.Bosses.VengefulSpirit.Teleport {
             float t = 0f;
             while (t < fadeOutDuration) {
                 t += Time.deltaTime;
-                SetAlpha(Mathf.Lerp(1f, 0f, t / fadeOutDuration));
+                SetAlpha(Mathf.Lerp(startAlpha, 0f, t / fadeOutDuration));
                 if (!graceFired && t >= grace) {
                     graceFired = true;
                     onDamageGraceElapsed?.Invoke();
@@ -152,6 +178,10 @@ namespace Game.Features.Bosses.VengefulSpirit.Teleport {
             if (!graceFired) {
                 onDamageGraceElapsed?.Invoke();
             }
+        }
+
+        private float GetCurrentAlpha() {
+            return spriteRenderer != null ? spriteRenderer.color.a : 1f;
         }
 
         private IEnumerator Fade(float from, float to, float duration) {
