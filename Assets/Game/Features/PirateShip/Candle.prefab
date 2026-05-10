@@ -50,7 +50,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 0.9308176, g: 0.85463506, b: 0.55907595, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.7
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 4125b57b153e8d6f00000000253d231abbb44451051b0967fffe9dddfbf02ef86fcd84a375c02f76e72c1af3096cbb15e15eb2fe9957a32d8bfc7d02337a08ce
@@ -58,7 +58,7 @@ MonoBehaviour:
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
   m_AlphaBlendOnOverlap: 0
-  m_OverlapOperation: 1
+  m_OverlapOperation: 0
   m_NormalMapDistance: 3
   m_NormalMapQuality: 2
   m_UseNormalMap: 0
@@ -182,7 +182,7 @@ SpriteRenderer:
   m_SortingLayerID: 438517029
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: dac9886f72e07284bb753f68c9357532, type: 3}
+  m_Sprite: {fileID: 369323684, guid: 79428a2129d68454cace4acc1bde1278, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -210,12 +210,12 @@ MonoBehaviour:
   randomStartFrame: 1
   destroyOnComplete: 0
   sprites:
-  - {fileID: 21300000, guid: dac9886f72e07284bb753f68c9357532, type: 3}
-  - {fileID: 21300000, guid: 9b22ca8ef8eb2074e9930987e01cb70d, type: 3}
-  - {fileID: 21300000, guid: 26b574960cdb86943a1ad6e429719f60, type: 3}
-  - {fileID: 21300000, guid: 2054b7027d494554d91e304ac3d27e7f, type: 3}
-  - {fileID: 21300000, guid: a2b9502adf201594bbe6ab09d0e75c95, type: 3}
-  - {fileID: 21300000, guid: 415c87393fbc4b14dbeb8edce3b026e9, type: 3}
+  - {fileID: 369323684, guid: 79428a2129d68454cace4acc1bde1278, type: 3}
+  - {fileID: 1582663400, guid: 79428a2129d68454cace4acc1bde1278, type: 3}
+  - {fileID: -1247018783, guid: 79428a2129d68454cace4acc1bde1278, type: 3}
+  - {fileID: 38245561, guid: 79428a2129d68454cace4acc1bde1278, type: 3}
+  - {fileID: -568379815, guid: 79428a2129d68454cace4acc1bde1278, type: 3}
+  - {fileID: -1234345949, guid: 79428a2129d68454cace4acc1bde1278, type: 3}
   onComplete:
     m_PersistentCalls:
       m_Calls: []
@@ -232,11 +232,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyRenderer: {fileID: 6633848957812466425}
-  unlitSprite: {fileID: 21300000, guid: dac9886f72e07284bb753f68c9357532, type: 3}
+  unlitSprite: {fileID: 1018962632, guid: 79428a2129d68454cace4acc1bde1278, type: 3}
   bodyAnimator: {fileID: 6633848957812466426}
   lightSprite: {fileID: 6633848958830105695}
+  flameRenderer: {fileID: 0}
   lightObject: {fileID: 558784526959888216}
-  startLit: 1
+  lit: 1
+  fadeDuration: 2
 --- !u!1 &6633848958830105695
 GameObject:
   m_ObjectHideFlags: 0

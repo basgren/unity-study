@@ -1,5 +1,97 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1205154252126918226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2519208128168008056}
+  - component: {fileID: 3631694922595696525}
+  - component: {fileID: 771431706495791907}
+  m_Layer: 16
+  m_Name: BodyDamager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2519208128168008056
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205154252126918226}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.067, y: 0.949, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8275140094215272945}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &3631694922595696525
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205154252126918226}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.4
+--- !u!114 &771431706495791907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205154252126918226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd9a81366750d4c4686954634f7ca857, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 512
+  type: 0
+  onHit:
+    m_PersistentCalls:
+      m_Calls: []
+  destroyOnContact: 0
+  onDestroy:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1748432154551571425
 GameObject:
   m_ObjectHideFlags: 0
@@ -50,6 +142,7 @@ Transform:
   - {fileID: 5073239417682934167}
   - {fileID: 6830800625699413031}
   - {fileID: 71196663564923318}
+  - {fileID: 2519208128168008056}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3684953316818793184
@@ -250,7 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 490e7752e7814ca44952baf2fcb756e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlSource: {fileID: 0}
+  controlSource: {fileID: 5041671256731797226}
   moveSpeed: 4
   attackHoldDuration: 0.9
   swordPrefab: {fileID: 1290938051147762994, guid: 7ab57b456c9f3b74aaf1b1c9b86122bb,
@@ -266,6 +359,8 @@ MonoBehaviour:
   swordCastChargeDuration: 1.5
   attackDamager: {fileID: 1728803729952498810}
   chargeDamager: {fileID: 5268163150952694348}
+  bodyDamager: {fileID: 771431706495791907}
+  punishZone: {fileID: 6994112573069520553}
   chargeWindUpDuration: 0.8
   chargeDashSpeed: 16
   chargeIdleDuration: 1
@@ -396,8 +491,7 @@ MonoBehaviour:
   dramaticPause: 1.5
   castHoldDuration: 2.5
   postSpawnPause: 1
-  castParticlesPrefab: {fileID: 4461717866713813598, guid: dae7ee856d7223e47baf675d0d15b465,
-    type: 3}
+  castParticlesPrefab: {fileID: 0}
   castStartCue: {fileID: 11400000, guid: 2c5e8a2271f3b204ba54d4fec3c807aa, type: 2}
 --- !u!114 &1913282979006039845
 MonoBehaviour:
@@ -461,7 +555,7 @@ GameObject:
   - component: {fileID: 2608167893106048009}
   - component: {fileID: 485142856840074454}
   - component: {fileID: 9195640419029677403}
-  m_Layer: 15
+  m_Layer: 16
   m_Name: AttackTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -555,7 +649,7 @@ GameObject:
   - component: {fileID: 3967303679549493240}
   - component: {fileID: 6208375371287258094}
   - component: {fileID: 1728803729952498810}
-  m_Layer: 15
+  m_Layer: 16
   m_Name: AttackDamager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -645,7 +739,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 71196663564923318}
-  m_Layer: 15
+  m_Layer: 16
   m_Name: BlinkProbe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -678,7 +772,7 @@ GameObject:
   - component: {fileID: 5073239417682934167}
   - component: {fileID: 9041942590347360574}
   - component: {fileID: 5268163150952694348}
-  m_Layer: 15
+  m_Layer: 16
   m_Name: ChargeDamager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -769,7 +863,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6830800625699413031}
   - component: {fileID: 5104392464702543324}
-  m_Layer: 15
+  m_Layer: 16
   m_Name: PunishZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}

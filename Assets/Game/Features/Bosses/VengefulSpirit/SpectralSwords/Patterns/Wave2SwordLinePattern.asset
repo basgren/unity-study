@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 125773849a81eeb4bb1d11e91c9ca327, type: 3}
   m_Name: Wave2SwordLinePattern
   m_EditorClassIdentifier: 
-  swordCount: 4
-  spawnDelay: 0.3
-  lateralOffset: 2.5
+  swordCount: 5
+  spawnDelay: 0.2
+  lateralOffset: 2.3
   lateralStart: 0
   verticalOffset: 0
   telegraphTime: 0.4
   flightDirection: {x: -1, y: -1}
-  flightSpeed: 8
-  maxTravelDistance: 8
+  flightSpeed: 12
+  maxTravelDistance: 7
   lifetime: 4

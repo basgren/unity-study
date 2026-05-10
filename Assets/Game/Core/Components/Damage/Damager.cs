@@ -107,6 +107,10 @@ namespace Game.Core.Components.Damage {
 
             bool isDamaged = damageable.TryTakeDamage(this);
 
+            if (isDamaged) {
+                Debug.Log($"[Damager] '{gameObject.name}' damaged '{other.gameObject.name}'", this);
+            }
+
             onHit?.Invoke(new HitInfo(damageable, this, isDamaged));
 
             if (type == DamagerType.SingleHit && isDamaged) {

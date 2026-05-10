@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-namespace Core.Components.Effects {
+namespace Game.Core.Components.Effects {
     /// <summary>
     /// Simulates the flickering light of a flame source (candle, torch, bonfire).
     /// Applies a coherent Perlin-noise based position shake and intensity flicker
@@ -54,11 +54,21 @@ namespace Core.Components.Effects {
         private float burstRemaining;
 
         void Awake() {
-            CacheBaselines();
-
+            // Noise offsets are randomized once per object lifetime — re-rolling them in
+            // OnEnable would visibly snap the flicker pattern every time the component
+            // toggles back on.
             noiseOffsetX = Random.Range(0.0f, 1000.0f);
             noiseOffsetY = Random.Range(0.0f, 1000.0f);
             noiseOffsetIntensity = Random.Range(0.0f, 1000.0f);
+        }
+
+        // Re-cache on every enable so external code can set the light's authored
+        // intensity right before re-enabling and have the flicker wobble around that
+        // value. Caching in Awake instead would lock in whatever intensity happened
+        // to be set at that unpredictable moment (e.g. before a CandleController had
+        // a chance to apply its initial unlit state).
+        void OnEnable() {
+            CacheBaselines();
         }
 
         void Update() {

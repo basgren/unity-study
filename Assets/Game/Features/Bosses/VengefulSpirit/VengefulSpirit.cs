@@ -118,6 +118,18 @@ namespace Game.Features.Bosses.VengefulSpirit {
         [SerializeField]
         private Damager chargeDamager;
 
+        [Tooltip("Continuous body-contact damager. Disabled the moment a teleport fade-out begins " +
+                 "and re-enabled once the matching fade-in completes. After RequestFadeOutInPlace " +
+                 "it stays off until the next teleport restores the body. Forced off on death.")]
+        [SerializeField]
+        private Damager bodyDamager;
+
+        [Tooltip("Punish-zone trigger GameObject (the wide collider read by CommonAttackPattern). " +
+                 "Follows the BodyDamager lifecycle — deactivated while the boss is teleporting / " +
+                 "invisible and on death; reactivated when the boss is present.")]
+        [SerializeField]
+        private GameObject punishZone;
+
         [Header("Charge Attack")]
         [Tooltip("Time the boss holds ChargeAttack1 (windup) before the dash begins. The damager " +
                  "is OFF during this window — the boss must not damage the player before the dash.")]
@@ -256,15 +268,11 @@ namespace Game.Features.Bosses.VengefulSpirit {
             myAnimator = GetComponent<Animator>();
             facing = GetComponent<Facing2D>();
             damageable = GetComponent<Damageable>();
-            // Damagers must default to disabled — they are gated on by anim events
+            // Damagers must default to deactivated — they are gated on by anim events
             // (attackDamager) or by the charge-attack coroutine (chargeDamager).
-            // Defending against a prefab where the field was authored enabled.
-            if (attackDamager != null) {
-                attackDamager.enabled = false;
-            }
-            if (chargeDamager != null) {
-                chargeDamager.enabled = false;
-            }
+            // Defensive in case a prefab override leaves the GameObject active.
+            SetAttackDamagerActive(false);
+            SetChargeDamagerActive(false);
             SyncControlSourceEnabled();
             lastSyncedControlSource = controlSource;
         }
@@ -338,6 +346,12 @@ namespace Game.Features.Bosses.VengefulSpirit {
             // so an event-based path would miss the death frame.
             if (damageable.IsHitThisFrame) {
                 wasHitThisFrame = true;
+                // If the boss is hit mid-Attack, the OnHit transition leaves the Attack clip
+                // with HasExitTime=false, so OnAttackHitEnd never fires and the damager would
+                // remain enabled across subsequent teleports / idle frames. Force it off here
+                // so a later teleport-into-player can't land a ghost hit from the prior swing.
+                SetAttackDamagerActive(false);
+                isAttackHitActive = false;
             }
 
             if (damageable.IsDead && !isDead) {
@@ -359,13 +373,12 @@ namespace Game.Features.Bosses.VengefulSpirit {
                     shieldRecoveryRoutine = null;
                 }
                 StopChargeRoutine();
-                // Both damagers must be off at death so the corpse never lands a posthumous hit.
-                if (attackDamager != null) {
-                    attackDamager.enabled = false;
-                }
-                if (chargeDamager != null) {
-                    chargeDamager.enabled = false;
-                }
+                // All triggers must be off at death so the corpse never lands a posthumous hit
+                // and the punish zone stops responding once the boss is gone.
+                SetAttackDamagerActive(false);
+                SetChargeDamagerActive(false);
+                SetBodyDamagerActive(false);
+                SetPunishZoneActive(false);
                 if (teleporter != null) {
                     // Snap alpha back to 1 so the death animation isn't played on an invisible sprite.
                     teleporter.Cancel();
@@ -505,9 +518,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
             // Defensive: if a prior attack was interrupted before OnAttackHitEnd fired,
             // the damager could still be on. Force it off so the new attack starts with
             // a clean window controlled by anim events.
-            if (attackDamager != null) {
-                attackDamager.enabled = false;
-            }
+            SetAttackDamagerActive(false);
             // While chasing, the boss keeps its momentum through the strike — the pattern
             // wants the attack to read as a lunge, not a hard stop. Other contexts (blink,
             // ground attack, debug input) still zero velocity so the strike is stationary.
@@ -529,6 +540,11 @@ namespace Game.Features.Bosses.VengefulSpirit {
             attackElapsed += Time.deltaTime;
             if (attackElapsed >= attackHoldDuration) {
                 isAttacking = false;
+                // Defensive: if OnAttackHitEnd somehow never fired (e.g., the clip looped or
+                // a transition skipped the event frame), make sure the damager doesn't outlive
+                // the attack window.
+                SetAttackDamagerActive(false);
+                isAttackHitActive = false;
             }
         }
 
@@ -677,6 +693,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
             // alpha, AND make the shield ignore damage for the duration — avoids the
             // shield shattering mid-fade while the boss is invisible.
             SetShieldTeleportSuspended(true);
+            SetBodyDamagerActive(false);
+            SetPunishZoneActive(false);
         }
 
         /// <summary>
@@ -707,6 +725,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 OnTeleportDamageGraceElapsed,
                 OnFadeOutInPlaceComplete);
             SetShieldTeleportSuspended(true);
+            SetBodyDamagerActive(false);
+            SetPunishZoneActive(false);
         }
 
         /// <summary>
@@ -725,6 +745,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 () => facing.SetDir(destFacing),
                 OnTeleportComplete);
             SetShieldTeleportSuspended(true);
+            SetBodyDamagerActive(false);
+            SetPunishZoneActive(false);
         }
 
         /// <summary>
@@ -885,6 +907,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 () => facing.SetByX(dashDirSign),
                 () => { teleportDone = true; });
             SetShieldTeleportSuspended(true);
+            SetBodyDamagerActive(false);
+            SetPunishZoneActive(false);
             while (!teleportDone) {
                 if (isDead) {
                     yield break;
@@ -897,6 +921,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
             isTeleportImmune = false;
             RefreshIgnoreDamage();
             SetShieldTeleportSuspended(false);
+            SetBodyDamagerActive(true);
+            SetPunishZoneActive(true);
 
             StopMovement();
 
@@ -916,17 +942,13 @@ namespace Game.Features.Bosses.VengefulSpirit {
             // drive horizontal velocity until either the destination X is reached or the
             // safety cap fires.
             myAnimator.SetBool(VengefulSpiritAnimKeys.IsChargingAttack, false);
-            if (chargeDamager != null) {
-                chargeDamager.enabled = true;
-            }
+            SetChargeDamagerActive(true);
             float targetX = to.transform.position.x;
             float dashDir = Mathf.Sign(targetX - transform.position.x);
             float dashStart = Time.time;
             while (Time.time - dashStart < chargeMaxDashDuration) {
                 if (isDead) {
-                    if (chargeDamager != null) {
-                        chargeDamager.enabled = false;
-                    }
+                    SetChargeDamagerActive(false);
                     yield break;
                 }
                 float curX = transform.position.x;
@@ -936,9 +958,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 myRigidbody.velocity = new Vector2(dashDir * chargeDashSpeed, 0f);
                 yield return null;
             }
-            if (chargeDamager != null) {
-                chargeDamager.enabled = false;
-            }
+            SetChargeDamagerActive(false);
             StopMovement();
 
             // Phase 4: idle hold so the player has a beat to react before the next pattern.
@@ -963,9 +983,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 StopCoroutine(chargeRoutine);
                 chargeRoutine = null;
             }
-            if (chargeDamager != null) {
-                chargeDamager.enabled = false;
-            }
+            SetChargeDamagerActive(false);
             if (myAnimator != null) {
                 myAnimator.SetBool(VengefulSpiritAnimKeys.IsChargingAttack, false);
             }
@@ -982,8 +1000,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
         /// strike — the swing has committed, so the pattern stops tracking the player.
         /// </summary>
         public void OnAttackHitStart() {
-            if (attackDamager != null && !isDead) {
-                attackDamager.enabled = true;
+            if (!isDead) {
+                SetAttackDamagerActive(true);
             }
             if (isChasing) {
                 isAttackHitActive = true;
@@ -997,9 +1015,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
         /// end-of-attack event.
         /// </summary>
         public void OnAttackHitEnd() {
-            if (attackDamager != null) {
-                attackDamager.enabled = false;
-            }
+            SetAttackDamagerActive(false);
             isAttackHitActive = false;
         }
 
@@ -1029,6 +1045,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
             isTeleportImmune = false;
             RefreshIgnoreDamage();
             SetShieldTeleportSuspended(false);
+            SetBodyDamagerActive(true);
+            SetPunishZoneActive(true);
         }
 
         // After fade-out-in-place: boss is at alpha 0 and no longer in transit, but stays
@@ -1232,12 +1250,8 @@ namespace Game.Features.Bosses.VengefulSpirit {
             isAttackHitActive = false;
             isChasing = false;
             StopMovement();
-            if (attackDamager != null) {
-                attackDamager.enabled = false;
-            }
-            if (chargeDamager != null) {
-                chargeDamager.enabled = false;
-            }
+            SetAttackDamagerActive(false);
+            SetChargeDamagerActive(false);
             if (myAnimator != null) {
                 myAnimator.SetBool(VengefulSpiritAnimKeys.IsChargingAttack, false);
             }
@@ -1345,6 +1359,40 @@ namespace Game.Features.Bosses.VengefulSpirit {
             SetShieldAnimatorsEnabled(!suspended);
             if (currentShieldDamageable != null) {
                 currentShieldDamageable.IgnoreDamage = suspended;
+            }
+        }
+
+        // Toggles for the boss's child trigger objects. We deactivate the whole GameObject
+        // (not just the Damager component) so the collider drops out of physics entirely
+        // and the gizmo also disappears — a clearer scene-view signal for which triggers
+        // are currently armed, and one fewer trigger for Box2D to consider per step.
+        private void SetAttackDamagerActive(bool isActive) {
+            if (attackDamager != null) {
+                attackDamager.gameObject.SetActive(isActive);
+            }
+        }
+
+        private void SetChargeDamagerActive(bool isActive) {
+            if (chargeDamager != null) {
+                chargeDamager.gameObject.SetActive(isActive);
+            }
+        }
+
+        // Body damager: off the moment a teleport fade-out begins, back on when the matching
+        // fade-in completes; stays off after a fade-out-in-place until the next teleport
+        // restores the body. Also forced off on death by the CheckDamageState death branch.
+        private void SetBodyDamagerActive(bool isActive) {
+            if (bodyDamager != null) {
+                bodyDamager.gameObject.SetActive(isActive);
+            }
+        }
+
+        // Punish zone: same lifecycle as BodyDamager — present-while-boss-is-present. The
+        // pattern that queries it only runs when the boss is free, so disabling during
+        // teleport / death is safe.
+        private void SetPunishZoneActive(bool isActive) {
+            if (punishZone != null) {
+                punishZone.SetActive(isActive);
             }
         }
 

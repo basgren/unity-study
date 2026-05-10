@@ -50,9 +50,11 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
         private CandleController[] secondRowCandles;
 
         [Header("Audio")]
-        [Tooltip("One-shot SFX played just before the spirit appears.")]
+        [Tooltip("Dedicated scene AudioSource that plays the laugh. Use a scene AudioSource " +
+                 "(rather than G.Audio.Play2D) so designers can attach an AudioReverbFilter " +
+                 "to it — that filter exposes named presets like Cave / Hangar / StoneRoom.")]
         [SerializeField]
-        private AudioCue laughCue;
+        private AudioSource laughSource;
 
         [Tooltip("Background track that starts when the cutscene ends.")]
         [SerializeField]
@@ -76,7 +78,12 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
         [SerializeField]
         private float spiritHiddenHold;
 
+        [Tooltip("How long the boss music takes to fade to silence after the boss dies.")]
+        [SerializeField]
+        private float musicFadeOutSeconds = 2f;
+
         private bool started;
+        private bool subscribedToDisengage;
 
         // Hold the AI off until the cutscene hands off. Done in Start (not Awake) so the
         // boss's own Awake — which calls SyncControlSourceEnabled and would re-enable the AI —
@@ -109,8 +116,8 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
 
             yield return new WaitForSeconds(beforeFirstRow);
             
-            if (laughCue != null && G.Audio != null) {
-                G.Audio.Play2D(laughCue);
+            if (laughSource != null) {
+                laughSource.Play();
             }
             
             SetRowLit(firstRowCandles, true);
@@ -150,12 +157,39 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
 
             if (boss != null && boss.Damageable != null && G.BossFight != null) {
                 G.BossFight.EngageBoss(boss.Damageable);
+                G.BossFight.OnBossDisengaged += HandleBossDisengaged;
+                subscribedToDisengage = true;
             }
 
             // Hand off to the AI: enabling resets its warmup timer in OnEnable, so the
             // player gets a beat before the first attack lands.
             if (bossAI != null) {
                 bossAI.enabled = true;
+            }
+        }
+
+        // BossFightService.DisengageBoss fires when the boss dies (and also on scene
+        // unload via VengefulSpirit.OnDisable — calling ClearLevelMusic on shutdown is
+        // harmless). One-shot: unsubscribe immediately so a later EngageBoss / death
+        // cycle in the same scene wouldn't double-fade.
+        private void HandleBossDisengaged() {
+            UnsubscribeFromDisengage();
+            if (G.Audio != null) {
+                G.Audio.ClearLevelMusic(musicFadeOutSeconds);
+            }
+        }
+
+        private void OnDestroy() {
+            UnsubscribeFromDisengage();
+        }
+
+        private void UnsubscribeFromDisengage() {
+            if (!subscribedToDisengage) {
+                return;
+            }
+            subscribedToDisengage = false;
+            if (G.BossFight != null) {
+                G.BossFight.OnBossDisengaged -= HandleBossDisengaged;
             }
         }
 
