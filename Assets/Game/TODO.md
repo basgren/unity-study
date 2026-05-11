@@ -14,6 +14,7 @@
     take controls for some time (0.5 secs, for example) and apply knockback for this time. After that
     time return control.
 * when hit and quickly throw sword, hero stops turning.
+* grappling hook pivot point should be moved upper - recently hero changed pivots
 
 ## Cannon
 * Add effect on fire
@@ -29,3 +30,6 @@
 * make coins collide with barrels when they are dropped.
 * debris - enhance directoion calculation - if projectile met wall, debris should burst in the direction opposite
     to wall.
+
+## Textures
+* `ultra-far-bg` - has gray pixel in the top middle
