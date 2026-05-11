@@ -6,12 +6,14 @@
   convenient to add EntryPoint to some test scene, without modifying bootstrap scene.
 * Implement bootstrap scene to initialize systems and load first scene. Currently `EntryPoint` prefab is added to
   each scene.
+* when transitioning between scenes, coin amount is not shown until new coin is picked up.
 
 ## Hero
 * Fix knockback on being hit. Currently horizontal knockback doesn't work, as horizontal direction is
     set in every frame and is overridden by player keypress. What should be done: when player is hit,
     take controls for some time (0.5 secs, for example) and apply knockback for this time. After that
     time return control.
+* when hit and quickly throw sword, hero stops turning.
 
 ## Cannon
 * Add effect on fire
