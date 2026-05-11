@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Prefabs.Characters.Common {
+namespace Game.Features.Characters._Shared {
     [RequireComponent(typeof(Rigidbody2D))]
     public class WobblingProjectile : ProjectileBase {
         /// <summary>

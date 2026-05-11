@@ -3,7 +3,7 @@ using Core.Components.Base2D;
 using Core.Components.Extensions;
 using Game.Core.Bootstrap;
 using Game.Core.Components.GameObjects;
-using Prefabs.Characters.Common;
+using Game.Features.Characters._Shared;
 using UnityEngine;
 
 namespace Game.Features.Characters.Hero.Projectiles {

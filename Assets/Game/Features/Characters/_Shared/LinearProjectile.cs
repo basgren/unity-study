@@ -1,7 +1,6 @@
 using Core;
 using Game.Core.Audio;
 using Game.Core.Bootstrap;
-using Prefabs.Characters.Common;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
@@ -87,6 +86,12 @@ namespace Game.Features.Characters._Shared {
                 : ricochetLayers;
         }
 
+        public override void OnSpawn() {
+            base.OnSpawn();
+            ricochetCount = 0;
+            isBroken = false;
+        }
+
         /// <summary>
         /// Performs swept movement for this frame.
         ///
@@ -155,13 +160,13 @@ namespace Game.Features.Characters._Shared {
             }
 
             onDestroy?.Invoke();
-            
+
             sfx?.Play("destroy");
-            Destroy(gameObject);
+            Despawn();
         }
 
         public void OnHitPlayer() {
-            Destroy(gameObject);
+            Despawn();
         }
 
         /// <summary>

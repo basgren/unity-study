@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+﻿using Game.Core.Bootstrap;
+using Game.Core.Services.Pool;
+using UnityEngine;
 
-namespace Prefabs.Characters.Common {
-
+namespace Game.Features.Characters._Shared {
     public interface IProjectileLifetime {
         float LifeTime { get; }
     }
-    
+
     [RequireComponent(typeof(Rigidbody2D))]
-    public abstract class ProjectileBase : MonoBehaviour {
+    public abstract class ProjectileBase : MonoBehaviour, IPoolable {
         [SerializeField]
         protected float linearSpeed = 1f;
 
@@ -37,30 +38,67 @@ namespace Prefabs.Characters.Common {
         private float lifeTime;
         private Vector2 startPosition;
 
+        private bool spawnInitialized;
+        private bool despawned;
+
         protected virtual void Awake() {
-            myRigidbody = GetComponent<Rigidbody2D>();            
+            myRigidbody = GetComponent<Rigidbody2D>();
         }
-        
-        private void Start() {
+
+        /// <summary>
+        /// Resets per-spawn runtime state. Called by the pool after the instance is positioned
+        /// and activated, and by <see cref="Start"/> as a fallback for scene-placed instances.
+        /// </summary>
+        public virtual void OnSpawn() {
             startPosition = myRigidbody.position;
             prevCoord = myRigidbody.position;
+            travelledDistance = 0f;
+            lifeTime = 0f;
+            despawned = false;
+            spawnInitialized = true;
+        }
+
+        public virtual void OnDespawn() {
+            direction = Vector2.zero;
+            spawnInitialized = false;
+        }
+
+        private void Start() {
+            // Fallback for instances that bypass SpawnerService (e.g. placed in a scene).
+            if (!spawnInitialized) {
+                OnSpawn();
+            }
         }
 
         private void FixedUpdate() {
             var pos = myRigidbody.position;
 
             pos = GetNewPosition(pos);
-           
+
             myRigidbody.MovePosition(pos);
 
             travelledDistance += Vector2.Distance(pos, prevCoord);
             prevCoord = pos;
 
             if (travelledDistance > maxTravelDistance) {
-                Destroy(gameObject);
+                Despawn();
             }
-            
+
             lifeTime += DeltaTime;
+        }
+
+        /// <summary>
+        /// Returns this instance to its pool (or destroys it if not pooled).
+        /// Idempotent: safe to call multiple times within the same frame.
+        /// </summary>
+        protected void Despawn() {
+            // Both BreakSelf-style termination and the travel-distance cutoff can land in
+            // the same FixedUpdate; pool's collectionCheck would throw on a double release.
+            if (despawned) {
+                return;
+            }
+            despawned = true;
+            G.Spawner.Despawn(gameObject);
         }
         
         /// <summary>

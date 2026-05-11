@@ -6,6 +6,7 @@ using Game.Core.Components.Damage;
 using Game.Core.Components.GameObjects;
 using Game.Core.Services.SceneState.Savers;
 using Game.Core.Utils;
+using Game.Features.Characters._Shared;
 using Prefabs.Characters.Common;
 using UnityEngine;
 
