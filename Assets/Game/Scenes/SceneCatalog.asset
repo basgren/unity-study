@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: SceneCatalog
   m_EditorClassIdentifier: 
   scenes:
+  - sceneGuid: 4a767989762933947a5a33b17a6a25fa
+    scenePath: Assets/Game/Scenes/BossSkeletonRoom.unity
   - sceneGuid: 61a7394c3d8813c47a242d95511c72a3
     scenePath: Assets/Game/Scenes/MainMenu.unity
   - sceneGuid: 448c499cf51d4d7438209339e95cbfc6

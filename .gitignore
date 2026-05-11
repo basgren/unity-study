@@ -24,6 +24,11 @@
 Assets/AssetStoreTools*
 *.unitypackage
 
+# Addressables / ScriptableBuildPipeline per-build artifacts
+Assets/AddressableAssetsData/Windows/
+Assets/AddressableAssetsData/Windows.meta
+ProjectSettings/ScriptableBuildPipeline.json
+
 # OS
 .DS_Store
 Thumbs.db
