@@ -17,6 +17,14 @@ namespace Game.Core.Editor {
                 return;
             }
 
+            // Skip scenes that live outside the project's Assets folder (e.g. inside
+            // read-only Unity packages). EditorSceneManager.OpenScene logs an error
+            // for those, which would surface during builds as noise even though the
+            // validators only care about project-owned scenes.
+            if (!scenePath.StartsWith("Assets/")) {
+                return;
+            }
+
             var targetScene = SceneManager.GetSceneByPath(scenePath);
             var isAlreadyLoaded = targetScene.IsValid() && targetScene.isLoaded;
 
