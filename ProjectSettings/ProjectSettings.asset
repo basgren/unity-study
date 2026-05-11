@@ -144,6 +144,7 @@ PlayerSettings:
   bundleVersion: 0.0.1
   preloadedAssets:
   - {fileID: 11400000, guid: 20cedae7329f3d641a8cd41978bf6ddb, type: 2}
+  - {fileID: 11400000, guid: 26fbefa0af16e5f47b169f467129f5eb, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -163,7 +164,8 @@ PlayerSettings:
   resetResolutionOnWindowResize: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
-  applicationIdentifier: {}
+  applicationIdentifier:
+    Standalone: com.BG.Piratik
   buildNumber:
     Standalone: 0
     VisionOS: 0

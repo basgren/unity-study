@@ -14,6 +14,3 @@ PresetManager:
         type: 2}
       m_Filter: 
       m_Disabled: 0
-    - m_Preset: {fileID: 0}
-      m_Filter: 
-      m_Disabled: 0

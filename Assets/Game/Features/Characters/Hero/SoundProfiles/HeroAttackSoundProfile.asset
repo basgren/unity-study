@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: e3d5c5f2d3ff3a144a6d8569c49edb70, type: 3}
   m_Name: HeroAttackSoundProfile
-  m_EditorClassIdentifier: Assembly-CSharp:Game.Audio:HeroAttackSoundProfile
+  m_EditorClassIdentifier: 
   attack: {fileID: 11400000, guid: 9d927e96cc874984aad80c84e9822565, type: 2}
   throwSword: {fileID: 11400000, guid: 58f0c7530011c834f85bbd8b118dde39, type: 2}

@@ -89,8 +89,8 @@ MonoBehaviour:
   pausesGame: 0
   autoOpenOnCreation: 0
   startScene:
-    sceneGuid: aa055ab60fc4e514f91edd99c026be0e
-    scenePath: Assets/Game/Scenes/Level3Island.unity
+    sceneGuid: 2cda990e2423bbf4892e6590ba056729
+    scenePath: Assets/Game/Scenes/IntroLevel.unity
 --- !u!1 &6085323544304514467
 GameObject:
   m_ObjectHideFlags: 0

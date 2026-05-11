@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c151de8375e345f29178779bc05ffb30, type: 3}
   m_Name: PlayerSoundProfile
   m_EditorClassIdentifier: 
-  moveSoundProfile: {fileID: 11400000, guid: 1b408a78d10211a42982ad7dd92765ed, type: 2}
-  attack: {fileID: 11400000, guid: 8d5677bd02479d745a419a375e4196de, type: 2}
-  hitSoundProfile: {fileID: 0}
+  moveSoundProfile: {fileID: 11400000, guid: deaf7bf1f9e0b0c4fa55834e8d4a0d67, type: 2}
+  attack: {fileID: 11400000, guid: d751c3db2c241514fa4c9f3036204bd8, type: 2}
+  hitSoundProfile: {fileID: 11400000, guid: c8baeb9254d22904a95e94d61c358d29, type: 2}

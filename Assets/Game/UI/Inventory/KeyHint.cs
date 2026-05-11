@@ -26,13 +26,27 @@ namespace Game.UI.Inventory {
 
         private Sprite keyboardSprite;
         private RectTransform rectTransform;
+        private bool initialized;
 
         private void Awake() {
+            EnsureInitialized();
+        }
+
+        // Awake order between sibling GameObjects is not guaranteed; in builds the order can
+        // differ from the Editor. SelectedItemPanel.Awake calls into KeyHint synchronously
+        // (RefreshKeyHint → SetFromAction → ShowKeyText/ShowControllerSprite), which can
+        // arrive here before our own Awake has run. Lazy-init guards against that.
+        private void EnsureInitialized() {
+            if (initialized) {
+                return;
+            }
             keyboardSprite = keyImage.sprite;
             rectTransform = GetComponent<RectTransform>();
+            initialized = true;
         }
 
         public void SetFromAction(InputAction action, string bindingGroup) {
+            EnsureInitialized();
             if (bindingGroup == GamepadGroup) {
                 string path = FindBindingPath(action, GamepadGroup);
                 Sprite sprite = FindControllerSprite(path);

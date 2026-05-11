@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: PlayerMoveSoundProfile
-  m_EditorClassIdentifier: Assembly-CSharp:Game.Audio:MoveSoundProfile
+  m_Script: {fileID: 11500000, guid: 2dc4e75e96b1faf4ca26336a09b35668, type: 3}
+  m_Name: HeroMoveSoundProfile
+  m_EditorClassIdentifier: 
   step: {fileID: 11400000, guid: 65710b5d789fda84ca626e48cbb3ffba, type: 2}
   jump: {fileID: 11400000, guid: 28d482ac917323b42aa0906a4b93c33d, type: 2}
   landing: {fileID: 11400000, guid: 5cfe572ea10b24c478b59c0e81077b61, type: 2}
