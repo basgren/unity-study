@@ -207,7 +207,7 @@ namespace Game.Features.Effects.DeathScreen {
         private void UpdateShaderCenter(Transform hero) {
             var cam = UnityEngine.Camera.main;
             if (hero != null && cam != null) {
-                var vp = cam.WorldToViewportPoint(hero.position);
+                var vp = cam.WorldToViewportPoint(hero.position + new Vector3(0, 0.3f, 0));
                 irisMat.SetVector(CenterId, new Vector4(vp.x, vp.y, 0, 0));
             }
 

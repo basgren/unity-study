@@ -7,6 +7,9 @@
 * Implement bootstrap scene to initialize systems and load first scene. Currently `EntryPoint` prefab is added to
   each scene.
 * when transitioning between scenes, coin amount is not shown until new coin is picked up.
+* when player turns Helm to enable shooting traps and then dies, player is respawned, shootong traps are disabled
+  and Helm is inactive. either state should be rolled back when dies (or to the one that was upon resting), or
+  shooters should remain active on reload.
 
 ## Hero
 * Fix knockback on being hit. Currently horizontal knockback doesn't work, as horizontal direction is

@@ -856,6 +856,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Palm_15
       objectReference: {fileID: 0}
+    - target: {fileID: 7739003388901066174, guid: 4c33795a780584945b21a7f063101f94,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11940,6 +11945,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Palm_16
       objectReference: {fileID: 0}
+    - target: {fileID: 7739003388901066174, guid: 4c33795a780584945b21a7f063101f94,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13073,6 +13083,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Palm_19
+      objectReference: {fileID: 0}
+    - target: {fileID: 7739003388901066174, guid: 4c33795a780584945b21a7f063101f94,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15670,6 +15685,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Palm_13
       objectReference: {fileID: 0}
+    - target: {fileID: 7739003388901066174, guid: 4c33795a780584945b21a7f063101f94,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17873,6 +17893,37 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1896641023}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1204644699
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1204644700}
+  m_Layer: 8
+  m_Name: ParallaxOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1204644700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204644699}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.2, y: -1.3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1867640853}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1204955553 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2978899611977113610, guid: 4c33795a780584945b21a7f063101f94,
@@ -18707,6 +18758,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Palm_12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7739003388901066174, guid: 4c33795a780584945b21a7f063101f94,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20932,6 +20988,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Palm_21
       objectReference: {fileID: 0}
+    - target: {fileID: 7739003388901066174, guid: 4c33795a780584945b21a7f063101f94,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21975,6 +22036,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Palm_20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7739003388901066174, guid: 4c33795a780584945b21a7f063101f94,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -23132,7 +23198,7 @@ Transform:
   m_GameObject: {fileID: 1867640852}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.09, y: 63.18, z: 0}
+  m_LocalPosition: {x: 3.5, y: 93.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -23146,6 +23212,7 @@ Transform:
   - {fileID: 391974463}
   - {fileID: 1994726114}
   - {fileID: 1604820594}
+  - {fileID: 1204644700}
   m_Father: {fileID: 1857425453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1867640854
@@ -23157,9 +23224,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1867640852}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1e41f6cd783264b8767c6f67586054, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c76cdd75dd55464f9ad5d22b6c1a576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overrideSpeed: 1
+  speed: {x: 1, y: 1}
+  showGizmo: 1
+  confiner: {fileID: 1237674579}
+  parallaxOrigin: {fileID: 1204644700}
 --- !u!1001 &1871955414
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -50415,6 +50487,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Palm_14
       objectReference: {fileID: 0}
+    - target: {fileID: 7739003388901066174, guid: 4c33795a780584945b21a7f063101f94,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -50482,6 +50559,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Palm_18
+      objectReference: {fileID: 0}
+    - target: {fileID: 7739003388901066174, guid: 4c33795a780584945b21a7f063101f94,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -51254,12 +51336,12 @@ PrefabInstance:
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.5
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 92.38
+      value: 86
       objectReference: {fileID: 0}
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
@@ -51383,12 +51465,12 @@ PrefabInstance:
     - target: {fileID: 6836785096376548313, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -206.1964
+      value: -181.6964
       objectReference: {fileID: 0}
     - target: {fileID: 6836785096376548313, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 65.59255
+      value: 59.212555
       objectReference: {fileID: 0}
     - target: {fileID: 6836785096376548315, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -51478,32 +51560,32 @@ PrefabInstance:
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -201.31392
+      value: -181.6964
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 65.60364
+      value: 59.212555
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.019980019
+      value: 0.017102616
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.019538188
+      value: 0.01610018
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.95904094
+      value: 0.96579474
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.95914745
+      value: 0.9660107
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097959352688, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -51513,6 +51595,11 @@ PrefabInstance:
     - target: {fileID: 9097375419083307282, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_AmplitudeGain
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097375419083307282, guid: 35df2b69266849a429e35d7c3aeda7f7,
+        type: 3}
+      propertyPath: m_FrequencyGain
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:

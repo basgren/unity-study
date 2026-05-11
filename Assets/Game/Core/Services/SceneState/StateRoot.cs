@@ -41,7 +41,7 @@ namespace Game.Core.Services.SceneState {
         private IStateSaver[] savers;
 
         private void Awake() {
-            savers = GetComponents<IStateSaver>();
+            EnsureSaversInitialized();
         }
 
         private void Start() {
@@ -53,6 +53,9 @@ namespace Game.Core.Services.SceneState {
 
         /// <summary>Writes all saver slots into the given blob.</summary>
         internal void CaptureInto(StateBlob blob) {
+            // Awake does not run on inactive GameObjects, but capture iterates inactive
+            // StateRoots too (via GetComponentsInChildren(true)) — lazy-init defends against that.
+            EnsureSaversInitialized();
             foreach (var s in savers) {
                 s.Capture(blob.Writer(s.Slot));
             }
@@ -60,10 +63,17 @@ namespace Game.Core.Services.SceneState {
 
         /// <summary>Reads all matching slots from the given blob and applies them to the savers.</summary>
         internal void ApplyFrom(StateBlob blob) {
+            EnsureSaversInitialized();
             foreach (var s in savers) {
                 if (blob.TryReader(s.Slot, out var r)) {
                     s.Restore(r);
                 }
+            }
+        }
+
+        private void EnsureSaversInitialized() {
+            if (savers == null) {
+                savers = GetComponents<IStateSaver>();
             }
         }
 
