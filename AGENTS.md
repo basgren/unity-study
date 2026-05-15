@@ -10,6 +10,9 @@ Main priorities:
 3. Preserve pixel-perfect visuals
 4. Keep changes small, local, and maintainable
 
+Additional documentation is provided in `docs` directory. Ignore `docs/drafts` directory until reading
+it is explicitly requested.
+
 ## Coding Rules
 - Use C#
 - Use K&R brace style
