@@ -1,26 +1,25 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using Game.Doors;
 using Game.Doors.Editor;
 using UnityEditor;
 using UnityEngine;
 
 namespace Game.Features.Doors.Editor {
     /// <summary>
-    /// Editor drawer that renders DoorLink as:
+    /// Editor drawer that renders EntranceLink as:
     /// - Target Scene (SceneAsset)
-    /// - Target Door (popup list of door IDs inside that scene)
+    /// - Target Entrance (popup list of entrance IDs inside that scene)
     /// </summary>
-    [CustomPropertyDrawer(typeof(DoorLink))]
-    public sealed class DoorLinkDrawer : PropertyDrawer {
+    [CustomPropertyDrawer(typeof(EntranceLink))]
+    public sealed class EntranceLinkDrawer : PropertyDrawer {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
             return EditorGUIUtility.singleLineHeight * 2f + 2f;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             var sceneProp = property.FindPropertyRelative("targetScene");
-            var doorIdProp = property.FindPropertyRelative("targetDoorId");
+            var entranceIdProp = property.FindPropertyRelative("targetEntranceId");
 
             var lineH = EditorGUIUtility.singleLineHeight;
             var r1 = new Rect(position.x, position.y, position.width, lineH);
@@ -33,56 +32,56 @@ namespace Game.Features.Doors.Editor {
             var guidProp = sceneProp.FindPropertyRelative("sceneGuid");
             var sceneGuid = guidProp != null ? guidProp.stringValue : string.Empty;
 
-            var currentDoor = property.serializedObject.targetObject as Door;
-            var currentDoorId = currentDoor != null ? currentDoor.DoorId : string.Empty;
+            var currentEntrance = property.serializedObject.targetObject as Entrance;
+            var currentEntranceId = currentEntrance != null ? currentEntrance.EntranceId : string.Empty;
             var currentSceneGuid = string.Empty;
 
-            if (currentDoor != null && currentDoor.gameObject != null) {
-                currentSceneGuid = DoorEditorUtils.GetSceneGuid(currentDoor.gameObject.scene.path);
+            if (currentEntrance != null && currentEntrance.gameObject != null) {
+                currentSceneGuid = DoorEditorUtils.GetSceneGuid(currentEntrance.gameObject.scene.path);
             }
-            
+
             if (string.IsNullOrWhiteSpace(sceneGuid)) {
                 EditorGUI.BeginDisabledGroup(true);
-                EditorGUI.TextField(r2, "Target Door", "<select scene first>");
+                EditorGUI.TextField(r2, "Target Entrance", "<select scene first>");
                 EditorGUI.EndDisabledGroup();
                 EditorGUI.EndProperty();
                 return;
             }
 
-            // SceneDoorCache cannot OpenScene during play mode, so the dropdown would be empty
+            // SceneEntranceCache cannot OpenScene during play mode, so the dropdown would be empty
             // and incorrectly report a missing target. Show the stored id as a read-only field instead.
             if (Application.isPlaying) {
                 EditorGUI.BeginDisabledGroup(true);
-                var displayValue = string.IsNullOrEmpty(doorIdProp.stringValue)
+                var displayValue = string.IsNullOrEmpty(entranceIdProp.stringValue)
                     ? "(None)"
-                    : doorIdProp.stringValue;
-                EditorGUI.TextField(r2, "Target Door", displayValue);
+                    : entranceIdProp.stringValue;
+                EditorGUI.TextField(r2, "Target Entrance", displayValue);
                 EditorGUI.EndDisabledGroup();
                 EditorGUI.EndProperty();
                 return;
             }
 
-            var doors = SceneDoorCache.GetDoorsByGuid(sceneGuid);
-            var currentTargetId = doorIdProp.stringValue;
-            var names = new List<string>(doors.Length + 1);
-            var values = new List<string>(doors.Length + 1);
+            var entrances = SceneEntranceCache.GetEntrancesByGuid(sceneGuid);
+            var currentTargetId = entranceIdProp.stringValue;
+            var names = new List<string>(entrances.Length + 1);
+            var values = new List<string>(entrances.Length + 1);
 
             names.Add("(None)");
             values.Add(string.Empty);
 
             var selectedIndex = 0;
 
-            for (var i = 0; i < doors.Length; i++) {
-                var id = doors[i].DoorId;
+            for (var i = 0; i < entrances.Length; i++) {
+                var id = entrances[i].EntranceId;
 
                 if (!string.IsNullOrWhiteSpace(currentSceneGuid) &&
                     string.Equals(sceneGuid, currentSceneGuid, StringComparison.Ordinal) &&
-                    !string.IsNullOrWhiteSpace(currentDoorId) &&
-                    string.Equals(id, currentDoorId, StringComparison.Ordinal)) {
+                    !string.IsNullOrWhiteSpace(currentEntranceId) &&
+                    string.Equals(id, currentEntranceId, StringComparison.Ordinal)) {
                     continue;
                 }
 
-                names.Add(doors[i].Label);
+                names.Add(entrances[i].Label);
                 values.Add(id);
 
                 if (!string.IsNullOrWhiteSpace(currentTargetId) &&
@@ -93,26 +92,26 @@ namespace Game.Features.Doors.Editor {
 
             var showMissingWarning = !string.IsNullOrWhiteSpace(currentTargetId) && selectedIndex == 0;
             var popupRect = r2;
-            const float WarnWidth = 180f;
+            const float WarnWidth = 200f;
 
             if (showMissingWarning) {
                 popupRect.width = Mathf.Max(0f, r2.width - WarnWidth);
             }
 
-            var newIndex = EditorGUI.Popup(popupRect, "Target Door", selectedIndex, names.ToArray());
+            var newIndex = EditorGUI.Popup(popupRect, "Target Entrance", selectedIndex, names.ToArray());
 
             // Only write back when the USER changed the selection. Popup returns the passed-in
             // selectedIndex when nothing was clicked this frame; comparing newValue vs currentTargetId
             // would clear the saved id whenever the scene cache returns empty (e.g. during play-mode
-            // entry, see SceneDoorCache.GetDoorsByGuid), because selectedIndex stays at 0 ("None").
+            // entry, see SceneEntranceCache.GetEntrancesByGuid), because selectedIndex stays at 0 ("None").
             if (newIndex != selectedIndex) {
-                doorIdProp.stringValue = values[newIndex];
+                entranceIdProp.stringValue = values[newIndex];
                 property.serializedObject.ApplyModifiedProperties();
             }
 
             if (showMissingWarning) {
                 var warnRect = new Rect(r2.xMax - WarnWidth, r2.y, WarnWidth, r2.height);
-                EditorGUI.LabelField(warnRect, "Missing target door", EditorStyles.miniBoldLabel);
+                EditorGUI.LabelField(warnRect, "Missing target entrance", EditorStyles.miniBoldLabel);
             }
 
             EditorGUI.EndProperty();

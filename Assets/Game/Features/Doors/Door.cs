@@ -1,6 +1,8 @@
 using System;
 using Game.Core.Components.Interaction;
+using Game.Core.Services.Scene;
 using Game.Doors;
+using Game.Features.Portals;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,7 +12,7 @@ namespace Game.Features.Doors {
     /// A scene door that can transition the player to another scene/door.
     /// The door uses a stable string ID (DoorId) that is referenced by other doors.
     /// </summary>
-    public sealed class Door : InteractableBase {
+    public sealed class Door : InteractableBase, IPortal {
         [SerializeField, HideInInspector]
         private string doorId;
 
@@ -33,6 +35,10 @@ namespace Game.Features.Doors {
         /// Destination link for this door.
         /// </summary>
         public DoorLink Link => link;
+
+        string IPortal.Id => doorId;
+        SceneReference IPortal.TargetScene => link.TargetScene;
+        string IPortal.TargetId => link.TargetDoorId;
 
         public Vector3 GetEntryPosition() {
             if (entryPoint != null) {

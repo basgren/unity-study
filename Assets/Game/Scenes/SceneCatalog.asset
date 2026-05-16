@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scenes:
   - sceneGuid: 4a767989762933947a5a33b17a6a25fa
-    scenePath: Assets/Game/Scenes/BossSkeletonRoom.unity
+    scenePath: Assets/Game/Scenes/TheWrongShip/BossSkeletonRoom.unity
   - sceneGuid: 61a7394c3d8813c47a242d95511c72a3
     scenePath: Assets/Game/Scenes/MainMenu.unity
   - sceneGuid: 448c499cf51d4d7438209339e95cbfc6
@@ -25,3 +25,15 @@ MonoBehaviour:
     scenePath: Assets/Game/Scenes/Level2SmallShip.unity
   - sceneGuid: aa055ab60fc4e514f91edd99c026be0e
     scenePath: Assets/Game/Scenes/Level3Island.unity
+  - sceneGuid: ea49b7ca52fe8834ca1cc6d11af8573a
+    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_DriftInSand.unity
+  - sceneGuid: 1b06130eac8b6334c82bec98a147cf82
+    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_AlmostCampTrail.unity
+  - sceneGuid: a8cfb8021577c1f46a0c4ffc00afa763
+    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_GreenknifeNook.unity
+  - sceneGuid: 2f7f00ef696803e4f8496914ec1159e1
+    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_MoonEyeOverlook.unity
+  - sceneGuid: a258f9444989b2646a72911ed8a0ffa9
+    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_ShutStonePath.unity
+  - sceneGuid: 45342bb6632b8d447a4fd0e2183ab0b3
+    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_ToothyFlats.unity

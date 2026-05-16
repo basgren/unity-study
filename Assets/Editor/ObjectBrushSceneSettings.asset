@@ -17,3 +17,11 @@ MonoBehaviour:
     categoryBindings:
     - categoryName: Collectables
       parentHierarchyPath: World/Collectables
+  - scenePath: Assets/Game/Scenes/DriftwoodShore/ToothyFlats.unity
+    categoryBindings:
+    - categoryName: Decor
+      parentHierarchyPath: World/Decor
+    - categoryName: Collectables
+      parentHierarchyPath: World/Collectables
+    - categoryName: Dynamic
+      parentHierarchyPath: World/Dynamic
