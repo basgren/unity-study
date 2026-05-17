@@ -41,6 +41,24 @@ namespace Game.Core.Utils {
         }
 
         /// <summary>
+        /// Parses a portal id (door/entrance) stored as a numeric string.
+        /// Returns true if the id is a positive integer (rejects legacy strings like "Door_abc12").
+        /// </summary>
+        public static bool TryParsePortalId(string id, out int value) {
+            value = 0;
+            if (string.IsNullOrEmpty(id)) {
+                return false;
+            }
+
+            if (!int.TryParse(id, System.Globalization.NumberStyles.Integer,
+                    System.Globalization.CultureInfo.InvariantCulture, out value)) {
+                return false;
+            }
+
+            return value > 0;
+        }
+
+        /// <summary>
         /// Checks that the given id matches [0-9a-zA-Z_-] and is within length limits.
         /// </summary>
         public static bool IsValidId(string id) {

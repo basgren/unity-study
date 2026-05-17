@@ -64,5 +64,24 @@ namespace Game.Editor.SceneState {
             return AssetDatabase.LoadAssetAtPath<SceneCatalog>(AssetDatabase.GUIDToAssetPath(guids[0]));
         }
     }
+
+    /// <summary>
+    /// Rebuilds the catalog right before entering Play mode so an in-editor scene rename does not
+    /// silently break GUID-based scene loading (e.g. portal travel) during the next playtest.
+    /// </summary>
+    [InitializeOnLoad]
+    internal static class SceneCatalogPlayModeRebuild {
+        static SceneCatalogPlayModeRebuild() {
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        private static void OnPlayModeStateChanged(PlayModeStateChange state) {
+            if (state != PlayModeStateChange.ExitingEditMode) {
+                return;
+            }
+
+            SceneCatalogBuilder.RebuildCatalog();
+        }
+    }
 }
 #endif

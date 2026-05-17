@@ -33,7 +33,7 @@ namespace Game.Core.Services.SceneState {
         /// Must be called from GInit after both G.Config and G.SceneTravel are set up.
         /// </summary>
         public void Init() {
-            catalog = G.Config.SceneCatalog;
+            catalog = G.SceneCatalog;
 
             if (catalog == null) {
                 Debug.LogWarning(

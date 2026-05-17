@@ -3912,12 +3912,17 @@ PrefabInstance:
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: entranceId
-      value: Entrance_9tdqb
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
+        type: 3}
+      propertyPath: link.targetId
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: link.targetEntranceId
-      value: Entrance_t08d0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
@@ -3932,7 +3937,7 @@ PrefabInstance:
     - target: {fileID: 5853293219094314509, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14
+      value: -13.5
       objectReference: {fileID: 0}
     - target: {fileID: 5853293219094314509, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
@@ -3982,7 +3987,7 @@ PrefabInstance:
     - target: {fileID: 8654869818988055201, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: m_Name
-      value: Entrance
+      value: EntranceWest
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

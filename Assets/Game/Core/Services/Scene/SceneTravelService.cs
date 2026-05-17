@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Game.Core.Bootstrap;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -35,7 +36,36 @@ namespace Game.Core.Services.Scene {
 
         /// <summary>Loads a scene by name, firing lifecycle events around the transition.</summary>
         public Coroutine LoadScene(string sceneName, SceneLoadOptions options = default) {
-            return StartCoroutine(LoadRoutine(sceneName, options));
+            return StartCoroutine(LoadRoutine(sceneName, SceneManager.GetSceneByName, options));
+        }
+
+        /// <summary>
+        /// Loads a scene by stable GUID via <see cref="G.SceneCatalog"/>. Use this for scene references
+        /// stored in serialized data (door/entrance links, checkpoints) so renames do not break loading.
+        /// </summary>
+        public Coroutine LoadScene(SceneReference sceneRef, SceneLoadOptions options = default) {
+            if (sceneRef.IsEmpty()) {
+                Debug.LogError("[SceneTravel] LoadScene called with empty SceneReference.");
+                return null;
+            }
+
+            var catalog = G.SceneCatalog;
+            if (catalog == null) {
+                Debug.LogError("[SceneTravel] G.SceneCatalog is not initialized. Check MainConfig.SceneCatalog.");
+                return null;
+            }
+
+            if (!catalog.TryGetByGuid(sceneRef.SceneGuid, out var resolved) ||
+                string.IsNullOrEmpty(resolved.ScenePath)) {
+                Debug.LogError(
+                    $"[SceneTravel] Scene GUID '{sceneRef.SceneGuid}' (cached path '{sceneRef.ScenePath}') " +
+                    "not found in SceneCatalog. Run Tools → Scene State → Rebuild Scene Catalog, and " +
+                    "confirm the scene is added to Build Settings (File → Build Settings)."
+                );
+                return null;
+            }
+
+            return StartCoroutine(LoadRoutine(resolved.ScenePath, SceneManager.GetSceneByPath, options));
         }
 
         /// <summary>Reloads the currently active scene.</summary>
@@ -44,19 +74,23 @@ namespace Game.Core.Services.Scene {
             return LoadScene(active.name, options);
         }
 
-        private IEnumerator LoadRoutine(string targetSceneName, SceneLoadOptions options) {
+        private IEnumerator LoadRoutine(
+            string targetIdentifier,
+            Func<string, UnityEngine.SceneManagement.Scene> resolveLoadedScene,
+            SceneLoadOptions options
+        ) {
             var fromScene = SceneManager.GetActiveScene();
 
             if (!options.SkipStateCapture) {
                 BeforeUnload?.Invoke(fromScene);
             }
 
-            var op = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Single);
+            var op = SceneManager.LoadSceneAsync(targetIdentifier, LoadSceneMode.Single);
             while (!op.isDone) {
                 yield return null;
             }
 
-            var toScene = SceneManager.GetSceneByName(targetSceneName);
+            var toScene = resolveLoadedScene(targetIdentifier);
 
             if (options.PostLoad != null) {
                 yield return options.PostLoad(toScene);

@@ -349,17 +349,22 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1933317284}
+    m_TransformParent: {fileID: 1864179049}
     m_Modifications:
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: entranceId
-      value: Entrance_t08d0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
+        type: 3}
+      propertyPath: link.targetId
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: link.targetEntranceId
-      value: Entrance_9tdqb
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
@@ -369,7 +374,7 @@ PrefabInstance:
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: link.targetScene.scenePath
-      value: Assets/Game/Scenes/DriftwoodShore/ToothyFlats.unity
+      value: Assets/Game/Scenes/DriftwoodShore/DS_ToothyFlats.unity
       objectReference: {fileID: 0}
     - target: {fileID: 2918517496873821420, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
@@ -404,17 +409,17 @@ PrefabInstance:
     - target: {fileID: 5853293219094314509, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5853293219094314509, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5853293219094314509, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5853293219094314509, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
@@ -434,7 +439,7 @@ PrefabInstance:
     - target: {fileID: 8654869818988055201, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: m_Name
-      value: Entrance
+      value: EntranceEast
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1808,7 +1813,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 415834193}
   m_Father: {fileID: 1857425453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1867640852
@@ -1898,8 +1904,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 415834193}
+  m_Children: []
   m_Father: {fileID: 1857425453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1961889898
@@ -5337,7 +5342,7 @@ PrefabInstance:
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 10.25
       objectReference: {fileID: 0}
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
@@ -5461,7 +5466,7 @@ PrefabInstance:
     - target: {fileID: 6836785096376548313, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.098376036
+      value: 10.348376
       objectReference: {fileID: 0}
     - target: {fileID: 6836785096376548313, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -5531,12 +5536,12 @@ PrefabInstance:
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.096163034
+      value: 7.478256
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.6650786
+      value: 2.669015
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}

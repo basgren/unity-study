@@ -35,6 +35,7 @@ namespace Game.Core.Bootstrap {
         public static CheckpointService Checkpoint { get; internal set; }
         public static SceneTravelService SceneTravel { get; internal set; }
         public static SceneStateService SceneState { get; internal set; }
+        public static SceneCatalog SceneCatalog { get; internal set; }
         public static CameraService Camera { get; internal set; }
         public static DeathScreenEffect DeathEffect { get; internal set; }
         public static BossFightService BossFight { get; internal set; }

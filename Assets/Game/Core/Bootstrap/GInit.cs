@@ -28,6 +28,10 @@ namespace Game.Core.Bootstrap {
 
             LoadConfig();
             G.Config = mainConfig;
+            G.SceneCatalog = mainConfig != null ? mainConfig.SceneCatalog : null;
+            if (G.SceneCatalog != null) {
+                G.SceneCatalog.RebuildIndex();
+            }
 
             EnsureEventSystem();
             

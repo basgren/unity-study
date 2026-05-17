@@ -530,11 +530,39 @@ namespace Game.Features.Characters.Hero {
                 return;
             }
 
-            Vector2 dir = Actions.Move.ReadValue<Vector2>().normalized;
+            // Scripted walk (e.g. cinematic portal entry/exit) overrides input. Controls are
+            // typically also disabled during a scripted walk so the input read would return zero
+            // anyway, but the override makes the intent explicit.
+            Vector2 dir = scriptedMoveDir.HasValue
+                ? new Vector2(scriptedMoveDir.Value, 0f)
+                : Actions.Move.ReadValue<Vector2>().normalized;
 
             // Check `isAttacking` flag to prevent player from changing direction while attack effect is played,
             // otherwise the effect will turn together with player.
             SetDirection(dir, isAttacking || isDragging);
+        }
+
+        // ---- Scripted movement (cinematic transitions) ----
+
+        private int? scriptedMoveDir;
+
+        /// <summary>
+        /// Drives the hero horizontally as if the player were holding the move key in
+        /// <paramref name="dirSign"/> direction (-1 left, +1 right). Intended for cinematic
+        /// transitions (e.g. walking into / out of an Entrance portal). The caller should also
+        /// disable input via <see cref="SetControlsEnabled"/> so the player cannot fight the walk.
+        /// </summary>
+        public void BeginScriptedWalk(int dirSign) {
+            scriptedMoveDir = dirSign;
+        }
+
+        /// <summary>
+        /// Ends a scripted walk started by <see cref="BeginScriptedWalk"/> and immediately zeroes
+        /// horizontal velocity so the hero stops on the spot.
+        /// </summary>
+        public void EndScriptedWalk() {
+            scriptedMoveDir = null;
+            SetDirection(Vector2.zero);
         }
 
         #region Jump

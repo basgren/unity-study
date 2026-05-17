@@ -50726,7 +50726,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_EastEntrance
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -68422,7 +68422,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_WestEntrance
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}

@@ -224,7 +224,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_2_2
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -5181,7 +5181,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_EastEntrance
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -5274,7 +5274,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_2_7
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -6112,7 +6112,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_2_1
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -6205,7 +6205,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_2_4
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -7164,7 +7164,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_WestEntrance
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -7409,7 +7409,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_2_5
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -7527,6 +7527,7 @@ Transform:
   - {fileID: 663666093}
   - {fileID: 283282915}
   - {fileID: 1673441622}
+  - {fileID: 1913459564}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &831213824
@@ -8239,22 +8240,22 @@ PrefabInstance:
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.06600362
+      value: 0.017102616
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.0659164
+      value: 0.01610018
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.86799276
+      value: 0.96579474
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.86816716
+      value: 0.9660107
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097959352688, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -8945,7 +8946,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_2_8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -9401,7 +9402,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_2_6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -9579,7 +9580,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_2_3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -9684,7 +9685,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_1_1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -10585,12 +10586,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1913459562}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2.25, y: 5.24, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 819777342}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1924535504
 PrefabInstance:
@@ -10907,7 +10908,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_1_2
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -11000,7 +11001,7 @@ PrefabInstance:
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: doorId
-      value: Door_1_3
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -6453643495484219292, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
@@ -13247,4 +13248,3 @@ SceneRoots:
   - {fileID: 819777342}
   - {fileID: 1288009774}
   - {fileID: 173499714}
-  - {fileID: 1913459564}
