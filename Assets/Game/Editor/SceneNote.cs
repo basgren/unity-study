@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Game.EditorOnly {
+namespace Game.Editor {
     [ExecuteAlways]
     public class SceneNote : MonoBehaviour {
         [TextArea(2, 6)]

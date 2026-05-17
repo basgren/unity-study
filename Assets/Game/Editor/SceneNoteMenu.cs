@@ -1,8 +1,7 @@
-﻿using Game.EditorOnly;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace Editor {
+namespace Game.Editor {
     /// <summary>
     /// Adds a “Scene Note” creation command to the GameObject/Create menu.
     /// Scene Notes are automatically placed inside a root container called “Notes”
