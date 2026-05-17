@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 685581482799124994}
   - component: {fileID: 1635636447230704509}
   - component: {fileID: 2227560757032056919}
+  - component: {fileID: 5708875399428618343}
+  - component: {fileID: 1234678694531271839}
   m_Layer: 5
   m_Name: SelectedItemPanel
   m_TagString: Untagged
@@ -93,6 +95,34 @@ MonoBehaviour:
   itemBox: {fileID: 5963993403818960710}
   keyHint: {fileID: 3229427169215046988}
   mode: 0
+--- !u!225 &5708875399428618343
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2365857157600371927}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &1234678694531271839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2365857157600371927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daeb99aed068d334d9263dd9d9323c87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nearAlpha: 0.2
+  farAlpha: 1
+  fadeSpeed: 8
+  screenPadding: 0
 --- !u!1001 &3437637231968104262
 PrefabInstance:
   m_ObjectHideFlags: 0
