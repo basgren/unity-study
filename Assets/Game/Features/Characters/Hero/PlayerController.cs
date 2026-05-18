@@ -389,7 +389,7 @@ namespace Game.Features.Characters.Hero {
         }
 
         private bool CanAttack() {
-            return IsArmed && !isAttacking && !isDragging && IsGrounded && attackCooldownTimer <= 0;
+            return IsArmed && !isAttacking && !isDragging && attackCooldownTimer <= 0;
         }
 
         /// <summary>
@@ -620,8 +620,7 @@ namespace Game.Features.Characters.Hero {
         }
 
         private bool CanJump() {
-            // Do not allow to jump if we're doing ground attack.
-            return (IsGrounded || coyoteTimer > 0 || isHookSwinging) && !isAttacking;
+            return IsGrounded || coyoteTimer > 0 || isHookSwinging;
         }
 
         #endregion
@@ -639,9 +638,10 @@ namespace Game.Features.Characters.Hero {
         protected override void UpdateAnimator() {
             base.UpdateAnimator();
 
-            if (isJumped) {
+            if (isJumped && !isAttacking) {
                 // We're jumping on trigger, not using velocityY comparison, as we may have moving platforms,
                 // in this case Y speed may be > 0, while the player is still on the ground.
+                // While attacking, skip the jump trigger so the slash animation plays through uninterrupted.
                 MyAnimator.SetTrigger(HeroAnimKeys.OnJump);
             }
 
