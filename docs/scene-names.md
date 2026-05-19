@@ -68,6 +68,7 @@ These are the recommended names if the project follows the lite plan.
 | Old Door Path | Shut-Stone Path | Тропа Запертого Камня | ShutStonePath | Locals name the place after the stubborn old stone. |
 | Vine-Covered Alcove | Greenknife Nook | Угол Зелёных Ножей | GreenknifeNook | "Knife" describes sharp plants, not the player's weapon. |
 | Secret Overlook | Moon-Eye Overlook | Лунный Глаз | MoonEyeOverlook | A high hidden place that sounds watched by the sky. |
+| Secret Nook | Cloud Nook | Облачный Угол | CloudNook | A small high secret that suggests height without naming the hook. |
 | Jungle Exit | Almost-Camp Trail | Тропа Почти-Там | AlmostCampTrail | Light humor and useful navigation toward the hub. |
 
 ### Warmrocks / Тёплые Камни
@@ -155,6 +156,7 @@ humorous.
 | Old Door Path | Old Shut Path, Stone-Latch Trail, Doorstone Way | Старая Запертая Тропа, Тропа Каменной Защёлки, Дорога Дверного Камня |
 | Vine-Covered Alcove | Green Cut Nook, Vinebite Alcove, Leaf-Locked Nook | Зелёный Резак, Угол Лозьего Укуса, Угол Запертых Листьев |
 | Secret Overlook | High Moon Ledge, Moonlit Overlook, Sky-Eye Overlook | Высокий Лунный Карниз, Лунный Обрыв, Обрыв Небесного Глаза |
+| Secret Nook | Sky Nook, High Cloud Nook, Little Cloud | Небесный Угол, Высокий Облачный Угол, Малое Облако |
 | Jungle Exit | Campward Trail, Last Jungle Step, Rikko Trail | Тропа к Лагерю, Последний Шаг Джунглей, Тропа Рикко |
 | Rikko Camp | Rikko's Camp, Rikko's Shelf, Lizard Porch | Лагерь Рикко, Полка Рикко, Ящерское Крыльцо |
 | Campfire and Shop | Warm Coin Fire, Rikko's Shelf, Bottle-and-Fire | Огонь Тёплой Монеты, Полка Рикко, Бутылка-и-Огонь |

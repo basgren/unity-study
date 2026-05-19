@@ -29,11 +29,9 @@ MonoBehaviour:
     scenePath: Assets/Game/Scenes/DriftwoodShore/DS_DriftInSand.unity
   - sceneGuid: 1b06130eac8b6334c82bec98a147cf82
     scenePath: Assets/Game/Scenes/DriftwoodShore/DS_AlmostCampTrail.unity
-  - sceneGuid: a8cfb8021577c1f46a0c4ffc00afa763
-    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_GreenknifeNook.unity
-  - sceneGuid: 2f7f00ef696803e4f8496914ec1159e1
-    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_MoonEyeOverlook.unity
   - sceneGuid: a258f9444989b2646a72911ed8a0ffa9
     scenePath: Assets/Game/Scenes/DriftwoodShore/DS_ShutStonePath.unity
   - sceneGuid: 45342bb6632b8d447a4fd0e2183ab0b3
     scenePath: Assets/Game/Scenes/DriftwoodShore/DS_ToothyFlats.unity
+  - sceneGuid: 29718de1b20f3494ba78966ee0bf6328
+    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_CloudNook.unity

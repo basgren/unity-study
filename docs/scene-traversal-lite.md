@@ -19,7 +19,8 @@ Map location: Driftwood Shore / Коряжий Берег.
 3. Old Door Path (Shut-Stone Path / Тропа Запертого Камня) - simple switch or permanent door progression.
 4. Vine-Covered Alcove (Greenknife Nook / Угол Зелёных Ножей) - optional sabre-gated POI blocked by sharp greenknife vines.
 5. Secret Overlook (Moon-Eye Overlook / Лунный Глаз) - optional hook and firefly POIs combined.
-6. Jungle Exit (Almost-Camp Trail / Тропа Почти-Там) - final intro platforming scene leading to the hub.
+6. Secret Nook (Cloud Nook / Облачный Угол) - optional hook-entry secret reward pocket.
+7. Jungle Exit (Almost-Camp Trail / Тропа Почти-Там) - final intro platforming scene leading to the hub.
 
 ### Island Hub / Rikko Camp
 
@@ -90,7 +91,8 @@ flowchart TD
         I3["Old Door Path<br/>Shut-Stone Path"]
         I4["Vine-Covered Alcove<br/>Greenknife Nook"]
         I5["Secret Overlook<br/>Moon-Eye Overlook"]
-        I6["Jungle Exit<br/>Almost-Camp Trail"]
+        I6["Secret Nook<br/>Cloud Nook"]
+        I7["Jungle Exit<br/>Almost-Camp Trail"]
     end
 
     subgraph Hub["Warmrocks"]
@@ -138,9 +140,10 @@ flowchart TD
         G8["Golden Skull Exit<br/>Deep Hush"]
     end
 
-    Start --> I1 --> I2 --> I3 --> I6 --> H1
+    Start --> I1 --> I2 --> I3 --> I7 --> H1
     I3 -.->|return with sabre| I4 -.-> I3
-    I6 -.->|return with hook/fireflies| I5 -.-> I6
+    I7 -.->|return with hook/fireflies| I5 -.-> I7
+    I7 -.->|return with hook| I6 -.-> I7
 
     H1 --> H2 --> S1
     H1 -.->|after sabre or diamonds| H3 -.-> H1
@@ -152,6 +155,7 @@ flowchart TD
     H1 --> H4 --> R1
     H1 -.->|fireflies| H5 -.-> H1
     H1 -.->|post-hook backtracking| I5
+    H1 -.->|post-hook backtracking| I6
     H1 -.->|post-hook backtracking| S8
 
     R1 --> R2 --> R3 --> R4 --> R5 --> R6 --> R5

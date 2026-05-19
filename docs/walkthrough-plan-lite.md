@@ -18,7 +18,7 @@ Russian names are adapted from `docs/scene-names.md`.
 
 | Development Location | Map Location EN | Map Location RU | Full Plan Scenes | Lite Scenes | Reduction |
 |---|---|---|---:|---:|---:|
-| Intro Beach / Intro Jungle Route | Driftwood Shore | Коряжий Берег | 8 | 6 | 25% |
+| Intro Beach / Intro Jungle Route | Driftwood Shore | Коряжий Берег | 8 | 7 | 13% |
 | Island Hub / Rikko Camp | Warmrocks | Тёплые Камни | 9 | 6 | 33% |
 | Wrecked Pirate Ship | The Wrong Ship | Не Тот Корабль | 14 | 10 | 29% |
 | Hook Ruins / Upper Jungle / Cliffs | Cloud Mountain | Облачная Гора | 13 | 9 | 31% |
@@ -86,6 +86,7 @@ Scenes:
 | Old Door Path | Shut-Stone Path | Тропа Запертого Камня | Main path | Simple switch or permanent door. | Doors control route progression. | Route opens. |
 | Vine-Covered Alcove | Greenknife Nook | Угол Зелёных Ножей | Sabre later | Optional blocker beside the main route, covered with sharp greenknife vines. | Sabre opens some obstacles. | Coins, rum, or small chest. |
 | Secret Overlook | Moon-Eye Overlook | Лунный Глаз | Hook and fireflies later | High anchor ledge plus candle cave POI. | Later abilities reveal old secrets. | 1-2 diamonds or rare item. |
+| Secret Nook | Cloud Nook | Облачный Угол | Hook later | High ledge with a hook entry and reward pocket. | Hook opens old high places. | 1-2 diamonds or rare item. |
 | Jungle Exit | Almost-Camp Trail | Тропа Почти-Там | Main path | Short combined platforming sequence. | Review movement and hazards. | Door to hub. |
 
 Notes:
@@ -94,6 +95,7 @@ Notes:
   plants, so the player understands this is a special blocker.
 - `Secret Overlook` combines the full plan's hook ledge and candle cave into one
   compact optional scene.
+- `Cloud Nook` is a separate hook-entry secret for a small high reward pocket.
 - The main route should not require returning here.
 
 ### 2. Island Hub / Rikko Camp
@@ -300,6 +302,7 @@ A deal is a deal. Climb aboard before the island changes its mind.
 |---|---|---|---|---|---|---|
 | Vine-Covered Alcove | Greenknife Nook | Угол Зелёных Ножей | Intro | Sabre | After weapon pickup. | Coins, rum, small chest. |
 | Secret Overlook | Moon-Eye Overlook | Лунный Глаз | Intro | Hook or fireflies | After Vengeful Spirit / fireflies. | 1-2 diamonds or rare item. |
+| Secret Nook | Cloud Nook | Облачный Угол | Intro | Grappling Hook | After Vengeful Spirit. | 1-2 diamonds or rare item. |
 | Dangerous Side Path | Skullwatch Stones | Камни Черепьего Дозора | Hub | None, but difficult | After Vitality or Strength upgrade. | Diamonds, rum, coins. |
 | Upper Cargo Hold | High Cargo Nest | Высокое Грузовое Гнездо | Ship | Grappling Hook | After boss or before ruins. | Diamond, parrot option, supplies. |
 | Hard Anchor Chain | Brave Fool's Way | Путь Храброго Дурака | Ruins | Grappling Hook | During or after ruins. | 1 diamond. |

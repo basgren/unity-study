@@ -13,7 +13,7 @@ Legend:
                                                             ^
                                                             |
                                                     +-------+--------+
-                                                    | [6] Almost-    |
+                                                    | [7] Almost-    |
                                                     |     Camp Trail |
                                                     +-------+--------+
                                                             ^
@@ -25,8 +25,12 @@ Legend:
                                                     |
                          +----------------------+   |   +----------------+
                          | [5] Moon-Eye         |---+---| [4] Greenknife |
-                         |     Overlook         |       |     Nook       |
-                         +----------------------+       +----------------+
+                         |     Overlook         |   |   |     Nook       |
+                         +----------------------+   |   +----------------+
+                                                    |
+                         +----------------------+   |
+                         | [6] Cloud Nook       |---+
+                         +----------------------+
                                                     optional returns
 
 +------------+     +----------------+
@@ -93,7 +97,8 @@ Traversal role:
 
 - Main route hub for this location.
 - Connects forward to `Almost-Camp Trail`.
-- Shows optional returns to `Greenknife Nook` and `Moon-Eye Overlook`.
+- Shows optional returns to `Greenknife Nook`, `Moon-Eye Overlook`, and
+  `Cloud Nook`.
 
 POI spec:
 
@@ -138,32 +143,55 @@ Items and rewards:
 - Coins.
 - Rum or small chest.
 
+Note: is a part of Almost-Camp Trail but not a separate scene
+
 ### 5. Secret Overlook / Moon-Eye Overlook
 
 Traversal role:
 
 - Optional return branch.
-- Intended after grappling hook and/or fireflies.
+- Intended after fireflies.
 
 POI spec:
 
-- High ledge visible from the main path.
-- Anchor or high traversal target.
+- Not visible from the main path.
 - Small candle cave or stone door POI.
 - Secret reward chamber.
 
 Challenges and hazards:
 
-- Ability-gated high route.
-- Light/candle interaction if fireflies are used here.
-- Optional spikes near the reward, but not on the main intro route.
+- Light/candle interaction with fireflies.
 
 Items and rewards:
 
-- 1-2 diamonds or rare item.
+- 1 diamond.
 - Optional bottle note hinting that old places change after new tools.
 
-### 6. Jungle Exit / Almost-Camp Trail
+Note: is a part of Almost-Camp Trail but not a separate scene
+
+### 6. Secret Nook / Cloud Nook
+
+Traversal role:
+
+- Optional return branch.
+- Intended after grappling hook acquisition.
+
+POI spec:
+
+- High ledge visible from the main path.
+- Anchor or high traversal target.
+- Small reward pocket or hidden nook.
+
+Challenges and hazards:
+
+- Ability-gated high route.
+
+Items and rewards:
+
+- 1 diamond.
+- Optional bottle note hinting that old places change after new tools.
+
+### 7. Jungle Exit / Almost-Camp Trail
 
 Traversal role:
 

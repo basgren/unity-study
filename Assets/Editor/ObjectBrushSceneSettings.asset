@@ -25,3 +25,65 @@ MonoBehaviour:
       parentHierarchyPath: World/Collectables
     - categoryName: Dynamic
       parentHierarchyPath: World/Dynamic
+  - scenePath: Assets/Game/Scenes/DriftwoodShore/DS_DriftInSand.unity
+    categoryBindings:
+    - categoryName: Decor
+      parentHierarchyPath: World/Decor
+    - categoryName: Collectables
+      parentHierarchyPath: World/Collectables
+    - categoryName: Dynamic
+      parentHierarchyPath: World/Dynamic
+    - categoryName: Interactive
+      parentHierarchyPath: World/Interactive
+    - categoryName: Hazards
+      parentHierarchyPath: World/Hazards
+    - categoryName: Enemies
+      parentHierarchyPath: World/Enemies
+  - scenePath: Assets/Game/Scenes/DriftwoodShore/DS_ToothyFlats.unity
+    categoryBindings:
+    - categoryName: Decor
+      parentHierarchyPath: World/Decor
+    - categoryName: Collectables
+      parentHierarchyPath: World/Collectables
+    - categoryName: Dynamic
+      parentHierarchyPath: World/Dynamic
+    - categoryName: Interactive
+      parentHierarchyPath: World/Interactive
+    - categoryName: Hazards
+      parentHierarchyPath: World/Hazards
+    - categoryName: Enemies
+      parentHierarchyPath: World/Enemies
+  - scenePath: Assets/Game/Scenes/DriftwoodShore/DS_ShutStonePath.unity
+    categoryBindings:
+    - categoryName: Decor
+      parentHierarchyPath: World/Decor
+    - categoryName: Collectables
+      parentHierarchyPath: World/Collectables
+    - categoryName: Dynamic
+      parentHierarchyPath: World/Dynamic
+  - scenePath: Assets/Game/Scenes/DriftwoodShore/DS_AlmostCampTrail.unity
+    categoryBindings:
+    - categoryName: Decor
+      parentHierarchyPath: World/Decor
+    - categoryName: Collectables
+      parentHierarchyPath: World/Collectables
+    - categoryName: Dynamic
+      parentHierarchyPath: World/Dynamic
+    - categoryName: Interactive
+      parentHierarchyPath: World/Interactive
+    - categoryName: Hazards
+      parentHierarchyPath: World/Hazards
+    - categoryName: Enemies
+      parentHierarchyPath: World/Enemies
+  - scenePath: Assets/Game/Scenes/DriftwoodShore/DS_MoonEyeOverlook.unity
+    categoryBindings:
+    - categoryName: Collectables
+      parentHierarchyPath: World/Collectables
+  - scenePath: Assets/Game/Scenes/DriftwoodShore/DS_CloudNook.unity
+    categoryBindings:
+    - categoryName: Collectables
+      parentHierarchyPath: World/Collectables
+    - categoryName: Dynamic
+      parentHierarchyPath: World/Dynamic
+    - categoryName: Interactive
+      parentHierarchyPath: World/Interactive

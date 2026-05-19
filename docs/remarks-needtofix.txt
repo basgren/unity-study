@@ -1,0 +1,5 @@
+﻿The chest should increase the number of loot drops. Right now, it only drops one item.
+
+Fix the platform length.
+
+Object Brush -> Category Name and Parent - do not save the values you moved there.

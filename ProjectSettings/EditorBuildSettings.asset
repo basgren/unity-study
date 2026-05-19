@@ -30,17 +30,14 @@ EditorBuildSettings:
     path: Assets/Game/Scenes/DriftwoodShore/DS_AlmostCampTrail.unity
     guid: 1b06130eac8b6334c82bec98a147cf82
   - enabled: 1
-    path: Assets/Game/Scenes/DriftwoodShore/DS_GreenknifeNook.unity
-    guid: a8cfb8021577c1f46a0c4ffc00afa763
-  - enabled: 1
-    path: Assets/Game/Scenes/DriftwoodShore/DS_MoonEyeOverlook.unity
-    guid: 2f7f00ef696803e4f8496914ec1159e1
-  - enabled: 1
     path: Assets/Game/Scenes/DriftwoodShore/DS_ShutStonePath.unity
     guid: a258f9444989b2646a72911ed8a0ffa9
   - enabled: 1
     path: Assets/Game/Scenes/DriftwoodShore/DS_ToothyFlats.unity
     guid: 45342bb6632b8d447a4fd0e2183ab0b3
+  - enabled: 1
+    path: Assets/Game/Scenes/DriftwoodShore/DS_CloudNook.unity
+    guid: 29718de1b20f3494ba78966ee0bf6328
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: a95e6ed043347534a8767f25a4d96a36,
       type: 2}

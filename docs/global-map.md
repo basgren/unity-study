@@ -9,7 +9,7 @@ contain more scenes.
 
 | Location | Map Name | Scenes | Shape Intent |
 |---|---|---:|---|
-| Intro Beach / Intro Jungle Route | Driftwood Shore | 6 | Small horizontal route into the hub. |
+| Intro Beach / Intro Jungle Route | Driftwood Shore | 7 | Small horizontal route into the hub. |
 | Island Hub / Rikko Camp | Warmrocks | 6 | Compact central return point. |
 | Wrecked Pirate Ship | The Wrong Ship | 10 | Largest early location, long and low. |
 | Hook Ruins / Upper Jungle / Cliffs | Cloud Mountain | 9 | Tall upper route, larger than hub. |
