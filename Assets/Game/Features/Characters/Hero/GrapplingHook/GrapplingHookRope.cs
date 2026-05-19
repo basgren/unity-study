@@ -1,179 +1,155 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Features.Characters.Hero.GrapplingHook {
     /// <summary>
-    /// Visual rope using Verlet integration. Simulates N points between two
-    /// pinned endpoints, renders a sprite at each segment. The rope is purely
-    /// visual and does not affect physics.
+    /// Visual rope rendered as a straight chain of fixed-length segments between two
+    /// pinned endpoints. Purely visual — does not affect physics.
+    ///
+    /// The rope assumes the player is holding it taut (which is what the
+    /// <c>DistanceJoint2D</c> on the hero enforces while attached), so there is no
+    /// Verlet simulation, gravity sag, or constraint solver — every segment is exactly
+    /// <see cref="segmentRestLength"/>, distributed along the straight line between
+    /// the endpoints. The visible segment count is derived from the current rope length
+    /// so density stays roughly constant whether the player is at the end of a long
+    /// rope or has climbed up close to the anchor. Segments beyond the current active
+    /// count are pooled via SetActive(false) and reused.
+    ///
+    /// Because every segment is exactly the rest length, the chain's far end falls up
+    /// to one rest length short of the actual target endpoint. That "gap" is hidden by
+    /// the sprite at whichever end is the moving one: during Shooting the rope grows
+    /// from the hero hand (hook projectile sprite hides the gap); during Attached it
+    /// grows from the anchor (hero hand sprite hides the gap).
     /// </summary>
     public class GrapplingHookRope : MonoBehaviour {
         [SerializeField] private GameObject segmentPrefab;
-        [SerializeField] private int segmentCount = 10;
-        [SerializeField] private int constraintIterations = 8;
-        [SerializeField] private float gravityScale = 20f;
-        [SerializeField] private float damping = 0.9f;
 
-        [SerializeField, Range(0f, 1f), Tooltip("How strongly a taut rope pulls points toward the straight line between endpoints. 0 = pure Verlet, 1 = instantly straight under tension.")]
-        private float tautnessBlend = 0.4f;
+        [SerializeField, FormerlySerializedAs("segmentCount"),
+         Tooltip("Pool size: maximum number of rope segments instantiated up front. Should be at least ceil(maxRopeLength / segmentRestLength).")]
+        private int maxSegmentCount = 20;
 
-        private Vector2[] currentPos;
-        private Vector2[] previousPos;
+        [SerializeField, Tooltip("World length of one rope segment in metres. Should match the sprite's world-space length so segments visually butt up against each other without gaps or overlap. Visible segment count = floor(ropeLength / segmentRestLength).")]
+        private float segmentRestLength = 0.4f;
+
         private Transform[] segments;
-        private float segmentLength;
+        private Vector2 anchorPoint;
+        private Vector2 heroPoint;
+        // Total rope length captured by the latest LockLength() call. 0 while the rope
+        // is still stretching with the projectile (Shooting state).
+        private float lockedRopeLength;
+        private int activeCount;
         private bool initialized;
 
         /// <summary>
-        /// Creates the rope with all points collapsed at a single starting position.
-        /// The rope will extend naturally as <see cref="UpdateEndpoints"/> moves the
-        /// anchor endpoint away.
+        /// Pre-instantiates the full segment pool. No further Instantiate/Destroy happens
+        /// at runtime — length changes only toggle SetActive on existing segments.
         /// </summary>
         public void Initialize(Vector2 startPosition) {
-            int pointCount = segmentCount + 1;
-            currentPos = new Vector2[pointCount];
-            previousPos = new Vector2[pointCount];
-            segments = new Transform[segmentCount];
-
-            for (int i = 0; i < pointCount; i++) {
-                currentPos[i] = startPosition;
-                previousPos[i] = startPosition;
+            if (segmentPrefab == null) {
+                Debug.LogError($"{nameof(GrapplingHookRope)} on '{name}' has no segmentPrefab assigned.", this);
+                return;
             }
 
-            segmentLength = 0f;
+            segments = new Transform[maxSegmentCount];
+            anchorPoint = startPosition;
+            heroPoint = startPosition;
 
-            for (int i = 0; i < segmentCount; i++) {
-                if (segmentPrefab != null) {
-                    var go = Instantiate(segmentPrefab, startPosition, Quaternion.identity, transform);
-                    segments[i] = go.transform;
-                }
+            for (int i = 0; i < maxSegmentCount; i++) {
+                var go = Instantiate(segmentPrefab, startPosition, Quaternion.identity, transform);
+                go.SetActive(false);
+                segments[i] = go.transform;
             }
 
+            lockedRopeLength = 0f;
+            activeCount = 0;
             initialized = true;
         }
 
         /// <summary>
-        /// Updates the pinned endpoints each frame. Point 0 is the anchor/hook end,
-        /// point N is the hero end.
+        /// Updates the rope endpoints each frame. <paramref name="anchor"/> is the hook /
+        /// world anchor end, <paramref name="hero"/> is the hero grab end.
         /// </summary>
-        public void UpdateEndpoints(Vector2 anchorPoint, Vector2 heroPoint) {
+        public void UpdateEndpoints(Vector2 anchor, Vector2 hero) {
             if (!initialized) {
                 return;
             }
 
-            currentPos[0] = anchorPoint;
-            currentPos[currentPos.Length - 1] = heroPoint;
+            anchorPoint = anchor;
+            heroPoint = hero;
         }
 
         /// <summary>
-        /// Locks the rope rest length to the current endpoint distance.
-        /// Call once when the hook attaches to the anchor.
+        /// Sets the rope's total rest length. The visible segment count is derived from
+        /// this and <see cref="segmentRestLength"/>, so changing the locked length as the
+        /// player climbs naturally adds/removes segments at the moving end.
         /// </summary>
         public void LockLength(float totalLength) {
-            segmentLength = totalLength / segmentCount;
+            lockedRopeLength = totalLength;
         }
 
         /// <summary>
-        /// Advances the Verlet simulation one fixed step. Call from FixedUpdate.
-        /// </summary>
-        public void Simulate(float fixedDelta) {
-            if (!initialized) {
-                return;
-            }
-
-            // While segment length is not locked, derive it from current endpoint distance
-            // (during shooting/retracting the rope stretches with the projectile)
-            float currentDist = Vector2.Distance(currentPos[0], currentPos[currentPos.Length - 1]);
-            float activeSegmentLength = segmentLength > 0f
-                ? segmentLength
-                : currentDist / segmentCount;
-
-            // Scale gravity by slack: taut rope -> no sag, slack rope -> full sag.
-            // slack = (total rope length - endpoint distance) / total rope length, clamped 0..1.
-            float totalRopeLength = activeSegmentLength * segmentCount;
-            float slack = totalRopeLength > 0f
-                ? Mathf.Clamp01((totalRopeLength - currentDist) / totalRopeLength)
-                : 0f;
-            var gravity = new Vector2(0f, -gravityScale * slack);
-
-            // Verlet integration for non-pinned points
-            for (int i = 1; i < currentPos.Length - 1; i++) {
-                var cur = currentPos[i];
-                var prev = previousPos[i];
-                var velocity = (cur - prev) * damping;
-                previousPos[i] = cur;
-                currentPos[i] = cur + velocity + gravity * (fixedDelta * fixedDelta);
-            }
-
-            // Tautness: blend points toward the straight line between endpoints.
-            // Scales with (1 - slack), so a rope under tension visibly rigidifies
-            // while a slack rope keeps its natural sag.
-            float tautness = 1f - slack;
-            if (tautness > 0.01f && tautnessBlend > 0f) {
-                var start = currentPos[0];
-                var end = currentPos[currentPos.Length - 1];
-                int lastIdx = currentPos.Length - 1;
-                float blend = tautness * tautnessBlend;
-                for (int i = 1; i < lastIdx; i++) {
-                    float t = (float)i / lastIdx;
-                    var straightPos = Vector2.Lerp(start, end, t);
-                    currentPos[i] = Vector2.Lerp(currentPos[i], straightPos, blend);
-                }
-            }
-
-            // Distance constraint solver
-            for (int iter = 0; iter < constraintIterations; iter++) {
-                // Pin endpoints
-                currentPos[0] = currentPos[0];
-                currentPos[currentPos.Length - 1] = currentPos[currentPos.Length - 1];
-
-                for (int i = 0; i < currentPos.Length - 1; i++) {
-                    var a = currentPos[i];
-                    var b = currentPos[i + 1];
-                    var delta = b - a;
-                    float dist = delta.magnitude;
-
-                    if (dist < 0.0001f) {
-                        continue;
-                    }
-
-                    float error = (dist - activeSegmentLength) / dist;
-                    var correction = delta * (0.5f * error);
-
-                    // Pin first and last points
-                    if (i == 0) {
-                        currentPos[i + 1] -= correction * 2f;
-                    } else if (i + 1 == currentPos.Length - 1) {
-                        currentPos[i] += correction * 2f;
-                    } else {
-                        currentPos[i] += correction;
-                        currentPos[i + 1] -= correction;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Positions and rotates segment sprites along the rope. Call from LateUpdate.
+        /// Lays out the active segments along the straight line between the endpoints.
+        /// Call from LateUpdate.
         /// </summary>
         public void Render() {
             if (!initialized) {
                 return;
             }
 
-            for (int i = 0; i < segmentCount; i++) {
-                if (segments[i] == null) {
-                    continue;
+            float liveDist = Vector2.Distance(anchorPoint, heroPoint);
+
+            // Prefer the locked length so climbing changes count even when the hero
+            // hasn't moved yet. During Shooting (no lock), the live endpoint distance
+            // grows as the hook flies out.
+            float ropeLength = lockedRopeLength > 0f ? lockedRopeLength : liveDist;
+
+            int desired = segmentRestLength > 0f
+                ? Mathf.Clamp(Mathf.FloorToInt(ropeLength / segmentRestLength), 1, maxSegmentCount)
+                : maxSegmentCount;
+
+            if (desired != activeCount) {
+                SetActiveCount(desired);
+            }
+
+            // Degenerate case: endpoints coincide (just after Initialize, before the hook
+            // has flown anywhere). Avoid divide-by-near-zero on the direction normalization.
+            if (liveDist < 0.0001f) {
+                for (int i = 0; i < activeCount; i++) {
+                    segments[i].position = anchorPoint;
                 }
+                return;
+            }
 
-                var pos = currentPos[i];
-                var next = currentPos[i + 1];
-                segments[i].position = pos;
+            // Choose growth origin:
+            // - Attached (locked): grow from the world anchor end. The unfilled gap at
+            //   the chain's far end sits at the hero hand, hidden by the hero sprite.
+            // - Shooting (not locked): grow from the hero hand. The gap sits at the
+            //   hook end, hidden by the hook projectile sprite.
+            bool growFromAnchor = lockedRopeLength > 0f;
+            var origin = growFromAnchor ? anchorPoint : heroPoint;
+            var target = growFromAnchor ? heroPoint : anchorPoint;
 
-                var dir = next - pos;
-                if (dir.sqrMagnitude > 0.0001f) {
-                    float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-                    segments[i].rotation = Quaternion.Euler(0f, 0f, angle);
+            var direction = (target - origin) / liveDist;
+            var rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+
+            for (int i = 0; i < activeCount; i++) {
+                segments[i].position = origin + direction * (i * segmentRestLength);
+                segments[i].rotation = rotation;
+            }
+        }
+
+        private void SetActiveCount(int desired) {
+            if (desired > activeCount) {
+                for (int i = activeCount; i < desired; i++) {
+                    segments[i].gameObject.SetActive(true);
+                }
+            } else {
+                for (int i = desired; i < activeCount; i++) {
+                    segments[i].gameObject.SetActive(false);
                 }
             }
+
+            activeCount = desired;
         }
 
         /// <summary>
@@ -182,9 +158,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         public void Cleanup() {
             if (segments != null) {
                 for (int i = 0; i < segments.Length; i++) {
-                    if (segments[i] != null) {
-                        Destroy(segments[i].gameObject);
-                    }
+                    Destroy(segments[i].gameObject);
                 }
             }
 

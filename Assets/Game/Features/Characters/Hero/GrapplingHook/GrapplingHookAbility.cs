@@ -11,6 +11,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
     public class GrapplingHookAbility : MonoBehaviour {
         private const int MaxAnchorCandidates = 8;
         private const int GizmoArcSegments = 20;
+        private const string GrabPointObjectName = "GrapplingHookGrabPoint";
 
         [Header("Detection")]
         [FormerlySerializedAs("hookRadius")]
@@ -42,6 +43,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
         private PlayerController player;
         private Rigidbody2D playerRb;
+        private Transform grabPoint;
         private GrapplingHookFsm fsm;
         private GrapplingHookProjectile activeHook;
         private GrapplingHookRope activeRope;
@@ -61,14 +63,15 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             player = GetComponent<PlayerController>();
             playerRb = GetComponent<Rigidbody2D>();
             fsm = new GrapplingHookFsm();
-        }
 
-        private void FixedUpdate() {
-            if (fsm.State == HookState.Idle) {
-                return;
+            grabPoint = transform.Find(GrabPointObjectName);
+            if (grabPoint == null) {
+                Debug.LogWarning(
+                    $"{nameof(GrapplingHookAbility)}: child '{GrabPointObjectName}' not found on the hero. " +
+                    "Rope and hook will spawn from the hero pivot instead.",
+                    this
+                );
             }
-
-            activeRope?.Simulate(Time.fixedDeltaTime);
         }
 
         private void LateUpdate() {
@@ -94,18 +97,18 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             }
 
             var anchorPos = (Vector2)targetAnchor.transform.position;
-            var heroPos = (Vector2)player.transform.position;
+            var grabPos = GetGrabPointPosition();
 
-            // Spawn hook projectile
-            var hookGo = Instantiate(hookPrefab, heroPos, Quaternion.identity);
+            // Spawn hook projectile from the grab point so the launch visually starts at the hand.
+            var hookGo = Instantiate(hookPrefab, grabPos, Quaternion.identity);
             activeHook = hookGo.GetComponent<GrapplingHookProjectile>();
             activeHook.LaunchToward(anchorPos);
 
-            // Spawn rope visual — all points start at hero, extends as hook travels
+            // Spawn rope visual — all points start collapsed at the grab point, extend as hook travels.
             if (ropePrefab != null) {
                 var ropeGo = Instantiate(ropePrefab, Vector3.zero, Quaternion.identity);
                 activeRope = ropeGo.GetComponent<GrapplingHookRope>();
-                activeRope.Initialize(heroPos);
+                activeRope.Initialize(grabPos);
             }
 
             fsm.Go(HookState.Shooting);
@@ -135,7 +138,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
             // Update rope visual endpoints
             if (activeRope != null) {
-                activeRope.UpdateEndpoints(GetHookEndpoint(), GetHeroPosition());
+                activeRope.UpdateEndpoints(GetHookEndpoint(), GetGrabPointPosition());
             }
         }
 
@@ -188,9 +191,9 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
         private void AttachToAnchor() {
             var anchorPos = (Vector2)targetAnchor.transform.position;
-            var heroPos = (Vector2)player.transform.position;
+            var grabPos = GetGrabPointPosition();
             // Clamp to max rope length in case the anchor was barely inside detection range.
-            float ropeLength = Mathf.Min(Vector2.Distance(heroPos, anchorPos), maxRopeLength);
+            float ropeLength = Mathf.Min(Vector2.Distance(grabPos, anchorPos), maxRopeLength);
 
             swingJoint = player.gameObject.AddComponent<DistanceJoint2D>();
             swingJoint.autoConfigureDistance = false;
@@ -199,6 +202,11 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             swingJoint.enableCollision = false;
             swingJoint.connectedBody = null;
             swingJoint.connectedAnchor = anchorPos;
+            // Pin the joint's player-side anchor to the grab point in player local space
+            // so the physics swing pivot matches the visual rope attachment.
+            if (grabPoint != null) {
+                swingJoint.anchor = player.transform.InverseTransformPoint(grabPoint.position);
+            }
 
             // Lock rope visual length so it stops being elastic
             if (activeRope != null) {
@@ -328,11 +336,15 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 return activeHook.Position;
             }
 
-            return GetHeroPosition();
+            return GetGrabPointPosition();
         }
 
-        private Vector2 GetHeroPosition() {
-            return player.transform.position;
+        /// <summary>
+        /// World-space position of the rope's hero-side attachment. Returns the
+        /// <c>GrapplingHookGrabPoint</c> child if present, otherwise the hero pivot.
+        /// </summary>
+        private Vector2 GetGrabPointPosition() {
+            return grabPoint != null ? (Vector2)grabPoint.position : (Vector2)player.transform.position;
         }
 
         /// <summary>
