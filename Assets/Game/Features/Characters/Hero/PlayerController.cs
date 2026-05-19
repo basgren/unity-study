@@ -17,6 +17,7 @@ using Game.Features.Characters.Parrot;
 using Game.Features.Interactive.Bonfire;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace Game.Features.Characters.Hero {
     public abstract class HeroAnimKeys : BaseCharacterAnimKeys {
@@ -97,6 +98,21 @@ namespace Game.Features.Characters.Hero {
         [SerializeField, Tooltip("Damager on the swordAttackArea. Used to apply melee damage stat upgrades.")]
         private Damager swordAttackDamager;
 
+        [SerializeField, FormerlySerializedAs("attackHitPushbackImpulse"),
+         Tooltip("Horizontal kickback speed in m/s added to the hero on a successful sword hit. Mass-independent — value reads as actual velocity bump. Reference: moveSpeed = 5, so 3-6 is a clear-but-modest kick, 8+ is a strong shove.")]
+        private float attackHitPushbackSpeed = 5f;
+
+        [Header("Movement")]
+        [SerializeField, Tooltip("Seconds to ramp horizontal velocity from 0 up to full moveSpeed when a direction is held. Smaller = snappier. 0 = instant snap (legacy behavior).")]
+        private float speedBuildUpTime = 0.08f;
+
+        [SerializeField, Tooltip("Seconds to ramp horizontal velocity back to 0 when no direction is held. Smaller = snappier stop. 0 = instant stop (would also kill knockback / attack-pushback in the same frame).")]
+        private float speedDecayTime = 0.15f;
+
+        [Header("Hit Stun")]
+        [SerializeField, Tooltip("Brief window in seconds after the hero lands a hit on something OR takes a hit. While the timer is active, movement input is ignored (decel/accel still run) and no further pushback impulse is applied. Prevents double-pushback when a swing hits multiple targets and lets the impact register.")]
+        private float hitStunTime = 0.1f;
+
         [SerializeField]
         private RuntimeAnimatorController armedAnimator;
 
@@ -140,6 +156,8 @@ namespace Game.Features.Characters.Hero {
         private readonly float attackCooldownTime = 0.2f;
         private float attackCooldownTimer;
 
+        private float hitStunTimer;
+
         private Transform swordThrowPoint;
         private SpawnComponent swordSpawner;
         private int CoinsCount => state.InventoryModel.GetCount(ItemIds.Coin);
@@ -173,6 +191,10 @@ namespace Game.Features.Characters.Hero {
             swordThrowPoint = transform.Find(SwordThrowPointObjectName);
             swordSpawner = swordThrowPoint.GetComponent<SpawnComponent>();
             state.InventoryModel.OnChange += OnInventoryChanged;
+
+            if (swordAttackDamager != null) {
+                swordAttackDamager.Hit += OnSwordAttackHit;
+            }
 
             UpdateAnimatorController();
             InitItemUseService();
@@ -221,7 +243,33 @@ namespace Game.Features.Characters.Hero {
                 state.InventoryModel.OnChange -= OnInventoryChanged;
             }
 
+            if (swordAttackDamager != null) {
+                swordAttackDamager.Hit -= OnSwordAttackHit;
+            }
+
             G.Hero.Unregister(this);
+        }
+
+        private void OnSwordAttackHit(HitInfo info) {
+            if (!info.IsDamaged || attackHitPushbackSpeed <= 0f) {
+                return;
+            }
+
+            // Already stunned (from a prior target this swing, or from a taken hit) — skip so
+            // multi-target swings don't stack their pushbacks into an oversized kickback.
+            if (hitStunTimer > 0f) {
+                return;
+            }
+
+            // Push the hero away from the target — opposite to current facing — so a clean hit
+            // reads as a small kickback. Additive velocity injection (not AddForce) so the tuning
+            // value is in m/s and stays consistent regardless of Rigidbody2D mass.
+            // Vertical velocity is left alone to keep jump/fall arcs intact.
+            var pushDir = -GetFacingDirSign();
+            var velocity = MyRigidbody.velocity;
+            MyRigidbody.velocity = new Vector2(velocity.x + pushDir * attackHitPushbackSpeed, velocity.y);
+
+            hitStunTimer = hitStunTime;
         }
 
         private void InitFromState(PlayerState playerState) {
@@ -326,6 +374,10 @@ namespace Game.Features.Characters.Hero {
             //   Corgi engine doesn't use physics for player and updates player coords manually (applying
             //   gravity, etc) to be more responsive and have more control over movements (while I'm not
             //   sure about physics for other draggable objects).
+
+            if (hitStunTimer > 0f) {
+                hitStunTimer -= Time.deltaTime;
+            }
 
             CheckSafePoint();
 
@@ -533,13 +585,46 @@ namespace Game.Features.Characters.Hero {
             // Scripted walk (e.g. cinematic portal entry/exit) overrides input. Controls are
             // typically also disabled during a scripted walk so the input read would return zero
             // anyway, but the override makes the intent explicit.
-            Vector2 dir = scriptedMoveDir.HasValue
-                ? new Vector2(scriptedMoveDir.Value, 0f)
-                : Actions.Move.ReadValue<Vector2>().normalized;
+            // Hit stun (timer > 0) suppresses input so decel takes over and the hit reads visibly,
+            // but does NOT override scripted walk — cinematics must keep moving.
+            Vector2 dir;
+            if (scriptedMoveDir.HasValue) {
+                dir = new Vector2(scriptedMoveDir.Value, 0f);
+            } else if (hitStunTimer > 0f) {
+                dir = Vector2.zero;
+            } else {
+                dir = Actions.Move.ReadValue<Vector2>().normalized;
+            }
 
             // Check `isAttacking` flag to prevent player from changing direction while attack effect is played,
             // otherwise the effect will turn together with player.
-            SetDirection(dir, isAttacking || isDragging);
+            var preserveFacing = isAttacking || isDragging;
+
+            // Capture current vx before base SetDirection overwrites it. Base call still runs so that
+            // Direction and facing stay synced through the same code path; we then write the ramped vx back.
+            var previousVx = MyRigidbody.velocity.x;
+            SetDirection(dir, preserveFacing);
+
+            var moveSpeed = GetMoveSpeed();
+            var hasInput = Mathf.Abs(dir.x) > 0.0001f;
+            var targetVx = hasInput ? Mathf.Sign(dir.x) * moveSpeed : 0f;
+
+            // Choose accel vs decel by whether we are gaining or shedding speed relative to the
+            // target — NOT by whether input is held. This way overspeed from knockback / pushback
+            // bleeds off at the (slower) decel rate instead of being yanked back at the accel rate.
+            var rampTime = Mathf.Abs(previousVx) < Mathf.Abs(targetVx)
+                ? speedBuildUpTime
+                : speedDecayTime;
+
+            float newVx;
+            if (rampTime > 0f) {
+                var maxDelta = (moveSpeed / rampTime) * Time.deltaTime;
+                newVx = Mathf.MoveTowards(previousVx, targetVx, maxDelta);
+            } else {
+                newVx = targetVx;
+            }
+
+            MyRigidbody.velocity = new Vector2(newVx, MyRigidbody.velocity.y);
         }
 
         // ---- Scripted movement (cinematic transitions) ----
@@ -683,6 +768,7 @@ namespace Game.Features.Characters.Hero {
 
         public void OnAfterHit(Damager damager) {
             Debug.Log($"Player: Hit by {damager.Type}. Health: {damageable.Health}");
+            hitStunTimer = hitStunTime;
             DropCoins();
             CancelAttack();
             UpdateState();

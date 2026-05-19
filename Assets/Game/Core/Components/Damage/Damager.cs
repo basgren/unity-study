@@ -61,6 +61,13 @@ namespace Game.Core.Components.Damage {
         public Collider2D DamageCollider { get; private set; }
 
         /// <summary>
+        /// Fires after a contact is processed, regardless of whether damage was actually applied
+        /// (<see cref="HitInfo.IsDamaged"/> tells which). Code-side counterpart to the inspector
+        /// <c>onHit</c> UnityEvent so runtime systems can subscribe without prefab wiring.
+        /// </summary>
+        public event Action<HitInfo> Hit;
+
+        /// <summary>
         /// Overrides the damage value at runtime. Used by the player stat upgrade system
         /// to apply melee/throw damage bonuses on top of the prefab's base damage.
         /// </summary>
@@ -111,7 +118,9 @@ namespace Game.Core.Components.Damage {
                 Debug.Log($"[Damager] '{gameObject.name}' damaged '{other.gameObject.name}'", this);
             }
 
-            onHit?.Invoke(new HitInfo(damageable, this, isDamaged));
+            var hitInfo = new HitInfo(damageable, this, isDamaged);
+            onHit?.Invoke(hitInfo);
+            Hit?.Invoke(hitInfo);
 
             if (type == DamagerType.SingleHit && isDamaged) {
                 damagedObjects.Add(damageable);
