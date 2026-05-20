@@ -552,6 +552,8 @@ MonoBehaviour:
   jumpSpeed: 8
   jumpSustainTime: 0.26
   coyoteJumpTime: 0.06
+  dropThroughDuration: 0.3
+  dropThroughDownThreshold: 0.5
   runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
     type: 3}
   jumpDustPrefab: {fileID: 3098811724734425490, guid: 4b4d55e5d41acf745acbdd5c44a9e5d3,
@@ -872,7 +874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90e86ff6a6b21f3448d26a7386160656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRopeLength: 7
+  maxRopeLength: 5
   startAngle: -14
   endAngle: 95
   anchorLayer:

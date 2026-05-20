@@ -1,4 +1,4 @@
-using Core.Components.Interaction;
+using Game.Core.Components.Interaction;
 using UnityEngine;
 
 namespace Game.Core.Services.SceneState.Savers {

@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Core.Components.Interaction;
 using Game.Core.Utils;
 using UnityEngine;
 using UnityEngine.Events;

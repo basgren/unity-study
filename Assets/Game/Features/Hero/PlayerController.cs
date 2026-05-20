@@ -857,6 +857,22 @@ namespace Game.Features.Characters.Hero {
 
         #endregion
 
+        /// <summary>
+        /// True when the hero's ground contact this frame is a one-way platform
+        /// (a <see cref="PlatformEffector2D"/> with one-way enabled). Used by the
+        /// grappling hook to nudge the hero up when he climbs the rope onto such a platform.
+        /// </summary>
+        public bool IsGroundedOnOneWayPlatform() {
+            var effectors = GroundChecker.GetHitComponents<PlatformEffector2D>();
+            for (var i = 0; i < effectors.Count; i++) {
+                if (effectors[i].useOneWay) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void OnCollected(ItemId itemId, float value) {
             state.InventoryModel.Add(itemId, (int)value);
         }

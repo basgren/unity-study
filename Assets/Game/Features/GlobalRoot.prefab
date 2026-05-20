@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6836785096376548313}
   - component: {fileID: 6836785096376548312}
-  - component: {fileID: 6836785096376548315}
+  - component: {fileID: 8907442736194978516}
   - component: {fileID: 753815626166125076}
   m_Layer: 0
   m_Name: CM vcam1
@@ -74,7 +74,7 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 6836785096905509859}
---- !u!114 &6836785096376548315
+--- !u!114 &8907442736194978516
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -83,14 +83,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6836785096376548294}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2fba25a5cd15594e8f050a11e386c80, type: 3}
+  m_Script: {fileID: 11500000, guid: f453f694addf4275988fac205bc91968, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ConfineMode: 0
-  m_BoundingVolume: {fileID: 0}
   m_BoundingShape2D: {fileID: 0}
-  m_ConfineScreenEdges: 1
-  m_Damping: 0
+  m_Damping: 0.5
+  m_MaxWindowSize: -1
+  m_Padding: 0
 --- !u!114 &753815626166125076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -525,10 +524,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.059674505
-    y: 0.31350482
-    width: 0.43399638
-    height: 0.43408358
+    x: 0.1468599
+    y: 0.8419244
+    width: 0.4637681
+    height: 0.46391752
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60

@@ -44,8 +44,11 @@ namespace Game.Editor.SceneTopology {
 
         private static readonly Color EntranceEdgeColor = new Color(1f, 0.85f, 0.1f, 0.9f);
         private static readonly Color DoorEdgeColor = new Color(0.45f, 0.7f, 1f, 0.85f);
+        // Violet, distinct from the gold Entrance edge; drawn solid like Entrance (not dashed like Door).
+        private static readonly Color EntranceHorizontalEdgeColor = new Color(0.7f, 0.45f, 1f, 0.9f);
         private static readonly Color EntranceEdgeHoverColor = new Color(1f, 1f, 0.55f, 1f);
         private static readonly Color DoorEdgeHoverColor = new Color(0.75f, 0.9f, 1f, 1f);
+        private static readonly Color EntranceHorizontalEdgeHoverColor = new Color(0.85f, 0.7f, 1f, 1f);
         private const float EntranceEdgeWidth = 2f;
         private const float DoorEdgeWidth = 1.5f;
 
@@ -56,6 +59,8 @@ namespace Game.Editor.SceneTopology {
         private static readonly Color EntrancePinBorder = Color.black;
         private static readonly Color DoorPinFill = new Color(0.15f, 0.15f, 0.2f, 1f);
         private static readonly Color DoorPinBorder = new Color(0.45f, 0.7f, 1f, 1f);
+        private static readonly Color EntranceHorizontalPinFill = new Color(0.7f, 0.45f, 1f, 1f);
+        private static readonly Color EntranceHorizontalPinBorder = Color.black;
         private static readonly Color UnlinkedPinFill = new Color(1f, 0.25f, 0.25f, 1f);
         private static readonly Color UnlinkedPinBorder = new Color(0.55f, 0f, 0f, 1f);
 
@@ -230,9 +235,9 @@ namespace Game.Editor.SceneTopology {
                     To = toPin,
                     FromGuid = e.FromSceneGuid,
                     ToGuid = e.ToSceneGuid,
-                    Color = e.Kind == PortalKindRef.Entrance ? EntranceEdgeColor : DoorEdgeColor,
-                    HoverColor = e.Kind == PortalKindRef.Entrance ? EntranceEdgeHoverColor : DoorEdgeHoverColor,
-                    Width = e.Kind == PortalKindRef.Entrance ? EntranceEdgeWidth : DoorEdgeWidth,
+                    Color = EdgeColorFor(e.Kind),
+                    HoverColor = EdgeHoverColorFor(e.Kind),
+                    Width = EdgeWidthFor(e.Kind),
                     Dashed = e.Kind == PortalKindRef.Door,
                 });
             }
@@ -337,6 +342,39 @@ namespace Game.Editor.SceneTopology {
             return kind == PortalKindRef.Entrance ? PinLabelOnLightColor : PinLabelOnDarkColor;
         }
 
+        // Edge styling per kind. Entrance and EntranceHorizontal are both solid placement-style links;
+        // only Door edges are dashed. EntranceHorizontal carries its own violet so it reads distinctly
+        // from gold Entrance edges.
+        private static Color EdgeColorFor(PortalKindRef kind) {
+            switch (kind) {
+                case PortalKindRef.Door:
+                    return DoorEdgeColor;
+                case PortalKindRef.EntranceHorizontal:
+                    return EntranceHorizontalEdgeColor;
+                default:
+                    return EntranceEdgeColor;
+            }
+        }
+
+        private static Color EdgeHoverColorFor(PortalKindRef kind) {
+            switch (kind) {
+                case PortalKindRef.Door:
+                    return DoorEdgeHoverColor;
+                case PortalKindRef.EntranceHorizontal:
+                    return EntranceHorizontalEdgeHoverColor;
+                default:
+                    return EntranceEdgeHoverColor;
+            }
+        }
+
+        private static float EdgeWidthFor(PortalKindRef kind) {
+            return kind == PortalKindRef.Door ? DoorEdgeWidth : EntranceEdgeWidth;
+        }
+
+        private static float PinBorderWidthFor(PortalKindRef kind) {
+            return kind == PortalKindRef.Door ? DoorPinBorderWidth : EntrancePinBorderWidth;
+        }
+
         private static PinDot MakePinDot(PortalKindRef kind, Vector2 worldPos, bool linked) {
             // Unlinked portals (no target set, or target couldn't be resolved) light up red so the
             // missing wiring is visible at a glance. Keep the kind's border width so entrances and
@@ -347,7 +385,7 @@ namespace Game.Editor.SceneTopology {
                     Radius = PinRadius,
                     FillColor = UnlinkedPinFill,
                     BorderColor = UnlinkedPinBorder,
-                    BorderWidth = kind == PortalKindRef.Entrance ? EntrancePinBorderWidth : DoorPinBorderWidth,
+                    BorderWidth = PinBorderWidthFor(kind),
                 };
             }
 
@@ -357,6 +395,16 @@ namespace Game.Editor.SceneTopology {
                     Radius = PinRadius,
                     FillColor = EntrancePinFill,
                     BorderColor = EntrancePinBorder,
+                    BorderWidth = EntrancePinBorderWidth,
+                };
+            }
+
+            if (kind == PortalKindRef.EntranceHorizontal) {
+                return new PinDot {
+                    Position = worldPos,
+                    Radius = PinRadius,
+                    FillColor = EntranceHorizontalPinFill,
+                    BorderColor = EntranceHorizontalPinBorder,
                     BorderWidth = EntrancePinBorderWidth,
                 };
             }

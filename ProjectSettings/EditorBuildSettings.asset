@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Game/Scenes/TheWrongShip/BossSkeletonRoom.unity
-    guid: 4a767989762933947a5a33b17a6a25fa
-  - enabled: 1
     path: Assets/Game/Scenes/MainMenu.unity
     guid: 61a7394c3d8813c47a242d95511c72a3
   - enabled: 1
@@ -38,6 +35,36 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Game/Scenes/DriftwoodShore/DS_CloudNook.unity
     guid: 29718de1b20f3494ba78966ee0bf6328
+  - enabled: 1
+    path: Assets/Game/Scenes/TheWrongShip/WS_BadFloor.unity
+    guid: 061b68a5631dd7c4db760fa89880b500
+  - enabled: 1
+    path: Assets/Game/Scenes/TheWrongShip/WS_BarrelBelly.unity
+    guid: f085120452739c140a6ab45e662a06c6
+  - enabled: 1
+    path: Assets/Game/Scenes/TheWrongShip/WS_BitefootDeck.unity
+    guid: 3477b2358ea3d2b4098e6603fa490288
+  - enabled: 1
+    path: Assets/Game/Scenes/TheWrongShip/WS_CaptainsLastLaugh.unity
+    guid: 4a767989762933947a5a33b17a6a25fa
+  - enabled: 1
+    path: Assets/Game/Scenes/TheWrongShip/WS_DeadCaptainsLanding.unity
+    guid: e0a50a268cf3b9a4ebffc503ce7a7516
+  - enabled: 1
+    path: Assets/Game/Scenes/TheWrongShip/WS_HighCargoNest.unity
+    guid: 1fe85ede75f2253449e1a58581efda29
+  - enabled: 1
+    path: Assets/Game/Scenes/TheWrongShip/WS_QuietCabin.unity
+    guid: c517bfb346968bb4d9aea011b1e9f030
+  - enabled: 1
+    path: Assets/Game/Scenes/TheWrongShip/WS_SighingShaft.unity
+    guid: 870087b7b642f344b86843c1f69c193e
+  - enabled: 1
+    path: Assets/Game/Scenes/TheWrongShip/WS_ThunderplankPass.unity
+    guid: 6246880271130df48a76499a8f56191f
+  - enabled: 1
+    path: Assets/Game/Scenes/TheWrongShip/WS_TurnbellyHold.unity
+    guid: 5e6c1a6d84ec5a646b686df164f9403c
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: a95e6ed043347534a8767f25a4d96a36,
       type: 2}

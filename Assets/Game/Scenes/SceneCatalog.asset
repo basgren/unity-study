@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: SceneCatalog
   m_EditorClassIdentifier: 
   scenes:
-  - sceneGuid: 4a767989762933947a5a33b17a6a25fa
-    scenePath: Assets/Game/Scenes/TheWrongShip/BossSkeletonRoom.unity
   - sceneGuid: 61a7394c3d8813c47a242d95511c72a3
     scenePath: Assets/Game/Scenes/MainMenu.unity
   - sceneGuid: 448c499cf51d4d7438209339e95cbfc6
@@ -35,3 +33,23 @@ MonoBehaviour:
     scenePath: Assets/Game/Scenes/DriftwoodShore/DS_ToothyFlats.unity
   - sceneGuid: 29718de1b20f3494ba78966ee0bf6328
     scenePath: Assets/Game/Scenes/DriftwoodShore/DS_CloudNook.unity
+  - sceneGuid: 061b68a5631dd7c4db760fa89880b500
+    scenePath: Assets/Game/Scenes/TheWrongShip/WS_BadFloor.unity
+  - sceneGuid: f085120452739c140a6ab45e662a06c6
+    scenePath: Assets/Game/Scenes/TheWrongShip/WS_BarrelBelly.unity
+  - sceneGuid: 3477b2358ea3d2b4098e6603fa490288
+    scenePath: Assets/Game/Scenes/TheWrongShip/WS_BitefootDeck.unity
+  - sceneGuid: 4a767989762933947a5a33b17a6a25fa
+    scenePath: Assets/Game/Scenes/TheWrongShip/WS_CaptainsLastLaugh.unity
+  - sceneGuid: e0a50a268cf3b9a4ebffc503ce7a7516
+    scenePath: Assets/Game/Scenes/TheWrongShip/WS_DeadCaptainsLanding.unity
+  - sceneGuid: 1fe85ede75f2253449e1a58581efda29
+    scenePath: Assets/Game/Scenes/TheWrongShip/WS_HighCargoNest.unity
+  - sceneGuid: c517bfb346968bb4d9aea011b1e9f030
+    scenePath: Assets/Game/Scenes/TheWrongShip/WS_QuietCabin.unity
+  - sceneGuid: 870087b7b642f344b86843c1f69c193e
+    scenePath: Assets/Game/Scenes/TheWrongShip/WS_SighingShaft.unity
+  - sceneGuid: 6246880271130df48a76499a8f56191f
+    scenePath: Assets/Game/Scenes/TheWrongShip/WS_ThunderplankPass.unity
+  - sceneGuid: 5e6c1a6d84ec5a646b686df164f9403c
+    scenePath: Assets/Game/Scenes/TheWrongShip/WS_TurnbellyHold.unity

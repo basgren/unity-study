@@ -40,6 +40,11 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
         [SerializeField]
         private TeleportAnchor introAnchor;
 
+        [Tooltip("Trigger volume that starts the encounter. Disabled once the boss is defeated " +
+                 "so the cutscene cannot replay when the player returns to a cleared room.")]
+        [SerializeField]
+        private GameObject startTrigger;
+
         [Header("Candles")]
         [Tooltip("Candles in the row that lights up first.")]
         [SerializeField]
@@ -83,7 +88,12 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
         private float musicFadeOutSeconds = 2f;
 
         private bool started;
+        private bool defeated;
         private bool subscribedToDisengage;
+
+        /// <summary>True once the boss has been defeated in this encounter. Persisted by the
+        /// sibling BossEncounterStateSaver so the room stays cleared across scene transitions.</summary>
+        public bool Defeated => defeated;
 
         // Hold the AI off until the cutscene hands off. Done in Start (not Awake) so the
         // boss's own Awake — which calls SyncControlSourceEnabled and would re-enable the AI —
@@ -200,6 +210,53 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
             for (int i = 0; i < row.Length; i++) {
                 if (row[i] != null) {
                     row[i].Lit = lit;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Records the encounter as won. Wire the boss's <c>Damageable.onDeath</c> to this so the
+        /// sibling BossEncounterStateSaver can persist the cleared state.
+        /// </summary>
+        public void MarkDefeated() {
+            defeated = true;
+        }
+
+        /// <summary>
+        /// Puts the room straight into its post-victory state with no cutscene, fade, or SFX —
+        /// candles lit, start trigger disabled, boss removed. Called by BossEncounterStateSaver on
+        /// restore when the boss was already defeated, so re-entering a cleared room never refights.
+        /// </summary>
+        public void ApplyDefeatedInstant() {
+            defeated = true;
+            // Block the intro from running this scene-load even if the trigger is somehow crossed.
+            started = true;
+
+            SetRowLitImmediate(firstRowCandles);
+            SetRowLitImmediate(secondRowCandles);
+
+            if (startTrigger != null) {
+                startTrigger.SetActive(false);
+            }
+
+            if (bossAI != null) {
+                bossAI.enabled = false;
+            }
+
+            // The boss is already beaten — remove it before its first frame so no health bar
+            // engages and no death animation plays on a returning visit.
+            if (boss != null) {
+                boss.gameObject.SetActive(false);
+            }
+        }
+
+        private static void SetRowLitImmediate(CandleController[] row) {
+            if (row == null) {
+                return;
+            }
+            for (int i = 0; i < row.Length; i++) {
+                if (row[i] != null) {
+                    row[i].SetLitImmediate(true);
                 }
             }
         }

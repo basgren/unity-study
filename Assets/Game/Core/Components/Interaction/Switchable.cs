@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Core.Components.Interaction {
+namespace Game.Core.Components.Interaction {
     public class Switchable : SwitchableBase {
         [SerializeField]
         private bool isActive;

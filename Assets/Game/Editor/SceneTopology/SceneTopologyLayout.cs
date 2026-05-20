@@ -5,10 +5,10 @@ using UnityEngine;
 namespace Game.Editor.SceneTopology {
     /// <summary>
     /// Pure positioning pass: given a scanned graph, returns the canvas top-left position for every
-    /// scene card. Entrance-to-entrance edges drive spatial placement: linked scenes are placed as
-    /// close to each other as possible, with the shared entrance pins aligned. Cross-scene door edges
-    /// do NOT drive placement at all — they're rendered as dashed lines wherever the endpoints end up.
-    /// Any scene not pulled into an entrance cluster falls into the unlinked grid at the bottom.
+    /// scene card. Entrance and EntranceHorizontal edges drive spatial placement: linked scenes are
+    /// placed as close to each other as possible, with the shared portal pins aligned. Cross-scene door
+    /// edges do NOT drive placement at all — they're rendered as dashed lines wherever the endpoints
+    /// end up. Any scene not pulled into a cluster falls into the unlinked grid at the bottom.
     ///
     /// Coordinates are returned in canvas pixels. Y goes down (standard UI Toolkit convention).
     /// </summary>
@@ -32,6 +32,22 @@ namespace Game.Editor.SceneTopology {
         private const float UnlinkedStripGap = 200f;
         private const int UnlinkedGridColumns = 4;
         private const float UnlinkedGridGap = 40f;
+        /// <summary>Springs-only warmup iterations: collapse to the shortest-link arrangement, overlaps allowed.</summary>
+        private const int RelaxWarmupIterations = 60;
+        /// <summary>Force-relaxation iterations applied to each seeded cluster (spring + separation).</summary>
+        private const int RelaxIterations = 80;
+        /// <summary>Per-iteration fraction of the link gap closed by the pin-coincidence spring.</summary>
+        private const float RelaxStiffness = 0.1f;
+        /// <summary>Per-iteration fraction of overlap removed during the combined relaxation pass.</summary>
+        private const float RelaxSeparationFactor = 0.5f;
+        /// <summary>Extra perpendicular stiffness that snaps a link onto its preferred axis (Entrance →
+        /// horizontal, EntranceHorizontal → vertical), added on top of <see cref="RelaxStiffness"/>.</summary>
+        private const float RelaxAlignStiffness = 0.3f;
+        /// <summary>Link run length (px) at which the alignment preference has fully faded, freeing an
+        /// otherwise very long axis-aligned link to settle as a shorter diagonal instead.</summary>
+        private const float RelaxMaxAlignedLength = 600f;
+        /// <summary>Separation-only settle iterations after relaxation to clear any residual overlaps.</summary>
+        private const int RelaxSettleIterations = 12;
 
         public sealed class Result {
             public Dictionary<string, Vector2> Positions = new Dictionary<string, Vector2>();
@@ -57,11 +73,11 @@ namespace Game.Editor.SceneTopology {
                 nodesByGuid[graph.Nodes[i].SceneGuid] = graph.Nodes[i];
             }
 
-            // Adjacency for ENTRANCE edges only — that's what drives topology.
-            var entranceAdj = BuildAdjacency(graph, PortalKindRef.Entrance);
+            // Adjacency for placement-driving edges (Entrance + EntranceHorizontal). Doors are excluded.
+            var placementAdj = BuildAdjacency(graph);
 
             // Components, largest first, deterministic tiebreak by GUID.
-            var components = FindComponents(graph.Nodes, entranceAdj);
+            var components = FindComponents(graph.Nodes, placementAdj);
             components.Sort((a, b) => {
                 if (a.Count != b.Count) {
                     return b.Count.CompareTo(a.Count);
@@ -81,7 +97,7 @@ namespace Game.Editor.SceneTopology {
                     continue;
                 }
 
-                var clusterPositions = LayoutComponent(members, entranceAdj, result.CardSizes, nodesByGuid);
+                var clusterPositions = LayoutComponent(members, placementAdj, result.CardSizes, nodesByGuid);
                 var bounds = OffsetCluster(clusterPositions, result.CardSizes, new Vector2(clusterCursorX, 0f));
                 AppendToPlaced(clusterPositions, result.CardSizes, placed, result.Positions);
                 clusterCursorX = bounds.xMax + ClusterGap;
@@ -116,8 +132,16 @@ namespace Game.Editor.SceneTopology {
                 Mathf.Clamp(raw.y, MinCardSize.y, MaxCardSize.y));
         }
 
+        /// <summary>
+        /// Portal kinds that pull linked scenes into a spatial cluster. Entrance and its horizontal
+        /// variant both drive placement; doors are drawn but never move cards.
+        /// </summary>
+        private static bool DrivesPlacement(PortalKindRef kind) {
+            return kind == PortalKindRef.Entrance || kind == PortalKindRef.EntranceHorizontal;
+        }
+
         private static Dictionary<string, List<(string otherGuid, PortalData fromPortal, PortalData toPortal)>>
-            BuildAdjacency(SceneTopologyGraph graph, PortalKindRef kind) {
+            BuildAdjacency(SceneTopologyGraph graph) {
             var nodesByGuid = new Dictionary<string, SceneNodeData>(graph.Nodes.Count);
             for (var i = 0; i < graph.Nodes.Count; i++) {
                 nodesByGuid[graph.Nodes[i].SceneGuid] = graph.Nodes[i];
@@ -130,7 +154,7 @@ namespace Game.Editor.SceneTopology {
 
             for (var i = 0; i < graph.Edges.Count; i++) {
                 var e = graph.Edges[i];
-                if (e.Kind != kind) {
+                if (!DrivesPlacement(e.Kind)) {
                     continue;
                 }
 
@@ -142,8 +166,8 @@ namespace Game.Editor.SceneTopology {
                     continue;
                 }
 
-                var fromPortal = FindPortal(fromNode, kind, e.FromPortalId);
-                var toPortal = FindPortal(toNode, kind, e.ToPortalId);
+                var fromPortal = FindPortal(fromNode, e.Kind, e.FromPortalId);
+                var toPortal = FindPortal(toNode, e.Kind, e.ToPortalId);
                 if (fromPortal == null || toPortal == null) {
                     continue;
                 }
@@ -195,12 +219,13 @@ namespace Game.Editor.SceneTopology {
         }
 
         /// <summary>
-        /// Spanning-tree placement (BFS): place the seed, then for each node visited in BFS order,
-        /// position every unprocessed direct neighbor so the link between them is the shortest possible —
-        /// pin-coincident at the optimum, slid along the parent pin's outward cardinal axis just enough
-        /// to satisfy the MinGap collision constraint with already-placed cards. Once a node has been
-        /// placed by its BFS parent, it never moves; cross-edges (non-tree links) are drawn at whatever
-        /// length the resulting positions imply.
+        /// Two stages. First a spanning-tree seed (BFS): place the seed scene, then for each node visited
+        /// in BFS order, position every unprocessed direct neighbor pin-coincident, slid along the parent
+        /// pin's outward cardinal axis just enough to satisfy MinGap against already-placed cards. This
+        /// alone paints later cards into corners — a card whose ideal slot is occupied gets shoved far,
+        /// stretching its link. So a second stage (<see cref="RelaxComponent"/>) treats the seed as a
+        /// starting guess and lets every card move under link springs + overlap separation, pulling
+        /// stretched links back into short diagonals.
         /// </summary>
         private static Dictionary<string, Vector2> LayoutComponent(List<string> members,
             Dictionary<string, List<(string otherGuid, PortalData fromPortal, PortalData toPortal)>> adj,
@@ -247,9 +272,18 @@ namespace Game.Editor.SceneTopology {
                     // the pin. For a pin on the right edge of `cur` this resolves to (1,0); top edge to
                     // (0,-1); etc. We slide along this axis to satisfy MinGap.
                     var rawOutward = curPinWorld - curCenter;
-                    var slideDir = Mathf.Abs(rawOutward.x) >= Mathf.Abs(rawOutward.y)
-                        ? new Vector2(rawOutward.x >= 0f ? 1f : -1f, 0f)
-                        : new Vector2(0f, rawOutward.y >= 0f ? 1f : -1f);
+                    Vector2 slideDir;
+                    if (fromPortal.Kind == PortalKindRef.EntranceHorizontal) {
+                        // Horizontal entrances join the top/bottom edges of scenes, so linked scenes
+                        // belong one above the other. Force the vertical axis rather than inferring it:
+                        // the trigger usually sits mid-card, where the horizontal offset would otherwise
+                        // win and push the neighbor out to the side.
+                        slideDir = new Vector2(0f, rawOutward.y >= 0f ? 1f : -1f);
+                    } else {
+                        slideDir = Mathf.Abs(rawOutward.x) >= Mathf.Abs(rawOutward.y)
+                            ? new Vector2(rawOutward.x >= 0f ? 1f : -1f, 0f)
+                            : new Vector2(0f, rawOutward.y >= 0f ? 1f : -1f);
+                    }
 
                     // Ideal pin-coincident position: the link has length zero here. Slide afterwards
                     // until the gap constraint is met.
@@ -261,7 +295,162 @@ namespace Game.Editor.SceneTopology {
                 }
             }
 
+            // Refine the greedy seed: let cards move so detoured links contract (see method summary).
+            RelaxComponent(positions, members, adj, cardSizes, nodesByGuid, collisionPad);
             return positions;
+        }
+
+        /// <summary>
+        /// Refines a seeded cluster layout with a deterministic three-phase force pass so linked scenes
+        /// end up close together regardless of the order the seed placed them in:
+        /// <list type="number">
+        /// <item><b>Springs only</b> — with separation off, cards pass freely through one another and the
+        /// component collapses to the globally shortest-link arrangement (pure spring energy is convex, so
+        /// the optimum is unique and independent of the greedy seed). This is what frees a pair the seed
+        /// drove apart — a blocker squatting on the direct slot — to collapse back together.</item>
+        /// <item><b>Springs + separation</b> — spread the overlapping pile apart while springs hold linked
+        /// cards adjacent, so cards stop overlapping but links stay short. Only actual overlaps repel
+        /// (no global all-pairs repulsion), so clusters stay compact.</item>
+        /// <item><b>Separation only</b> — clear any residual overlap so no two cards violate MinGap.</item>
+        /// </list>
+        /// </summary>
+        private static void RelaxComponent(Dictionary<string, Vector2> positions, List<string> members,
+            Dictionary<string, List<(string otherGuid, PortalData fromPortal, PortalData toPortal)>> adj,
+            Dictionary<string, Vector2> cardSizes, Dictionary<string, SceneNodeData> nodesByGuid,
+            float collisionPad) {
+            if (members.Count < 2) {
+                return;
+            }
+
+            // Deterministic processing order so Refresh reproduces the same layout.
+            var ordered = new List<string>(members);
+            ordered.Sort(System.StringComparer.Ordinal);
+            var disp = new Dictionary<string, Vector2>(ordered.Count);
+
+            // Phase 1 — springs only: collapse to the shortest-link arrangement, overlaps allowed.
+            for (var iter = 0; iter < RelaxWarmupIterations; iter++) {
+                ResetDisplacements(disp, ordered);
+                AccumulateLinkSprings(disp, ordered, positions, adj, cardSizes, nodesByGuid);
+                ApplyDisplacements(disp, ordered, positions);
+            }
+
+            // Phase 2 — springs + separation: spread the pile apart while keeping links short.
+            for (var iter = 0; iter < RelaxIterations; iter++) {
+                ResetDisplacements(disp, ordered);
+                AccumulateLinkSprings(disp, ordered, positions, adj, cardSizes, nodesByGuid);
+                AccumulateSeparation(disp, ordered, positions, cardSizes, collisionPad, RelaxSeparationFactor);
+                ApplyDisplacements(disp, ordered, positions);
+            }
+
+            // Phase 3 — separation-only settle: clear residual overlaps. A linked pair may end a hair
+            // farther apart — the accepted "slightly longer link to avoid an overlap" trade. Stops early
+            // once nothing overlaps.
+            for (var iter = 0; iter < RelaxSettleIterations; iter++) {
+                ResetDisplacements(disp, ordered);
+                if (!AccumulateSeparation(disp, ordered, positions, cardSizes, collisionPad, 1f)) {
+                    break;
+                }
+
+                ApplyDisplacements(disp, ordered, positions);
+            }
+        }
+
+        private static void ResetDisplacements(Dictionary<string, Vector2> disp, List<string> ordered) {
+            for (var i = 0; i < ordered.Count; i++) {
+                disp[ordered[i]] = Vector2.zero;
+            }
+        }
+
+        /// <summary>
+        /// Each placement-link pulls its two cards toward pin alignment by a fraction of the current gap.
+        /// The pull is anisotropic: the perpendicular axis — the one the pins should share to keep the link
+        /// straight — gets an extra <see cref="RelaxAlignStiffness"/> boost, so Entrance links settle
+        /// horizontal and EntranceHorizontal links settle vertical. That boost fades out past
+        /// <see cref="RelaxMaxAlignedLength"/>, letting a link that would otherwise have to stretch very far
+        /// to stay aligned take a shorter diagonal instead. Processes every undirected link once (the
+        /// adjacency stores both directions) and skips same-scene self-links.
+        /// </summary>
+        private static void AccumulateLinkSprings(Dictionary<string, Vector2> disp, List<string> ordered,
+            Dictionary<string, Vector2> positions,
+            Dictionary<string, List<(string otherGuid, PortalData fromPortal, PortalData toPortal)>> adj,
+            Dictionary<string, Vector2> cardSizes, Dictionary<string, SceneNodeData> nodesByGuid) {
+            for (var i = 0; i < ordered.Count; i++) {
+                var a = ordered[i];
+                foreach (var (b, fromPortal, toPortal) in adj[a]) {
+                    // Each undirected link appears as a->b and b->a; handle it once. Skips self-links (a==b).
+                    if (string.CompareOrdinal(a, b) >= 0) {
+                        continue;
+                    }
+
+                    var aPin = positions[a] + PinLocalPixels(cardSizes[a], nodesByGuid[a].BoundsLocal.size, fromPortal.LocalPos);
+                    var bPin = positions[b] + PinLocalPixels(cardSizes[b], nodesByGuid[b].BoundsLocal.size, toPortal.LocalPos);
+                    var delta = bPin - aPin;
+
+                    // Split the gap into the link's run (parallel) and the off-axis drift (perpendicular).
+                    // Entrance links run horizontally → align Y; EntranceHorizontal run vertically → align X.
+                    var preferVertical = fromPortal.Kind == PortalKindRef.EntranceHorizontal;
+                    var parallel = preferVertical ? new Vector2(0f, delta.y) : new Vector2(delta.x, 0f);
+                    var perpendicular = delta - parallel;
+
+                    // Boost the perpendicular pull so the link snaps straight, but fade the boost as the run
+                    // grows so a link that can't stay aligned without becoming very long goes diagonal.
+                    var alignFade = Mathf.Clamp01(1f - (parallel.magnitude / RelaxMaxAlignedLength));
+                    var perpStiffness = RelaxStiffness + (RelaxAlignStiffness * alignFade);
+
+                    // Apply a fraction per iteration; splitting between the two cards keeps it stable.
+                    var pull = ((parallel * RelaxStiffness) + (perpendicular * perpStiffness)) * 0.5f;
+                    disp[a] += pull;
+                    disp[b] -= pull;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Pushes overlapping card pairs apart along their least-penetration axis, by the given fraction
+        /// of the overlap, split between the two cards. Rects are inflated by <paramref name="collisionPad"/>
+        /// so the resulting gap matches MinGap. Returns true if any pair overlapped this pass.
+        /// </summary>
+        private static bool AccumulateSeparation(Dictionary<string, Vector2> disp, List<string> ordered,
+            Dictionary<string, Vector2> positions, Dictionary<string, Vector2> cardSizes,
+            float collisionPad, float factor) {
+            var any = false;
+            for (var i = 0; i < ordered.Count; i++) {
+                var aRect = InflateRect(new Rect(positions[ordered[i]], cardSizes[ordered[i]]), collisionPad);
+                for (var j = i + 1; j < ordered.Count; j++) {
+                    var bRect = InflateRect(new Rect(positions[ordered[j]], cardSizes[ordered[j]]), collisionPad);
+                    if (!Overlaps(aRect, bRect)) {
+                        continue;
+                    }
+
+                    var half = MinimumTranslation(aRect, bRect) * (factor * 0.5f);
+                    disp[ordered[i]] += half;
+                    disp[ordered[j]] -= half;
+                    any = true;
+                }
+            }
+
+            return any;
+        }
+
+        /// <summary>
+        /// Smallest vector that moves rect <paramref name="a"/> out of rect <paramref name="b"/>, along
+        /// whichever axis they overlap least. Assumes the rects already overlap; ties resolve to the X axis.
+        /// </summary>
+        private static Vector2 MinimumTranslation(Rect a, Rect b) {
+            var overlapX = Mathf.Min(a.xMax, b.xMax) - Mathf.Max(a.xMin, b.xMin);
+            var overlapY = Mathf.Min(a.yMax, b.yMax) - Mathf.Max(a.yMin, b.yMin);
+            if (overlapX <= overlapY) {
+                return new Vector2(overlapX * (a.center.x >= b.center.x ? 1f : -1f), 0f);
+            }
+
+            return new Vector2(0f, overlapY * (a.center.y >= b.center.y ? 1f : -1f));
+        }
+
+        private static void ApplyDisplacements(Dictionary<string, Vector2> disp, List<string> ordered,
+            Dictionary<string, Vector2> positions) {
+            for (var i = 0; i < ordered.Count; i++) {
+                positions[ordered[i]] += disp[ordered[i]];
+            }
         }
 
         /// <summary>

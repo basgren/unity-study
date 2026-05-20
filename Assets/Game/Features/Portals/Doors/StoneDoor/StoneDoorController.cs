@@ -1,5 +1,5 @@
-using Core.Components.Interaction;
 using Game.Core.Bootstrap;
+using Game.Core.Components.Interaction;
 using UnityEngine;
 
 namespace Game.Features.Portals.Doors.StoneDoor {

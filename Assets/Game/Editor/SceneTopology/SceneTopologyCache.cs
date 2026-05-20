@@ -14,7 +14,7 @@ namespace Game.Editor.SceneTopology {
     /// </summary>
     internal static class SceneTopologyCache {
         private const string CachePath = "Library/SceneTopologyCache.json";
-        private const int CurrentSchemaVersion = 1;
+        private const int CurrentSchemaVersion = 2;
 
         public sealed class Entry {
             public string DependencyHash;

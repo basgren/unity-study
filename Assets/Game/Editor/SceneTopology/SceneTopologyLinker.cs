@@ -181,6 +181,8 @@ namespace Game.Editor.SceneTopology {
                     return PortalUtils.FindPortalByIdInScene<Door>(scene, portalId);
                 case PortalKindRef.Entrance:
                     return PortalUtils.FindPortalByIdInScene<Entrance>(scene, portalId);
+                case PortalKindRef.EntranceHorizontal:
+                    return PortalUtils.FindPortalByIdInScene<EntranceHorizontal>(scene, portalId);
                 default:
                     return null;
             }

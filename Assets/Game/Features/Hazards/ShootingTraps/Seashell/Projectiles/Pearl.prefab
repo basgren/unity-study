@@ -170,7 +170,7 @@ MonoBehaviour:
   firstRicochetMaxAngle: 70
   ricochetLayers:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 3072
   maxSweepsPerFixedStep: 3
   destroyEffectPrefab: {fileID: 5540822738990593286, guid: 0f217341c38f5324ea02ad04e54f6229,
     type: 3}

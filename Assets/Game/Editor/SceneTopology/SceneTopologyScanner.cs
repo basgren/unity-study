@@ -186,6 +186,7 @@ namespace Game.Editor.SceneTopology {
             // Use bounds.min in world space as the origin for portal local positions.
             var origin = boundsRect.min;
             CollectPortals<Entrance>(scene, PortalKindRef.Entrance, origin, boundsRect.size, hasConfiner, node);
+            CollectPortals<EntranceHorizontal>(scene, PortalKindRef.EntranceHorizontal, origin, boundsRect.size, hasConfiner, node);
             CollectPortals<Door>(scene, PortalKindRef.Door, origin, boundsRect.size, hasConfiner, node);
             return node;
         }

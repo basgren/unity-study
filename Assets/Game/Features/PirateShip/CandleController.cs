@@ -82,6 +82,16 @@ namespace Game.Features.PirateShip {
             }
         }
 
+        /// <summary>
+        /// Sets the lit state instantly, with no fade. Use for state restore so candles appear
+        /// already lit on scene entry instead of igniting.
+        /// </summary>
+        public void SetLitImmediate(bool value) {
+            lit = value;
+            CacheReferences();
+            ApplyImmediate();
+        }
+
         private void Awake() {
             CacheReferences();
             ApplyImmediate();

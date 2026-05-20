@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 650169055252499154}
   - component: {fileID: 5817908308943234344}
+  - component: {fileID: 7811350774285297620}
+  - component: {fileID: 16878172206427613}
   m_Layer: 0
   m_Name: BossIntroCutscene
   m_TagString: Untagged
@@ -48,6 +50,7 @@ MonoBehaviour:
   boss: {fileID: 0}
   bossAI: {fileID: 0}
   introAnchor: {fileID: 0}
+  startTrigger: {fileID: 0}
   firstRowCandles:
   - {fileID: 0}
   - {fileID: 0}
@@ -66,6 +69,34 @@ MonoBehaviour:
   beforeLaugh: 1
   spiritVisibleDuration: 2
   spiritHiddenHold: 0
+  musicFadeOutSeconds: 2
+--- !u!114 &7811350774285297620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6895610138767169065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c73f5a36c302541a2e19ec4d53a9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveId: 
+  skipSave: 0
+  tier: 1
+--- !u!114 &16878172206427613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6895610138767169065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72b22d7bc2a9ee44590b0fb8d86cd80b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8932657684140451597
 GameObject:
   m_ObjectHideFlags: 0

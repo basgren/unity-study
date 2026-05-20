@@ -16,6 +16,7 @@ namespace Game.Features.Hazards.ShootingTraps.Seashell {
     }
     
     [RequireComponent(typeof(Facing2D))]
+    [SelectionBase]
     public class SeashellController : MonoBehaviour {
         [SerializeField]
         private SpawnComponent projectileSpawner;

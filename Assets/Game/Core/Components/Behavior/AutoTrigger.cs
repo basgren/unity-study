@@ -1,5 +1,5 @@
 using System.Collections;
-using Core.Components.Interaction;
+using Game.Core.Components.Interaction;
 using UnityEngine;
 using UnityEngine.Events;
 

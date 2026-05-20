@@ -12,6 +12,8 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         private const int MaxAnchorCandidates = 8;
         private const int GizmoArcSegments = 20;
         private const string GrabPointObjectName = "GrapplingHookGrabPoint";
+        // Minimum up-input magnitude that counts as "climbing the rope up".
+        private const float UpHoldThreshold = 0.1f;
 
         [Header("Detection")]
         [FormerlySerializedAs("hookRadius")]
@@ -41,6 +43,9 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
         [SerializeField, Tooltip("Minimum rope length when the player climbs all the way up. Keep above 0 to avoid degenerate joint state — low values let the hero hang right at the anchor.")]
         private float minRopeLength = 0.2f;
+
+        [SerializeField, Tooltip("Small upward velocity (m/s) given to the hero when he climbs the rope up onto a one-way platform and the hook detaches. Without it the hero can slip back down through the platform edge. Applied as a floor — never reduces existing upward momentum. Only triggers while holding up.")]
+        private float oneWayLandHopSpeed = 4f;
 
         public HookState State => fsm.State;
 
@@ -126,6 +131,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
             // Forced abort: hero hit, grounded, or anchor destroyed during active states
             if (ShouldForceAbort()) {
+                TryHopOntoOneWayPlatform();
                 CleanupAndGoIdle();
                 return;
             }
@@ -277,6 +283,32 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         }
 
         // --- Helpers ---
+
+        /// <summary>
+        /// Gives the hero a small upward nudge when a forced abort happens while he is climbing
+        /// the rope up onto a one-way platform. Landing detaches the hook (see <see cref="ShouldForceAbort"/>),
+        /// but the detach can leave the hero straddling the platform edge so he slips back down; the
+        /// nudge lets him settle cleanly on top. No-op unless the hero is attached, holding up, and
+        /// grounded specifically on a one-way platform.
+        /// </summary>
+        private void TryHopOntoOneWayPlatform() {
+            if (fsm.State != HookState.Attached) {
+                return;
+            }
+
+            float upInput = player.Actions.Move.ReadValue<Vector2>().y;
+            if (upInput <= UpHoldThreshold) {
+                return;
+            }
+
+            if (!player.IsGrounded || !player.IsGroundedOnOneWayPlatform()) {
+                return;
+            }
+
+            // Apply as a floor so existing upward swing momentum is never reduced.
+            var velocity = playerRb.velocity;
+            playerRb.velocity = new Vector2(velocity.x, Mathf.Max(velocity.y, oneWayLandHopSpeed));
+        }
 
         private bool ShouldForceAbort() {
             if (targetAnchor == null) {
