@@ -1,10 +1,32 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Core.Components.Effects {
+namespace Game.Core.Components.Effects {
     // TODO: [BG] Maybe we should freeze z rotation and rotate debris randomly by 90 degrees steps?
 
+    public enum DebrisSpawnMode {
+        // Use existing child objects as debris pieces at their authored positions.
+        Static,
+
+        // Use existing children as templates; spawn random instances within a rectangular area.
+        RandomArea,
+    }
+
     public class DebrisController : MonoBehaviour {
+        [SerializeField]
+        private DebrisSpawnMode spawnMode = DebrisSpawnMode.Static;
+
+        [Header("Random Area Mode")]
+        [SerializeField]
+        private int spawnCount = 10;
+
+        [SerializeField]
+        private Vector2 spawnAreaCenter = Vector2.zero;
+
+        [SerializeField]
+        private Vector2 spawnAreaSize = Vector2.one;
+
+        [Header("Physics")]
         [SerializeField]
         private float minSpeed;
 
@@ -32,6 +54,10 @@ namespace Core.Components.Effects {
         private DebrisData[] debrisData;
 
         private void Start() {
+            if (spawnMode == DebrisSpawnMode.RandomArea) {
+                SpawnRandomDebris();
+            }
+
             var rigidBodies = GetComponentsInChildren<Rigidbody2D>();
             debrisData = new DebrisData[rigidBodies.Length];
 
@@ -98,6 +124,48 @@ namespace Core.Components.Effects {
                 
                 yield return null;
             }
+        }
+
+        private void SpawnRandomDebris() {
+            var childCount = transform.childCount;
+            if (childCount == 0 || spawnCount <= 0) {
+                return;
+            }
+
+            // Snapshot templates first so freshly spawned children are not used as templates themselves.
+            var templates = new GameObject[childCount];
+            for (var i = 0; i < childCount; i++) {
+                templates[i] = transform.GetChild(i).gameObject;
+            }
+
+            var halfWidth = spawnAreaSize.x * 0.5f;
+            var halfHeight = spawnAreaSize.y * 0.5f;
+
+            for (var i = 0; i < spawnCount; i++) {
+                var template = templates[Random.Range(0, templates.Length)];
+                var spawned = Instantiate(template, transform);
+                spawned.transform.localPosition = new Vector3(
+                    spawnAreaCenter.x + Random.Range(-halfWidth, halfWidth),
+                    spawnAreaCenter.y + Random.Range(-halfHeight, halfHeight),
+                    0f
+                );
+            }
+
+            // Hide templates so they are not picked up by the debris physics pass.
+            foreach (var template in templates) {
+                template.SetActive(false);
+            }
+        }
+
+        private void OnDrawGizmosSelected() {
+            if (spawnMode != DebrisSpawnMode.RandomArea) {
+                return;
+            }
+
+            Gizmos.color = Color.cyan;
+            var center = transform.position + (Vector3)spawnAreaCenter;
+            var size = new Vector3(spawnAreaSize.x, spawnAreaSize.y, 0f);
+            Gizmos.DrawWireCube(center, size);
         }
 
         [ContextMenu("Replay Animation")]

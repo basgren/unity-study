@@ -10,27 +10,31 @@ namespace Game.Core.Components.Animation {
 
     [RequireComponent(typeof(SpriteRenderer))]
     public class MultiStateSpriteAnimator : MonoBehaviour {
+        [Tooltip("Playback speed in frames per second. Applies to every clip in this animator.")]
         [SerializeField]
         private int frameRate = 10;
 
+        [Tooltip("If enabled, the first clip starts playing automatically when the component becomes enabled.")]
         [SerializeField]
         private bool playOnStart = true;
 
+        [Tooltip("If enabled, the starting clip begins at a random frame instead of frame 0.")]
         [SerializeField]
         private bool randomStartFrame;
 
+        [Tooltip("If enabled, the GameObject is destroyed when a non-looping clip finishes playing.")]
         [SerializeField]
         private bool destroyOnComplete;
 
+        [Tooltip("Animation clips this animator can switch between. Reference a clip by its Name via SetClip(name).")]
         [SerializeField]
         private StateAnimationClip[] clips;
 
-        /// <summary>
-        /// OnComplete is invoked when all frames have been played. ONLY for non-looped animations.
-        /// </summary>
+        [Tooltip("Invoked when a non-looping clip finishes playing (after its last frame). Not fired for looping clips.")]
         [SerializeField]
         private UnityEvent onComplete;
 
+        [Tooltip("Invoked every time the animator advances to a new frame of the current clip.")]
         [SerializeField]
         private NewFrameEvent onNewFrame;
 
@@ -127,6 +131,9 @@ namespace Game.Core.Components.Animation {
             enabled = true;
             isPlaying = true;
             currentClipIndex = clipIndex;
+            // Reset timer so the new clip's first frame holds for the full frame duration,
+            // otherwise leftover accumulated time from the previous clip can skip past it.
+            timer = 0f;
             SetSprite(0);
         }
 

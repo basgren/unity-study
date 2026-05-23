@@ -19,9 +19,11 @@ namespace Game.Core.Services.SceneState {
         /// Use this for dynamically spawned objects (e.g. dropped coins) that share a prefab
         /// with scene-placed saveable instances.
         /// </summary>
+        [Tooltip("Exclude this object from save/restore. Enable on dynamically spawned instances that share a prefab with scene-placed saveables (e.g. dropped coins).")]
         [SerializeField]
         private bool skipSave;
 
+        [Tooltip("How long this object's saved state is retained.\n\n• Session: cleared at the next bonfire rest (transient state like moved barrels).\n• Persistent: kept for the entire playthrough (opened doors, consumed items).")]
         [SerializeField]
         private SaveTier tier = SaveTier.Persistent;
 
