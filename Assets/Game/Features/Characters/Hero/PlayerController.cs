@@ -571,6 +571,12 @@ namespace Game.Features.Characters.Hero {
         }
 
         private void CheckHorizontalMovement() {
+            // Scripted flight (e.g. portal launch arc) drives velocity directly. Bail out so the
+            // accel/decel ramp doesn't strip away the horizontal component of the launch velocity.
+            if (scriptedFlight) {
+                return;
+            }
+
             if (isHookSwinging) {
                 // Movement velocity is handled by GrapplingHookAbility via forces,
                 // but we still let horizontal input flip facing so the hero looks
@@ -630,6 +636,8 @@ namespace Game.Features.Characters.Hero {
         // ---- Scripted movement (cinematic transitions) ----
 
         private int? scriptedMoveDir;
+        private bool scriptedFlight;
+        private float scriptedFlightSavedGravityScale;
 
         /// <summary>
         /// Drives the hero horizontally as if the player were holding the move key in
@@ -650,10 +658,83 @@ namespace Game.Features.Characters.Hero {
             SetDirection(Vector2.zero);
         }
 
+        /// <summary>
+        /// Returns true while the hero is under direct velocity control by a cinematic system
+        /// (see <see cref="BeginScriptedFlight"/>). Movement and jump input handling are suspended.
+        /// </summary>
+        public bool IsInScriptedFlight => scriptedFlight;
+
+        /// <summary>
+        /// Begins a cinematic flight phase: suspends horizontal velocity management and (optionally)
+        /// turns off gravity so a portal or other cutscene can drive the hero by writing velocity directly.
+        /// Always pair with <see cref="EndScriptedFlight"/>. Has no effect if already active.
+        /// </summary>
+        public void BeginScriptedFlight(bool disableGravity) {
+            if (scriptedFlight) {
+                return;
+            }
+
+            scriptedFlight = true;
+            scriptedFlightSavedGravityScale = MyRigidbody.gravityScale;
+            if (disableGravity) {
+                MyRigidbody.gravityScale = 0f;
+            }
+        }
+
+        /// <summary>
+        /// Restores normal movement and gravity after <see cref="BeginScriptedFlight"/>. Safe to call
+        /// when no scripted flight is active.
+        /// </summary>
+        public void EndScriptedFlight() {
+            if (!scriptedFlight) {
+                return;
+            }
+
+            MyRigidbody.gravityScale = scriptedFlightSavedGravityScale;
+            scriptedFlight = false;
+        }
+
+        /// <summary>
+        /// Writes velocity directly to the hero rigidbody. Intended for cinematic phases — pair with
+        /// <see cref="BeginScriptedFlight"/> so the value isn't immediately overwritten by normal
+        /// horizontal velocity management.
+        /// </summary>
+        public void SetVelocity(Vector2 velocity) {
+            MyRigidbody.velocity = velocity;
+        }
+
+        /// <summary>
+        /// Sets the hero's facing direction (-1 left, +1 right). Used by cinematic transitions so the
+        /// hero looks toward the action without having to drive input.
+        /// </summary>
+        public void SetFacing(int dirSign) {
+            if (dirSign == 0) {
+                return;
+            }
+
+            Facing.SetByX(dirSign);
+        }
+
+        /// <summary>
+        /// Current vertical velocity (m/s). Useful for cinematic systems that need to react to landing.
+        /// </summary>
+        public float GetVerticalVelocity() {
+            return MyRigidbody.velocity.y;
+        }
+
         #region Jump
 
         private void CheckJump() {
             isJumped = false;
+
+            // During scripted flight the hero is on a forced arc; ignore any buffered or held jump
+            // so it can't reignite mid-cinematic right after controls come back on landing.
+            if (scriptedFlight) {
+                jumpInputBufferTimer = 0f;
+                isJumpPressedBuffer = false;
+                jumpSustainTimer = 0f;
+                return;
+            }
 
             var isJumpPressed = Actions.Jump.WasPerformedThisFrame();
             var isJumpReleased = Actions.Jump.WasReleasedThisFrame();
