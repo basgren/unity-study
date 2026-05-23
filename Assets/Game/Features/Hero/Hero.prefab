@@ -570,8 +570,8 @@ MonoBehaviour:
   swordAttackArea: {fileID: 2945355596670905074}
   swordAttackDamager: {fileID: 1925743917410454019}
   attackHitPushbackSpeed: 3
-  speedBuildUpTime: 0.08
-  speedDecayTime: 0.2
+  speedBuildUpTime: 0.05
+  speedDecayTime: 0.12
   hitStunTime: 0.1
   armedAnimator: {fileID: 9100000, guid: 15452c8f5b5d1294aae1e2825f20f3fc, type: 2}
   unarmedAnimator: {fileID: 9100000, guid: da7b63019bcab78479068d687e4267ef, type: 2}
@@ -872,8 +872,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90e86ff6a6b21f3448d26a7386160656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRopeLength: 8
-  sectorAngle: 180
+  maxRopeLength: 7
+  startAngle: -14
+  endAngle: 95
   anchorLayer:
     serializedVersion: 2
     m_Bits: 524288

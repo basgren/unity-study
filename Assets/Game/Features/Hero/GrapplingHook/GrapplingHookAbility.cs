@@ -18,8 +18,11 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         [SerializeField, Tooltip("Max rope length. Also the detection radius for anchors — an anchor beyond this distance cannot be grabbed.")]
         private float maxRopeLength = 8f;
 
-        [SerializeField, Range(10f, 360f), Tooltip("Full sector angle in degrees. 180 = half-circle in front of player.")]
-        private float sectorAngle = 180f;
+        [SerializeField, Range(-180f, 180f), Tooltip("Sector start angle in degrees, relative to facing direction. 0 = forward, +90 = up, -90 = down, ±180 = behind. Mirrors automatically when the hero faces left.")]
+        private float startAngle = -90f;
+
+        [SerializeField, Range(-180f, 180f), Tooltip("Sector end angle in degrees, relative to facing direction. Must be greater than startAngle. Defaults -90/+90 reproduce a 180° forward sector.")]
+        private float endAngle = 90f;
 
         [SerializeField] private LayerMask anchorLayer;
 
@@ -108,7 +111,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             if (ropePrefab != null) {
                 var ropeGo = Instantiate(ropePrefab, Vector3.zero, Quaternion.identity);
                 activeRope = ropeGo.GetComponent<GrapplingHookRope>();
-                activeRope.Initialize(grabPos);
+                activeRope.Initialize(grabPos, maxRopeLength);
             }
 
             fsm.Go(HookState.Shooting);
@@ -347,13 +350,6 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             return grabPoint != null ? (Vector2)grabPoint.position : (Vector2)player.transform.position;
         }
 
-        /// <summary>
-        /// Returns the world-space facing direction of the player (right or left).
-        /// </summary>
-        private Vector2 GetFacingDirection() {
-            return player.GetFacingDirSign() >= 0 ? Vector2.right : Vector2.left;
-        }
-
         private GrapplingHookAnchor FindNearestAnchor() {
             int count = Physics2D.OverlapCircleNonAlloc(
                 player.transform.position, maxRopeLength, anchorCandidates, anchorLayer
@@ -363,8 +359,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 return null;
             }
 
-            float halfAngle = sectorAngle * 0.5f;
-            var facing = GetFacingDirection();
+            int facingSign = player.GetFacingDirSign() >= 0 ? 1 : -1;
             var heroPos = (Vector2)player.transform.position;
 
             GrapplingHookAnchor nearest = null;
@@ -378,12 +373,13 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
                 var toAnchor = (Vector2)anchor.transform.position - heroPos;
 
-                // Sector check: skip anchors outside the forward sector
-                if (sectorAngle < 360f) {
-                    float angle = Vector2.Angle(facing, toAnchor);
-                    if (angle > halfAngle) {
-                        continue;
-                    }
+                // Compute the anchor's angle in facing-mirrored local space:
+                // 0 = forward, +90 = up, -90 = down, ±180 = behind. Multiplying
+                // x by facingSign mirrors the angle automatically when facing left
+                // so the sector always sits in the same hero-relative orientation.
+                float angle = Mathf.Atan2(toAnchor.y, toAnchor.x * facingSign) * Mathf.Rad2Deg;
+                if (angle < startAngle || angle > endAngle) {
+                    continue;
                 }
 
                 float sqrDist = toAnchor.sqrMagnitude;
@@ -404,43 +400,43 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
 
         private void DrawSectorGizmo() {
             var center = (Vector2)transform.position;
-            var color = new Color(0.2f, 0.8f, 1f, 0.4f);
-            Gizmos.color = color;
+            Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.4f);
 
-            if (sectorAngle >= 360f) {
+            float sweep = endAngle - startAngle;
+            if (sweep <= 0f) {
+                return;
+            }
+
+            if (sweep >= 360f) {
                 Gizmos.DrawWireSphere(center, maxRopeLength);
                 return;
             }
 
-            // Determine facing direction — in editor without player, default to right
-            var facing = Vector2.right;
+            // Default to right-facing in the editor so the gizmo is visible without play mode.
+            int facingSign = 1;
             if (Application.isPlaying && player != null) {
-                facing = GetFacingDirection();
+                facingSign = player.GetFacingDirSign() >= 0 ? 1 : -1;
             }
 
-            float halfAngle = sectorAngle * 0.5f;
-            float startAngle = Mathf.Atan2(facing.y, facing.x) * Mathf.Rad2Deg - halfAngle;
+            var startEdge = LocalAngleToDir(startAngle, facingSign);
+            var endEdge = LocalAngleToDir(endAngle, facingSign);
 
-            // Draw arc
-            var prevPoint = center + GetArcPoint(startAngle) * maxRopeLength;
+            var prevPoint = center + startEdge * maxRopeLength;
             for (int i = 1; i <= GizmoArcSegments; i++) {
                 float t = (float)i / GizmoArcSegments;
-                float angle = startAngle + sectorAngle * t;
-                var point = center + GetArcPoint(angle) * maxRopeLength;
+                float angle = startAngle + sweep * t;
+                var point = center + LocalAngleToDir(angle, facingSign) * maxRopeLength;
                 Gizmos.DrawLine(prevPoint, point);
                 prevPoint = point;
             }
 
-            // Draw sector edges
-            var edgeStart = center + GetArcPoint(startAngle) * maxRopeLength;
-            var edgeEnd = center + GetArcPoint(startAngle + sectorAngle) * maxRopeLength;
-            Gizmos.DrawLine(center, edgeStart);
-            Gizmos.DrawLine(center, edgeEnd);
+            Gizmos.DrawLine(center, center + startEdge * maxRopeLength);
+            Gizmos.DrawLine(center, center + endEdge * maxRopeLength);
         }
 
-        private static Vector2 GetArcPoint(float angleDeg) {
-            float rad = angleDeg * Mathf.Deg2Rad;
-            return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
+        private static Vector2 LocalAngleToDir(float localAngleDeg, int facingSign) {
+            float rad = localAngleDeg * Mathf.Deg2Rad;
+            return new Vector2(Mathf.Cos(rad) * facingSign, Mathf.Sin(rad));
         }
     }
 }

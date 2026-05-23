@@ -44,10 +44,27 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         /// Pre-instantiates the full segment pool. No further Instantiate/Destroy happens
         /// at runtime — length changes only toggle SetActive on existing segments.
         /// </summary>
-        public void Initialize(Vector2 startPosition) {
+        /// <param name="startPosition">Initial world position; all segments collapse here.</param>
+        /// <param name="maxRopeLength">Caller's max rope length, used only to warn when the
+        /// pool is too small to render a fully-extended rope.</param>
+        public void Initialize(Vector2 startPosition, float maxRopeLength) {
             if (segmentPrefab == null) {
                 Debug.LogError($"{nameof(GrapplingHookRope)} on '{name}' has no segmentPrefab assigned.", this);
                 return;
+            }
+
+            // Visible segment count = floor(ropeLength / segmentRestLength). If the pool can't
+            // cover maxRopeLength, the chain visually falls short of the anchor when fully extended.
+            if (segmentRestLength > 0f) {
+                int requiredSegments = Mathf.CeilToInt(maxRopeLength / segmentRestLength);
+                if (maxSegmentCount < requiredSegments) {
+                    Debug.LogWarning(
+                        $"{nameof(GrapplingHookRope)} on '{name}': maxSegmentCount={maxSegmentCount} is too small for " +
+                        $"maxRopeLength={maxRopeLength} at segmentRestLength={segmentRestLength}. " +
+                        $"Increase maxSegmentCount to at least {requiredSegments}.",
+                        this
+                    );
+                }
             }
 
             segments = new Transform[maxSegmentCount];
