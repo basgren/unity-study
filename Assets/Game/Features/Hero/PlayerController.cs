@@ -58,6 +58,12 @@ namespace Game.Features.Characters.Hero {
         [SerializeField]
         private float coyoteJumpTime = 0.1f;
 
+        [SerializeField, Tooltip("How long collision with a one-way platform stays suspended after a Down+Jump drop-through. Long enough for the hero to clear the platform's collider; short enough that the platform becomes solid again before the hero lands on anything below.")]
+        private float dropThroughDuration = 0.3f;
+
+        [SerializeField, Tooltip("Minimum downward magnitude on the Move input (analog stick / D-pad) required to treat a jump press as a drop-through. 0..1, higher = more deliberate down-press needed.")]
+        private float dropThroughDownThreshold = 0.5f;
+
         [Header("Effects")]
         [SerializeField]
         private GameObject runDustPrefab;
@@ -141,6 +147,9 @@ namespace Game.Features.Characters.Hero {
         private readonly float jumpInputBufferTime = 0.1f;
         private float jumpInputBufferTimer;
         private bool isJumpPressedBuffer;
+
+        private Collider2D dropThroughCollider;
+        private float dropThroughTimer;
 
         // TODO: [BG] Refactor - it's getting too many flags to manage. At the same time it would be nice to
         //  keep animation state update in one place. Probably we could use FSM to store player's state and
@@ -736,6 +745,14 @@ namespace Game.Features.Characters.Hero {
                 return;
             }
 
+            UpdateDropThrough();
+
+            // Drop-through is intercepted before the normal jump path so the same input frame
+            // doesn't both ignore the platform AND launch the hero upward.
+            if (TryDropThroughOneWayPlatform()) {
+                return;
+            }
+
             var isJumpPressed = Actions.Jump.WasPerformedThisFrame();
             var isJumpReleased = Actions.Jump.WasReleasedThisFrame();
 
@@ -787,6 +804,55 @@ namespace Game.Features.Characters.Hero {
 
         private bool CanJump() {
             return IsGrounded || coyoteTimer > 0 || isHookSwinging;
+        }
+
+        private bool TryDropThroughOneWayPlatform() {
+            if (!Actions.Jump.WasPerformedThisFrame() || !IsGrounded) {
+                return false;
+            }
+
+            var moveY = Actions.Move.ReadValue<Vector2>().y;
+            if (moveY > -dropThroughDownThreshold) {
+                return false;
+            }
+
+            var effectors = GroundChecker.GetHitComponents<PlatformEffector2D>();
+            for (var i = 0; i < effectors.Count; i++) {
+                var effector = effectors[i];
+                if (!effector.useOneWay) {
+                    continue;
+                }
+
+                var platformCollider = effector.GetComponent<Collider2D>();
+                if (platformCollider == null) {
+                    continue;
+                }
+
+                Physics2D.IgnoreCollision(MyCollider, platformCollider, true);
+                dropThroughCollider = platformCollider;
+                dropThroughTimer = dropThroughDuration;
+                return true;
+            }
+
+            return false;
+        }
+
+        private void UpdateDropThrough() {
+            if (dropThroughTimer <= 0f) {
+                return;
+            }
+
+            dropThroughTimer -= Time.deltaTime;
+            if (dropThroughTimer > 0f) {
+                return;
+            }
+
+            // Platform may have been destroyed mid-drop; Unity's == null returns true for
+            // destroyed colliders, and Physics2D.IgnoreCollision throws if either side is gone.
+            if (dropThroughCollider != null) {
+                Physics2D.IgnoreCollision(MyCollider, dropThroughCollider, false);
+            }
+            dropThroughCollider = null;
         }
 
         #endregion
