@@ -105,3 +105,15 @@ MonoBehaviour:
       parentHierarchyPath: World/Collectables
     - categoryName: Interactive
       parentHierarchyPath: World/Interactive
+  - scenePath: Assets/Game/Scenes/DS_SidePath.unity
+    categoryBindings:
+    - categoryName: Collectables
+      parentHierarchyPath: World/Collectables
+    - categoryName: Dynamic
+      parentHierarchyPath: World/Dynamic
+    - categoryName: Interactive
+      parentHierarchyPath: World/Interactive
+    - categoryName: Hazards
+      parentHierarchyPath: World/Hazards
+    - categoryName: Enemies
+      parentHierarchyPath: World/Enemies
