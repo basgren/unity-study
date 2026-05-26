@@ -117,3 +117,7 @@ MonoBehaviour:
       parentHierarchyPath: World/Hazards
     - categoryName: Enemies
       parentHierarchyPath: World/Enemies
+  - scenePath: Assets/Game/Scenes/DS_RikkoHub.unity
+    categoryBindings:
+    - categoryName: Decor
+      parentHierarchyPath: World/Decor

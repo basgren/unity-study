@@ -2923,17 +2923,17 @@ PrefabInstance:
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: link.targetId
-      value: 
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: link.targetScene.sceneGuid
-      value: 
+      value: 90fd1221710d8ca4c9ba023f4fc2773e
       objectReference: {fileID: 0}
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: link.targetScene.scenePath
-      value: 
+      value: Assets/Game/Scenes/DS_RikkoHub.unity
       objectReference: {fileID: 0}
     - target: {fileID: 2918517496873821420, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
@@ -10083,7 +10083,7 @@ PrefabInstance:
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.75
+      value: -10.75
       objectReference: {fileID: 0}
     - target: {fileID: 3756431542319373569, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
@@ -10207,7 +10207,7 @@ PrefabInstance:
     - target: {fileID: 6836785096376548313, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.73
+      value: -10.73
       objectReference: {fileID: 0}
     - target: {fileID: 6836785096376548313, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -10277,12 +10277,12 @@ PrefabInstance:
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.0148373
+      value: -7.0147867
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7592344
+      value: 0.7490039
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -10423,12 +10423,12 @@ PrefabInstance:
     - target: {fileID: 7935257758362985677, guid: 55477065b3b2885409b6ae9213757e46,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.62000084
+      value: -0.75
       objectReference: {fileID: 0}
     - target: {fileID: 7935257758362985677, guid: 55477065b3b2885409b6ae9213757e46,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.2399998
+      value: -4.6800003
       objectReference: {fileID: 0}
     - target: {fileID: 7935257758362985677, guid: 55477065b3b2885409b6ae9213757e46,
         type: 3}
