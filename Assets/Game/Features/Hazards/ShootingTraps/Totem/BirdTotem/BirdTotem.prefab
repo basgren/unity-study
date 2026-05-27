@@ -65,6 +65,8 @@ GameObject:
   - component: {fileID: -8922686484826777971}
   - component: {fileID: 1600101890110421964}
   - component: {fileID: -1235615325016542932}
+  - component: {fileID: -5327817487012736327}
+  - component: {fileID: -481518214379475497}
   m_Layer: 11
   m_Name: BirdTotem
   m_TagString: Untagged
@@ -392,3 +394,30 @@ MonoBehaviour:
   eventsInSeries: 1
   eventDelay: 0.5
   startDelay: 0
+--- !u!114 &-5327817487012736327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3664229136581394778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c73f5a36c302541a2e19ec4d53a9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveId: 
+  skipSave: 0
+  tier: 1
+--- !u!114 &-481518214379475497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3664229136581394778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e98a7f79d9f38d7438c4e5218f6c0a32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

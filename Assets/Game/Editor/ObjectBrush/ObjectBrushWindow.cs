@@ -41,6 +41,12 @@ namespace Editor.ObjectBrush {
     /// When <c>Snap to Grid</c> is enabled, placed objects snap to a regular grid with the
     /// configured <c>Grid Size</c>. Holding <c>Ctrl</c> temporarily inverts snapping.
     /// </para>
+    ///
+    /// <para><b>Hotkeys</b></para>
+    /// <para>
+    /// While the Scene view is focused: <c>\</c> toggles painting on/off, and <c>[</c> / <c>]</c>
+    /// select the previous / next palette item, cycling across every item in all biomes.
+    /// </para>
     /// </remarks>
     public class ObjectBrushWindow : EditorWindow {
         [SerializeField]
@@ -84,6 +90,16 @@ namespace Editor.ObjectBrush {
         [NonSerialized]
         private int activeItemIndex = -1;
 
+        // When set, the palette scrolls to bring the active slot into view on the next repaint.
+        [NonSerialized]
+        private bool scrollToActive;
+
+        [NonSerialized]
+        private bool hasPendingActiveRect;
+
+        [NonSerialized]
+        private Rect pendingActiveRect;
+
         private readonly Dictionary<ObjectBrushProfile, bool> biomeExpanded =
             new Dictionary<ObjectBrushProfile, bool>();
 
@@ -96,12 +112,32 @@ namespace Editor.ObjectBrush {
         // Reused each repaint to collect indices of visible items in view mode (avoids per-frame allocation).
         private readonly List<int> visibleBuffer = new List<int>();
 
+        // Reused when cycling the active item via hotkeys (avoids per-keystroke allocation).
+        private readonly List<CycleEntry> cycleBuffer = new List<CycleEntry>();
+
         private GameObject previewInstance;
         private GameObject previewSource;
 
         private const float PaletteIconSize = 40f;
         private const float MinViewIconSize = 24f;
         private const float MaxViewIconSize = 96f;
+
+        // Scene-view hotkeys (active only while the Scene view is focused). Backslash sits next to
+        // the bracket keys and is unbound in the Scene view, unlike 'B' which the Tilemap brush uses.
+        private const KeyCode ToggleBrushKey = KeyCode.Backslash;
+        private const KeyCode NextItemKey = KeyCode.RightBracket;
+        private const KeyCode PrevItemKey = KeyCode.LeftBracket;
+
+        // Identifies one selectable palette slot (a category plus an item index within it).
+        private readonly struct CycleEntry {
+            public readonly ObjectBrushProfile.BiomeCategory Category;
+            public readonly int Index;
+
+            public CycleEntry(ObjectBrushProfile.BiomeCategory category, int index) {
+                Category = category;
+                Index = index;
+            }
+        }
 
         [MenuItem("Tools/Object Brush")]
         public static void Open() {
@@ -151,7 +187,8 @@ namespace Editor.ObjectBrush {
             string buttonText = brushEnabled ? "Disable Brush" : "Enable Brush";
             string buttonTooltip =
                 "Toggle Scene painting on/off.\n" +
-                "When enabled, left-click in Scene view places instances of the active prefab.";
+                "When enabled, left-click in Scene view places instances of the active prefab.\n" +
+                "Hotkey: \\ (with the Scene view focused).";
 
             brushEnabled = GUILayout.Toggle(
                 brushEnabled,
@@ -191,6 +228,12 @@ namespace Editor.ObjectBrush {
 
             EditorGUILayout.LabelField(
                 new GUIContent("Active: " + prefabName, prefabTooltip),
+                EditorStyles.miniLabel
+            );
+
+            EditorGUILayout.LabelField(
+                new GUIContent("Hotkeys: \\ toggle  ·  [ prev  ·  ] next  (Scene view focused)",
+                    "Scene-view hotkeys. Prev/next cycle through every palette item across all biomes."),
                 EditorStyles.miniLabel
             );
         }
@@ -283,6 +326,8 @@ namespace Editor.ObjectBrush {
             }
 
             EditorGUILayout.EndScrollView();
+
+            ScrollToActiveIfRequested();
         }
 
         private void DrawBiomeCategories(ObjectBrushProfile biome) {
@@ -401,6 +446,7 @@ namespace Editor.ObjectBrush {
 
             if (category == activeCategory && index == activeItemIndex) {
                 EditorGUI.DrawRect(iconRect, new Color(0.7f, 0.9f, 1f, 0.35f));
+                CaptureActiveRect(iconRect);
             }
 
             if (clicked) {
@@ -475,6 +521,7 @@ namespace Editor.ObjectBrush {
 
             if (category == activeCategory && index == activeItemIndex) {
                 EditorGUI.DrawRect(rect, new Color(0.7f, 0.9f, 1f, 0.3f));
+                CaptureActiveRect(rect);
             }
 
             Texture2D preview = null;
@@ -528,6 +575,64 @@ namespace Editor.ObjectBrush {
             if (item != null) {
                 prefab = item;
             }
+
+            // Make sure the slot is reachable, then request a scroll to it on the next repaint.
+            ObjectBrushProfile biome = FindBiomeOf(category);
+            if (biome != null) {
+                biomeExpanded[biome] = true;
+            }
+            categoryExpanded[category] = true;
+            scrollToActive = true;
+        }
+
+        private ObjectBrushProfile FindBiomeOf(ObjectBrushProfile.BiomeCategory category) {
+            if (config == null || config.biomes == null) {
+                return null;
+            }
+
+            foreach (ObjectBrushProfile biome in config.biomes) {
+                if (biome != null && biome.categories != null && biome.categories.Contains(category)) {
+                    return biome;
+                }
+            }
+
+            return null;
+        }
+
+        // Records the active slot's rect during repaint so the palette can scroll to it afterwards.
+        private void CaptureActiveRect(Rect rect) {
+            if (scrollToActive && Event.current.type == EventType.Repaint) {
+                pendingActiveRect = rect;
+                hasPendingActiveRect = true;
+            }
+        }
+
+        // Scrolls the palette so the active slot is visible. Called right after EndScrollView, where
+        // GUILayoutUtility.GetLastRect() returns the scroll viewport and item rects are in content space.
+        private void ScrollToActiveIfRequested() {
+            if (!scrollToActive || Event.current.type != EventType.Repaint) {
+                return;
+            }
+
+            if (hasPendingActiveRect) {
+                float viewHeight = GUILayoutUtility.GetLastRect().height;
+
+                if (pendingActiveRect.y < categoriesScroll.y) {
+                    categoriesScroll.y = pendingActiveRect.y;
+                } else if (pendingActiveRect.yMax > categoriesScroll.y + viewHeight) {
+                    categoriesScroll.y = pendingActiveRect.yMax - viewHeight;
+                }
+
+                if (categoriesScroll.y < 0f) {
+                    categoriesScroll.y = 0f;
+                }
+
+                Repaint();
+            }
+
+            // Clear the request even if the slot was not drawn (e.g. hidden by the filter).
+            scrollToActive = false;
+            hasPendingActiveRect = false;
         }
 
         private static bool GetExpanded<TKey>(Dictionary<TKey, bool> map, TKey key, bool defaultValue) {
@@ -536,13 +641,109 @@ namespace Editor.ObjectBrush {
 
         // --- SCENE GUI / BRUSH LOGIC --------------------------------------------
 
+        // Processes Scene-view hotkeys. Runs before the enabled/prefab checks so the toggle works
+        // even while the brush is off. Returns true when the event was consumed.
+        private bool HandleShortcuts(Event e) {
+            if (e.type != EventType.KeyDown || e.alt || e.control || e.command || e.shift) {
+                return false;
+            }
+
+            switch (e.keyCode) {
+                case ToggleBrushKey:
+                    brushEnabled = !brushEnabled;
+                    if (!brushEnabled) {
+                        DestroyPreviewInstance();
+                    }
+                    break;
+
+                case NextItemKey:
+                    CycleActiveItem(1);
+                    break;
+
+                case PrevItemKey:
+                    CycleActiveItem(-1);
+                    break;
+
+                default:
+                    return false;
+            }
+
+            Repaint();
+            SceneView.RepaintAll();
+            e.Use();
+            return true;
+        }
+
+        // Builds a flat list of selectable items across every biome and category (respecting the
+        // active name filter) and moves the active selection by 'direction' (+1 next, -1 prev), wrapping.
+        private void CycleActiveItem(int direction) {
+            if (config == null || config.biomes == null) {
+                return;
+            }
+
+            cycleBuffer.Clear();
+            string filterLower = string.IsNullOrEmpty(filterText) ? null : filterText.ToLowerInvariant();
+
+            foreach (ObjectBrushProfile biome in config.biomes) {
+                if (biome == null || biome.categories == null) {
+                    continue;
+                }
+
+                foreach (ObjectBrushProfile.BiomeCategory category in biome.categories) {
+                    if (category == null || category.items == null) {
+                        continue;
+                    }
+
+                    for (int i = 0; i < category.items.Count; i++) {
+                        GameObject item = category.items[i];
+                        if (item == null) {
+                            continue;
+                        }
+
+                        if (filterLower != null && !item.name.ToLowerInvariant().Contains(filterLower)) {
+                            continue;
+                        }
+
+                        cycleBuffer.Add(new CycleEntry(category, i));
+                    }
+                }
+            }
+
+            if (cycleBuffer.Count == 0) {
+                return;
+            }
+
+            int current = -1;
+            for (int i = 0; i < cycleBuffer.Count; i++) {
+                if (cycleBuffer[i].Category == activeCategory && cycleBuffer[i].Index == activeItemIndex) {
+                    current = i;
+                    break;
+                }
+            }
+
+            int next;
+            if (current < 0) {
+                // Nothing selected yet (or the selection was filtered out): step in from the matching end.
+                next = direction > 0 ? 0 : cycleBuffer.Count - 1;
+            } else {
+                next = (current + direction + cycleBuffer.Count) % cycleBuffer.Count;
+            }
+
+            CycleEntry entry = cycleBuffer[next];
+            SetActiveItem(entry.Category, entry.Index);
+        }
+
         private void OnSceneGUI(SceneView sceneView) {
+            Event e = Event.current;
+
+            if (HandleShortcuts(e)) {
+                return;
+            }
+
             if (!brushEnabled || prefab == null) {
                 DestroyPreviewInstance();
                 return;
             }
-
-            Event e = Event.current;
 
             if (e.alt) {
                 return;
