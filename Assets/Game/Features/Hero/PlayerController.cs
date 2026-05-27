@@ -15,6 +15,7 @@ using Game.Features.Characters.Hero.ItemUse;
 using Game.Features.Characters.Hero.GrapplingHook;
 using Game.Features.Characters.Parrot;
 using Game.Features.Interactive.Bonfire;
+using Prefabs.Effects.InfoBubble;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -177,6 +178,7 @@ namespace Game.Features.Characters.Hero {
         private ItemUseService itemUseService;
         private ItemUseService perkUseService;
         private HeroAttackType lastAttackType = HeroAttackType.Pierce;
+        private Transform infoBubblePoint;
 
         // Cached prefab/base damage values, captured before any stat bonuses are applied,
         // so upgrade levels can be reapplied additively at any time.
@@ -200,6 +202,7 @@ namespace Game.Features.Characters.Hero {
             swordThrowPoint = transform.Find(SwordThrowPointObjectName);
             swordSpawner = swordThrowPoint.GetComponent<SpawnComponent>();
             state.InventoryModel.OnChange += OnInventoryChanged;
+            infoBubblePoint = transform.Find("InfoBubblePoint");
 
             if (swordAttackDamager != null) {
                 swordAttackDamager.Hit += OnSwordAttackHit;
@@ -1081,6 +1084,10 @@ namespace Game.Features.Characters.Hero {
                 Gizmos.color = Color.blue;
                 Gizmos.DrawSphere(safePointTracker.LastSafePosition, 0.1f);
             }
+        }
+
+        public void ShowConfusion() {
+            G.Spawner.SpawnInfoBubble(InfoBubbleType.Question, infoBubblePoint.position, infoBubblePoint, 3f);
         }
     }
 }

@@ -53,6 +53,11 @@ MonoBehaviour:
     type: 4
     cooldown: 0
     uid: a1b2c3d4e5f647a8b9c0d1e2f3a4b5c6
+  - id: GoldenSkull
+    icon: {fileID: -530731173, guid: c9103b5e8ef85a24cb5aeed4cf4453b2, type: 3}
+    type: 0
+    cooldown: 0
+    uid: f96470f1e4b14e21b2d3838a8d859cef
   generateCSharpClass: 1
   csharpClassFile: Assets/Game/Defs/ItemIds.cs
   csharpClassName: ItemIds

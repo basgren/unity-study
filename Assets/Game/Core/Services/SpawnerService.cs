@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.Core.Components.Base2D;
 using Game.Core.Services.Pool;
 using Game.Core.Services.Scene;
 using Prefabs.Effects.InfoBubble;
@@ -85,8 +86,24 @@ namespace Game.Core.Services {
             return Instantiate(prefab, position, Quaternion.identity, VfxContainer.transform);
         }
 
-        public void SpawnInfoBubble(InfoBubbleType type, Vector3 position, Transform parent = null, float delay = 1f) {
-            var instance = Spawn(Refs.InfoBubblePrefab, position, parent);
+        /// <summary>
+        /// Spawns an info bubble at <paramref name="position"/>. If <paramref name="follow"/> is set,
+        /// the bubble tracks that Transform's world position via <see cref="TransformFollow2D"/>
+        /// instead of being parented to it — parenting to a character that flips through Facing2D
+        /// would mirror the bubble, whereas following keeps its orientation fixed.
+        /// </summary>
+        public void SpawnInfoBubble(InfoBubbleType type, Vector3 position, Transform follow = null, float delay = 1f) {
+            var instance = Spawn(Refs.InfoBubblePrefab, position);
+
+            if (follow != null) {
+                var followComponent = instance.GetComponent<TransformFollow2D>();
+                if (followComponent == null) {
+                    followComponent = instance.AddComponent<TransformFollow2D>();
+                }
+
+                followComponent.Target = follow;
+            }
+
             var infoBubble = instance.GetComponent<InfoBubble>();
             infoBubble.ShowBubble(type, delay);
         }

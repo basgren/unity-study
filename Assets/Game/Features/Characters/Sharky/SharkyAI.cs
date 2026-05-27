@@ -123,7 +123,7 @@ namespace Game.Features.Characters.Sharky {
         private IEnumerator AgroToHero() {
             // TODO: [BG] Separate AI and representation. Move all effects display to some additional layer.
             //   for now we'll just implement the easiest way.
-            G.Spawner.SpawnInfoBubble(InfoBubbleType.Exclamation, infoBubblePoint.transform.position, transform);
+            G.Spawner.SpawnInfoBubble(InfoBubbleType.Exclamation, infoBubblePoint.transform.position, infoBubblePoint);
             
             ctrl.StopMovement();
             

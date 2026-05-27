@@ -1,6 +1,10 @@
 using Game.Core.Components.Camera;
 using UnityEngine;
 
+// This saver pairs with the deprecated SwapCameraConfinerShape and is kept for the scenes that still
+// use it. New work should use CameraConfinerSelector (and a selector-based saver). The obsolete
+// warning is suppressed here because supporting the deprecated component is this file's whole purpose.
+#pragma warning disable CS0618
 namespace Game.Core.Services.SceneState.Savers {
     /// <summary>
     /// Saves whether a <see cref="SwapCameraConfinerShape"/> has already widened the camera bounds.
@@ -28,3 +32,4 @@ namespace Game.Core.Services.SceneState.Savers {
         }
     }
 }
+#pragma warning restore CS0618

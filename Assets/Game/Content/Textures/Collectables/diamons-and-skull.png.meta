@@ -433,7 +433,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_16
+      name: skull_01
       rect:
         serializedVersion: 2
         x: 0
@@ -454,7 +454,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_17
+      name: skull_02
       rect:
         serializedVersion: 2
         x: 30
@@ -475,7 +475,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_18
+      name: skull_03
       rect:
         serializedVersion: 2
         x: 60
@@ -496,7 +496,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_19
+      name: skull_04
       rect:
         serializedVersion: 2
         x: 90
@@ -517,7 +517,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_20
+      name: skull_05
       rect:
         serializedVersion: 2
         x: 120
@@ -538,7 +538,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_21
+      name: skull_06
       rect:
         serializedVersion: 2
         x: 150
@@ -559,7 +559,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_22
+      name: skull_07
       rect:
         serializedVersion: 2
         x: 180
@@ -580,7 +580,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_23
+      name: skull_08
       rect:
         serializedVersion: 2
         x: 210
@@ -601,7 +601,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_24
+      name: skull-effect_01
       rect:
         serializedVersion: 2
         x: 0
@@ -622,7 +622,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_25
+      name: skull-effect_02
       rect:
         serializedVersion: 2
         x: 30
@@ -643,7 +643,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_26
+      name: skull-effect_03
       rect:
         serializedVersion: 2
         x: 60
@@ -664,7 +664,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_27
+      name: skull-effect_04
       rect:
         serializedVersion: 2
         x: 90
@@ -685,7 +685,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: diamons-and-skull_28
+      name: skull-effect_05
       rect:
         serializedVersion: 2
         x: 120
@@ -732,19 +732,19 @@ TextureImporter:
       diamond-red_1: 571645616
       diamond-red_2: 1319307590
       diamond-red_3: 1609231302
-      diamons-and-skull_16: -482018639
-      diamons-and-skull_17: 1743402126
-      diamons-and-skull_18: -2021168175
-      diamons-and-skull_19: -732437456
-      diamons-and-skull_20: 293946506
-      diamons-and-skull_21: -284680989
-      diamons-and-skull_22: 64906904
-      diamons-and-skull_23: -530731173
-      diamons-and-skull_24: -126134310
-      diamons-and-skull_25: -104684153
-      diamons-and-skull_26: 787585055
-      diamons-and-skull_27: 824006623
-      diamons-and-skull_28: 92093623
+      skull-effect_01: -126134310
+      skull-effect_02: -104684153
+      skull-effect_03: 787585055
+      skull-effect_04: 824006623
+      skull-effect_05: 92093623
+      skull_01: -482018639
+      skull_02: 1743402126
+      skull_03: -2021168175
+      skull_04: -732437456
+      skull_05: 293946506
+      skull_06: -284680989
+      skull_07: 64906904
+      skull_08: -530731173
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,11 @@
 ﻿using System;
 using Core.Audio;
-using Core.Components.Animation;
 using Game.Core.Bootstrap;
+using Game.Core.Components.Animation;
 using Game.Core.Services.SceneState;
 using Game.Core.Services.SceneState.Savers;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Game.Core.Components.Collectables {
     /// <summary>
@@ -53,6 +54,13 @@ namespace Game.Core.Components.Collectables {
         private GameObject rootObject;
 
         public event Action OnCollected;
+
+        /// <summary>
+        /// Inspector-wirable equivalent of <see cref="OnCollected"/>, raised when the item is collected.
+        /// Use it to trigger scene reactions on pickup (e.g. opening a door) without writing code.
+        /// </summary>
+        [SerializeField]
+        private UnityEvent onCollected;
 
         private bool canCollect = true;
 
@@ -125,8 +133,10 @@ namespace Game.Core.Components.Collectables {
             }
 
             // Call at the very end to apply all effects, as this object may belong to the
-            // parent object which could be destroyed in this event.
+            // parent object which could be destroyed in this event. (Destroy is deferred to end of
+            // frame, so this object still exists and the subscribers / UnityEvent targets fire.)
             OnCollected?.Invoke();
+            onCollected?.Invoke();
         }
     }
 }

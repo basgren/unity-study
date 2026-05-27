@@ -1,5 +1,4 @@
 ﻿using Core.Components;
-using Core.Components.Animation;
 using Game.Core.Components.Animation;
 using UnityEditor;
 using UnityEditorInternal;

@@ -1,5 +1,5 @@
 using System.Collections;
-using Core.Components.Animation;
+using Game.Core.Components.Animation;
 using Game.Core.Components.Effects;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;

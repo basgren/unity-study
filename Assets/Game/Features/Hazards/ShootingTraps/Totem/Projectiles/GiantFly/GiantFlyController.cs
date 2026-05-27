@@ -1,5 +1,4 @@
 using Core.Audio;
-using Core.Components.Animation;
 using Core.Components.Base2D;
 using Core.FSM;
 using Game.Core.Bootstrap;

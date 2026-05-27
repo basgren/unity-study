@@ -51,7 +51,7 @@ namespace Game.Core.Models.Editor {
             sb.AppendLine($"{indent}public static class {className} {{");
             foreach (var id in ids) {
                 var name = ToPascalIdentifier(id);
-                sb.AppendLine($"{indent}    public static readonly ItemId {name} = new ItemId(\"{Escape(id)}\");");
+                sb.AppendLine($"{indent}    public static readonly ItemId {name} = new(\"{Escape(id)}\");");
             }
 
             sb.AppendLine($"{indent}}}");

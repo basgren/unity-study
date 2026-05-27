@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4915699577960438699}
   - component: {fileID: 4915699577960438693}
+  - component: {fileID: 4915699577960438692}
   - component: {fileID: 4915699577960438698}
   - component: {fileID: 1558590608608574814}
-  - component: {fileID: 4915699577960438692}
   - component: {fileID: 2892182496107737644}
   - component: {fileID: 923079634005811813}
   m_Layer: 13
@@ -89,50 +89,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4915699577960438698
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4915699577960438696}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8beee904748c4339aa7164694f5a4727, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemId:
-    value: DiamondBlue
-  value: 1
-  collectorTag: Player
-  pickupAnimationPrefab: {fileID: 7939134663002375227, guid: 089fc0ca4a762be4189f255b3efdcf0b,
-    type: 3}
-  collectSound: {fileID: 11400000, guid: 94c4b9b3f6d4c354a8f52b0cb5999af3, type: 2}
-  rootObject: {fileID: 0}
---- !u!114 &1558590608608574814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4915699577960438696}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 900cb3891a554b044a051941d85232e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frameRate: 10
-  loop: 1
-  randomStartFrame: 1
-  destroyOnComplete: 0
-  sprites:
-  - {fileID: 1441163622, guid: c9103b5e8ef85a24cb5aeed4cf4453b2, type: 3}
-  - {fileID: 1387867070, guid: c9103b5e8ef85a24cb5aeed4cf4453b2, type: 3}
-  - {fileID: -1016550148, guid: c9103b5e8ef85a24cb5aeed4cf4453b2, type: 3}
-  - {fileID: -856376917, guid: c9103b5e8ef85a24cb5aeed4cf4453b2, type: 3}
-  onComplete:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!58 &4915699577960438692
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -168,6 +124,51 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.13}
   serializedVersion: 2
   m_Radius: 0.2312916
+--- !u!114 &4915699577960438698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4915699577960438696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8beee904748c4339aa7164694f5a4727, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId:
+    value: DiamondBlue
+  value: 1
+  collectorTag: Player
+  pickupAnimationPrefab: {fileID: 7939134663002375227, guid: 089fc0ca4a762be4189f255b3efdcf0b,
+    type: 3}
+  collectSound: {fileID: 11400000, guid: 94c4b9b3f6d4c354a8f52b0cb5999af3, type: 2}
+  rootObject: {fileID: 0}
+--- !u!114 &1558590608608574814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4915699577960438696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 900cb3891a554b044a051941d85232e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frameRate: 10
+  playWhenEnabled: 1
+  loop: 1
+  randomStartFrame: 1
+  destroyOnComplete: 0
+  sprites:
+  - {fileID: 1441163622, guid: c9103b5e8ef85a24cb5aeed4cf4453b2, type: 3}
+  - {fileID: 1387867070, guid: c9103b5e8ef85a24cb5aeed4cf4453b2, type: 3}
+  - {fileID: -1016550148, guid: c9103b5e8ef85a24cb5aeed4cf4453b2, type: 3}
+  - {fileID: -856376917, guid: c9103b5e8ef85a24cb5aeed4cf4453b2, type: 3}
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2892182496107737644
 MonoBehaviour:
   m_ObjectHideFlags: 0

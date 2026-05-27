@@ -135,6 +135,10 @@ namespace Game.Core.Components.Animation {
             // otherwise leftover accumulated time from the previous clip can skip past it.
             timer = 0f;
             SetSprite(0);
+            // Fire so subscribers observe frame 0 of the new clip. Without this, Update only fires
+            // on its first advance and the first observable frame is 1, not 0 — the loop-wrap path
+            // is the only way frame 0 ever surfaces.
+            onNewFrame?.Invoke(this);
         }
 
         private void SetSprite(int i) {

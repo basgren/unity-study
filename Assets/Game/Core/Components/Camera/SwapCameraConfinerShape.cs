@@ -1,9 +1,15 @@
+using System;
 using System.Collections;
 using Cinemachine;
 using UnityEngine;
 
 namespace Game.Core.Components.Camera {
     /// <summary>
+    /// DEPRECATED — use <see cref="CameraConfinerSelector"/> for new work. This binary swap only
+    /// supports one default → one expanded shape; the selector handles any number of named states
+    /// (e.g. a boss room's small → big → final confiners). Kept fully functional for the existing
+    /// scenes that already wire it (SH_LastWarmFloor, WS_CaptainsLastLaugh) so nothing breaks.
+    ///
     /// Swaps a <see cref="CinemachineConfiner2D"/>'s bounding shape to a larger collider after a
     /// delay when <see cref="Trigger"/> is called, then invalidates the confiner cache so the new
     /// bounds take effect. Wire <see cref="Trigger"/> to a UnityEvent — e.g. a boss's
@@ -15,6 +21,10 @@ namespace Game.Core.Components.Camera {
     /// <see cref="IsExpanded"/> and <see cref="ApplyExpandedImmediate"/> let a state saver persist
     /// and re-apply the expansion across scene transitions.
     /// </remarks>
+    // Hidden from the Add Component menu to discourage new uses; existing scene instances are
+    // resolved by GUID and keep working.
+    [AddComponentMenu("")]
+    [Obsolete("Use CameraConfinerSelector for multi-state confiner switching. Kept for existing scenes.")]
     public class SwapCameraConfinerShape : MonoBehaviour {
         [Tooltip("Confiner whose bounding shape will be replaced.")]
         [SerializeField]

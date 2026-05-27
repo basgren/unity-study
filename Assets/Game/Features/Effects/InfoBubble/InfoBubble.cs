@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Core.Components;
-using Core.Components.Animation;
 using Game.Core.Components.Animation;
 using UnityEngine;
 

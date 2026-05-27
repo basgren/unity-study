@@ -2,12 +2,15 @@
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
-namespace Core.Components.Animation {
+namespace Game.Core.Components.Animation {
     [RequireComponent(typeof(SpriteRenderer))]
     public class SimpleSpriteAnimator : MonoBehaviour {
         [SerializeField]
         private int frameRate = 10;
 
+        [SerializeField]
+        private bool playWhenEnabled = true;
+        
         [SerializeField]
         private bool loop = true;
 
@@ -31,6 +34,7 @@ namespace Core.Components.Animation {
         private int currentFrameIndex = 0;
         private float timer = 0;
         private float frameDuration;
+        private bool isPlaying;
 
         private int startFrameIndex = 0;
 
@@ -41,15 +45,22 @@ namespace Core.Components.Animation {
         void OnEnable() {
             frameDuration = 1f / frameRate;
 
+            if (playWhenEnabled) {
+              Play();
+            }
+        }
+
+        public void Play() {
             if (randomStartFrame) {
                 startFrameIndex = Random.Range(0, sprites.Length);
             }
 
             SetSprite(startFrameIndex);
+            isPlaying = true;
         }
 
         void Update() {
-            if (sprites.Length == 0) {
+            if (sprites.Length == 0 || !isPlaying) {
                 return;
             }
 
