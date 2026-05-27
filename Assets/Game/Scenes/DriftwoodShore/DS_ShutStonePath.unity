@@ -8415,7 +8415,7 @@ PrefabInstance:
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: link.targetId
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}

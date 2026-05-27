@@ -121,3 +121,17 @@ MonoBehaviour:
     categoryBindings:
     - categoryName: Decor
       parentHierarchyPath: World/Decor
+  - scenePath: Assets/Game/Scenes/DS_HardHeadYard.unity
+    categoryBindings:
+    - categoryName: Decor
+      parentHierarchyPath: World/Decor
+    - categoryName: Collectables
+      parentHierarchyPath: World/Collectables
+    - categoryName: Dynamic
+      parentHierarchyPath: World/Dynamic
+    - categoryName: Interactive
+      parentHierarchyPath: World/Interactive
+    - categoryName: Hazards
+      parentHierarchyPath: World/Hazards
+    - categoryName: Enemies
+      parentHierarchyPath: World/Enemies
