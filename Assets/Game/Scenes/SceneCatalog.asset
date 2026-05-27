@@ -53,13 +53,13 @@ MonoBehaviour:
     scenePath: Assets/Game/Scenes/TheWrongShip/WS_ThunderplankPass.unity
   - sceneGuid: 5e6c1a6d84ec5a646b686df164f9403c
     scenePath: Assets/Game/Scenes/TheWrongShip/WS_TurnbellyHold.unity
-  - sceneGuid: 66f65efabccd016428949c5b691001e2
+  - sceneGuid: 
     scenePath: Assets/Game/Scenes/DS_SidePath.unity
-  - sceneGuid: 90fd1221710d8ca4c9ba023f4fc2773e
+  - sceneGuid: 
     scenePath: Assets/Game/Scenes/DS_RikkoHub.unity
-  - sceneGuid: a0e1cedf34e2202498f55032fc420951
+  - sceneGuid: 
     scenePath: Assets/Game/Scenes/DS_LittleStarMouth.unity
-  - sceneGuid: 060ac10097ec9184b954bdec9fc7949b
+  - sceneGuid: 
     scenePath: Assets/Game/Scenes/DS_HardHeadYard.unity
-  - sceneGuid: 2b305e19f3f826745acb7cb15b762f10
+  - sceneGuid: 
     scenePath: Assets/Game/Scenes/DS_CloudSteps.unity
