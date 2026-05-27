@@ -208,7 +208,12 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             swingJoint.autoConfigureDistance = false;
             swingJoint.distance = ropeLength;
             swingJoint.maxDistanceOnly = true;
-            swingJoint.enableCollision = false;
+            // Must stay true. With connectedBody = null the joint anchors to Unity's implicit
+            // static body, which every collider WITHOUT its own Rigidbody2D belongs to (coins and
+            // other pickups, one-way platforms). enableCollision = false would suppress all contacts
+            // — including trigger overlaps — between the player and that shared body, so collectables
+            // could not be picked up while swinging.
+            swingJoint.enableCollision = true;
             swingJoint.connectedBody = null;
             swingJoint.connectedAnchor = anchorPos;
             // Pin the joint's player-side anchor to the grab point in player local space

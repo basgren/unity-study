@@ -875,8 +875,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRopeLength: 5
-  startAngle: -14
-  endAngle: 95
+  startAngle: -20
+  endAngle: 98
   anchorLayer:
     serializedVersion: 2
     m_Bits: 524288
@@ -888,6 +888,7 @@ MonoBehaviour:
   swingLinearDrag: 0.5
   ropeClimbSpeed: 2
   minRopeLength: 0.2
+  oneWayLandHopSpeed: 4
 --- !u!1 &4688011009432296853
 GameObject:
   m_ObjectHideFlags: 0
