@@ -19,6 +19,12 @@ namespace Editor.ObjectBrush {
     ///     <description>Category names.</description>
     ///   </item>
     ///   <item>
+    ///     <description>
+    ///       Per-category parent path, relative to the World root (see
+    ///       <see cref="ObjectBrushConfig"/>). Supports nesting via <c>/</c>.
+    ///     </description>
+    ///   </item>
+    ///   <item>
     ///     <description>Prefab references assigned to each category.</description>
     ///   </item>
     /// </list>
@@ -69,6 +75,14 @@ namespace Editor.ObjectBrush {
         [Serializable]
         public class BiomeCategory {
             public string name;
+
+            /// <summary>
+            /// Path of the parent object relative to the World root, e.g.
+            /// "Interactive" or "Interactive/Barrels". Supports nesting via '/'.
+            /// When empty, the category <see cref="name"/> is used as the path.
+            /// </summary>
+            public string parentPath;
+
             public List<GameObject> items = new List<GameObject>();
         }
 

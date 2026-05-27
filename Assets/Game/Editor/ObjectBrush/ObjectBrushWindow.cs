@@ -1,13 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace Editor.ObjectBrush {
     /// <summary>
@@ -16,99 +13,41 @@ namespace Editor.ObjectBrush {
     /// <remarks>
     /// <para>
     /// The Object Brush lets you quickly place prefab instances into the Scene view,
-    /// using a small palette similar to a tile palette but for arbitrary GameObjects.
+    /// using a palette similar to a tile palette but for arbitrary GameObjects.
+    /// Open it from the main menu: <c>Tools &gt; Object Brush</c>.
     /// </para>
     ///
-    /// <para><b>Opening</b></para>
+    /// <para><b>Palette structure</b></para>
     /// <para>
-    /// Open the window from the main menu: <c>Tools &gt; Object Brush</c>.
+    /// The palette is organised as <b>Biome → Category → Items</b>. Biomes are
+    /// <see cref="ObjectBrushProfile"/> assets referenced by the shared
+    /// <see cref="ObjectBrushConfig"/>; several biomes are shown at once. Categories and
+    /// their parent paths, the World root name, and the referenced biome list are edited in
+    /// the separate <see cref="ObjectBrushConfigWindow"/> (<c>Tools &gt; Object Brush
+    /// Configuration</c>, or the <c>Configure…</c> button). This window assigns prefab slots
+    /// and paints.
     /// </para>
     ///
-    /// <para><b>Basic usage</b></para>
-    /// <list type="number">
-    ///   <item>
-    ///     <description>
-    ///       Open the Object Brush window and enable the brush using the
-    ///       <c>Enable Brush</c> toggle button at the top.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       Add one or more categories and assign prefabs to the palette slots
-    ///       inside each category. Click on a prefab preview to make it the active brush.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       Optionally set a <c>Global Parent</c> and/or a <c>Default Parent</c>
-    ///       for each category. New instances will be parented under these transforms.
-    ///     </description>
-    ///   </item>
-    ///   <item>
-    ///     <description>
-    ///       In the Scene view, move the mouse to position the preview, then
-    ///       left-click to place an instance of the active prefab.
-    ///       Hold <c>Ctrl</c> to temporarily invert the grid snapping setting.
-    ///     </description>
-    ///   </item>
-    /// </list>
+    /// <para><b>Parenting</b></para>
+    /// <para>
+    /// When an object is placed, it is nested under
+    /// <c>&lt;World root&gt;/&lt;category parent path&gt;</c> in the active scene, creating any
+    /// missing objects on the way. The mapping is the same for every scene; there are no
+    /// per-scene parent settings.
+    /// </para>
     ///
     /// <para><b>Grid snapping</b></para>
     /// <para>
-    /// When <c>Snap to Grid</c> is enabled, placed objects are snapped to a regular grid
-    /// with the configured <c>Grid Size</c>. Holding <c>Ctrl</c> temporarily inverts
-    /// the snapping (enabled becomes disabled and vice versa).
-    /// </para>
-    ///
-    /// <para><b>Categories and filtering</b></para>
-    /// <para>
-    /// Categories group palette items (prefabs) by biome, theme or usage.
-    /// Each category can be expanded as an accordion section to show its palette.
-    /// The filter field above categories filters items by prefab name across all categories.
-    /// </para>
-    ///
-    /// <para><b>Biome profiles</b></para>
-    /// <para>
-    /// A <see cref="ObjectBrushProfile"/> asset can be used to store and reuse
-    /// category and palette setups for different biomes or levels. The profile stores:
-    /// </para>
-    /// <list type="bullet">
-    ///   <item>
-    ///     <description>Category names</description>
-    ///   </item>
-    ///   <item>
-    ///     <description>Prefab references in each category</description>
-    ///   </item>
-    /// </list>
-    /// <para>
-    /// It does <b>not</b> store scene-specific parents or brush state.
-    /// Use the <c>Load</c> button to replace the current palette with the selected profile,
-    /// and the <c>Save</c> button to overwrite the profile with the current categories
-    /// and palette items.
+    /// When <c>Snap to Grid</c> is enabled, placed objects snap to a regular grid with the
+    /// configured <c>Grid Size</c>. Holding <c>Ctrl</c> temporarily inverts snapping.
     /// </para>
     /// </remarks>
     public class ObjectBrushWindow : EditorWindow {
-        [Serializable]
-        private class PaletteCategory {
-            public string name = "Category";
-            public Transform defaultParent;
-            public List<GameObject> items = new List<GameObject>();
-
-            [NonSerialized]
-            public ReorderableList List;
-
-            [NonSerialized]
-            public bool IsExpanded = true;
-
-            [NonSerialized]
-            public bool propertiesExpanded = true;
-        }
-
         [SerializeField]
         private GameObject prefab;
 
         [SerializeField]
-        private Transform globalParent;
+        private string activeParentPath;
 
         [SerializeField]
         private bool snapToGrid = true;
@@ -117,20 +56,10 @@ namespace Editor.ObjectBrush {
         private float gridSize = 1f;
 
         [SerializeField]
+        private float viewIconSize = 40f;
+
+        [SerializeField]
         private bool brushEnabled;
-
-        [FormerlySerializedAs("biomeProfile")]
-        [SerializeField]
-        private ObjectBrushProfile profile;
-
-        [SerializeField]
-        private List<PaletteCategory> categories = new List<PaletteCategory>();
-
-        [SerializeField]
-        private int selectedCategoryIndex;
-
-        [SerializeField]
-        private int selectedItemIndex = -1;
 
         [SerializeField]
         private string filterText = "";
@@ -139,21 +68,40 @@ namespace Editor.ObjectBrush {
         private Vector2 categoriesScroll;
 
         [SerializeField]
-        private bool biomeFoldout = true;
-
-        [SerializeField]
         private bool brushFoldout = true;
 
+        // When enabled, the palette shows editable per-category item lists (add/remove/assign).
+        // When disabled (default), it shows a compact, read-only wrapping grid of previews for picking.
         [SerializeField]
-        private bool categoryOverviewFoldout = true;
+        private bool editMode;
+
+        private ObjectBrushConfig config;
+
+        // Highlight state for the active slot. Best-effort, reset on domain reload.
+        [NonSerialized]
+        private ObjectBrushProfile.BiomeCategory activeCategory;
 
         [NonSerialized]
-        private ReorderableList categoryOverviewList;
+        private int activeItemIndex = -1;
+
+        private readonly Dictionary<ObjectBrushProfile, bool> biomeExpanded =
+            new Dictionary<ObjectBrushProfile, bool>();
+
+        private readonly Dictionary<ObjectBrushProfile.BiomeCategory, bool> categoryExpanded =
+            new Dictionary<ObjectBrushProfile.BiomeCategory, bool>();
+
+        private readonly Dictionary<ObjectBrushProfile.BiomeCategory, ReorderableList> itemLists =
+            new Dictionary<ObjectBrushProfile.BiomeCategory, ReorderableList>();
+
+        // Reused each repaint to collect indices of visible items in view mode (avoids per-frame allocation).
+        private readonly List<int> visibleBuffer = new List<int>();
 
         private GameObject previewInstance;
         private GameObject previewSource;
 
         private const float PaletteIconSize = 40f;
+        private const float MinViewIconSize = 24f;
+        private const float MaxViewIconSize = 96f;
 
         [MenuItem("Tools/Object Brush")]
         public static void Open() {
@@ -163,29 +111,13 @@ namespace Editor.ObjectBrush {
         private void OnEnable() {
             SceneView.duringSceneGui += OnSceneGUI;
             EditorSceneManager.activeSceneChangedInEditMode += OnActiveSceneChanged;
-
-            if (categories == null) {
-                categories = new List<PaletteCategory>();
-            }
-
-            if (categories.Count == 0) {
-                categories.Add(new PaletteCategory { name = "Default" });
-            }
-
-            selectedCategoryIndex = Mathf.Clamp(selectedCategoryIndex, 0, categories.Count - 1);
-
-            for (int i = 0; i < categories.Count; i++) {
-                EnsureReorderableList(categories[i]);
-            }
-
-            // Подгружаем родителей для текущей сцены
-            LoadSceneParentSettingsForCurrentScene();
+            config = ObjectBrushUtility.LoadOrCreateConfig(true);
         }
 
         private void OnActiveSceneChanged(Scene oldScene, Scene newScene) {
-            LoadSceneParentSettings(newScene);
+            Repaint();
         }
-        
+
         private void OnDisable() {
             SceneView.duringSceneGui -= OnSceneGUI;
             EditorSceneManager.activeSceneChangedInEditMode -= OnActiveSceneChanged;
@@ -194,172 +126,23 @@ namespace Editor.ObjectBrush {
         }
 
         private void OnGUI() {
+            if (config == null) {
+                config = ObjectBrushUtility.LoadOrCreateConfig(true);
+            }
+
             DrawTopBarGUI();
-            EditorGUILayout.Space();
-            DrawBiomeGUI();
             EditorGUILayout.Space();
             DrawBrushSettingsGUI();
             EditorGUILayout.Space();
-            DrawFilterAndCategoriesHeaderGUI();
-            EditorGUILayout.Space(2f);
-            DrawCategoryOverviewGUI();
-            
+            DrawFilterGUI();
+
             EditorGUILayout.Space(4f);
             EditorGUILayout.LabelField(GUIContent.none, GUI.skin.horizontalSlider);
             EditorGUILayout.Space(2f);
-            
-            DrawCategoriesAndPalettesGUI();
+
+            DrawPaletteGUI();
         }
 
-        private ObjectBrushSceneSettings LoadOrCreateSceneSettingsAsset(bool createIfNotFound) {
-            string assetPath = ObjectBrushSceneSettings.DefaultAssetPath;
-
-            ObjectBrushSceneSettings settings =
-                AssetDatabase.LoadAssetAtPath<ObjectBrushSceneSettings>(assetPath);
-
-            if (settings == null && createIfNotFound) {
-                // Гарантируем, что папка существует
-                string dir = Path.GetDirectoryName(assetPath);
-                if (!string.IsNullOrEmpty(dir) && !AssetDatabase.IsValidFolder(dir)) {
-                    string[] parts = dir.Replace("\\", "/").Split('/');
-                    string current = parts[0];
-                    for (int i = 1; i < parts.Length; i++) {
-                        string next = current + "/" + parts[i];
-                        if (!AssetDatabase.IsValidFolder(next)) {
-                            AssetDatabase.CreateFolder(current, parts[i]);
-                        }
-                        current = next;
-                    }
-                }
-
-                settings = ScriptableObject.CreateInstance<ObjectBrushSceneSettings>();
-                AssetDatabase.CreateAsset(settings, assetPath);
-                AssetDatabase.SaveAssets();
-            }
-
-            return settings;
-        }
-        
-        private static string GetHierarchyPath(Transform t) {
-            if (t == null) {
-                return null;
-            }
-
-            List<string> parts = new List<string>();
-            Transform current = t;
-            while (current != null) {
-                parts.Add(current.name);
-                current = current.parent;
-            }
-
-            parts.Reverse();
-            return string.Join("/", parts);
-        }
-
-        private static Transform FindTransformByPath(Scene scene, string path) {
-            if (string.IsNullOrEmpty(path)) {
-                return null;
-            }
-
-            string[] parts = path.Split('/');
-            if (parts.Length == 0) {
-                return null;
-            }
-
-            GameObject[] roots = scene.GetRootGameObjects();
-            GameObject rootGo = roots.FirstOrDefault(r => r.name == parts[0]);
-            if (rootGo == null) {
-                return null;
-            }
-
-            Transform current = rootGo.transform;
-            for (int i = 1; i < parts.Length; i++) {
-                current = current.Find(parts[i]);
-                if (current == null) {
-                    return null;
-                }
-            }
-
-            return current;
-        }
-        
-        private void SaveSceneParentSettingsForCurrentScene() {
-            Scene scene = SceneManager.GetActiveScene();
-            if (!scene.IsValid()) {
-                return;
-            }
-
-            ObjectBrushSceneSettings settings = LoadOrCreateSceneSettingsAsset(true);
-            if (settings == null) {
-                return;
-            }
-
-            string scenePath = scene.path;
-            SceneParentSettings sceneSettings =
-                settings.scenes.FirstOrDefault(s => s.scenePath == scenePath);
-
-            if (sceneSettings == null) {
-                sceneSettings = new SceneParentSettings {
-                    scenePath = scenePath
-                };
-                settings.scenes.Add(sceneSettings);
-            }
-
-            sceneSettings.categoryBindings.Clear();
-
-            foreach (PaletteCategory cat in categories) {
-                if (cat.defaultParent == null) {
-                    continue;
-                }
-
-                string parentPath = GetHierarchyPath(cat.defaultParent);
-                if (string.IsNullOrEmpty(parentPath)) {
-                    continue;
-                }
-
-                sceneSettings.categoryBindings.Add(new CategoryParentBinding {
-                    categoryName = cat.name,
-                    parentHierarchyPath = parentPath
-                });
-            }
-
-            EditorUtility.SetDirty(settings);
-            AssetDatabase.SaveAssets();
-        }
-        
-        private void LoadSceneParentSettingsForCurrentScene() {
-            Scene scene = SceneManager.GetActiveScene();
-            if (scene.IsValid()) {
-                LoadSceneParentSettings(scene);
-            }
-        }
-
-        private void LoadSceneParentSettings(Scene scene) {
-            ObjectBrushSceneSettings settings = LoadOrCreateSceneSettingsAsset(false);
-            if (settings == null) {
-                return; // ещё не создан
-            }
-
-            string scenePath = scene.path;
-            SceneParentSettings sceneSettings =
-                settings.scenes.FirstOrDefault(s => s.scenePath == scenePath);
-
-            if (sceneSettings == null) {
-                return;
-            }
-
-            foreach (CategoryParentBinding binding in sceneSettings.categoryBindings) {
-                PaletteCategory category =
-                    categories.FirstOrDefault(c => c.name == binding.categoryName);
-                if (category == null) {
-                    continue;
-                }
-
-                Transform parent = FindTransformByPath(scene, binding.parentHierarchyPath);
-                category.defaultParent = parent;
-            }
-        }
-        
         // --- TOP BAR -------------------------------------------------------------
 
         private void DrawTopBarGUI() {
@@ -370,7 +153,7 @@ namespace Editor.ObjectBrush {
                 "Toggle Scene painting on/off.\n" +
                 "When enabled, left-click in Scene view places instances of the active prefab.";
 
-            bool newEnabled = GUILayout.Toggle(
+            brushEnabled = GUILayout.Toggle(
                 brushEnabled,
                 new GUIContent(buttonText, buttonTooltip),
                 "Button",
@@ -378,138 +161,38 @@ namespace Editor.ObjectBrush {
                 GUILayout.Width(110)
             );
 
-            brushEnabled = newEnabled;
+            GUILayout.FlexibleSpace();
 
-            // Active prefab label right next to the button
+            editMode = GUILayout.Toggle(
+                editMode,
+                new GUIContent("Edit",
+                    "Edit mode: show editable per-category item lists (add, remove, assign prefabs).\n" +
+                    "When off, the palette is a compact preview grid for picking only."),
+                "Button",
+                GUILayout.Height(22),
+                GUILayout.Width(60)
+            );
+
+            GUILayout.Space(4f);
+
+            if (GUILayout.Button(
+                    new GUIContent("Configure…", "Open the configuration window (World root, biomes, categories)."),
+                    GUILayout.Height(22),
+                    GUILayout.Width(90))) {
+                ObjectBrushConfigWindow.Open();
+            }
+
+            EditorGUILayout.EndHorizontal();
+
             string prefabName = prefab != null ? prefab.name : "None";
             string prefabTooltip = prefab != null
                 ? "Current active prefab selected from the palette."
                 : "No prefab selected. Click a prefab in the palette to activate it.";
 
-            GUILayout.Space(8f);
             EditorGUILayout.LabelField(
                 new GUIContent("Active: " + prefabName, prefabTooltip),
                 EditorStyles.miniLabel
             );
-
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.EndHorizontal();
-        }
-
-        // --- BIOME PROFILE -------------------------------------------------------
-
-        private void DrawBiomeGUI() {
-            biomeFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(
-                biomeFoldout,
-                new GUIContent("Biome Profile", "Store and reuse palette data as biome profiles.")
-            );
-
-            if (biomeFoldout) {
-                EditorGUI.indentLevel++;
-
-                EditorGUILayout.BeginHorizontal();
-                profile = (ObjectBrushProfile)EditorGUILayout.ObjectField(
-                    new GUIContent(
-                        "Profile",
-                        "Biome profile asset (.asset) that stores palette categories and their prefabs.\n\n" +
-                        "Use 'Load' to replace the current palette with data from this profile.\n" +
-                        "Use 'Save' to overwrite the profile with the current palette."
-                    ),
-                    profile,
-                    typeof(ObjectBrushProfile),
-                    false
-                );
-
-                using (new EditorGUI.DisabledScope(profile == null)) {
-                    if (GUILayout.Button(
-                            new GUIContent("Load", "Replace current categories and items with data from this profile."),
-                            GUILayout.Width(50))) {
-                        LoadFromBiomeProfile();
-                    }
-
-                    if (GUILayout.Button(
-                            new GUIContent("Save", "Overwrite this profile with the current categories and items."),
-                            GUILayout.Width(50))) {
-                        SaveToBiomeProfile();
-                    }
-                }
-
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUI.indentLevel--;
-            }
-
-            EditorGUILayout.EndFoldoutHeaderGroup();
-        }
-
-        private void LoadFromBiomeProfile() {
-            if (profile == null) {
-                return;
-            }
-
-            categories.Clear();
-
-            foreach (var bc in profile.categories) {
-                var cat = new PaletteCategory {
-                    name = bc.name,
-                    defaultParent = null,
-                    items = new List<GameObject>(bc.items)
-                };
-                categories.Add(cat);
-            }
-
-            if (categories.Count == 0) {
-                categories.Add(new PaletteCategory { name = "Default" });
-            }
-
-            selectedCategoryIndex = 0;
-            selectedItemIndex = -1;
-
-            for (int i = 0; i < categories.Count; i++) {
-                EnsureReorderableList(categories[i]);
-            }
-        }
-
-        private void SaveToBiomeProfile() {
-            if (profile == null) {
-                EditorUtility.DisplayDialog(
-                    "No Biome Profile",
-                    "Assign a biome profile asset first.",
-                    "OK"
-                );
-                return;
-            }
-
-            // If profile already contains data, ask for confirmation before overwriting.
-            bool hasExistingData = profile.categories != null && profile.categories.Count > 0;
-            if (hasExistingData) {
-                bool confirm = EditorUtility.DisplayDialog(
-                    "Overwrite Biome Profile",
-                    "This will overwrite the existing categories and items in the selected biome profile.\n\n" +
-                    "Are you sure you want to save the current palette into this profile?",
-                    "Overwrite",
-                    "Cancel"
-                );
-
-                if (!confirm) {
-                    return;
-                }
-            }
-
-            if (profile.categories != null) {
-                profile.categories.Clear();
-
-                foreach (var cat in categories) {
-                    var bc = new ObjectBrushProfile.BiomeCategory {
-                        name = cat.name,
-                        items = new List<GameObject>(cat.items)
-                    };
-                    profile.categories.Add(bc);
-                }
-            }
-
-            EditorUtility.SetDirty(profile);
-            AssetDatabase.SaveAssets();
         }
 
         // --- BRUSH SETTINGS ------------------------------------------------------
@@ -522,16 +205,6 @@ namespace Editor.ObjectBrush {
 
             if (brushFoldout) {
                 EditorGUI.indentLevel++;
-
-                globalParent = (Transform)EditorGUILayout.ObjectField(
-                    new GUIContent("Global Parent",
-                        "Optional fallback parent used when category has no default parent."),
-                    globalParent,
-                    typeof(Transform),
-                    true
-                );
-
-                EditorGUILayout.Space(2f);
 
                 snapToGrid = EditorGUILayout.Toggle(
                     new GUIContent("Snap to Grid", "Snap placed objects to a grid."),
@@ -548,16 +221,25 @@ namespace Editor.ObjectBrush {
                     }
                 }
 
+                EditorGUILayout.Space(2f);
+
+                viewIconSize = EditorGUILayout.Slider(
+                    new GUIContent("Preview Size",
+                        "Size of item previews in View mode. No effect in Edit mode."),
+                    viewIconSize,
+                    MinViewIconSize,
+                    MaxViewIconSize
+                );
+
                 EditorGUI.indentLevel--;
             }
 
             EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
-        // --- FILTER + CATEGORIES HEADER -----------------------------------------
+        // --- FILTER --------------------------------------------------------------
 
-        private void DrawFilterAndCategoriesHeaderGUI() {
-            // Filter (one line)
+        private void DrawFilterGUI() {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(
                 new GUIContent("Filter", "Filter palette items by prefab name (case-insensitive)."),
@@ -565,95 +247,34 @@ namespace Editor.ObjectBrush {
             );
 
             filterText = EditorGUILayout.TextField(filterText);
-
-            EditorGUILayout.EndHorizontal();
-
-            // Categories + buttons in one line
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(
-                new GUIContent("Categories", "Palette categories grouped by biome or usage."),
-                EditorStyles.boldLabel
-            );
-            GUILayout.FlexibleSpace();
-
-            if (GUILayout.Button(new GUIContent("+", "Add new category."), GUILayout.Width(24))) {
-                var cat = new PaletteCategory { name = "Category " + categories.Count };
-                categories.Add(cat);
-                selectedCategoryIndex = categories.Count - 1;
-                selectedItemIndex = -1;
-                EnsureReorderableList(cat);
-            }
-
-            using (new EditorGUI.DisabledScope(categories.Count <= 1)) {
-                if (GUILayout.Button(new GUIContent("-", "Remove the currently selected category."),
-                        GUILayout.Width(24))) {
-                    if (selectedCategoryIndex >= 0 && selectedCategoryIndex < categories.Count) {
-                        categories.RemoveAt(selectedCategoryIndex);
-                        if (categories.Count == 0) {
-                            categories.Add(new PaletteCategory { name = "Default" });
-                        }
-
-                        selectedCategoryIndex = Mathf.Clamp(selectedCategoryIndex, 0, categories.Count - 1);
-                        selectedItemIndex = -1;
-                    }
-                }
-            }
-
             EditorGUILayout.EndHorizontal();
         }
 
-        // --- CATEGORIES + PALETTES (ACCORDION + SCROLL) -------------------------
+        // --- PALETTE (BIOME -> CATEGORY -> ITEMS) --------------------------------
 
-        private void DrawCategoriesAndPalettesGUI() {
-            if (categories.Count == 0) {
+        private void DrawPaletteGUI() {
+            if (config == null || config.biomes == null || config.biomes.Count == 0) {
+                EditorGUILayout.HelpBox(
+                    "No biomes referenced. Open Configure… to add biome profiles and categories.",
+                    MessageType.Info
+                );
                 return;
             }
 
             categoriesScroll = EditorGUILayout.BeginScrollView(categoriesScroll);
 
-            for (int i = 0; i < categories.Count; i++) {
-                PaletteCategory category = categories[i];
-                EnsureReorderableList(category);
+            foreach (ObjectBrushProfile biome in config.biomes) {
+                if (biome == null) {
+                    continue;
+                }
 
-                var i1 = i;
-                category.IsExpanded = EditorGUILayout.BeginFoldoutHeaderGroup(
-                    category.IsExpanded,
-                    category.name,
-                    null,
-                    rect => {
-                        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition)) {
-                            selectedCategoryIndex = i1;
-                        }
-                    }
-                );
+                bool biomeOpen = GetExpanded(biomeExpanded, biome, true);
+                biomeOpen = EditorGUILayout.BeginFoldoutHeaderGroup(biomeOpen, biome.name);
+                biomeExpanded[biome] = biomeOpen;
 
-                if (category.IsExpanded) {
+                if (biomeOpen) {
                     EditorGUI.indentLevel++;
-
-                    // Items Count + Add Item
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField(
-                        new GUIContent("Items: " + category.items.Count, "Number of prefabs in this category."),
-                        GUILayout.Width(120)
-                    );
-
-                    GUILayout.FlexibleSpace();
-
-                    if (GUILayout.Button(
-                            new GUIContent("+ Add Item", "Add new prefab slot to this category."),
-                            GUILayout.Width(110))) {
-                        category.items.Add(null);
-                        category.List.list = category.items;
-                    }
-
-                    EditorGUILayout.EndHorizontal();
-
-                    EditorGUILayout.Space(3f);
-
-                    // Palette elements
-                    category.List.elementHeight = PaletteIconSize + 8f;
-                    category.List.DoLayoutList();
-
+                    DrawBiomeCategories(biome);
                     EditorGUI.indentLevel--;
                 }
 
@@ -664,69 +285,164 @@ namespace Editor.ObjectBrush {
             EditorGUILayout.EndScrollView();
         }
 
-        private void EnsureReorderableList(PaletteCategory category)
-        {
-            if (category.List != null) {
-                category.List.list = category.items;
+        private void DrawBiomeCategories(ObjectBrushProfile biome) {
+            if (biome.categories == null || biome.categories.Count == 0) {
+                EditorGUILayout.LabelField("No categories. Add them in Configure…", EditorStyles.miniLabel);
                 return;
             }
 
-            category.List = new ReorderableList(
+            foreach (ObjectBrushProfile.BiomeCategory category in biome.categories) {
+                bool catOpen = GetExpanded(categoryExpanded, category, true);
+                catOpen = EditorGUILayout.Foldout(catOpen, category.name, true);
+                categoryExpanded[category] = catOpen;
+
+                if (!catOpen) {
+                    continue;
+                }
+
+                EditorGUI.indentLevel++;
+
+                if (editMode) {
+                    DrawCategoryEdit(biome, category);
+                } else {
+                    DrawCategoryView(category);
+                }
+
+                EditorGUI.indentLevel--;
+            }
+        }
+
+        // Edit mode: editable item list with add / remove / assign.
+        private void DrawCategoryEdit(ObjectBrushProfile biome, ObjectBrushProfile.BiomeCategory category) {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(
+                new GUIContent("Items: " + category.items.Count, "Number of prefabs in this category."),
+                GUILayout.Width(120)
+            );
+
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button(
+                    new GUIContent("+ Add Item", "Add a new prefab slot to this category."),
+                    GUILayout.Width(110))) {
+                Undo.RecordObject(biome, "Add Item");
+                category.items.Add(null);
+                EditorUtility.SetDirty(biome);
+            }
+
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(3f);
+
+            ReorderableList list = EnsureItemList(biome, category);
+            list.elementHeight = PaletteIconSize + 8f;
+            list.DoLayoutList();
+        }
+
+        // View mode: read-only wrapping grid of previews for picking only.
+        private void DrawCategoryView(ObjectBrushProfile.BiomeCategory category) {
+            string filterLower = string.IsNullOrEmpty(filterText) ? null : filterText.ToLowerInvariant();
+
+            visibleBuffer.Clear();
+            for (int i = 0; i < category.items.Count; i++) {
+                GameObject item = category.items[i];
+                if (item == null) {
+                    continue;
+                }
+
+                if (filterLower != null && !item.name.ToLowerInvariant().Contains(filterLower)) {
+                    continue;
+                }
+
+                visibleBuffer.Add(i);
+            }
+
+            if (visibleBuffer.Count == 0) {
+                EditorGUILayout.LabelField("—", EditorStyles.miniLabel);
+                return;
+            }
+
+            const float spacing = 4f;
+            float iconSize = viewIconSize;
+            float indent = EditorGUI.indentLevel * 15f;
+            float available = EditorGUIUtility.currentViewWidth - indent - 26f; // indent + scrollbar/right margin
+            int columns = Mathf.Max(1, Mathf.FloorToInt((available + spacing) / (iconSize + spacing)));
+
+            int k = 0;
+            while (k < visibleBuffer.Count) {
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Space(indent);
+
+                for (int c = 0; c < columns && k < visibleBuffer.Count; c++, k++) {
+                    DrawViewIcon(category, visibleBuffer[k], iconSize);
+                }
+
+                GUILayout.FlexibleSpace();
+                EditorGUILayout.EndHorizontal();
+            }
+
+            EditorGUILayout.Space(3f);
+        }
+
+        private void DrawViewIcon(ObjectBrushProfile.BiomeCategory category, int index, float size) {
+            GameObject item = category.items[index];
+
+            Texture2D preview = AssetPreview.GetAssetPreview(item);
+            if (preview == null) {
+                preview = AssetPreview.GetMiniThumbnail(item);
+            }
+
+            GUIContent content = preview != null
+                ? new GUIContent(preview, item.name)
+                : new GUIContent(item.name, item.name);
+
+            bool clicked = GUILayout.Button(content, GUILayout.Width(size), GUILayout.Height(size));
+            Rect iconRect = GUILayoutUtility.GetLastRect();
+
+            if (category == activeCategory && index == activeItemIndex) {
+                EditorGUI.DrawRect(iconRect, new Color(0.7f, 0.9f, 1f, 0.35f));
+            }
+
+            if (clicked) {
+                SetActiveItem(category, index);
+            }
+        }
+
+        private ReorderableList EnsureItemList(ObjectBrushProfile biome, ObjectBrushProfile.BiomeCategory category) {
+            if (itemLists.TryGetValue(category, out ReorderableList existing)) {
+                existing.list = category.items;
+                return existing;
+            }
+
+            ReorderableList list = new ReorderableList(
                 category.items,
                 typeof(GameObject),
                 true,
                 false,
                 false,
                 false
-            )
-            {
+            ) {
                 drawElementCallback = (rect, index, isActive, isFocused) =>
-                {
-                    int categoryIndex = categories.IndexOf(category);
-                    if (categoryIndex < 0) {
-                        return;
-                    }
-
-                    DrawPaletteElement(category, categoryIndex, rect, index, isActive);
-                },
-
-                onSelectCallback = list =>
-                {
-                    int categoryIndex = categories.IndexOf(category);
-                    if (categoryIndex < 0) {
-                        return;
-                    }
-
-                    selectedCategoryIndex = categoryIndex;
-                    selectedItemIndex = list.index;
-
-                    if (selectedItemIndex >= 0 && selectedItemIndex < category.items.Count) {
-                        GameObject item = category.items[selectedItemIndex];
-                        if (item != null) {
-                            prefab = item;
-                        }
-                    }
-                }
+                    DrawPaletteItem(biome, category, rect, index, isActive),
+                onReorderCallback = l => EditorUtility.SetDirty(biome)
             };
+
+            itemLists[category] = list;
+            return list;
         }
 
-        private void DrawPaletteElement(PaletteCategory category, int categoryIndex, Rect rect, int index,
-            bool isActive) {
+        private void DrawPaletteItem(ObjectBrushProfile biome, ObjectBrushProfile.BiomeCategory category,
+            Rect rect, int index, bool isActive) {
             if (index < 0 || index >= category.items.Count) {
                 return;
             }
 
             GameObject item = category.items[index];
 
-            string filterLower = string.IsNullOrEmpty(filterText)
-                ? null
-                : filterText.ToLowerInvariant();
-
+            string filterLower = string.IsNullOrEmpty(filterText) ? null : filterText.ToLowerInvariant();
             bool matchesFilter = true;
-
             if (filterLower != null && item != null) {
-                string nameLower = item.name.ToLowerInvariant();
-                matchesFilter = nameLower.Contains(filterLower);
+                matchesFilter = item.name.ToLowerInvariant().Contains(filterLower);
             }
 
             Color oldGuiColor = GUI.color;
@@ -739,12 +455,7 @@ namespace Editor.ObjectBrush {
 
             float padding = 4f;
 
-            Rect iconRect = new Rect(
-                rect.x + padding,
-                rect.y + padding,
-                PaletteIconSize,
-                PaletteIconSize
-            );
+            Rect iconRect = new Rect(rect.x + padding, rect.y + padding, PaletteIconSize, PaletteIconSize);
 
             float trashWidth = 24f;
             float fieldRightPadding = 4f;
@@ -762,9 +473,8 @@ namespace Editor.ObjectBrush {
                 18f
             );
 
-            if (isActive && selectedCategoryIndex == categoryIndex) {
-                Color highlight = new Color(0.7f, 0.9f, 1f, 0.3f);
-                EditorGUI.DrawRect(rect, highlight);
+            if (category == activeCategory && index == activeItemIndex) {
+                EditorGUI.DrawRect(rect, new Color(0.7f, 0.9f, 1f, 0.3f));
             }
 
             Texture2D preview = null;
@@ -772,48 +482,36 @@ namespace Editor.ObjectBrush {
                 preview = AssetPreview.GetAssetPreview(item) ?? AssetPreview.GetMiniThumbnail(item);
             }
 
-            GUIContent iconContent;
-            if (preview != null) {
-                iconContent = new GUIContent(preview, item.name);
-            } else {
-                iconContent = new GUIContent("None", "Empty slot");
+            GUIContent iconContent = preview != null
+                ? new GUIContent(preview, item.name)
+                : new GUIContent("None", "Empty slot");
+
+            if (GUI.Button(iconRect, iconContent) && item != null) {
+                SetActiveItem(category, index);
             }
 
-            if (GUI.Button(iconRect, iconContent)) {
-                selectedCategoryIndex = categoryIndex;
-                category.List.index = index;
-                selectedItemIndex = index;
-                if (item != null) {
-                    prefab = item;
-                }
-            }
-
-            GameObject newItem = (GameObject)EditorGUI.ObjectField(
-                fieldRect,
-                item,
-                typeof(GameObject),
-                false
-            );
-
+            GameObject newItem = (GameObject)EditorGUI.ObjectField(fieldRect, item, typeof(GameObject), false);
             if (newItem != item) {
+                Undo.RecordObject(biome, "Assign Item");
                 category.items[index] = newItem;
-                if (isActive && newItem != null) {
+                EditorUtility.SetDirty(biome);
+
+                if (category == activeCategory && index == activeItemIndex) {
                     prefab = newItem;
                 }
             }
 
             GUIContent trashIcon = EditorGUIUtility.IconContent("TreeEditor.Trash");
             if (GUI.Button(trashRect, trashIcon)) {
+                Undo.RecordObject(biome, "Remove Item");
                 category.items.RemoveAt(index);
-                category.List.list = category.items;
+                EditorUtility.SetDirty(biome);
 
-                if (selectedCategoryIndex == categoryIndex) {
-                    if (selectedItemIndex == index) {
-                        selectedItemIndex = -1;
-                        category.List.index = -1;
-                    } else if (selectedItemIndex > index) {
-                        selectedItemIndex--;
-                        category.List.index = selectedItemIndex;
+                if (category == activeCategory) {
+                    if (activeItemIndex == index) {
+                        activeItemIndex = -1;
+                    } else if (activeItemIndex > index) {
+                        activeItemIndex--;
                     }
                 }
             }
@@ -821,15 +519,25 @@ namespace Editor.ObjectBrush {
             GUI.color = oldGuiColor;
         }
 
+        private void SetActiveItem(ObjectBrushProfile.BiomeCategory category, int index) {
+            activeCategory = category;
+            activeItemIndex = index;
+            activeParentPath = ObjectBrushUtility.ResolveParentPath(category);
+
+            GameObject item = category.items[index];
+            if (item != null) {
+                prefab = item;
+            }
+        }
+
+        private static bool GetExpanded<TKey>(Dictionary<TKey, bool> map, TKey key, bool defaultValue) {
+            return !map.TryGetValue(key, out bool value) ? defaultValue : value;
+        }
+
         // --- SCENE GUI / BRUSH LOGIC --------------------------------------------
 
         private void OnSceneGUI(SceneView sceneView) {
-            if (!brushEnabled) {
-                DestroyPreviewInstance();
-                return;
-            }
-
-            if (prefab == null) {
+            if (!brushEnabled || prefab == null) {
                 DestroyPreviewInstance();
                 return;
             }
@@ -917,23 +625,14 @@ namespace Editor.ObjectBrush {
             Undo.RegisterCreatedObjectUndo(instance, "Place Object");
             instance.transform.position = pos;
 
-            Transform targetParent = null;
-
-            if (selectedCategoryIndex >= 0 && selectedCategoryIndex < categories.Count) {
-                targetParent = categories[selectedCategoryIndex].defaultParent;
-            }
-
-            if (targetParent == null) {
-                targetParent = globalParent;
-            }
-
+            string worldRootName = config != null ? config.worldRootName : "World";
+            Transform targetParent = ObjectBrushUtility.ResolveOrCreateParent(scene, worldRootName, activeParentPath);
             if (targetParent != null) {
                 instance.transform.SetParent(targetParent, true);
             }
 
             string baseName = prefab.name;
             int nextIndex = GetNextInstanceIndex(baseName, scene);
-
             instance.name = $"{baseName}_{nextIndex}";
         }
 
@@ -983,125 +682,6 @@ namespace Editor.ObjectBrush {
             }
         }
 
-        private void DrawCategoryOverviewGUI()
-        {
-            if (categories == null || categories.Count == 0) {
-                return;
-            }
-
-            categoryOverviewFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(
-                categoryOverviewFoldout,
-                new GUIContent(
-                    "Category Names & Parents",
-                    "Rename categories, assign default parents and reorder categories.\n" +
-                    "Order here matches the accordion below."
-                )
-            );
-
-            if (categoryOverviewFoldout) {
-                EditorGUI.indentLevel++;
-
-                // --- Информация о текущей сцене ------------------------------------
-                Scene scene = SceneManager.GetActiveScene();
-                string sceneDisplay = string.IsNullOrEmpty(scene.path)
-                    ? scene.name
-                    : $"{scene.name}  ({scene.path})";
-
-                EditorGUILayout.LabelField(
-                    new GUIContent(
-                        $"Parents for scene: {sceneDisplay}",
-                        "Scene whose hierarchy is used as a source for default parents."
-                    ),
-                    EditorStyles.miniLabel
-                );
-                EditorGUILayout.Space(2f);
-                // -------------------------------------------------------------------
-
-                EnsureCategoryOverviewList();
-                categoryOverviewList.DoLayoutList();
-
-                EditorGUI.indentLevel--;
-            }
-
-            EditorGUILayout.EndFoldoutHeaderGroup();
-        }
-
-        private void EnsureCategoryOverviewList() {
-            if (categoryOverviewList != null) {
-                categoryOverviewList.list = categories;
-                return;
-            }
-
-            categoryOverviewList = new ReorderableList(
-                categories,
-                typeof(PaletteCategory),
-                true, // draggable
-                false, // header (не нужен, у нас FoldoutHeaderGroup)
-                false, // add
-                false // remove
-            );
-
-            categoryOverviewList.elementHeight = EditorGUIUtility.singleLineHeight + 6f;
-
-            categoryOverviewList.drawElementCallback = (rect, index, isActive, isFocused) => {
-                if (index < 0 || index >= categories.Count) {
-                    return;
-                }
-
-                PaletteCategory cat = categories[index];
-
-                float padding = 3f;
-                rect.y += padding;
-                rect.height -= 2f * padding;
-
-                float nameWidth = rect.width * 0.4f;
-                float spacing = 6f;
-
-                Rect nameRect = new Rect(
-                    rect.x,
-                    rect.y,
-                    nameWidth,
-                    EditorGUIUtility.singleLineHeight
-                );
-
-                Rect parentRect = new Rect(
-                    nameRect.xMax + spacing,
-                    rect.y,
-                    rect.xMax - nameRect.xMax - spacing,
-                    EditorGUIUtility.singleLineHeight
-                );
-
-                EditorGUI.BeginChangeCheck();
-
-                string newName = EditorGUI.TextField(
-                    nameRect,
-                    cat.name
-                );
-
-                Transform newParent = (Transform)EditorGUI.ObjectField(
-                    parentRect,
-                    GUIContent.none,
-                    cat.defaultParent,
-                    typeof(Transform),
-                    true
-                );
-
-                if (EditorGUI.EndChangeCheck()) {
-                    cat.name = newName;
-                    cat.defaultParent = newParent;
-
-                    // Сохраняем привязки по сцене
-                    SaveSceneParentSettingsForCurrentScene();
-                }
-            };
-
-            categoryOverviewList.onSelectCallback = list => { selectedCategoryIndex = list.index; };
-
-            categoryOverviewList.onReorderCallback = list => {
-                selectedCategoryIndex = Mathf.Clamp(selectedCategoryIndex, 0, categories.Count - 1);
-            };
-        }
-
         private int GetNextInstanceIndex(string baseName, Scene scene) {
             int maxIndex = 0;
 
@@ -1114,8 +694,7 @@ namespace Editor.ObjectBrush {
 
             while (stack.Count > 0) {
                 Transform t = stack.Pop();
-                GameObject go = t.gameObject;
-                string name = go.name;
+                string name = t.gameObject.name;
 
                 if (!name.StartsWith(baseName, StringComparison.Ordinal)) {
                     for (int i = 0; i < t.childCount; i++) {
@@ -1127,19 +706,14 @@ namespace Editor.ObjectBrush {
 
                 string suffix = name.Substring(baseName.Length);
 
-                // Supported options:
-                // "Barrel1" 
-                // "Barrel_1"
-                // "Barrel 1"
+                // Supported options: "Barrel1", "Barrel_1", "Barrel 1"
                 if (!string.IsNullOrEmpty(suffix) && (suffix[0] == '_' || suffix[0] == ' ')) {
                     suffix = suffix.Substring(1);
                 }
 
-                if (!string.IsNullOrEmpty(suffix)) {
-                    if (int.TryParse(suffix, out int index)) {
-                        if (index > maxIndex) {
-                            maxIndex = index;
-                        }
+                if (!string.IsNullOrEmpty(suffix) && int.TryParse(suffix, out int index)) {
+                    if (index > maxIndex) {
+                        maxIndex = index;
                     }
                 }
 
