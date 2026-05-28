@@ -95,6 +95,10 @@ MonoBehaviour:
     m_Key: ui.interaction.enter
     m_Metadata:
       m_Items: []
+  - m_Id: 19358856053628928
+    m_Key: ui.info.wr.hardheadyard.challenge
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

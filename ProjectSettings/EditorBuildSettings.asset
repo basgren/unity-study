@@ -65,6 +65,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Game/Scenes/TheWrongShip/WS_TurnbellyHold.unity
     guid: 5e6c1a6d84ec5a646b686df164f9403c
+  - enabled: 1
+    path: Assets/Game/Scenes/Warmrocks/WR_HardHeadYard.unity
+    guid: 060ac10097ec9184b954bdec9fc7949b
+  - enabled: 1
+    path: Assets/Game/Scenes/Warmrocks/WR_RikkoHub.unity
+    guid: 90fd1221710d8ca4c9ba023f4fc2773e
+  - enabled: 1
+    path: Assets/Game/Scenes/Warmrocks/WR_SidePath.unity
+    guid: 66f65efabccd016428949c5b691001e2
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: a95e6ed043347534a8767f25a4d96a36,
       type: 2}
