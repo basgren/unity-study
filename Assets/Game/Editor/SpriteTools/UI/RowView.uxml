@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="row-item">
+        <ui:VisualElement class="row-line">
+            <ui:Label name="row-label" class="row-label" />
+            <ui:TextField name="row-name" class="row-name" />
+        </ui:VisualElement>
+        <ui:VisualElement name="row-pivot-line" class="row-line indent">
+            <ui:Label text="Pivot" class="row-pivot-label" />
+            <uie:EnumField name="row-preset" class="row-preset" />
+            <uie:EnumField name="row-unit" class="unit" />
+            <uie:FloatField name="row-x" label="X" class="xy" />
+            <uie:FloatField name="row-y" label="Y" class="xy" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

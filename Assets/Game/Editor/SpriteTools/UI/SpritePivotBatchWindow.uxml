@@ -1,0 +1,49 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <Style src="SpritePivotBatchWindow.uss" />
+    <ui:VisualElement class="root">
+        <ui:Label name="mode-label" text="Mode" class="mode-banner" />
+
+        <ui:VisualElement class="section">
+            <ui:Toggle name="change-pivot" label="Change Pivot" binding-path="changePivot" />
+            <ui:VisualElement name="each-row-own-pivot" class="indent">
+                <ui:Toggle label="Each row with own pivot" binding-path="eachRowOwnPivot" />
+            </ui:VisualElement>
+            <ui:Toggle name="change-names" label="Rename" binding-path="changeNames" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="pivot-section" class="section">
+            <uie:EnumField name="pivot-preset" label="Pivot" binding-path="pivotPreset" />
+            <ui:VisualElement name="custom-pivot-row" class="row-line">
+                <ui:Label text="Custom Pivot" class="prefix" />
+                <uie:EnumField name="pivot-unit" binding-path="unitMode" class="unit" />
+                <uie:FloatField name="pivot-x" label="X" binding-path="customPivot.x" class="xy" />
+                <uie:FloatField name="pivot-y" label="Y" binding-path="customPivot.y" class="xy" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="flat-name-section" class="section">
+            <ui:TextField name="base-name" label="Base Name" binding-path="renameBaseName" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="rows-section" class="section">
+            <ui:Label name="rows-header" text="Rows" class="header" />
+            <ui:VisualElement name="rows-container" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="numbering-section" class="section">
+            <uie:IntegerField name="start-index" label="Start Index" binding-path="renameStartIndex" />
+            <uie:IntegerField name="pad-width" label="Pad Width" binding-path="renamePadWidth" />
+        </ui:VisualElement>
+
+        <ui:Button name="apply-button" text="Apply" class="apply" />
+
+        <ui:VisualElement class="section">
+            <ui:Label text="Preview" class="header" />
+            <ui:ScrollView name="preview-scroll" class="preview-scroll">
+                <ui:VisualElement name="preview-container" />
+            </ui:ScrollView>
+        </ui:VisualElement>
+
+        <ui:HelpBox message-type="Info" text="Mode follows selection: Sprite sub-assets -> flat (selection-order) rename; a whole texture -> per-row.&#10;Custom pivot is interpreted from the bottom-left of each sprite rect, like Sprite Editor." />
+    </ui:VisualElement>
+</ui:UXML>
