@@ -876,7 +876,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRopeLength: 5
-  startAngle: -20
+  startAngle: -45
   endAngle: 98
   anchorLayer:
     serializedVersion: 2
@@ -885,8 +885,8 @@ MonoBehaviour:
     type: 3}
   ropePrefab: {fileID: 8804120717180790289, guid: 560b304319221b948b170707115beb1b,
     type: 3}
-  swingInfluenceForce: 10
-  swingLinearDrag: 0.5
+  swingInfluenceForce: 25
+  swingLinearDrag: 0.6
   ropeClimbSpeed: 2
   minRopeLength: 0.2
   oneWayLandHopSpeed: 4
