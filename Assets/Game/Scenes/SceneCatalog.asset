@@ -59,3 +59,5 @@ MonoBehaviour:
     scenePath: Assets/Game/Scenes/Warmrocks/WR_RikkoHub.unity
   - sceneGuid: 66f65efabccd016428949c5b691001e2
     scenePath: Assets/Game/Scenes/Warmrocks/WR_SidePath.unity
+  - sceneGuid: 16e764cb2a715bd439a21c2498c2fbf3
+    scenePath: Assets/Game/Scenes/SkullkeeperHollow/SH_LastWarmFloor.unity

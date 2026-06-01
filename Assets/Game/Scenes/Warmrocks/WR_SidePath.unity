@@ -16926,17 +16926,17 @@ PrefabInstance:
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: link.targetId
-      value: 
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: link.targetScene.sceneGuid
-      value: 
+      value: 16e764cb2a715bd439a21c2498c2fbf3
       objectReference: {fileID: 0}
     - target: {fileID: -2333543428557336303, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
       propertyPath: link.targetScene.scenePath
-      value: 
+      value: Assets/Game/Scenes/SkullkeeperHollow/SH_LastWarmFloor.unity
       objectReference: {fileID: 0}
     - target: {fileID: 2918517496873821420, guid: d1bf812c4eddec043ab9b0aa6f36dbc9,
         type: 3}
