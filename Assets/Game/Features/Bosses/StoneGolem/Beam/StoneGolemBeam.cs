@@ -4,27 +4,23 @@ using UnityEngine;
 
 namespace Game.Features.Bosses.StoneGolem.Beam {
     /// <summary>
-    /// Self-driven beam: the multi-state sprite animator plays start → loop → finish. The beam
-    /// length is rebuilt every FixedUpdate from a forward raycast — when ground is hit, the
-    /// sprite + damage collider clip to the hit distance. Length tracking runs during ALL phases
-    /// so buildup ("start") and fade ("finish") visuals also fit the environment; only during
-    /// "loop" is the damage collider enabled and the impact effect shown. The "finish" clip's
-    /// last frame fires <see cref="OnBeamFinish"/> as an animation event, raising
-    /// <see cref="Finished"/> so the spawning action can despawn the beam.
+    /// Passive beam visual driven by its spawning action. The multi-state sprite animator plays
+    /// start → loop → finish. The beam length is rebuilt every FixedUpdate from a forward raycast —
+    /// when ground is hit, the sprite + damage collider clip to the hit distance. Length tracking
+    /// runs during ALL phases so buildup ("start") and fade ("finish") visuals also fit the
+    /// environment; only during "loop" is the damage collider enabled and the impact effect shown.
     ///
-    /// Loop duration is set by <see cref="Initialize"/> (typically from the spawning action's
-    /// MaxDuration). The serialized <see cref="duration"/> is a fallback for when the beam is
-    /// dropped into a scene without an action driving it.
+    /// The beam owns no aim or timing of its own. The action positions and rotates it
+    /// (<see cref="SetAim"/>), decides how long the loop lasts, and ends it (<see cref="PlayFinish"/>).
+    /// The beam reports back two moments: <see cref="LoopStarted"/> fires on the loop clip's first
+    /// frame (when the damage collider arms), letting the action start its duration countdown; the
+    /// "finish" clip's last frame fires <see cref="OnBeamFinish"/> as an animation event, raising
+    /// <see cref="Finished"/> so the action can despawn the beam.
     ///
     /// Pivot-drift compensation: the SpriteRenderer + damage collider live on a child
     /// <see cref="body"/> GameObject whose localPosition is shifted every resize so that the
     /// sprite's pivot pixel stays at this root's origin (= the muzzle). Beam direction is this
     /// transform's local +X; facing flips via the parent hierarchy's <c>localScale.x</c>.
-    ///
-    /// Aim sweep: the beam does not track the player. It fires in the golem's facing direction and,
-    /// once the "loop" (damage) phase begins, rotates about the muzzle from <see cref="startAngleDeg"/>
-    /// up by <see cref="sweepArcDeg"/> over <see cref="sweepTime"/>, then holds. The player runs out
-    /// from under the rising beam and can close in once it has swept up.
     /// </summary>
     public class StoneGolemBeam : MonoBehaviour {
         [Header("Body wiring")]
@@ -44,11 +40,6 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
         [Tooltip("BoxCollider2D on body. Resized at runtime to match the clipped beam length.")]
         private BoxCollider2D damageCollider;
 
-        [Header("Loop timing")]
-        [SerializeField]
-        [Tooltip("Fallback loop duration if Initialize is not called. StoneGolemBeamShootAction overrides this with the action's MaxDuration.")]
-        private float duration = 3f;
-
         [Header("Ground detection")]
         [SerializeField]
         [Tooltip("When disabled, the beam ignores ground entirely: it always extends to Max Range and " +
@@ -63,66 +54,56 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
         [Tooltip("Beam extends this far when no ground is hit.")]
         private float maxRange = 20f;
 
-        [Header("Aim sweep")]
-        [SerializeField]
-        [Tooltip("Local Z angle (degrees) the beam starts at, relative to the golem's facing. " +
-                 "Negative points below horizontal. Default -45 = 45° down.")]
-        private float startAngleDeg = -45f;
-
-        [SerializeField]
-        [Tooltip("Degrees the beam rotates UP from the start angle across the loop (damage) phase. " +
-                 "Default 90 ends 45° above horizontal.")]
-        private float sweepArcDeg = 90f;
-
-        [SerializeField]
-        [Tooltip("Seconds to sweep the full arc once the loop phase begins. Should be <= the loop " +
-                 "duration; any remaining loop time holds the beam at the final angle.")]
-        private float sweepTime = 2f;
-
         [Header("Impact")]
         [SerializeField]
         [Tooltip("Spawned at the ground hit point only while the damage collider is active (loop phase). " +
                  "Use a ParticleSystem with Stop Action = Destroy for graceful finish on beam end.")]
         private GameObject impactEffectPrefab;
 
+        /// <summary>
+        /// Raised on the loop clip's first frame, the moment the damage collider arms. The driving
+        /// action listens to this to start its loop-duration countdown.
+        /// </summary>
+        public event Action LoopStarted;
+
         /// <summary>Raised once when the "finish" clip reaches its end frame.</summary>
         public event Action Finished;
 
-        private float timer;
         private GameObject impactInstance;
-        private bool sweeping;
-        private float sweepElapsed;
-        private bool externalAim;
+        private bool finishing;
 
         /// <summary>
-        /// Sets the loop duration and runs an initial resize — call right after Instantiate.
-        /// A non-positive <paramref name="loopDuration"/> is ignored (keeps the serialized
-        /// fallback) so passing the action's safety-disabled <c>MaxDuration=0</c> doesn't
-        /// strand the beam with a zero-length loop it can't exit.
+        /// Sets the beam's aim — its local Z rotation, in degrees. The beam never changes this on
+        /// its own; the driving action positions and sweeps it. Call right after Instantiate so the
+        /// buildup ("start") clip and the first length raycast already point the right way.
         /// </summary>
-        public void Initialize(float loopDuration) {
-            if (loopDuration > 0f) {
-                duration = loopDuration;
-            }
-
-            // Point at the start angle before the first render so the buildup ("start") clip already
-            // shows where the sweep begins, and so the initial resize raycasts in the right direction.
-            ApplyAimAngle(startAngleDeg);
-
-            // Initial size before the first render so the spawn frame doesn't flash at prefab default.
+        public void SetAim(float localAngleDeg) {
+            transform.localRotation = Quaternion.Euler(0f, 0f, localAngleDeg);
+            // Resize to the new direction immediately so the beam never lags a physics frame behind
+            // the aim (and the spawn frame doesn't flash at the prefab's default length).
             UpdateBeamLength();
         }
 
         /// <summary>
-        /// Switches the beam to externally-driven aim: disables the self-sweep and pins the local aim to
-        /// <paramref name="localAngleDeg"/>. The Laser Cross uses this to parent 4 beams under a shared
-        /// pivot at fixed offsets and rotate the pivot itself, instead of each beam sweeping on its own.
+        /// Ends the beam: closes the damage window and plays the "finish" clip, whose last frame
+        /// raises <see cref="Finished"/>. Called by the driving action when its loop duration
+        /// elapses. Idempotent — extra calls are ignored.
         /// </summary>
-        public void SetManagedAim(float localAngleDeg) {
-            externalAim = true;
-            startAngleDeg = localAngleDeg;
-            sweeping = false;
-            ApplyAimAngle(localAngleDeg);
+        public void PlayFinish() {
+            if (finishing) {
+                return;
+            }
+
+            finishing = true;
+            if (damageCollider != null) {
+                damageCollider.enabled = false;
+            }
+
+            if (anim != null) {
+                anim.SetClip("finish");
+            }
+
+            ReleaseImpact();
         }
 
         private void Reset() {
@@ -139,59 +120,21 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
             if (damageCollider != null) {
                 damageCollider.enabled = false;
             }
-
-            ApplyAimAngle(startAngleDeg);
         }
 
         private void FixedUpdate() {
-            // Advance the aim before sizing so the raycast/length match the new direction this frame.
-            AdvanceSweep();
+            // Keep the beam fitted to the environment every physics step. Aim is owned by the
+            // driving action (see SetAim); the beam only sizes itself to its current direction.
             UpdateBeamLength();
-
-            if (timer > 0) {
-                timer -= Time.fixedDeltaTime;
-
-                if (timer <= 0) {
-                    damageCollider.enabled = false;
-                    timer = 0f;
-                    anim.SetClip("finish");
-                    ReleaseImpact();
-                }
-            }
         }
 
         public void OnAnimFrame(MultiStateSpriteAnimator animator) {
-            // First frame of "loop" arms the damager, starts the loop-duration countdown, and begins
-            // the aim sweep. Sizing is handled in FixedUpdate (runs continuously across all clips).
-            if (!damageCollider.enabled && animator.CurrentClip.Name == "loop" && animator.CurrentFrameIndex == 0) {
+            // First frame of "loop" arms the damager and notifies the action so it can start its
+            // loop-duration countdown. Sizing is handled in FixedUpdate (runs across all clips).
+            if (!damageCollider.enabled && !finishing && animator.CurrentClip.Name == "loop" && animator.CurrentFrameIndex == 0) {
                 damageCollider.enabled = true;
-                timer = duration;
-                // Externally-aimed beams (Laser Cross) are rotated by their pivot, not their own sweep.
-                if (!externalAim) {
-                    sweeping = true;
-                    sweepElapsed = 0f;
-                }
+                LoopStarted?.Invoke();
             }
-        }
-
-        // Rotates the beam from startAngleDeg up by sweepArcDeg over sweepTime, then holds. The facing
-        // flip is a parent localScale.x mirror, which preserves the vertical component, so the same
-        // local angle reads as "below"/"above" horizontal whether the golem faces left or right.
-        private void AdvanceSweep() {
-            if (!sweeping) {
-                return;
-            }
-
-            sweepElapsed += Time.fixedDeltaTime;
-            float t = sweepTime > 0f ? Mathf.Clamp01(sweepElapsed / sweepTime) : 1f;
-            ApplyAimAngle(startAngleDeg + sweepArcDeg * t);
-            if (t >= 1f) {
-                sweeping = false;
-            }
-        }
-
-        private void ApplyAimAngle(float angleDeg) {
-            transform.localRotation = Quaternion.Euler(0f, 0f, angleDeg);
         }
 
         /// <summary>Animation event on the last frame of the "finish" clip.</summary>
@@ -218,6 +161,7 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
 
             float length;
             Vector2? hitPoint;
+            Vector2? hitNormal;
             if (collideWithGround) {
                 Vector2 origin = transform.position;
                 // Use the full local→world transform, not transform.right: the golem's facing flip is a
@@ -229,14 +173,17 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
                 if (hit.collider != null) {
                     length = hit.distance;
                     hitPoint = hit.point;
+                    hitNormal = hit.normal;
                 } else {
                     length = maxRange;
                     hitPoint = null;
+                    hitNormal = null;
                 }
             } else {
                 // Pass-through mode: no raycast, beam stays at full length with no contact point.
                 length = maxRange;
                 hitPoint = null;
+                hitNormal = null;
             }
 
             SetBeamLength(length, nativeWidth, pivotFractionX);
@@ -244,7 +191,7 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
             // Impact only while the damage collider is active (loop phase). During start/finish
             // the beam visual fits the ground but no contact effect is spawned.
             if (damageCollider.enabled) {
-                UpdateImpact(hitPoint);
+                UpdateImpact(hitPoint, hitNormal);
             } else {
                 ReleaseImpact();
             }
@@ -275,7 +222,7 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
             damageCollider.offset = colOffset;
         }
 
-        private void UpdateImpact(Vector2? hitPoint) {
+        private void UpdateImpact(Vector2? hitPoint, Vector2? hitNormal) {
             if (hitPoint == null) {
                 ReleaseImpact();
                 return;
@@ -288,6 +235,15 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
 
             if (impactInstance != null) {
                 impactInstance.transform.position = hitPoint.Value;
+
+                // The BeamSpot is an ellipse oriented along a horizontal surface by default. A vertical
+                // surface (wall) yields a mostly-horizontal hit normal, so rotate the spot 90° to lie
+                // along the wall instead. The effect is symmetric, so either rotation direction reads
+                // the same — a binary 0°/90° choice keeps the sprite on a clean pixel grid.
+                if (hitNormal != null) {
+                    bool verticalSurface = Mathf.Abs(hitNormal.Value.x) > Mathf.Abs(hitNormal.Value.y);
+                    impactInstance.transform.rotation = Quaternion.Euler(0f, 0f, verticalSurface ? 90f : 0f);
+                }
             }
         }
 

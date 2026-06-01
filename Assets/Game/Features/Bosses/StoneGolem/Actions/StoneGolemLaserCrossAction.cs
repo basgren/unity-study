@@ -9,8 +9,8 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
     /// Laser Cross (phase 2). The golem flies to the room centre, spawns <see cref="beamCount"/> beams
     /// evenly around a shared pivot, then rotates the whole cross by <see cref="totalRotationDeg"/> at
     /// <see cref="rotationSpeed"/>; the beams finish, the golem holds briefly and flies back down.
-    /// Reuses <c>StoneGolemBeam</c> in externally-aimed mode (<c>SetManagedAim</c>) so the pivot drives
-    /// their rotation together rather than each beam sweeping on its own.
+    /// Reuses <c>StoneGolemBeam</c> as a passive visual (<c>SetAim</c> sets each beam's fixed offset)
+    /// so the shared pivot drives their rotation together.
     ///
     /// NOTE: the full maneuver (fly + rotation + hold + descent) is long; set this action's
     /// <c>maxDuration</c> to cover it (or 0 to disable the safety cap), or it will force-complete early.
@@ -93,7 +93,7 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
                 }
             }
 
-            SpawnCross(rotationDuration);
+            SpawnCross();
 
             // Rotate the whole cross by totalRotationDeg at rotationSpeed.
             float t = 0f;
@@ -107,7 +107,8 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
                 yield return null;
             }
 
-            // The beams finish on their own loop timers (~rotationDuration); hold while they fade.
+            // Beams have no timer of their own — tell them to finish, then hold while they fade.
+            FinishBeams();
             if (standAfterTime > 0f) {
                 yield return new WaitForSeconds(standAfterTime);
             }
@@ -123,7 +124,7 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
             Complete();
         }
 
-        private void SpawnCross(float loopDuration) {
+        private void SpawnCross() {
             if (beamPrefab == null || golem == null) {
                 return;
             }
@@ -141,9 +142,17 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
                     continue;
                 }
 
-                beam.Initialize(loopDuration);
-                beam.SetManagedAim(step * i);
+                // Fixed offset around the pivot; the pivot's rotation sweeps them together.
+                beam.SetAim(step * i);
                 beams.Add(beam);
+            }
+        }
+
+        private void FinishBeams() {
+            for (int i = 0; i < beams.Count; i++) {
+                if (beams[i] != null) {
+                    beams[i].PlayFinish();
+                }
             }
         }
 

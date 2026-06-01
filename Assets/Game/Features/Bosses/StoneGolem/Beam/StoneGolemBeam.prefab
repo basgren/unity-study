@@ -64,11 +64,15 @@ MonoBehaviour:
   anim: {fileID: 1058366754325650241}
   damageCollider: {fileID: 7001383505763281164}
   duration: 10
+  collideWithGround: 1
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 3072
   maxRange: 20
-  impactEffectPrefab: {fileID: 1586562095463690922, guid: 7b4420fd28e061f4e8c7dc4b1f442e53,
+  startAngleDeg: -45
+  sweepArcDeg: 90
+  sweepTime: 2
+  impactEffectPrefab: {fileID: 8123056284716559963, guid: 807d944b7e5ad034e8cce5e9bbc537ec,
     type: 3}
 --- !u!1 &3836330014760500726
 GameObject:

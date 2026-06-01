@@ -398,13 +398,13 @@ MonoBehaviour:
   anchors: []
   phase1Pool:
   - attack: 0
-    weight: 30
+    weight: 0
   - attack: 1
-    weight: 30
+    weight: 0
   - attack: 2
     weight: 10
   - attack: 3
-    weight: 20
+    weight: 0
   phase2Pool:
   - attack: 0
     weight: 20
@@ -1025,9 +1025,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4892ebc5618c72b4d8ff5c62c3db31f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDuration: 7
+  maxDuration: 8
   animator: {fileID: 2618594812571123306}
   beamPrefab: {fileID: 651222684960076803, guid: 603a43f45d8750d40a1b3c7d671b4379,
     type: 3}
   spawnPoint: {fileID: 6176492534002011314}
   animBoolKey: isCastingBeam
+  sweepDelay: 1
+  startAngleDeg: -40
+  sweepArcDeg: 80
+  sweepTime: 3
+  loopDuration: 4
