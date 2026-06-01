@@ -58,6 +58,10 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         private GrapplingHookAnchor targetAnchor;
         private GrapplingHookAnchor highlightedAnchor;
         private DistanceJoint2D swingJoint;
+        // While true the rope length is frozen. While false the rope is still
+        // reeling in to track the hero as he falls toward the anchor (see
+        // UpdateRopeReeling). Reset on every attach.
+        private bool ropeLengthLocked;
         private bool jumpDetachPending;
         private float originalLinearDrag;
         // Tracks the player's Health at the moment we last sampled it so OnHealthChanged
@@ -180,6 +184,14 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
                 return;
             }
 
+            // Reel the rope in to track the hero while he is still falling toward the
+            // anchor, then freeze the length the first time he pulls outward. Without
+            // this the rope keeps its attach-time length and visibly pokes out the far
+            // side of the hero whenever he ends up closer to the anchor than that length.
+            if (swingJoint != null && !ropeLengthLocked) {
+                UpdateRopeReeling();
+            }
+
             var dir = player.Actions.Move.ReadValue<Vector2>();
 
             // Up/down climbs the rope: up pulls hero closer, down extends up to max.
@@ -196,6 +208,46 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             }
         }
 
+        /// <summary>
+        /// While attached but not yet locked, shrinks the rope so its length tracks the
+        /// hero's actual distance to the anchor as he falls inward, then freezes the
+        /// length the first frame he starts moving back outward (his first "pull").
+        /// Only ever shrinks, never grows, so the rope catches him at his closest
+        /// approach instead of snapping back to the attach-time length. Driving both the
+        /// physics radius and the visual length from the same value keeps the rope from
+        /// overshooting through the hero.
+        /// </summary>
+        private void UpdateRopeReeling() {
+            var anchorPos = (Vector2)targetAnchor.transform.position;
+            var grabPos = GetGrabPointPosition();
+            var toHero = grabPos - anchorPos;
+            float distance = toHero.magnitude;
+
+            // Endpoints essentially coincide — no meaningful rope direction this frame.
+            if (distance < 0.0001f) {
+                return;
+            }
+
+            // Radial velocity along the rope: > 0 means the hero is moving away from the
+            // anchor (pulling the rope taut); < 0 means he is still falling inward.
+            var ropeDir = toHero / distance;
+            float radialVel = Vector2.Dot(playerRb.velocity, ropeDir);
+
+            if (radialVel > 0f) {
+                // First outward pull — the rope is now holding the hero. Freeze the
+                // length so a later inward push can't ratchet it shorter.
+                ropeLengthLocked = true;
+                return;
+            }
+
+            // Still approaching: shrink to track the hero so the rope can't overshoot him.
+            if (distance < swingJoint.distance) {
+                float newLength = Mathf.Max(distance, minRopeLength);
+                swingJoint.distance = newLength;
+                activeRope?.LockLength(newLength);
+            }
+        }
+
         // --- Attach / detach ---
 
         private void AttachToAnchor() {
@@ -203,6 +255,10 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             var grabPos = GetGrabPointPosition();
             // Clamp to max rope length in case the anchor was barely inside detection range.
             float ropeLength = Mathf.Min(Vector2.Distance(grabPos, anchorPos), maxRopeLength);
+
+            // Start unlocked: UpdateRopeReeling shrinks the length to track the hero
+            // until he first pulls the rope taut, then freezes it.
+            ropeLengthLocked = false;
 
             swingJoint = player.gameObject.AddComponent<DistanceJoint2D>();
             swingJoint.autoConfigureDistance = false;
