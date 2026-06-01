@@ -1,0 +1,87 @@
+.root {
+    padding: 6px;
+}
+
+.section {
+    margin-bottom: 6px;
+}
+
+.mode-banner {
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.header {
+    -unity-font-style: bold;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.indent {
+    margin-left: 15px;
+}
+
+.row-line {
+    flex-direction: row;
+    align-items: center;
+}
+
+.prefix {
+    width: 120px;
+}
+
+.unit {
+    width: 90px;
+}
+
+.xy {
+    width: 60px;
+    margin-left: 2px;
+}
+
+.row-label {
+    width: 110px;
+}
+
+.row-name {
+    flex-grow: 1;
+    min-width: 80px;
+}
+
+.row-preset {
+    width: 120px;
+}
+
+.row-pivot-label {
+    width: 40px;
+}
+
+.apply {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    height: 22px;
+}
+
+.preview-scroll {
+    max-height: 180px;
+    border-width: 1px;
+    border-color: var(--unity-colors-helpbox-border);
+}
+
+.preview-line {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.preview-left {
+    flex-grow: 1;
+}
+
+.preview-right {
+    -unity-text-align: middle-right;
+    color: var(--unity-colors-default-text);
+}
+
+.preview-row-header {
+    -unity-font-style: bold;
+}
