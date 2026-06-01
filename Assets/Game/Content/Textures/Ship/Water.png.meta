@@ -1,4 +1,4 @@
-﻿fileFormatVersion: 2
+fileFormatVersion: 2
 guid: ffb0b196e7133aa49983dd4a51f89a3d
 TextureImporter:
   internalIDToNameTable: []
@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 32
@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Water_0
+      name: Water_00
       rect:
         serializedVersion: 2
         x: 0
@@ -106,7 +106,7 @@ TextureImporter:
         height: 96
       alignment: 9
       pivot: {x: 0.5, y: 0.65625}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 40}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -118,7 +118,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_1
+      name: Water_01
       rect:
         serializedVersion: 2
         x: 96
@@ -127,7 +127,7 @@ TextureImporter:
         height: 96
       alignment: 9
       pivot: {x: 0.5, y: 0.65625}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 40}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -139,16 +139,16 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_2
+      name: Water_02
       rect:
         serializedVersion: 2
         x: 192
         y: 192
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.65625}
+      border: {x: 0, y: 0, z: 0, w: 40}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -160,15 +160,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_3
+      name: WaterReflex1_00
       rect:
         serializedVersion: 2
         x: 0
         y: 96
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -181,7 +181,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_4
+      name: WaterReflex1_01
       rect:
         serializedVersion: 2
         x: 96
@@ -189,7 +189,7 @@ TextureImporter:
         width: 96
         height: 96
       alignment: 9
-      pivot: {x: 0.5, y: 0.65625}
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -202,15 +202,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_5
+      name: WaterReflex1_02
       rect:
         serializedVersion: 2
         x: 192
         y: 96
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -223,15 +223,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_6
+      name: WaterReflex1_03
       rect:
         serializedVersion: 2
         x: 288
         y: 96
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -244,15 +244,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_7
+      name: WaterReflex1_04
       rect:
         serializedVersion: 2
         x: 384
         y: 96
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -265,15 +265,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_8
+      name: WaterReflex1_05
       rect:
         serializedVersion: 2
         x: 480
         y: 96
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -286,15 +286,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_9
+      name: WaterReflex2_00
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -307,15 +307,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_10
+      name: WaterReflex2_01
       rect:
         serializedVersion: 2
         x: 96
         y: 0
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -328,15 +328,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_11
+      name: WaterReflex2_02
       rect:
         serializedVersion: 2
         x: 192
         y: 0
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -349,15 +349,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_12
+      name: WaterReflex2_03
       rect:
         serializedVersion: 2
         x: 288
         y: 0
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -370,15 +370,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_13
+      name: WaterReflex2_04
       rect:
         serializedVersion: 2
         x: 384
         y: 0
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -391,15 +391,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Water_14
+      name: WaterReflex2_05
       rect:
         serializedVersion: 2
         x: 480
         y: 0
         width: 96
         height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.6666667}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -422,21 +422,21 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Water_0: 1701606744
-      Water_1: 1753102086
-      Water_10: -101130339
-      Water_11: 1156207002
-      Water_12: 895920766
-      Water_13: 274493873
-      Water_14: -532543918
-      Water_2: -747315663
-      Water_3: -1284231291
-      Water_4: 77913840
-      Water_5: -55034486
-      Water_6: -1328248132
-      Water_7: 1569135169
-      Water_8: -1867965156
-      Water_9: -929666244
+      WaterReflex1_00: -1284231291
+      WaterReflex1_01: 77913840
+      WaterReflex1_02: -55034486
+      WaterReflex1_03: -1328248132
+      WaterReflex1_04: 1569135169
+      WaterReflex1_05: -1867965156
+      WaterReflex2_00: -929666244
+      WaterReflex2_01: -101130339
+      WaterReflex2_02: 1156207002
+      WaterReflex2_03: 895920766
+      WaterReflex2_04: 274493873
+      WaterReflex2_05: -532543918
+      Water_00: 1701606744
+      Water_01: 1753102086
+      Water_02: -747315663
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
