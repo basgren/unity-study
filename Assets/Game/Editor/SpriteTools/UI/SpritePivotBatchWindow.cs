@@ -98,20 +98,24 @@ namespace Game.Editor.SpriteTools.UI {
         private VisualElement pivotSection;
         private EnumField pivotPresetField;
         private VisualElement customPivotRow;
-        private VisualElement flatNameSection;
         private VisualElement rowsSection;
         private VisualElement rowsContainer;
         private VisualElement numberingSection;
         private IntegerField padWidthField;
         private Button applyButton;
-        private VisualElement previewContainer;
+
+        // Preview rows the user has collapsed, keyed by row index; empty means all expanded.
+        private readonly HashSet<int> collapsedPreviewRows = new HashSet<int>();
+
+        // Editor-list rows the user has collapsed, keyed by row index; empty means all expanded.
+        private readonly HashSet<int> collapsedOptionRows = new HashSet<int>();
 
         private bool IsPixels => unitMode == PivotUnitMode.Pixels;
 
         [MenuItem("Tools/Sprites/Batch Pivot (Sprite Editor Style)")]
         public static void Open() {
             var wnd = GetWindow<SpritePivotBatchWindow>("Batch Sprite Pivot");
-            wnd.minSize = new Vector2(480f, 440f);
+            wnd.minSize = new Vector2(180f, 440f);
             wnd.Show();
         }
 
@@ -130,8 +134,14 @@ namespace Game.Editor.SpriteTools.UI {
             serialized = new SerializedObject(this);
             rootVisualElement.Bind(serialized);
 
-            // One callback drives every live update when a bound control changes.
-            rootVisualElement.TrackSerializedObjectValue(serialized, _ => Refresh());
+            // One callback drives every live update when a bound control changes — except while the user is
+            // typing in a field inside the tree (Name/Pivot), where a full rebuild would steal focus. Those
+            // in-tree edits refresh their own preview in place instead.
+            rootVisualElement.TrackSerializedObjectValue(serialized, _ => {
+                if (!IsEditingInsideTree()) {
+                    Refresh();
+                }
+            });
 
             // Pad width is non-negative, mirroring the old Mathf.Max(0, ...) clamp.
             // Clamp without re-notifying (setting .value here would re-enter this callback).
@@ -153,13 +163,11 @@ namespace Game.Editor.SpriteTools.UI {
             pivotSection = rootVisualElement.Q<VisualElement>("pivot-section");
             pivotPresetField = rootVisualElement.Q<EnumField>("pivot-preset");
             customPivotRow = rootVisualElement.Q<VisualElement>("custom-pivot-row");
-            flatNameSection = rootVisualElement.Q<VisualElement>("flat-name-section");
             rowsSection = rootVisualElement.Q<VisualElement>("rows-section");
             rowsContainer = rootVisualElement.Q<VisualElement>("rows-container");
             numberingSection = rootVisualElement.Q<VisualElement>("numbering-section");
             padWidthField = rootVisualElement.Q<IntegerField>("pad-width");
             applyButton = rootVisualElement.Q<Button>("apply-button");
-            previewContainer = rootVisualElement.Q<VisualElement>("preview-container");
         }
 
         private void OnSelectionChange() {
@@ -186,36 +194,60 @@ namespace Game.Editor.SpriteTools.UI {
 
             SetDisplay(eachRowOwnPivotContainer, mode == RenameMode.PerRow && changePivot);
 
-            // Shared pivot block: hidden in per-row "own pivot" mode (each row carries its own).
-            var showSharedPivot = mode != RenameMode.None && changePivot
-                && !(mode == RenameMode.PerRow && eachRowOwnPivot);
+            // Global "Sheet Pivot" applies only to per-row with one sheet-wide pivot. Flat puts its pivot
+            // inside the Selection node; per-row "own pivot" puts it inside each Row node.
+            var showSharedPivot = mode == RenameMode.PerRow && changePivot && !eachRowOwnPivot;
             SetDisplay(pivotSection, showSharedPivot);
-            pivotPresetField.label = mode == RenameMode.PerRow ? "Sheet Pivot" : "Pivot";
+            pivotPresetField.label = "Sheet Pivot";
             customPivotRow.SetEnabled(pivotPreset == SpriteAlignment.Custom);
-
-            SetDisplay(flatNameSection, mode == RenameMode.Flat && changeNames);
-
-            var showRows = mode == RenameMode.PerRow && (changeNames || rowOwnPivot);
-            SetDisplay(rowsSection, showRows);
-            if (showRows) {
-                RebuildRows(rowOwnPivot);
-            }
 
             SetDisplay(numberingSection, mode != RenameMode.None && changeNames);
 
-            applyButton.SetEnabled((changePivot || changeNames) && mode != RenameMode.None);
+            // One tree serves both selections: per-row Row nodes for a texture, a single Selection node for
+            // a sprite subset. None shows nothing (the hint explains what to select).
+            var showTree = mode != RenameMode.None;
+            SetDisplay(rowsSection, showTree);
+            if (showTree) {
+                RebuildTree(mode, rowOwnPivot);
+            }
 
-            RebuildPreview(mode, rowOwnPivot);
+            applyButton.SetEnabled((changePivot || changeNames) && mode != RenameMode.None);
         }
 
         private static void SetDisplay(VisualElement element, bool visible) {
             element.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
-        // Renders one cloned RowView per detected row. Name/X/Y/unit edits only refresh the preview so the
-        // focused field is not destroyed mid-edit; a preset change calls Refresh to re-toggle enable states.
-        private void RebuildRows(bool rowOwnPivot) {
+        // True while focus is on a control inside the rows tree, so a serialized-value change should not
+        // trigger a full rebuild (it would destroy the field being edited).
+        private bool IsEditingInsideTree() {
+            var focused = rootVisualElement.focusController?.focusedElement as VisualElement;
+            while (focused != null) {
+                if (focused == rowsContainer) {
+                    return true;
+                }
+
+                focused = focused.parent;
+            }
+
+            return false;
+        }
+
+        // Builds the unified selection tree: one Row node per detected row for a whole texture, or a single
+        // "Selection" node for an explicit sprite subset.
+        private void RebuildTree(RenameMode mode, bool rowOwnPivot) {
             rowsContainer.Clear();
+            if (mode == RenameMode.PerRow) {
+                BuildPerRowNodes(rowOwnPivot);
+            } else if (mode == RenameMode.Flat) {
+                BuildFlatNode();
+            }
+        }
+
+        // One collapsible node per detected row, holding that row's editing controls (Name, Pivot) plus a
+        // nested Preview node. A row-name edit rebuilds only its own Preview lines in place, so the focused
+        // field is never destroyed mid-edit; a preset/unit change calls Refresh to re-toggle enable states.
+        private void BuildPerRowNodes(bool rowOwnPivot) {
             if (cachedRows == null || rowTemplate == null) {
                 return;
             }
@@ -225,8 +257,10 @@ namespace Game.Editor.SpriteTools.UI {
                 var index = r;
                 var cfg = rows[index];
 
+                var rowFoldout = MakeOptionFoldout($"Row {index} ({cachedRows[index].Count})", index);
+
                 var rowElem = rowTemplate.CloneTree();
-                var label = rowElem.Q<Label>("row-label");
+                var nameLine = rowElem.Q<VisualElement>("row-name-line");
                 var nameField = rowElem.Q<TextField>("row-name");
                 var pivotLine = rowElem.Q<VisualElement>("row-pivot-line");
                 var presetField = rowElem.Q<EnumField>("row-preset");
@@ -234,13 +268,14 @@ namespace Game.Editor.SpriteTools.UI {
                 var xField = rowElem.Q<FloatField>("row-x");
                 var yField = rowElem.Q<FloatField>("row-y");
 
-                label.text = $"Row {index} ({cachedRows[index].Count})";
+                var previewFoldout = MakePreviewFoldout(index, out var previewLines);
+                RebuildRowPreviewLines(previewLines, index);
 
-                nameField.SetEnabled(changeNames);
+                SetDisplay(nameLine, changeNames);
                 nameField.SetValueWithoutNotify(cfg.name);
                 nameField.RegisterValueChangedCallback(evt => {
                     rows[index].name = evt.newValue;
-                    RefreshPreview();
+                    RebuildRowPreviewLines(previewLines, index);
                 });
 
                 SetDisplay(pivotLine, rowOwnPivot);
@@ -269,72 +304,144 @@ namespace Game.Editor.SpriteTools.UI {
                     yField.SetEnabled(customEnabled);
                     xField.SetValueWithoutNotify(cfg.customPivot.x);
                     yField.SetValueWithoutNotify(cfg.customPivot.y);
+                    // Pivot edits do not affect sprite names, so the preview lines need no rebuild.
                     xField.RegisterValueChangedCallback(evt => {
                         rows[index].customPivot = new Vector2(evt.newValue, rows[index].customPivot.y);
-                        RefreshPreview();
                     });
                     yField.RegisterValueChangedCallback(evt => {
                         rows[index].customPivot = new Vector2(rows[index].customPivot.x, evt.newValue);
-                        RefreshPreview();
                     });
                 }
 
-                rowsContainer.Add(rowElem);
+                rowFoldout.Add(rowElem);
+                rowFoldout.Add(previewFoldout);
+                rowsContainer.Add(rowFoldout);
             }
         }
 
-        // Recomputes mode and refreshes only the preview (used by row edits that must not rebuild the rows).
-        private void RefreshPreview() {
-            var mode = DetermineMode(out _);
-            var rowOwnPivot = mode == RenameMode.PerRow && changePivot && eachRowOwnPivot;
-            RebuildPreview(mode, rowOwnPivot);
+        // A single "Selection (N sprites)" node for an explicit sprite subset, backed by the shared rename /
+        // pivot fields. Its Preview lists every selected sprite in selection order.
+        private void BuildFlatNode() {
+            if (rowTemplate == null) {
+                return;
+            }
+
+            var selected = CollectSelectedSpritesOrdered();
+
+            var node = MakeOptionFoldout($"Selection ({selected.Count} sprites)", 0);
+
+            var rowElem = rowTemplate.CloneTree();
+            var nameLine = rowElem.Q<VisualElement>("row-name-line");
+            var nameField = rowElem.Q<TextField>("row-name");
+            var pivotLine = rowElem.Q<VisualElement>("row-pivot-line");
+            var presetField = rowElem.Q<EnumField>("row-preset");
+            var unitField = rowElem.Q<EnumField>("row-unit");
+            var xField = rowElem.Q<FloatField>("row-x");
+            var yField = rowElem.Q<FloatField>("row-y");
+
+            var previewFoldout = MakePreviewFoldout(0, out var previewLines);
+            RebuildFlatPreviewLines(previewLines);
+
+            SetDisplay(nameLine, changeNames);
+            nameField.SetValueWithoutNotify(renameBaseName);
+            nameField.RegisterValueChangedCallback(evt => {
+                renameBaseName = evt.newValue;
+                RebuildFlatPreviewLines(previewLines);
+            });
+
+            SetDisplay(pivotLine, changePivot);
+            if (changePivot) {
+                presetField.Init(pivotPreset);
+                presetField.SetValueWithoutNotify(pivotPreset);
+                presetField.RegisterValueChangedCallback(evt => {
+                    pivotPreset = (SpriteAlignment)evt.newValue;
+                    serialized.Update();
+                    Refresh();
+                });
+
+                var customEnabled = pivotPreset == SpriteAlignment.Custom;
+
+                unitField.Init(unitMode);
+                unitField.SetValueWithoutNotify(unitMode);
+                unitField.SetEnabled(customEnabled);
+                unitField.RegisterValueChangedCallback(evt => {
+                    unitMode = (PivotUnitMode)evt.newValue;
+                    serialized.Update();
+                    Refresh();
+                });
+
+                xField.SetEnabled(customEnabled);
+                yField.SetEnabled(customEnabled);
+                xField.SetValueWithoutNotify(customPivot.x);
+                yField.SetValueWithoutNotify(customPivot.y);
+                xField.RegisterValueChangedCallback(evt => {
+                    customPivot = new Vector2(evt.newValue, customPivot.y);
+                });
+                yField.RegisterValueChangedCallback(evt => {
+                    customPivot = new Vector2(customPivot.x, evt.newValue);
+                });
+            }
+
+            node.Add(rowElem);
+            node.Add(previewFoldout);
+            rowsContainer.Add(node);
         }
 
-        private void RebuildPreview(RenameMode mode, bool rowOwnPivot) {
-            previewContainer.Clear();
-
-            if (mode == RenameMode.None) {
-                previewContainer.Add(MakePreviewLine("—", string.Empty));
-                return;
-            }
-
-            if (mode == RenameMode.Flat) {
-                previewContainer.Add(MakePreviewLine("Pivot",
-                    changePivot ? PivotPreviewText(pivotPreset, customPivot) : "(unchanged)"));
-
-                var selected = CollectSelectedSpritesOrdered();
-                for (int i = 0; i < selected.Count; i++) {
-                    previewContainer.Add(MakePreviewLine(selected[i].currentName,
-                        changeNames ? "→  " + BuildName(renameBaseName, i) : "(unchanged)"));
-                }
-
-                return;
-            }
-
-            if (cachedRows == null) {
-                return;
-            }
-
-            var count = Mathf.Min(cachedRows.Count, rows.Count);
-            for (int r = 0; r < count; r++) {
-                string pivotText;
-                if (!changePivot) {
-                    pivotText = "(unchanged)";
-                } else if (rowOwnPivot) {
-                    pivotText = PivotPreviewText(rows[r].alignment, rows[r].customPivot);
+        // Creates a row/selection options Foldout whose collapse state persists in collapsedOptionRows.
+        private Foldout MakeOptionFoldout(string nodeTitle, int key) {
+            var foldout = new Foldout {
+                text = nodeTitle,
+                value = !collapsedOptionRows.Contains(key)
+            };
+            foldout.AddToClassList("option-foldout");
+            foldout.RegisterValueChangedCallback(evt => {
+                if (evt.newValue) {
+                    collapsedOptionRows.Remove(key);
                 } else {
-                    pivotText = PivotPreviewText(pivotPreset, customPivot);
+                    collapsedOptionRows.Add(key);
                 }
+            });
 
-                var header = MakePreviewLine($"Row {r} — {rows[r].name}", pivotText);
-                header.AddToClassList("preview-row-header");
-                previewContainer.Add(header);
+            return foldout;
+        }
 
-                var row = cachedRows[r];
-                for (int c = 0; c < row.Count; c++) {
-                    previewContainer.Add(MakePreviewLine("    " + row[c].Name,
-                        changeNames ? "→  " + BuildName(rows[r].name, c) : "(unchanged)"));
+        // Creates a "Preview" Foldout (collapse state in collapsedPreviewRows) and returns its line container.
+        private Foldout MakePreviewFoldout(int key, out VisualElement lines) {
+            var foldout = new Foldout {
+                text = "Preview",
+                value = !collapsedPreviewRows.Contains(key)
+            };
+            foldout.AddToClassList("preview-foldout");
+            foldout.RegisterValueChangedCallback(evt => {
+                if (evt.newValue) {
+                    collapsedPreviewRows.Remove(key);
+                } else {
+                    collapsedPreviewRows.Add(key);
                 }
+            });
+
+            lines = new VisualElement();
+            foldout.Add(lines);
+            return foldout;
+        }
+
+        // Rebuilds one row's Preview lines (current sprite name -> new name) in place.
+        private void RebuildRowPreviewLines(VisualElement container, int index) {
+            container.Clear();
+            var row = cachedRows[index];
+            for (int c = 0; c < row.Count; c++) {
+                container.Add(MakePreviewLine(row[c].Name,
+                    changeNames ? "→  " + BuildName(rows[index].name, c) : "(unchanged)"));
+            }
+        }
+
+        // Rebuilds the flat selection's Preview lines (current sprite name -> new name) in place.
+        private void RebuildFlatPreviewLines(VisualElement container) {
+            container.Clear();
+            var selected = CollectSelectedSpritesOrdered();
+            for (int i = 0; i < selected.Count; i++) {
+                container.Add(MakePreviewLine(selected[i].currentName,
+                    changeNames ? "→  " + BuildName(renameBaseName, i) : "(unchanged)"));
             }
         }
 
@@ -351,15 +458,6 @@ namespace Game.Editor.SpriteTools.UI {
             line.Add(rightLabel);
 
             return line;
-        }
-
-        private string PivotPreviewText(SpriteAlignment preset, Vector2 custom) {
-            if (preset != SpriteAlignment.Custom) {
-                return preset.ToString();
-            }
-
-            var unit = IsPixels ? "px" : "normalized";
-            return $"Custom ({custom.x}, {custom.y}) {unit}";
         }
 
         private string BuildName(string baseName, int offset) {
@@ -666,6 +764,10 @@ namespace Game.Editor.SpriteTools.UI {
 
             cachedRowTexturePath = texturePath;
             cachedRows = SpriteSheetRows.Detect(texturePath);
+
+            // Fresh sheet: forget collapse state so a newly selected texture starts fully expanded.
+            collapsedPreviewRows.Clear();
+            collapsedOptionRows.Clear();
 
             rows.Clear();
             for (int r = 0; r < cachedRows.Count; r++) {

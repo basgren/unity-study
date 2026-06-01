@@ -1,14 +1,36 @@
 .root {
-    padding: 6px;
+    padding: 8px;
+    flex-grow: 1;
 }
 
+/* Checkbox on the left, caption on the right (via Toggle text, not the field label), and never
+   compressed. */
+.opt-toggle {
+    flex-shrink: 0;
+}
+
+/* Fixed sections never compress; only the scroll sections absorb a short window. */
 .section {
     margin-bottom: 6px;
+    flex-shrink: 0;
+}
+
+/* Sections wrapping a ScrollView: allowed to shrink so the inner scroll area shows a scrollbar
+   instead of the whole column overflowing and overlapping the sections below. */
+.scroll-section {
+    flex-shrink: 1;
+    flex-grow: 1;
+    min-height: 0;
 }
 
 .mode-banner {
     -unity-font-style: bold;
     margin-bottom: 4px;
+    flex-shrink: 0;
+}
+
+.help {
+    flex-shrink: 0;
 }
 
 .header {
@@ -39,32 +61,52 @@
     margin-left: 2px;
 }
 
-.row-label {
-    width: 110px;
+.row-field-label {
+    width: 40px;
+    flex-shrink: 0;
+}
+
+.row-inputs {
+    flex-direction: row;
+    flex-grow: 1;
 }
 
 .row-name {
     flex-grow: 1;
-    min-width: 80px;
 }
 
-.row-preset {
-    width: 120px;
+.row-input {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 36px;
+    margin-left: 2px;
 }
 
-.row-pivot-label {
-    width: 40px;
+/* The X / Y float fields ship a built-in label whose default min-width hides the number box;
+   shrink it so the input stays visible when four controls share one row. */
+.row-input .unity-base-field__label {
+    min-width: 12px;
+    width: 12px;
+    margin-right: 2px;
 }
 
+.row-input .unity-base-field__input {
+    min-width: 18px;
+}
+
+/* Big primary action pinned at the bottom of the window. */
 .apply {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    height: 22px;
+    margin-top: 6px;
+    height: 32px;
+    flex-shrink: 0;
 }
 
-.preview-scroll {
-    max-height: 180px;
+/* The tree fills the remaining window height and scrolls internally when its content overflows. */
+.rows-scroll {
+    flex-grow: 1;
+    min-height: 0;
     border-width: 1px;
+    border-radius: 3px;
     border-color: var(--unity-colors-helpbox-border);
 }
 
@@ -82,6 +124,27 @@
     color: var(--unity-colors-default-text);
 }
 
-.preview-row-header {
-    -unity-font-style: bold;
+/* Foldouts and the scroll content keep their natural height, so the surrounding ScrollView
+   scrolls instead of vertically compressing the fields when many rows are expanded. */
+.preview-foldout {
+    margin-top: 1px;
+    flex-shrink: 0;
+}
+
+.option-foldout {
+    margin-top: 1px;
+    flex-shrink: 0;
+}
+
+#rows-container {
+    flex-shrink: 0;
+}
+
+/* Tree-style nesting: a wider indent plus a vertical guide line running down the children. */
+.preview-foldout > .unity-foldout__content,
+.option-foldout > .unity-foldout__content {
+    margin-left: 16px;
+    padding-left: 12px;
+    border-left-width: 1px;
+    border-left-color: var(--unity-colors-helpbox-border);
 }

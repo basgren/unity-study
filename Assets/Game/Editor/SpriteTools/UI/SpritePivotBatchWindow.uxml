@@ -3,16 +3,18 @@
     <ui:VisualElement class="root">
         <ui:Label name="mode-label" text="Mode" class="mode-banner" />
 
+        <ui:HelpBox class="help" message-type="Info" text="Select sprite sub-assets to rename them as a numbered set, or select a whole texture to edit it row by row.&#10;Custom pivot values are measured from each sprite's bottom-left, in pixels (or 0-1 when Normalized)." />
+
         <ui:VisualElement class="section">
-            <ui:Toggle name="change-pivot" label="Change Pivot" binding-path="changePivot" />
+            <ui:Toggle name="change-pivot" text="Change Pivot" binding-path="changePivot" class="opt-toggle" />
             <ui:VisualElement name="each-row-own-pivot" class="indent">
-                <ui:Toggle label="Each row with own pivot" binding-path="eachRowOwnPivot" />
+                <ui:Toggle text="Each row with own pivot" binding-path="eachRowOwnPivot" class="opt-toggle" />
             </ui:VisualElement>
-            <ui:Toggle name="change-names" label="Rename" binding-path="changeNames" />
+            <ui:Toggle name="change-names" text="Rename" binding-path="changeNames" class="opt-toggle" />
         </ui:VisualElement>
 
         <ui:VisualElement name="pivot-section" class="section">
-            <uie:EnumField name="pivot-preset" label="Pivot" binding-path="pivotPreset" />
+            <uie:EnumField name="pivot-preset" label="Sheet Pivot" binding-path="pivotPreset" />
             <ui:VisualElement name="custom-pivot-row" class="row-line">
                 <ui:Label text="Custom Pivot" class="prefix" />
                 <uie:EnumField name="pivot-unit" binding-path="unitMode" class="unit" />
@@ -21,29 +23,17 @@
             </ui:VisualElement>
         </ui:VisualElement>
 
-        <ui:VisualElement name="flat-name-section" class="section">
-            <ui:TextField name="base-name" label="Base Name" binding-path="renameBaseName" />
-        </ui:VisualElement>
-
-        <ui:VisualElement name="rows-section" class="section">
-            <ui:Label name="rows-header" text="Rows" class="header" />
-            <ui:VisualElement name="rows-container" />
-        </ui:VisualElement>
-
         <ui:VisualElement name="numbering-section" class="section">
             <uie:IntegerField name="start-index" label="Start Index" binding-path="renameStartIndex" />
             <uie:IntegerField name="pad-width" label="Pad Width" binding-path="renamePadWidth" />
         </ui:VisualElement>
 
-        <ui:Button name="apply-button" text="Apply" class="apply" />
-
-        <ui:VisualElement class="section">
-            <ui:Label text="Preview" class="header" />
-            <ui:ScrollView name="preview-scroll" class="preview-scroll">
-                <ui:VisualElement name="preview-container" />
+        <ui:VisualElement name="rows-section" class="section scroll-section">
+            <ui:ScrollView name="rows-scroll" class="rows-scroll">
+                <ui:VisualElement name="rows-container" />
             </ui:ScrollView>
         </ui:VisualElement>
 
-        <ui:HelpBox message-type="Info" text="Mode follows selection: Sprite sub-assets -> flat (selection-order) rename; a whole texture -> per-row.&#10;Custom pivot is interpreted from the bottom-left of each sprite rect, like Sprite Editor." />
+        <ui:Button name="apply-button" text="Apply" class="apply" />
     </ui:VisualElement>
 </ui:UXML>
