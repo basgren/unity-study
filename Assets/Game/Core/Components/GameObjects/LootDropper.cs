@@ -1,12 +1,26 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using Game.Core.Bootstrap;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Game.Core.Components.GameObjects {
+    /// <summary>
+    /// Single designer-defined loot entry: which prefab to spawn and how many copies.
+    /// </summary>
+    [Serializable]
+    public class LootEntry {
+        public GameObject prefab;
+        public int count = 1;
+    }
+
+    /// <summary>
+    /// Spawns configured loot items with a physics scatter. Attach to any loot source
+    /// (chest, barrel, enemy) and define its contents in the <c>loot</c> list.
+    /// </summary>
     public class LootDropper : MonoBehaviour {
         [SerializeField]
-        private GameObject lootPrefab;
+        private List<LootEntry> loot = new List<LootEntry>();
 
         [SerializeField]
         private float initialSpeed = 5f;
@@ -18,22 +32,44 @@ namespace Game.Core.Components.GameObjects {
         [SerializeField]
         private bool randomDirection;
 
-        [SerializeField]
-        private int count = 1;
-
         private readonly float angleSpread = 90f;
 
-        public void DropLoot(int lootCount = -1) {
-            if (G.SceneState != null && G.SceneState.IsRestoring) {
+        /// <summary>
+        /// Drops the full configured loot list (each entry spawns its prefab <c>count</c> times).
+        /// </summary>
+        public void DropLoot() {
+            if (IsRestoring()) {
                 return;
             }
 
-            if (lootCount < 0) {
-                lootCount = count;
+            foreach (var entry in loot) {
+                SpawnItems(entry.prefab, entry.count);
             }
-            
-            for (int i = lootCount; i > 0; i--) {
-                var instance = G.Spawner.SpawnCollectible(lootPrefab, transform.position);
+        }
+
+        /// <summary>
+        /// Drops a runtime-defined amount of the first configured loot prefab
+        /// (e.g. coins lost on player death). Entry counts in the list are ignored.
+        /// </summary>
+        public void DropLoot(int lootCount) {
+            if (IsRestoring()) {
+                return;
+            }
+
+            if (loot.Count == 0) {
+                throw new Exception("LootDropper has no loot entries configured");
+            }
+
+            SpawnItems(loot[0].prefab, lootCount);
+        }
+
+        private static bool IsRestoring() {
+            return G.SceneState != null && G.SceneState.IsRestoring;
+        }
+
+        private void SpawnItems(GameObject prefab, int count) {
+            for (int i = count; i > 0; i--) {
+                var instance = G.Spawner.SpawnCollectible(prefab, transform.position);
 
                 var rigidBody = instance.GetComponent<Rigidbody2D>();
 

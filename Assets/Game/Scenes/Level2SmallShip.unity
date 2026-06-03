@@ -5645,7 +5645,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 34929748563150667, guid: cc6c8709ce7c00f4991b5e6569695ac5,
         type: 3}
-      propertyPath: count
+      propertyPath: loot.Array.data[0].count
       value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 34929748563150667, guid: cc6c8709ce7c00f4991b5e6569695ac5,

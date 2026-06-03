@@ -391,12 +391,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62684d56dc67f6c42862656659c4a483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lootPrefab: {fileID: 389717885744418158, guid: a442b7edb1b27fb4b86fd21d80bffed8,
-    type: 3}
+  loot:
+  - prefab: {fileID: 389717885744418158, guid: a442b7edb1b27fb4b86fd21d80bffed8, type: 3}
+    count: 5
   initialSpeed: 5
   speedRandomFactor: 0.5
   randomDirection: 1
-  count: 5
 --- !u!114 &-7183454011982891441
 MonoBehaviour:
   m_ObjectHideFlags: 0
