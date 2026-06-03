@@ -25,13 +25,14 @@ namespace Game.Features.Props.Chest {
             }
         }
 
-        public void SpawnCoins() {
+        // Called by an animation event in Opening.anim.
+        public void SpawnLoot() {
             if (isCollected || (G.SceneState != null && G.SceneState.IsRestoring)) {
                 return;
             }
 
             var comp = GetComponent<LootDropper>();
-            comp.DropLoot(100);
+            comp.DropLoot();
             isCollected = true;
         }
 

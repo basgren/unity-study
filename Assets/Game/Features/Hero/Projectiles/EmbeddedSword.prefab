@@ -216,9 +216,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62684d56dc67f6c42862656659c4a483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lootPrefab: {fileID: 76989424894630774, guid: 017b1344d75473e4ead0ebcf7e4008fd,
-    type: 3}
+  loot:
+  - prefab: {fileID: 76989424894630774, guid: 017b1344d75473e4ead0ebcf7e4008fd, type: 3}
+    count: 1
   initialSpeed: 5
   speedRandomFactor: 0.502
   randomDirection: 1
-  count: 1
