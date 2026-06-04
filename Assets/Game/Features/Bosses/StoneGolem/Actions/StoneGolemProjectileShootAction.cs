@@ -7,9 +7,10 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
     /// Launches the golem's hand as a returning projectile. The animator is driven by a single bool
     /// parameter (set true on start, false when the hand returns), so the cast/hold/release flow
     /// lives in the state machine rather than in scattered triggers. On the animation's effect frame
-    /// (<see cref="Do"/>) the hand is spawned and fired toward the player's position captured at that
-    /// instant (no homing). It travels out, embeds on impact, returns to the socket, then the bool
-    /// clears, the hand is despawned, and the action completes.
+    /// (<see cref="Do"/>) the hand is spawned and launched horizontally in the golem's facing; the
+    /// projectile itself steers onto the player during a short homing window, then flies straight.
+    /// It travels out, embeds on impact, returns to the socket, then the bool clears, the hand is
+    /// despawned, and the action completes.
     /// </summary>
     public class StoneGolemProjectileShootAction : EnemyAction {
         [Header("References")]
@@ -59,23 +60,17 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
 
             activeProjectile.Returned += OnProjectileReturned;
 
-            // Capture the player's position at the moment of launch — the hand flies straight there
-            // (no homing). Fall back to straight ahead if the player can't be located.
-            activeProjectile.Launch(ResolveTargetPoint(), spawnPoint);
+            // The hand always leaves the shoulder horizontally; the projectile steers onto the
+            // player during its homing window. Without a player it just flies straight ahead.
+            activeProjectile.Launch(golem.FacingSign, ResolvePlayerTransform(), spawnPoint);
         }
 
-        // The aim point is the player's position sampled now (launch frame); the hand does not track
-        // the player afterward. Without a player it shoots one unit ahead in the golem's facing.
-        private Vector2 ResolveTargetPoint() {
-            Transform player = G.Hero != null && G.Hero.Controller != null
+        // Live player transform for the projectile's homing window, or null for a plain
+        // horizontal shot when the player can't be located.
+        private Transform ResolvePlayerTransform() {
+            return G.Hero != null && G.Hero.Controller != null
                 ? G.Hero.Controller.transform
                 : null;
-            if (player != null) {
-                return player.position;
-            }
-
-            int sign = golem != null ? golem.FacingSign : 1;
-            return (Vector2)spawnPoint.position + new Vector2(sign, 0f);
         }
 
         private void OnProjectileReturned() {

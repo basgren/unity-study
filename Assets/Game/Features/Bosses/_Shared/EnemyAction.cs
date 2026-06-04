@@ -96,6 +96,9 @@ namespace Game.Features.Bosses._Shared {
             }
 
             yield return new WaitForSeconds(maxDuration);
+            // A safety-cap fire is always a misconfiguration or a stuck step — make it visible,
+            // otherwise the action just silently never happens.
+            Debug.LogWarning($"{GetType().Name}: force-completed by the maxDuration safety cap ({maxDuration}s).", this);
             Complete();
         }
     }

@@ -1,4 +1,6 @@
 using System.Collections;
+using Core.Audio;
+using Game.Core.Bootstrap;
 using Game.Features.Bosses._Shared;
 using Game.Features.Bosses.StoneGolem.Beam;
 using UnityEngine;

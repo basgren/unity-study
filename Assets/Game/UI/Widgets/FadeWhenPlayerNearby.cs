@@ -1,5 +1,6 @@
 ﻿using Game.Core.Bootstrap;
 using Game.Features.Characters.Hero;
+using Game.Features.Hero;
 using UnityEngine;
 
 namespace Game.UI.Widgets {

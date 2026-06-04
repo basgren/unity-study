@@ -241,6 +241,8 @@ break stone platforms.
   no state saving, so if player dies, scene is reloaded, player is respawned at same position and boss fight continues.
 - `NEEDS-INPUT`: which animations/sprites exist vs. must be authored. INPUT: Immune animation clip. it's triggered by
   isImmune bool = true. returns to idle when isImmune = false. in immune state, golem performs slam and is still vulnerable to player attacks.
+  (Superseded: ball form now always goes through `StoneGolem.SetImmune`, which swaps to the small ball
+  collider — "immune" is just the animation asset's name. See "Slam primitive & ball state" below.)
 - **OPEN — still needed to build Ground Hit (the INPUT above only covered ball-up time):**
   - Falling stones: count per slam, horizontal spread/area, spawn height, fall speed. ANSWER: let it be
      configurable we'll start with 5 stones, horizontal spread - full width of the room (we can put an object -
@@ -255,11 +257,14 @@ break stone platforms.
   - Falling-stone sprite/prefab — does one exist already, or must it be authored? ANSWER:
     use `Assets/Game/Features/Bosses/StoneGolem/Stones/FallingStone.prefab`
 - **IMPLEMENTED (action mechanic):** `Actions/StoneGolemGroundHitAction.cs` runs a timer-driven
-  coroutine — `isImmune=true` → collapse (`collapseTime`) → raise (`raiseHeight`/`raiseTime`) → hang →
-  slam (`slamTime`) → rain stones → recover → `isImmune=false` → complete. No animation events needed.
-  Vertical motion uses new reusable host helpers `StoneGolem.SetGravityActive` + `MoveByVertical`
-  (gravity off during the maneuver). `Stones/FallingStone.cs` gives the stone physics-fall cleanup
-  (despawn on ground/lifetime). `spawnArea` is a **room/scene collider**, not a golem child.
+  coroutine — `golem.SetImmune(true)` (ball form, small collider) → collapse (`collapseTime`) →
+  `slamCount` (default 3) cycles of raise (`raiseHeight`/`raiseTime`, ease-out "float up") → hang →
+  physics slam (`golem.SlamToGround(slamSettings)` — see "Slam primitive & ball state") → stones
+  raining concurrently with the next raise → recover → `golem.SetImmune(false)` → complete, so the
+  whole maneuver reads as one big action. The action's `maxDuration` must cover all cycles.
+  Vertical raise uses the host helpers `StoneGolem.SetGravityActive` + `MoveByVertical`.
+  `Stones/FallingStone.cs` gives the stone physics-fall cleanup (despawn on ground/lifetime).
+  `spawnArea` is a **room/scene collider**, not a golem child.
   Deferred: AI selection + moving to a level-1 point (arena step).
 
 ### 5. Empowered ground hit — transition cutscene `(not built)`
@@ -285,8 +290,11 @@ the lower level. Not part of the AI pool.
   - Raise/shake/drop motion: driven by `G.Tween` like the level-1↔2 flight? Confirm the upper "still
     visible" height is just a tween target you'll place/tune. ANSWER: yes
 - **IMPLEMENTED:** `Actions/StoneGolemGroundBreakAction.cs` — one-shot, wired into
-  `StoneGolemAI.phaseTransitionAction` (runs automatically at 50% HP). Timeline: move to `breakPoint`
-  → collapse → raise → growing `ShakeHorizontal` (3 s) → extra lift → pause → slam → disable
+  `StoneGolemAI.phaseTransitionAction` (runs automatically at 50% HP). Timeline: walk to `breakPoint`
+  (`golem.WalkTo` — ramped velocity like the hero, no ground lerp)
+  → collapse (`golem.SetImmune(true)`) → raise → growing `ShakeHorizontal` (3 s) → extra lift →
+  pause → physics slam onto the still-intact floor (`golem.SlamToGround(slamSettings)`, tuned with
+  a bigger gravity scale for a more furious fall; impact fires the action's shake/sound) → disable
   `breakObjects[]` (floor tilemap layer + platforms + hook anchor, `SetActive(false)`) + spawn
   `breakEffectPrefab` debris → lock player control (`G.Hero.Controller.SetControlsEnabled`) → golem
   gravity restored so it falls too → unlock after `dropLockTime`. Motion reuses the host
@@ -344,10 +352,28 @@ Golem glows several seconds; spikes rise from the ground in traveling waves.
   when user picks up fake skull, stone wall will be destroyed and golem will become seen in Immune state. then
   it exits immune state and fight starts.
 - **IMPLEMENTED (simplified — offscreen drop-in, no wall):** `StoneGolemIntro` holds the golem
-  offscreen in the immune (ball) state with gravity + `StoneGolemAI` disabled. The fake-skull pickup's
-  UnityEvent calls `Begin()`, which drops the golem to `landingPoint` (`FlyTo`), holds `revealHold`,
-  engages `G.BossFight.EngageBoss(golem.Damageable)`, sets `isImmune=false` (rise), and enables the AI.
-  Replays blocked. Modelled on `VengefulSpirit/BossIntroCutscene`.
+  offscreen in the ball state (set by `StoneGolem.Awake`, gravity zeroed) with `StoneGolemAI`
+  disabled. The fake-skull pickup's UnityEvent calls `Begin()`, which slams the golem down onto the
+  arena floor (`golem.SlamToGround(slamSettings)`), holds `revealHold`, engages
+  `G.BossFight.EngageBoss(golem.Damageable)`, calls `golem.SetImmune(false)` (un-ball rise), and
+  enables the AI. Replays blocked. Modelled on `VengefulSpirit/BossIntroCutscene`.
+
+## Slam primitive & ball state
+
+The slam is a controller-level atomic capability, not action logic: `StoneGolem.SlamToGround(SlamSettings)`
+free-falls the balled golem (gravity scale from the settings) until a `Ground`-layer collision, then
+fires the per-call impact effects (camera shake + `AudioCue`), with a hard timeout so a missed
+collision can never soft-lock a cutscene. Three callers share it — the intro drop,
+`StoneGolemGroundHitAction`, and `StoneGolemGroundBreakAction` — each holding its own serialized
+`SlamSettings` (speed / shake / sound), following the rule "atomic body capabilities on the host,
+tactical tuning on the pattern".
+
+Ball state is owned by `StoneGolem.SetImmune` ("immune" is just the animation asset's name):
+- **Ball up** applies immediately: `isImmune` anim bool, small ball collider on, gravity zeroed.
+- **Un-ball** is animation-driven: the golem first lifts (`unballLiftTime`) by a computed delta so
+  the taller normal collider clears the ground, then swaps colliders + restores gravity when the
+  un-ball clip fires the `OnUnballFinished` animation event (with `unballEventTimeout` as a
+  fallback so a missing event can't leave it stuck on the ball collider).
 
 ---
 

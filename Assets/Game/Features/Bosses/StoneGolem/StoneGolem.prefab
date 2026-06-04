@@ -44,20 +44,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d271d7bf0f310747bfe4dfd361d1086, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDuration: 7
+  maxDuration: 15
   golem: {fileID: 4648442921305805388}
-  animator: {fileID: 2618594812571123306}
-  animBoolKey: isImmune
   collapseTime: 1
-  raiseHeight: 2
-  raiseTime: 0.5
+  slamCount: 3
+  raiseHeight: 3
+  raiseTime: 0.6
   hangTime: 0.2
-  slamTime: 0.15
+  slamSettings:
+    gravityScale: 10
+    shake:
+      amplitude: 1.5
+      frequency: 5
+      duration: 0.8
+      decayDuration: 0.3
+    impactSound: {fileID: 11400000, guid: b97fe0c55062b22419a8b97795dfaadf, type: 2}
   recoverTime: 0.4
   fallingStonePrefab: {fileID: 715577279845379036, guid: 47ff175d31345cc4c8bae42cc3f34dfd,
     type: 3}
   spawnArea: {fileID: 0}
-  stoneCount: 10
+  stoneCount: 8
   spawnDuration: 0.6
 --- !u!1 &1892253653780890466
 GameObject:
@@ -161,7 +167,7 @@ Transform:
   m_GameObject: {fileID: 2675421580772530978}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.342, y: 1.354, z: 0}
+  m_LocalPosition: {x: 0.976, y: 1.306, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -180,10 +186,13 @@ GameObject:
   - component: {fileID: 4627695913510707986}
   - component: {fileID: 2618594812571123306}
   - component: {fileID: -7189267625471913312}
+  - component: {fileID: 8716217444555174241}
   - component: {fileID: -7743019329835214425}
   - component: {fileID: 4648442921305805388}
   - component: {fileID: 5618697845460163352}
   - component: {fileID: 1827974660846759109}
+  - component: {fileID: -2247300596940162351}
+  - component: {fileID: 4336316197779992064}
   m_Layer: 15
   m_Name: StoneGolem
   m_TagString: Untagged
@@ -333,6 +342,41 @@ CapsuleCollider2D:
   m_Offset: {x: -0.029982567, y: 0.7917557}
   m_Size: {x: 0.7628827, y: 1.5834262}
   m_Direction: 0
+--- !u!70 &8716217444555174241
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2753235458893642660}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.03, y: 1.05}
+  m_Size: {x: 0.76, y: 1.25}
+  m_Direction: 0
 --- !u!50 &-7743019329835214425
 Rigidbody2D:
   serializedVersion: 4
@@ -358,7 +402,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &4648442921305805388
 MonoBehaviour:
@@ -372,9 +416,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56aa84e49c213d94d964f63144c58bfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
-  animator: {fileID: 0}
-  deathTrigger: onDeath
+  moveSpeed: 3
+  speedBuildUpTime: 0.4
+  speedDecayTime: 0.4
+  normalCollider: {fileID: -7189267625471913312}
+  immuneCollider: {fileID: 8716217444555174241}
+  unballLiftTime: 0.3
+  unballEventTimeout: 1.5
+  collapseSound: {fileID: 11400000, guid: a6ed8686835758d4eaa021e82a31eff7, type: 2}
+  deathSound: {fileID: 11400000, guid: 03cb0a2bf1b7b0744abf3ef2b30bd796, type: 2}
   actions:
     melee: {fileID: 3332773124281173100}
     handShoot: {fileID: 9114714809457514766}
@@ -398,19 +448,17 @@ MonoBehaviour:
   anchors: []
   phase1Pool:
   - attack: 0
-    weight: 0
+    weight: 30
   - attack: 1
-    weight: 0
+    weight: 30
   - attack: 2
     weight: 10
   - attack: 3
-    weight: 0
+    weight: 20
   phase2Pool:
   - attack: 0
     weight: 20
   - attack: 1
-    weight: 20
-  - attack: 2
     weight: 20
   - attack: 3
     weight: 20
@@ -426,11 +474,11 @@ MonoBehaviour:
   chaseTimeout: 5
   repathInterval: 0.5
   flyDuration: 2
-  jumpDuration: 2
+  jumpDuration: 1
   jumpArcHeight: 2
-  horzJumpDuration: 2
+  horzJumpDuration: 1
   horzJumpArcHeight: 1
-  anchorArriveThreshold: 0.3
+  anchorArriveThreshold: 0.05
   moveEdgeTimeout: 5
   levelTolerance: 1
   phaseShiftHealthFraction: 0.5
@@ -455,12 +503,51 @@ MonoBehaviour:
   knockbackForce: 13
   onHit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4336316197779992064}
+        m_TargetAssemblyTypeName: Game.Features.Bosses.StoneGolem.Common.StoneGolemHitEffect, Assembly-CSharp
+        m_MethodName: OnHit
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   onDeath:
     m_PersistentCalls:
       m_Calls: []
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 11400000, guid: 3c4caebfbc8caf5449026c85a0317376, type: 2}
   destroySound: {fileID: 0}
+--- !u!114 &4336316197779992064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2753235458893642660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ab574ed912b4261b935c730b7fb417a, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  effectPrefab: {fileID: 9214471557366289847, guid: b500605416bf0824f861058177a17a3e, type: 3}
+--- !u!114 &-2247300596940162351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2753235458893642660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8503ab7fb4bd43169af5886d821850db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  prefab: {fileID: 0}
 --- !u!1 &4670318284787850429
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,6 +666,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2803045055549466460}
   - component: {fileID: 7924468058560186611}
+  - component: {fileID: 4546451037811639983}
   m_Layer: 15
   m_Name: GroundBreakAction
   m_TagString: Untagged
@@ -615,25 +703,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxDuration: 12
   golem: {fileID: 4648442921305805388}
-  animator: {fileID: 2618594812571123306}
-  animBoolKey: isImmune
   breakPoint: {fileID: 0}
-  moveToPointTime: 1.5
-  raiseHeight: 6
-  raiseTime: 1.5
-  shakeDuration: 3
-  shakeAmplitude: 0.25
+  raiseHeight: 5
+  raiseTime: 3
+  shakeDuration: 2
+  shakeAmplitude: 0.1
   shakeFrequency: 18
-  extraRaiseHeight: 1
-  extraRaiseTime: 0.5
-  pauseTime: 1
-  slamTime: 0.3
+  pauseTime: 0.1
+  slamSettings:
+    gravityScale: 12
+    shake:
+      amplitude: 3
+      frequency: 6
+      duration: 1.5
+      decayDuration: 0.7
+    impactSound: {fileID: 11400000, guid: d17a72f3006a50248a4d2d8a939a7d0b, type: 2}
   breakObjects: []
   breakEffectPrefab: {fileID: 0}
   dropLockTime: 1.5
   onFloorBroken:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4546451037811639983}
+        m_TargetAssemblyTypeName: Game.Core.Audio.PlaySfxOnCall, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &4546451037811639983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5193811962511247958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a538b984a3bc4e4ba1230b4b831a85fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCue: {fileID: 11400000, guid: 0e6baebf4c0e3f9439de2701aece8bd9, type: 2}
+  cueRefs: []
+  playAs2D: 0
+  playWhenEnabled: 0
 --- !u!1 &5467612401863766665
 GameObject:
   m_ObjectHideFlags: 0
@@ -865,8 +983,9 @@ MonoBehaviour:
   animBoolKey: isCastingBeam
   beamPrefab: {fileID: 651222684960076803, guid: 603a43f45d8750d40a1b3c7d671b4379,
     type: 3}
+  spawnPoint: {fileID: 6176492534002011314}
   centerPoint: {fileID: 0}
-  beamCount: 4
+  beamCount: 3
   totalRotationDeg: 180
   rotationSpeed: 30
   flyToCenterTime: 2
@@ -924,14 +1043,16 @@ MonoBehaviour:
     type: 3}
   glowDuration: 2
   waveCount: 3
-  waveSpacing: 1
-  travelSpeed: 5
+  waveSpacing: 0
+  travelSpeed: 6
   spikeSpacing: 1
   spikeStartOffset: 1.5
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 1024
   maxWaveRange: 30
+  waveLoopSound: {fileID: 11400000, guid: f0e87ee4f32089c4ea66bf5d342ad2bb, type: 2}
+  pulsatingLoopSound: {fileID: 11400000, guid: 2c003b8d5b7c0ce499b05fc2f8a111a8, type: 2}
 --- !u!1 &7799297911925466421
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,6 +1102,7 @@ MonoBehaviour:
   attackTrigger: onMeleeAttack
   meleeDamager: {fileID: 5467612401863766665}
   holdDuration: 1
+  meleeSound: {fileID: 11400000, guid: 0f942e640e29f3b4ba41f84b4d587e9d, type: 2}
 --- !u!1 &8212948933274491634
 GameObject:
   m_ObjectHideFlags: 0

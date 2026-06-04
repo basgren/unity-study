@@ -1,3 +1,5 @@
+using Game.Features.Hero;
+using Game.Features.Hero.GrapplingHook;
 using UnityEngine;
 using UnityEngine.Serialization;
 

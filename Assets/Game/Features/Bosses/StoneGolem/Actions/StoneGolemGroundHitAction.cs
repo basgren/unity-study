@@ -4,30 +4,29 @@ using UnityEngine;
 
 namespace Game.Features.Bosses.StoneGolem.Actions {
     /// <summary>
-    /// Ground Hit: the golem collapses into a ball (the "isImmune" animation just shows entering /
-    /// exiting the ball — despite the name the golem stays vulnerable), then raises up and slams back
-    /// down; on impact a burst of falling stones rains over the arena. The whole maneuver is timer-
-    /// driven (no animation events needed): collapse → raise → hang → slam → rain stones → recover →
-    /// un-ball. The stones spawn at random X across <see cref="spawnArea"/>'s world bounds — that
-    /// collider is a room/scene object, NOT a child of the golem, so the rain stays fixed to the room.
+    /// Ground Hit: the golem collapses into its ball form (via <see cref="StoneGolem.SetImmune"/>,
+    /// which swaps to the small ball collider), then performs <see cref="slamCount"/> raise + slam
+    /// cycles with the shared physics slam (<see cref="StoneGolem.SlamToGround"/>) before un-balling,
+    /// so the whole maneuver reads as one big action. Each impact starts a burst of falling stones
+    /// that rains while the golem raises for the next slam. Timeline: collapse → (raise → hang →
+    /// slam → stones) × slamCount → recover → un-ball. The stones spawn at random X across
+    /// <see cref="spawnArea"/>'s world bounds — that collider is a room/scene object, NOT a child
+    /// of the golem, so the rain stays fixed to the room.
     /// </summary>
     public class StoneGolemGroundHitAction : EnemyAction {
         [Header("References")]
         [SerializeField]
         private StoneGolem golem;
 
-        [SerializeField]
-        private Animator animator;
-
-        [SerializeField]
-        [Tooltip("Bool parameter that plays the ball-up / un-ball animation. Set true on start, false " +
-                 "on recover. Despite the name the golem is NOT damage-immune during the slam.")]
-        private string animBoolKey = "isImmune";
-
         [Header("Slam motion")]
         [SerializeField]
         [Tooltip("Time to collapse into the ball before raising (covers the ball-up animation).")]
         private float collapseTime = 1f;
+
+        [SerializeField]
+        [Tooltip("How many raise + slam cycles the golem performs before un-balling. Make sure Max " +
+                 "Duration covers all of them.")]
+        private int slamCount = 3;
 
         [SerializeField]
         [Tooltip("How high the golem rises before slamming.")]
@@ -42,8 +41,8 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         private float hangTime = 0.2f;
 
         [SerializeField]
-        [Tooltip("Time of the downward slam (small = fast/furious).")]
-        private float slamTime = 0.15f;
+        [Tooltip("Slam tuning for this attack: fall gravity, camera shake, impact sound.")]
+        private StoneGolem.SlamSettings slamSettings = new StoneGolem.SlamSettings();
 
         [SerializeField]
         [Tooltip("Settle time after the slam before the golem un-balls and the action completes.")]
@@ -68,42 +67,45 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         [Tooltip("Window over which the stones drop, for a rain feel rather than one burst. 0 = all at once.")]
         private float spawnDuration = 0.6f;
 
-        private int animBoolHash;
-
-        private void Awake() {
-            animBoolHash = Animator.StringToHash(animBoolKey);
-        }
-
         protected override void OnBegin() {
-            SetImmuneAnim(true);
+            golem.SetImmune(true);
             StartCoroutine(SlamRoutine());
         }
 
         protected override void OnEnd() {
-            // Always un-ball and restore gravity, including a mid-air cancel (e.g. death during the slam).
-            SetImmuneAnim(false);
-            if (golem != null) {
-                golem.SetGravityActive(true);
-            }
+            // Always un-ball and restore gravity, including a mid-air cancel (e.g. death during the
+            // slam). Gravity first: SetImmune(false) no-ops when already un-balled (cancel before
+            // the ball-up landed), and the un-ball flow owns gravity itself otherwise.
+            golem.SetGravityActive(true);
+            golem.SetImmune(false);
         }
 
         private IEnumerator SlamRoutine() {
             yield return new WaitForSeconds(collapseTime);
 
-            // Scripted vertical raise + slam: gravity off so the move is predictable, back on after.
-            if (golem != null) {
+            Coroutine lastSpawn = null;
+
+            int count = Mathf.Max(1, slamCount);
+            for (int i = 0; i < count; i++) {
+                // The slam leaves gravity on, so re-disable it before each scripted raise.
                 golem.SetGravityActive(false);
-                yield return golem.MoveByVertical(raiseHeight, raiseTime);
+                yield return golem.MoveByVertical(raiseHeight, raiseTime, easeOut: true);
 
                 if (hangTime > 0f) {
                     yield return new WaitForSeconds(hangTime);
                 }
 
-                yield return golem.MoveByVertical(-raiseHeight, slamTime);
-                golem.SetGravityActive(true);
+                yield return golem.SlamToGround(slamSettings);
+
+                // Stones rain while the golem already raises for the next slam.
+                lastSpawn = StartCoroutine(SpawnStonesRoutine());
             }
 
-            yield return SpawnStonesRoutine();
+            // Let the final stone burst finish before completing — Complete() stops all
+            // coroutines and would cut the rain short.
+            if (lastSpawn != null) {
+                yield return lastSpawn;
+            }
 
             if (recoverTime > 0f) {
                 yield return new WaitForSeconds(recoverTime);
@@ -130,12 +132,6 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
                 if (gap > 0f) {
                     yield return new WaitForSeconds(gap);
                 }
-            }
-        }
-
-        private void SetImmuneAnim(bool value) {
-            if (animator != null) {
-                animator.SetBool(animBoolHash, value);
             }
         }
     }

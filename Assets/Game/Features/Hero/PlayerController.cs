@@ -10,9 +10,10 @@ using Game.Core.Components.GameObjects;
 using Game.Core.Models.Inventory;
 using Game.Defs;
 using Game.Features.Characters._Shared;
+using Game.Features.Characters.Hero;
+using Game.Features.Characters.Hero.GrapplingHook;
 using Game.Features.Characters.Hero.Interaction;
 using Game.Features.Characters.Hero.ItemUse;
-using Game.Features.Characters.Hero.GrapplingHook;
 using Game.Features.Characters.Parrot;
 using Game.Features.Interactive.Bonfire;
 using Prefabs.Effects.InfoBubble;
@@ -20,7 +21,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
-namespace Game.Features.Characters.Hero {
+namespace Game.Features.Hero {
     public abstract class HeroAnimKeys : BaseCharacterAnimKeys {
         public static readonly int IsDead = Animator.StringToHash("isDead");
         public static readonly int OnJump = Animator.StringToHash("onJump");
@@ -126,6 +127,9 @@ namespace Game.Features.Characters.Hero {
         [SerializeField]
         private RuntimeAnimatorController unarmedAnimator;
 
+        [SerializeField]
+        private AudioCue confusionSound;
+        
         public InputActions.PlayerActions Actions { get; private set; }
         public Damageable Damageable => damageable;
         internal PlayerState State => state;
@@ -1098,6 +1102,13 @@ namespace Game.Features.Characters.Hero {
 
         public void ShowConfusion() {
             G.Spawner.SpawnInfoBubble(InfoBubbleType.Question, infoBubblePoint.position, infoBubblePoint, 3f);
+            
+            StartCoroutine(DoShowConfusion());
+        }
+
+        private IEnumerator DoShowConfusion() {
+            yield return new WaitForSeconds(0.5f);
+            G.Audio.Play2D(confusionSound);
         }
     }
 }

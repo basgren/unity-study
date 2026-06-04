@@ -128,4 +128,5 @@ MonoBehaviour:
   duration: 0.5
   amplitude: 3
   frequency: 3
+  decayDuration: 0.5
   shakeOnAwake: 1

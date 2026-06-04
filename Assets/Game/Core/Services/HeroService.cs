@@ -2,6 +2,7 @@ using System;
 using Game.Features.Characters.Hero;
 using Game.Features.Characters.Hero.Interaction;
 using Game.Features.Characters.Hero.ItemUse;
+using Game.Features.Hero;
 using UnityEngine;
 
 namespace Game.Core.Services {

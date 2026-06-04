@@ -1,6 +1,7 @@
 using Game.Core.Bootstrap;
 using Game.Core.Models.Inventory;
 using Game.Defs;
+using Game.Features.Hero;
 using UnityEngine;
 
 namespace Game.Features.Characters.Hero.ItemUse {

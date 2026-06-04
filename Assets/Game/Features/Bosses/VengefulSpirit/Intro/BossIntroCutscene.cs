@@ -4,6 +4,7 @@ using Core.Components.Base2D;
 using Game.Core.Bootstrap;
 using Game.Features.Bosses.VengefulSpirit.Teleport;
 using Game.Features.Characters.Hero;
+using Game.Features.Hero;
 using Game.Features.PirateShip;
 using UnityEngine;
 

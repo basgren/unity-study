@@ -578,6 +578,7 @@ MonoBehaviour:
   hitStunTime: 0.1
   armedAnimator: {fileID: 9100000, guid: 15452c8f5b5d1294aae1e2825f20f3fc, type: 2}
   unarmedAnimator: {fileID: 9100000, guid: da7b63019bcab78479068d687e4267ef, type: 2}
+  confusionSound: {fileID: 11400000, guid: fbfc28ed2ab065a4b849cd13c10aaa44, type: 2}
 --- !u!61 &3756431542319373597
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -745,7 +746,8 @@ MonoBehaviour:
   barrelLayer:
     serializedVersion: 2
     m_Bits: 2048
-  dragSpeedMultiplier: 0.4
+  dragSpeedSingle: 3
+  dragSpeedStacked: 2
   actionText:
     m_TableReference:
       m_TableCollectionName: GUID:c33ce59ea9c687f478f3c689c642afc6
@@ -798,6 +800,7 @@ MonoBehaviour:
   - id: attack
     cue: {fileID: 11400000, guid: 9d927e96cc874984aad80c84e9822565, type: 2}
   playAs2D: 1
+  playWhenEnabled: 0
 --- !u!114 &2612335251790394289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -885,7 +888,7 @@ MonoBehaviour:
     type: 3}
   ropePrefab: {fileID: 8804120717180790289, guid: 560b304319221b948b170707115beb1b,
     type: 3}
-  swingInfluenceForce: 25
+  swingInfluenceForce: 18
   swingLinearDrag: 0.6
   ropeClimbSpeed: 2
   minRopeLength: 0.2
