@@ -8002,23 +8002,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8781163902762293605, guid: 6d278936fee868248b007132cc98932c,
         type: 3}
-      propertyPath: backSpawnOffset.x
-      value: -0.00000023841858
-      objectReference: {fileID: 0}
-    - target: {fileID: -8781163902762293605, guid: 6d278936fee868248b007132cc98932c,
-        type: 3}
       propertyPath: backSpawnOffset.y
-      value: 0.70697975
-      objectReference: {fileID: 0}
-    - target: {fileID: -8781163902762293605, guid: 6d278936fee868248b007132cc98932c,
-        type: 3}
-      propertyPath: leftTarget.offset.x
-      value: -1.7640004
-      objectReference: {fileID: 0}
-    - target: {fileID: -8781163902762293605, guid: 6d278936fee868248b007132cc98932c,
-        type: 3}
-      propertyPath: leftTarget.offset.y
-      value: -0.07933998
+      value: -0.75
       objectReference: {fileID: 0}
     - target: {fileID: -8781163902762293605, guid: 6d278936fee868248b007132cc98932c,
         type: 3}
@@ -8173,8 +8158,8 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: 17, y: -11}
-      - {x: 17, y: 15}
-      - {x: -14, y: 15}
+      - {x: 17, y: 15.5}
+      - {x: -14, y: 15.5}
       - {x: -14, y: -11}
   m_UseDelaunayMesh: 0
 --- !u!1 &1242059068
@@ -15012,12 +14997,12 @@ PrefabInstance:
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.7599998
+      value: -3.7599826
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 14.651249
+      value: 15.151249
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
