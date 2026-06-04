@@ -3,6 +3,7 @@ using System.Collections;
 using Game.Core.Bootstrap;
 using Game.Core.Services.Scene;
 using Game.Features.Characters.Hero;
+using Game.Features.Hero;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

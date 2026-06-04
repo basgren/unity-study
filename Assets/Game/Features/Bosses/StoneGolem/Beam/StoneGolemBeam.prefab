@@ -63,17 +63,18 @@ MonoBehaviour:
   spriteRenderer: {fileID: 1227421773200516096}
   anim: {fileID: 1058366754325650241}
   damageCollider: {fileID: 7001383505763281164}
-  duration: 10
   collideWithGround: 1
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 3072
   maxRange: 20
-  startAngleDeg: -45
-  sweepArcDeg: 90
-  sweepTime: 2
   impactEffectPrefab: {fileID: 8123056284716559963, guid: 807d944b7e5ad034e8cce5e9bbc537ec,
     type: 3}
+  beamStartSound: {fileID: 11400000, guid: 967c6cf700a66c943b7992a780cfc6b6, type: 2}
+  beamLoopSound: {fileID: 11400000, guid: a9c2fb45b1d558c4289dd83b5d5098ce, type: 2}
+  shakeAmplitude: 0.6
+  shakeFrequency: 8
+  shakeDecayTime: 0.5
 --- !u!1 &3836330014760500726
 GameObject:
   m_ObjectHideFlags: 0
@@ -238,7 +239,20 @@ MonoBehaviour:
     allowNextClip: 1
     onComplete:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 4066797648968752494}
+          m_TargetAssemblyTypeName: Game.Features.Bosses.StoneGolem.Beam.StoneGolemBeam,
+            Assembly-CSharp
+          m_MethodName: PlayLoopSound
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - name: loop
     sprites:
     - {fileID: -358281104, guid: e9677137fc7986c47b8dd3801fc5980a, type: 3}

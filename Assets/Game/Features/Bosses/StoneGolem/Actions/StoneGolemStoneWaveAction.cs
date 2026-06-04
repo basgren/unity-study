@@ -1,4 +1,6 @@
 using System.Collections;
+using Core.Audio;
+using Game.Core.Bootstrap;
 using Game.Features.Bosses._Shared;
 using UnityEngine;
 
@@ -63,22 +65,33 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         [Tooltip("Max front length if no wall is hit, and the down-probe distance for the ground Y.")]
         private float maxWaveRange = 30f;
 
+        [Header("Sounds")]
+        [SerializeField]
+        [Tooltip("Looped while a wave travels: one loop per front (left/right), following the front position.")]
+        private AudioCue waveLoopSound;
+
+        [SerializeField]
+        [Tooltip("Looped while the golem pulsates (the glow telegraph): starts with the glow, stops when the action ends.")]
+        private AudioCue pulsatingLoopSound;
+
         private int glowBoolHash;
+        private IAudioLoopHandle leftFrontSound;
+        private IAudioLoopHandle rightFrontSound;
+        private IAudioLoopHandle pulsatingSound;
 
         private void Awake() {
             glowBoolHash = Animator.StringToHash(glowBoolKey);
         }
 
         protected override void OnBegin() {
-            if (golem != null) {
-                golem.StopMoving();
-            }
-
+            golem.StopMoving();
             StartCoroutine(WaveRoutine());
         }
 
         protected override void OnEnd() {
             SetGlow(false);
+            // The action can be cancelled mid-wave (e.g. golem death) — don't leave loops running.
+            StopFrontSounds();
         }
 
         private IEnumerator WaveRoutine() {
@@ -102,7 +115,7 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         }
 
         private IEnumerator EmitWave() {
-            Vector2 golemPos = golem != null ? (Vector2)golem.transform.position : Vector2.zero;
+            Vector2 golemPos = golem.transform.position;
 
             // Probe the ground Y below the golem; cast the wall rays from just above it.
             RaycastHit2D down = Physics2D.Raycast(golemPos, Vector2.down, maxWaveRange, groundLayerMask);
@@ -114,19 +127,48 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
             float stepInterval = travelSpeed > 0f ? spikeSpacing / travelSpeed : 0f;
 
             float dist = spikeStartOffset;
+            if (dist <= leftMax) {
+                leftFrontSound = G.Audio.PlayLoopAt(waveLoopSound, new Vector3(golemPos.x - dist, groundY));
+            }
+
+            if (dist <= rightMax) {
+                rightFrontSound = G.Audio.PlayLoopAt(waveLoopSound, new Vector3(golemPos.x + dist, groundY));
+            }
+
             while (dist <= leftMax || dist <= rightMax) {
                 if (dist <= leftMax) {
                     SpawnSpike(new Vector2(golemPos.x - dist, groundY));
+                    leftFrontSound?.SetPosition(new Vector3(golemPos.x - dist, groundY));
+                } else {
+                    // This front hit its wall while the other still runs — silence it right away.
+                    StopLoop(ref leftFrontSound);
                 }
 
                 if (dist <= rightMax) {
                     SpawnSpike(new Vector2(golemPos.x + dist, groundY));
+                    rightFrontSound?.SetPosition(new Vector3(golemPos.x + dist, groundY));
+                } else {
+                    StopLoop(ref rightFrontSound);
                 }
 
                 dist += spikeSpacing;
                 if (stepInterval > 0f) {
                     yield return new WaitForSeconds(stepInterval);
                 }
+            }
+
+            StopFrontSounds();
+        }
+
+        private void StopFrontSounds() {
+            StopLoop(ref leftFrontSound);
+            StopLoop(ref rightFrontSound);
+        }
+
+        private void StopLoop(ref IAudioLoopHandle handle) {
+            if (handle != null) {
+                handle.Stop();
+                handle = null;
             }
         }
 
@@ -144,6 +186,16 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         private void SetGlow(bool value) {
             if (animator != null) {
                 animator.SetBool(glowBoolHash, value);
+            }
+
+            // The pulsating loop is tied 1:1 to the glow state, so every path that ends the glow
+            // (natural finish, cancel via OnEnd) also ends the sound.
+            if (value) {
+                if (pulsatingSound == null) {
+                    pulsatingSound = G.Audio.PlayLoopFollow(pulsatingLoopSound, golem.transform);
+                }
+            } else {
+                StopLoop(ref pulsatingSound);
             }
         }
     }

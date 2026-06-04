@@ -1,5 +1,6 @@
 using Game.Core.Models.Inventory;
 using Game.Defs;
+using Game.Features.Hero;
 
 namespace Game.Features.Characters.Hero.ItemUse {
     public class SmallHealPotionStrategy : IItemUseStrategy {

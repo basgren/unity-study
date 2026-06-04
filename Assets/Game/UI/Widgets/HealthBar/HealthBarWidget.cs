@@ -1,6 +1,7 @@
 using Game.Core.Bootstrap;
 using Game.Core.Components.Damage;
 using Game.Features.Characters.Hero;
+using Game.Features.Hero;
 using UnityEngine;
 using UnityEngine.UI;
 

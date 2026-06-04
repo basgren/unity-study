@@ -24,6 +24,11 @@ namespace Game.Core.Audio {
         [SerializeField]
         private bool playAs2D = true;
 
+        [SerializeField]
+        private bool playWhenEnabled;
+
+        
+
         /// <summary>
         /// Reference to an audio service. Inject via ServiceLocator or assign manually.
         /// </summary>
@@ -31,6 +36,12 @@ namespace Game.Core.Audio {
 
         private void Awake() {
             audioService = G.Audio;
+        }
+        
+        private void OnEnable() {
+            if (playWhenEnabled) {
+                Play();
+            }
         }
         
         /// <summary>

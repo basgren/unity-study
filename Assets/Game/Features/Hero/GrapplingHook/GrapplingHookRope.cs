@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Game.Features.Characters.Hero.GrapplingHook {
+namespace Game.Features.Hero.GrapplingHook {
     /// <summary>
     /// Visual rope rendered as a straight chain of fixed-length segments between two
     /// pinned endpoints. Purely visual — does not affect physics.

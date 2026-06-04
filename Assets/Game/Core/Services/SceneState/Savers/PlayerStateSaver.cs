@@ -1,6 +1,7 @@
 using Game.Core.Bootstrap;
 using Game.Core.Models.Shop;
 using Game.Features.Characters.Hero;
+using Game.Features.Hero;
 using UnityEngine;
 
 namespace Game.Core.Services.SceneState.Savers {

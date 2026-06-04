@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6836785096376548313}
   - component: {fileID: 6836785096376548312}
   - component: {fileID: 8907442736194978516}
-  - component: {fileID: 753815626166125076}
   m_Layer: 0
   m_Name: CM vcam1
   m_TagString: Untagged
@@ -90,22 +89,6 @@ MonoBehaviour:
   m_Damping: 0.5
   m_MaxWindowSize: -1
   m_Padding: 0
---- !u!114 &753815626166125076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6836785096376548294}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47405fed972a5114da845a6bc0194f44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  duration: 0.3
-  amplitude: 1.5
-  frequency: 3
-  shakeOnAwake: 0
 --- !u!1 &6836785096633589312
 GameObject:
   m_ObjectHideFlags: 0
@@ -524,10 +507,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.1468599
-    y: 0.8419244
-    width: 0.4637681
-    height: 0.46391752
+    x: 0.05479452
+    y: 0.38434783
+    width: 0.46966732
+    height: 0.4695652
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60

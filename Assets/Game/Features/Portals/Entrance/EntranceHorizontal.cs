@@ -5,6 +5,7 @@ using Game.Core.Bootstrap;
 using Game.Core.Services.Scene;
 using Game.Core.Utils;
 using Game.Features.Characters.Hero;
+using Game.Features.Hero;
 using Game.Features.Portals.Common;
 using UnityEditor;
 using UnityEngine;

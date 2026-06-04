@@ -2,6 +2,7 @@ using Game.Core.Models.Inventory;
 using Game.Defs;
 using Game.Features.Characters.Hero;
 using Game.Features.Characters.Hero.ItemUse;
+using Game.Features.Hero;
 using UnityEngine;
 
 namespace Game.Features.Characters.Parrot {

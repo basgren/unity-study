@@ -31,7 +31,8 @@ namespace Game.Features.Bosses.StoneGolem {
     /// <item><description>Melee / Hand / Beam — match the player's level (fly up/down to the nearest
     /// anchor on that level), and for melee also chase into range.</description></item>
     /// <item><description>Ground Hit — fly to the nearest level-1 anchor first (slam is level-1 only).</description></item>
-    /// <item><description>Laser Cross / Stone Wave — self-positioned (the action flies to centre / casts in place).</description></item>
+    /// <item><description>Laser Cross — walk to the anchor nearest the cross centre first; the action
+    /// then ascends vertically. Stone Wave — self-positioned (casts in place).</description></item>
     /// </list>
     /// A reactive melee counter still interrupts when the golem is struck while the player is inside
     /// its melee trigger area. Levels are derived from the player's / golem's Y against the lowest level-2 anchor;
@@ -127,8 +128,9 @@ namespace Game.Features.Bosses.StoneGolem {
         private float horzJumpArcHeight = 1.5f;
 
         [SerializeField]
-        [Tooltip("How close (world units) the golem must get to an anchor on a Move edge to count as arrived.")]
-        private float anchorArriveThreshold = 0.3f;
+        [Tooltip("How close (world units) the golem must get to an anchor on a Move edge to count as arrived. " +
+                 "Movement always aims at the anchor itself; this only decides when to cut the last sliver and proceed.")]
+        private float anchorArriveThreshold = 0.05f;
 
         [SerializeField]
         [Tooltip("Safety cap (seconds) on a single Move (walk) edge, in case the golem can't reach the anchor.")]
@@ -432,7 +434,14 @@ namespace Game.Features.Bosses.StoneGolem {
                     yield return TravelToPlayerLevel(player);
                     break;
 
-                // LaserCross / StoneWave position themselves (fly to centre / cast in place).
+                case StoneGolemAttack.LaserCross:
+                    // Walk to the ground anchor nearest the cross centre (same graph movement as the
+                    // other attacks), so the action's vertical ascent starts from under the pivot
+                    // instead of flying diagonally across the room.
+                    yield return TravelTo(NearestAnchor(StoneGolemLevel.Level1, golem.LaserCross.CenterPosition));
+                    break;
+
+                // StoneWave positions itself (casts in place).
             }
         }
 
@@ -527,9 +536,12 @@ namespace Game.Features.Bosses.StoneGolem {
                         yield return null;
                     }
 
-                    golem.StopMoving();
-
+                    // Stop only when the pursuit actually ends. Stopping before every re-plan zeroed
+                    // the ramped walk command each repathInterval (0.3 s vs a 0.25 s build-up), so the
+                    // chase pulsed: accelerate → hard brake → accelerate. Keep rolling into the next
+                    // re-plan instead; WalkTo / RunAction own their stops on the other paths.
                     if (golem.IsDead || PlayerInMeleeReach(player) || chaseElapsed >= chaseTimeout) {
+                        golem.StopMoving();
                         yield break;
                     }
 
@@ -579,8 +591,10 @@ namespace Game.Features.Bosses.StoneGolem {
             return -1;
         }
 
-        // Constant-speed ground walk to a world X (no tween) for Move edges. Stops on arrival within
-        // anchorArriveThreshold, or after moveEdgeTimeout as a safety cap. Sibling to Chase.
+        // Velocity-based ground walk to a world X for Move edges. MoveTowards always brakes toward
+        // the target point itself; once the golem is within anchorArriveThreshold the point counts
+        // as reached — stop and proceed (cutting the tiny residual speed instead of decaying through
+        // micro distances). moveEdgeTimeout is a safety cap. Sibling to Chase.
         private IEnumerator WalkTo(float targetX) {
             float elapsed = 0f;
             while (elapsed < moveEdgeTimeout

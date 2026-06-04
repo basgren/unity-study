@@ -1,4 +1,6 @@
 using System.Collections;
+using Core.Audio;
+using Game.Core.Bootstrap;
 using Game.Features.Bosses._Shared;
 using UnityEngine;
 
@@ -26,6 +28,10 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         [SerializeField]
         [Tooltip("How long the swing locks the golem before it can act again. Should roughly match the clip length.")]
         private float holdDuration = 1f;
+        
+        [Header("Sounds")]
+        [SerializeField]
+        private AudioCue meleeSound;
 
         private int attackTriggerHash;
 
@@ -37,6 +43,7 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
             SetDamagerActive(false);
             if (animator != null) {
                 animator.SetTrigger(attackTriggerHash);
+                G.Audio.Play2D(meleeSound);
             }
 
             StartCoroutine(HoldRoutine());

@@ -146,7 +146,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0.7
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -304,7 +304,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0.7
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -462,7 +462,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0.7
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -484,6 +484,7 @@ GameObject:
   m_Component:
   - component: {fileID: 492536796599796094}
   - component: {fileID: 6476846462936556691}
+  - component: {fileID: 2124010579664681588}
   m_Layer: 13
   m_Name: SkullDebris
   m_TagString: Untagged
@@ -528,12 +529,28 @@ MonoBehaviour:
   spawnAreaSize: {x: 1, y: 1}
   minSpeed: 3
   maxSpeed: 5
-  directionDeviation: 1
+  directionDeviation: 360
   minRotation: 0
   maxRotation: 0
   minLifeTime: 8
   maxLifeTime: 13
   fadeOutDuration: 1
+--- !u!114 &2124010579664681588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8536365500546493346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a538b984a3bc4e4ba1230b4b831a85fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCue: {fileID: 11400000, guid: fc376005ec3eb6348ad5d1ad56567295, type: 2}
+  cueRefs: []
+  playAs2D: 1
+  playWhenEnabled: 1
 --- !u!1 &9048710832721539021
 GameObject:
   m_ObjectHideFlags: 0
@@ -680,7 +697,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0.7
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

@@ -1,6 +1,7 @@
 using Game.Core.Bootstrap;
 using Game.Features.Characters.Hero;
 using Game.Features.Characters.Hero.Interaction;
+using Game.Features.Hero;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Features.Hero;
 using UnityEngine;
 
 namespace Game.Features.Characters.Hero.Interaction {

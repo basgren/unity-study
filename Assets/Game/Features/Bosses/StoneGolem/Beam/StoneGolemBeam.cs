@@ -1,4 +1,6 @@
 using System;
+using Core.Audio;
+using Game.Core.Bootstrap;
 using Game.Core.Components.Animation;
 using UnityEngine;
 
@@ -60,6 +62,26 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
                  "Use a ParticleSystem with Stop Action = Destroy for graceful finish on beam end.")]
         private GameObject impactEffectPrefab;
 
+        [Header("Sounds")]
+        [SerializeField]
+        private AudioCue beamStartSound;
+        
+        [SerializeField]
+        private AudioCue beamLoopSound;
+
+        [Header("Screen shake")]
+        [SerializeField]
+        [Tooltip("Continuous screen shake amplitude while the beam loop is active. 0 = no shake.")]
+        private float shakeAmplitude = 1f;
+
+        [SerializeField]
+        [Tooltip("Screen shake noise frequency while the beam loop is active.")]
+        private float shakeFrequency = 3f;
+
+        [SerializeField]
+        [Tooltip("Shake fade-out time in seconds after the beam loop ends.")]
+        private float shakeDecayTime = 0.5f;
+
         /// <summary>
         /// Raised on the loop clip's first frame, the moment the damage collider arms. The driving
         /// action listens to this to start its loop-duration countdown.
@@ -72,6 +94,10 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
         private GameObject impactInstance;
         private bool finishing;
 
+        private void Start() {
+            G.Audio.Play2D(beamStartSound);
+        }
+
         /// <summary>
         /// Sets the beam's aim — its local Z rotation, in degrees. The beam never changes this on
         /// its own; the driving action positions and sweeps it. Call right after Instantiate so the
@@ -82,6 +108,31 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
             // Resize to the new direction immediately so the beam never lags a physics frame behind
             // the aim (and the spawn frame doesn't flash at the prefab's default length).
             UpdateBeamLength();
+        }
+
+        private IAudioLoopHandle loopSoundHandle;
+        
+        public void PlayLoopSound() {
+            StopLoopSound();
+
+            loopSoundHandle = G.Audio.PlayLoopAt(beamLoopSound, transform.position, false);
+
+            if (shakeAmplitude > 0f) {
+                G.Camera.StartContinuousShake(shakeAmplitude, shakeFrequency);
+            }
+        }
+
+        public void StopLoopSound() {
+            if (loopSoundHandle != null) {
+                loopSoundHandle.Stop();
+                loopSoundHandle = null;
+
+                // Only fade the shake when we actually owned a running loop, so the defensive
+                // StopLoopSound() at the top of PlayLoopSound never touches foreign shakes.
+                if (shakeAmplitude > 0f) {
+                    G.Camera.StopShakeWithDecay(shakeDecayTime);
+                }
+            }
         }
 
         /// <summary>
@@ -135,6 +186,10 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
                 damageCollider.enabled = true;
                 LoopStarted?.Invoke();
             }
+
+            if (animator.CurrentClip.Name == "finish" && animator.CurrentFrameIndex == 1) {
+                StopLoopSound();
+            }
         }
 
         /// <summary>Animation event on the last frame of the "finish" clip.</summary>
@@ -144,8 +199,10 @@ namespace Game.Features.Bosses.StoneGolem.Beam {
 
         private void OnDestroy() {
             // If the beam was destroyed mid-life (e.g. golem death cancelled the action), still
-            // detach the impact so any particle Stop Action can play out.
+            // detach the impact so any particle Stop Action can play out, and end the loop
+            // sound / continuous shake that would otherwise run forever.
             ReleaseImpact();
+            StopLoopSound();
         }
 
         private void UpdateBeamLength() {

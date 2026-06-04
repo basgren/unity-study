@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Game.Features.Hero;
+using UnityEngine;
 
 namespace Game.Features.Characters.Hero.Animations.Armed {
     public class AttackStateBehavior : StateMachineBehaviour {

@@ -12,9 +12,8 @@ GameObject:
   - component: {fileID: 8861408352655443898}
   - component: {fileID: 7804082384776393916}
   - component: {fileID: 3456362849938897811}
-  - component: {fileID: 1019320424851305148}
   - component: {fileID: 4099753110967513831}
-  - component: {fileID: 7535260910777428075}
+  - component: {fileID: -5065391202265689736}
   m_Layer: 15
   m_Name: FallingStone
   m_TagString: Untagged
@@ -152,61 +151,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &1019320424851305148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 715577279845379036}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cd42ee2eb454ebb8c16d95b7497b481, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layer:
-    serializedVersion: 2
-    m_Bits: 1024
-  action:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4099753110967513831}
-        m_TargetAssemblyTypeName: Game.Core.Components.Animation.SimpleSpriteAnimator,
-          Assembly-CSharp
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 7804082384776393916}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3456362849938897811}
-        m_TargetAssemblyTypeName: UnityEngine.Rigidbody2D, UnityEngine
-        m_MethodName: set_isKinematic
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
 --- !u!114 &4099753110967513831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,10 +178,10 @@ MonoBehaviour:
   onComplete:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7535260910777428075}
-        m_TargetAssemblyTypeName: Core.Components.GameObjects.DestroyObjectComponent,
+      - m_Target: {fileID: -5065391202265689736}
+        m_TargetAssemblyTypeName: Game.Features.Bosses.StoneGolem.FallingStones.FallingStone,
           Assembly-CSharp
-        m_MethodName: DestroySelf
+        m_MethodName: Despawn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -247,7 +191,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7535260910777428075
+--- !u!114 &-5065391202265689736
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -256,10 +200,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 715577279845379036}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8901e5bbb747eef46bf0facf6bd92ff3, type: 3}
+  m_Script: {fileID: 11500000, guid: aaa2cd8d5856d444cb5e9b1d39563312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToDestroy: {fileID: 0}
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  impactEffectPrefab: {fileID: 0}
+  maxLifetime: 6
+  maxFallSpeed: 10
+  damagerObject: {fileID: 1412094864804499931}
+  fallSound: {fileID: 11400000, guid: 93f6551eed3fc654eadfadaa97302285, type: 2}
 --- !u!1 &1412094864804499931
 GameObject:
   m_ObjectHideFlags: 0

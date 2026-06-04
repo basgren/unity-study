@@ -32,13 +32,17 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         private GameObject beamPrefab;
 
         [SerializeField]
+        [Tooltip("Point the cross pivot is placed at (BeamSpawnPos). Falls back to the golem position when unset.")]
+        private Transform spawnPoint;
+
+        [SerializeField]
         [Tooltip("Room-centre point the golem flies to before firing.")]
         private Transform centerPoint;
 
         [Header("Cross")]
         [SerializeField]
         [Tooltip("Number of beams spread evenly around the pivot.")]
-        private int beamCount = 4;
+        private int beamCount = 3;
 
         [SerializeField]
         [Tooltip("Degrees the cross rotates in total before stopping.")]
@@ -63,6 +67,14 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         private readonly List<StoneGolemBeam> beams = new List<StoneGolemBeam>();
         private GameObject pivot;
 
+        /// <summary>
+        /// World position the cross is cast at (room centre). The AI walks the golem under this point
+        /// before the action begins. Falls back to the golem's position when no centre is wired.
+        /// </summary>
+        public Vector2 CenterPosition => centerPoint != null
+            ? centerPoint.position
+            : golem.transform.position;
+
         private void Awake() {
             animBoolHash = Animator.StringToHash(animBoolKey);
         }
@@ -73,24 +85,19 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
 
         protected override void OnEnd() {
             SetCastAnim(false);
-            if (golem != null) {
-                golem.SetGravityActive(true);
-            }
-
+            golem.SetGravityActive(true);
             CleanupBeams();
         }
 
         private IEnumerator CrossRoutine() {
-            Vector3 startPos = golem != null ? golem.transform.position : Vector3.zero;
+            Vector3 startPos = golem.transform.position;
             float rotationDuration = rotationSpeed > 0f ? Mathf.Abs(totalRotationDeg) / rotationSpeed : 0f;
 
             SetCastAnim(true);
 
-            if (golem != null) {
-                golem.SetGravityActive(false);
-                if (centerPoint != null) {
-                    yield return golem.MoveTo(centerPoint.position, flyToCenterTime);
-                }
+            golem.SetGravityActive(false);
+            if (centerPoint != null) {
+                yield return golem.MoveTo(centerPoint.position, flyToCenterTime);
             }
 
             SpawnCross();
@@ -104,33 +111,39 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
                     pivot.transform.localRotation = Quaternion.Euler(0f, 0f, totalRotationDeg * k);
                 }
 
+                // Re-assert every frame: unlike FlyTo/JumpTo the golem HOVERS here with nothing
+                // pinning it, and a pending un-ball finishing mid-cast silently restores gravity
+                // (SetImmuneStateEnabled) — without this the golem just falls out of the cross.
+                golem.SetGravityActive(false);
                 yield return null;
             }
 
             // Beams have no timer of their own — tell them to finish, then hold while they fade.
             FinishBeams();
-            if (standAfterTime > 0f) {
-                yield return new WaitForSeconds(standAfterTime);
+            for (float hold = 0f; hold < standAfterTime; hold += Time.deltaTime) {
+                // Same per-frame gravity hold as the rotation loop above.
+                golem.SetGravityActive(false);
+                yield return null;
             }
 
             CleanupBeams();
 
-            if (golem != null) {
-                yield return golem.MoveTo(startPos, flyDownTime);
-                golem.SetGravityActive(true);
-            }
+            yield return golem.MoveTo(startPos, flyDownTime);
+            golem.SetGravityActive(true);
 
             SetCastAnim(false);
             Complete();
         }
 
         private void SpawnCross() {
-            if (beamPrefab == null || golem == null) {
+            if (beamPrefab == null) {
                 return;
             }
 
+            // World-space pivot at BeamSpawnPos; intentionally NOT parented to it — the golem
+            // flips facing via localScale.x, which would mirror the cross and its rotation.
             pivot = new GameObject("LaserCrossPivot");
-            pivot.transform.position = golem.transform.position;
+            pivot.transform.position = spawnPoint != null ? spawnPoint.position : golem.transform.position;
 
             int count = Mathf.Max(1, beamCount);
             float step = 360f / count;
@@ -172,9 +185,7 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         }
 
         private void SetCastAnim(bool value) {
-            if (animator != null) {
-                animator.SetBool(animBoolHash, value);
-            }
+            animator.SetBool(animBoolHash, value);
         }
     }
 }

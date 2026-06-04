@@ -1,6 +1,7 @@
 using Game.Core.Models.Inventory;
 using Game.Defs;
 using Game.Features.Characters.Hero.ItemUse;
+using Game.Features.Hero;
 
 namespace Game.Features.Characters.Hero.GrapplingHook {
     /// <summary>

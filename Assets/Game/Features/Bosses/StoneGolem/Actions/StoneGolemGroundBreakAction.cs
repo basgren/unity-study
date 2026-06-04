@@ -2,6 +2,7 @@ using System.Collections;
 using Game.Core.Bootstrap;
 using Game.Features.Bosses._Shared;
 using Game.Features.Characters.Hero;
+using Game.Features.Hero;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,8 +10,9 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
     /// <summary>
     /// Phase-transition cutscene (the empowered Ground Hit). One-shot, run by <c>StoneGolemAI</c> at
     /// 50% HP via its <c>phaseTransitionAction</c> hook — never rolled as a normal attack. Timeline:
-    /// move to the break point on level 1 → collapse (isImmune) → rise to the top of the view → shake
-    /// with growing violence → lift a little higher → dramatic pause → slam down and shatter the floor.
+    /// walk to the break point on level 1 (velocity-based) → collapse into ball form → rise to the top of the view →
+    /// shake with growing violence (all directions) → dramatic pause → physics slam
+    /// (<see cref="StoneGolem.SlamToGround"/>) down onto the still-intact floor and shatter it.
     /// On impact the <see cref="breakObjects"/> (level-1 floor tilemap layer, the platforms, the
     /// phase-1 hook anchor) are disabled and debris is spawned; player control is locked and both the
     /// golem (gravity restored) and the player fall to the lower level. The camera confiner swap that
@@ -22,20 +24,8 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         private StoneGolem golem;
 
         [SerializeField]
-        private Animator animator;
-
-        [SerializeField]
-        [Tooltip("Bool that plays the ball-up / un-ball animation (shared with Ground Hit).")]
-        private string animBoolKey = "isImmune";
-
-        [SerializeField]
-        [Tooltip("Optional point on level 1 the golem moves to before the break. If empty, it breaks in place.")]
+        [Tooltip("Optional point on level 1 the golem walks to before the break. If empty, it breaks in place.")]
         private Transform breakPoint;
-
-        [Header("Approach")]
-        [SerializeField]
-        [Tooltip("Time to move to the break point.")]
-        private float moveToPointTime = 1.5f;
 
         [Header("Raise / shake / slam")]
         [SerializeField]
@@ -56,19 +46,13 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         private float shakeFrequency = 18f;
 
         [SerializeField]
-        [Tooltip("Extra lift just before the slam.")]
-        private float extraRaiseHeight = 1f;
-
-        [SerializeField]
-        private float extraRaiseTime = 0.5f;
-
-        [SerializeField]
         [Tooltip("Dramatic pause at the top before the slam.")]
         private float pauseTime = 1f;
 
         [SerializeField]
-        [Tooltip("Time of the furious downward slam back to the break height.")]
-        private float slamTime = 0.3f;
+        [Tooltip("Slam tuning for the floor break: use a bigger gravity scale than Ground Hit for a " +
+                 "faster, more furious fall. Shake/sound fire on impact, just before the floor shatters.")]
+        private StoneGolem.SlamSettings slamSettings = new StoneGolem.SlamSettings();
 
         [Header("Break")]
         [SerializeField]
@@ -89,12 +73,6 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
                  "screen shake here so they fire exactly on impact.")]
         private UnityEvent onFloorBroken;
 
-        private int animBoolHash;
-
-        private void Awake() {
-            animBoolHash = Animator.StringToHash(animBoolKey);
-        }
-
         protected override void OnBegin() {
             StartCoroutine(CutsceneRoutine());
         }
@@ -108,56 +86,44 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
         /// </summary>
         public void ApplyBrokenStateImmediate() {
             BreakFloor();
-            if (golem != null) {
-                golem.SetGravityActive(true);
-            }
+            
+            golem.SetGravityActive(true);
         }
 
         protected override void OnEnd() {
-            // Defensive restore on any end path (including a mid-cutscene cancel/death).
-            SetImmuneAnim(false);
-            if (golem != null) {
-                golem.SetGravityActive(true);
-            }
+            // Defensive restore on any end path (including a mid-cutscene cancel/death). Gravity
+            // first: SetImmune(false) no-ops when the golem never balled up (early cancel), and
+            // the un-ball flow owns gravity itself otherwise. StopMoving kills residual walk
+            // velocity if the action was force-completed mid-WalkTo (the maxDuration safety cap).
+            golem.StopMoving();
+            golem.SetGravityActive(true);
+            golem.SetImmune(false);
 
             SetPlayerControl(true);
         }
 
         private IEnumerator CutsceneRoutine() {
-            // Slam target Y = the break height (the floor level we descend back to before shattering it).
-            float groundY = golem != null ? golem.transform.position.y : 0f;
-
-            if (golem != null) {
-                golem.SetGravityActive(false);
-            }
-
-            if (golem != null && breakPoint != null) {
-                groundY = breakPoint.position.y;
-                yield return golem.MoveTo(new Vector2(breakPoint.position.x, breakPoint.position.y), moveToPointTime);
-            }
-
-            SetImmuneAnim(true);
-
-            if (golem != null) {
-                yield return golem.MoveByVertical(raiseHeight, raiseTime);
-                yield return golem.ShakeHorizontal(shakeDuration, shakeAmplitude, shakeFrequency);
-                yield return golem.MoveByVertical(extraRaiseHeight, extraRaiseTime);
-            }
+            // Velocity-based walk to the break point (gravity on, same ground movement as a chase) —
+            // no position lerp on the ground.
+            yield return golem.WalkTo(breakPoint.position.x);
+            
+            // Balling up zeroes gravity, which also holds the golem for the scripted raise.
+            golem.SetImmune(true);
+            yield return golem.MoveByVertical(raiseHeight, raiseTime, easeOut: true);
+            yield return golem.Shake(shakeDuration, shakeAmplitude, shakeFrequency);
 
             if (pauseTime > 0f) {
                 yield return new WaitForSeconds(pauseTime);
             }
 
-            if (golem != null) {
-                yield return golem.MoveTo(new Vector2(golem.transform.position.x, groundY), slamTime);
-            }
+            // Physics slam onto the still-intact level-1 floor; impact fires this action's
+            // shake and sound, then the floor shatters.
+            yield return golem.SlamToGround(slamSettings);
 
             BreakFloor();
 
             // Both fall to the lower level: restore the golem's gravity, lock the player for the drop.
-            if (golem != null) {
-                golem.SetGravityActive(true);
-            }
+            golem.SetGravityActive(true);
 
             SetPlayerControl(false);
 
@@ -165,8 +131,7 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
                 yield return new WaitForSeconds(dropLockTime);
             }
 
-            SetPlayerControl(true);
-            SetImmuneAnim(false);
+            // Complete() runs OnEnd, which un-balls the golem and unlocks the player.
             Complete();
         }
 
@@ -191,17 +156,22 @@ namespace Game.Features.Bosses.StoneGolem.Actions {
             onFloorBroken?.Invoke();
         }
 
-        private void SetImmuneAnim(bool value) {
-            if (animator != null) {
-                animator.SetBool(animBoolHash, value);
-            }
-        }
-
         private void SetPlayerControl(bool isEnabled) {
             PlayerController hero = G.Hero != null ? G.Hero.Controller : null;
             if (hero != null) {
                 hero.SetControlsEnabled(isEnabled);
             }
+        }
+
+        private void OnDrawGizmos() {
+            // Break point the golem walks to before the floor break — visible in edit mode for placement.
+            if (breakPoint == null) {
+                return;
+            }
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(breakPoint.position, 0.3f);
+            Gizmos.DrawLine(breakPoint.position + Vector3.down * 1.5f, breakPoint.position + Vector3.up * 1.5f);
         }
     }
 }
