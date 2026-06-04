@@ -72,6 +72,9 @@ EditorBuildSettings:
     path: Assets/Game/Scenes/Warmrocks/WR_RikkoHub.unity
     guid: 90fd1221710d8ca4c9ba023f4fc2773e
   - enabled: 1
+    path: Assets/Game/Scenes/Warmrocks/WR_NoSailLand.unity
+    guid: 2b305e19f3f826745acb7cb15b762f10
+  - enabled: 1
     path: Assets/Game/Scenes/Warmrocks/WR_SidePath.unity
     guid: 66f65efabccd016428949c5b691001e2
   - enabled: 1

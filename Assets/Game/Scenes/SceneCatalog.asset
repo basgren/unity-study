@@ -57,6 +57,8 @@ MonoBehaviour:
     scenePath: Assets/Game/Scenes/Warmrocks/WR_HardHeadYard.unity
   - sceneGuid: 90fd1221710d8ca4c9ba023f4fc2773e
     scenePath: Assets/Game/Scenes/Warmrocks/WR_RikkoHub.unity
+  - sceneGuid: 2b305e19f3f826745acb7cb15b762f10
+    scenePath: Assets/Game/Scenes/Warmrocks/WR_NoSailLand.unity
   - sceneGuid: 66f65efabccd016428949c5b691001e2
     scenePath: Assets/Game/Scenes/Warmrocks/WR_SidePath.unity
   - sceneGuid: 16e764cb2a715bd439a21c2498c2fbf3
