@@ -94,6 +94,38 @@ gap rather than resting anywhere up to a full ray-length above the surface. That
 was what showed as a stray pixel between a fallen barrel and the ground; settling makes the
 rest height consistent, and the skin is kept well under a pixel so it renders flush.
 
+### The no-overlap invariant
+
+The entire clamping model assumes a barrel **never overlaps another collider** — every rest
+position keeps a `SkinWidth` gap. The reason is an engine artifact: `Rigidbody2D.Cast`
+reports a collider the body *already overlaps* at **distance 0 in every cast direction**,
+even away from the obstacle. An overlapped barrel therefore reads as "blocked everywhere":
+its falling cast "lands" mid-air on the barrel *above* it, and its horizontal casts return 0
+so it cannot be pushed or pulled.
+
+**Scene-authored stacks violate the invariant**: designers place stacked barrels on the 0.25
+grid (0.75 apart), but the collider stack height is ≈0.759, so authored stacks overlap by a
+hair (~0.3px). Two defenses restore the invariant:
+
+1. **The settle converges every grounded barrel to ONE shared rest height** — where the
+   downward cast reports exactly `SkinWidth` of clearance, the same equilibrium a landing
+   produces. It is two-sided: snap down when above, micro-lift (< `SkinWidth`) when below.
+   Uniformity is load-bearing: a barrel resting even a hair lower than its neighbor clips
+   the neighbor's top corner, and its horizontal cast then reads the neighbor as a wall —
+   that was why a top barrel could not slide across onto an equal-height barrel next to its
+   support. A distance-0 hit means flush, overlapped, or inside the cast's contact-offset
+   **dead zone** (casts report "almost touching" as 0 too), and the barrel must never snap
+   down through such a contact (treating "only zero hits" as "no surface" is what once made
+   stacked barrels shake a pixel up/down every step). When the distance-0 contact is a
+   box-shaped support *below* the barrel, the settle lifts one skin-step per frame until the
+   cast reports positive clearance, then the two-sided branch finishes the convergence.
+   Composite/tilemap contacts and side-by-side overlaps just hold (lifting can't fix them).
+2. **The falling cast ignores distance-0 hits.** Safe there because the ground rays have just
+   confirmed nothing real is below — a distance-0 hit while airborne can only be an overlap
+   artifact, never a floor. (The grounded settle must NOT blanket-ignore them: a genuinely
+   flush floor also reports 0, and skipping it would snap the barrel into the ground — hence
+   the directed lift in (1) instead.)
+
 **The obstacle mask must include both the ground layer AND the barrel layer**
 (`Ground` + `DynamicObjects`). With only `Ground`, a barrel detects the floor but *not*
 other barrels, so barrels won't stack — a barrel-only check passes, a stacking check fails.
