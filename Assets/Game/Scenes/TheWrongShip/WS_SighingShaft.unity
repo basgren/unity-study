@@ -5608,6 +5608,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 992923530}
     m_Modifications:
+    - target: {fileID: 34929748563150667, guid: cc6c8709ce7c00f4991b5e6569695ac5,
+        type: 3}
+      propertyPath: loot.Array.data[0].count
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7929554061555327307, guid: cc6c8709ce7c00f4991b5e6569695ac5,
         type: 3}
       propertyPath: m_LocalPosition.x

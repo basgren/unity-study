@@ -9661,6 +9661,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8781163902762293605, guid: 6d278936fee868248b007132cc98932c,
         type: 3}
+      propertyPath: backSpawnOffset.x
+      value: 0.008562386
+      objectReference: {fileID: 0}
+    - target: {fileID: -8781163902762293605, guid: 6d278936fee868248b007132cc98932c,
+        type: 3}
+      propertyPath: backSpawnOffset.y
+      value: 0.4043455
+      objectReference: {fileID: 0}
+    - target: {fileID: -8781163902762293605, guid: 6d278936fee868248b007132cc98932c,
+        type: 3}
       propertyPath: link.targetScene.sceneGuid
       value: e0a50a268cf3b9a4ebffc503ce7a7516
       objectReference: {fileID: 0}
