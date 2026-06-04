@@ -26,9 +26,9 @@ namespace Core.Utils {
     public class MultiRayCaster {
         public static MultiRayCaster CreateGroundChecker(BoxCollider2D myCollider, LayerMask groundLayer) {
             return new MultiRayCaster(myCollider, groundLayer)
-                .WithDirection(Direction2D.Down)
-                // Small adjustment is needed for barrels, otherwise they may incorrectly check collision.
-                .WithAdjustment(CoreConst.PixelSize);
+                .WithDirection(Direction2D.Down);
+            // Small adjustment is needed for barrels, otherwise they may incorrectly check collision.
+            // .WithAdjustment(CoreConst.PixelSize);
         }
         
         private const int MaxCollisionsPerRay = 8;

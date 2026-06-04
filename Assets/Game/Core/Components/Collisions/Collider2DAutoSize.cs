@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Core.Components.Collisions {
+namespace Game.Core.Components.Collisions {
     /// <summary>
     /// Automatically adjusts a BoxCollider2D based on the bounds of a SpriteRenderer.
     /// Useful for objects like spikes where the collider needs to match the visual size.
