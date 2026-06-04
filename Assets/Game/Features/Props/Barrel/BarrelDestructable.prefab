@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2986219559809948909}
   - component: {fileID: 2986219559809948905}
   - component: {fileID: 2986219559809948911}
-  - component: {fileID: 2986219559809948908}
   - component: {fileID: 2986219559809948906}
+  - component: {fileID: 2986219559809948908}
   - component: {fileID: 2986219559809948907}
   - component: {fileID: 2986219559809948904}
   - component: {fileID: 2986219559809948917}
@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: -7183454011982891441}
   - component: {fileID: -7490709666928927278}
   - component: {fileID: 1543599126481411729}
+  - component: {fileID: 3361991601785911808}
   m_Layer: 11
   m_Name: BarrelDestructable
   m_TagString: Untagged
@@ -38,7 +39,7 @@ Transform:
   m_GameObject: {fileID: 2986219559809948899}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -212.90163, y: 177.437, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -216,7 +217,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.014854431, y: 0.37550735}
+  m_Offset: {x: -0.0008046627, y: 0.38910392}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.08121329}
@@ -227,8 +228,35 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.68019104, y: 0.7508316}
-  m_EdgeRadius: 0
+  m_Size: {x: 0.6323333, y: 0.72866875}
+  m_EdgeRadius: 0.015
+--- !u!50 &2986219559809948906
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986219559809948899}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 20
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 6200000, guid: 77d00fdcb24d7194e8dd011937196e98, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 4
 --- !u!114 &2986219559809948908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,33 +318,6 @@ MonoBehaviour:
         m_CallState: 2
   hitSound: {fileID: 11400000, guid: 092b99814347dd64da7db284656e8049, type: 2}
   destroySound: {fileID: 11400000, guid: 595278f78f7fdce43a4828bf52b7532f, type: 2}
---- !u!50 &2986219559809948906
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2986219559809948899}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 20
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 6200000, guid: 77d00fdcb24d7194e8dd011937196e98, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 4
 --- !u!114 &2986219559809948907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,7 +332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 3072
   raysCount: 3
   bodyCollider: {fileID: 2986219559809948911}
 --- !u!114 &2986219559809948904
@@ -346,7 +347,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 684bbba76c3d4047bae699cb5ffaea20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jointUpBreakForce: 2500
   draggingSound: {fileID: 11400000, guid: 1daf70a2c95dfb94cb49216889499ba9, type: 2}
   fallSound: {fileID: 11400000, guid: 8bda5a0baa78a39478951fd0ff7f5928, type: 2}
 --- !u!114 &2986219559809948917
@@ -437,3 +437,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 193622ed0d77dbc4ab2a7b43dcb1c804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3361991601785911808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986219559809948899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f302850753e5b7645a81b35a9ff943a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxFallSpeed: 12
+  timeToMaxFallSpeed: 0.25
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 3072

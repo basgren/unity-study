@@ -536,6 +536,9 @@ namespace Game.Features.Characters.Hero {
 
             if (isDragging) {
                 CancelAttack();
+                // Clear residual horizontal velocity so the convoy starts from rest; DragAbility
+                // drives velocity.x from here on.
+                MyRigidbody.velocity = new Vector2(0f, MyRigidbody.velocity.y);
                 // Face toward the barrel while dragging.
                 Facing.SetByX(barrelX - transform.position.x);
                 // Show unarmed visuals while dragging.
@@ -586,6 +589,13 @@ namespace Game.Features.Characters.Hero {
             // Scripted flight (e.g. portal launch arc) drives velocity directly. Bail out so the
             // accel/decel ramp doesn't strip away the horizontal component of the launch velocity.
             if (scriptedFlight) {
+                return;
+            }
+
+            // While dragging a barrel, DragAbility drives the hero horizontally in lockstep with
+            // the barrel (the "convoy"). Suspend the normal input-driven movement so the two don't
+            // fight; facing is already locked toward the barrel by SetDragMode.
+            if (isDragging) {
                 return;
             }
 
