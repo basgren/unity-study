@@ -99,6 +99,10 @@ MonoBehaviour:
     m_Key: ui.info.wr.hardheadyard.challenge
     m_Metadata:
       m_Items: []
+  - m_Id: 21909001337151488
+    m_Key: ui.info.ds.beforewrongship
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

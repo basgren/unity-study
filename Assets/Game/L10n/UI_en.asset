@@ -110,6 +110,14 @@ MonoBehaviour:
       No Skared? Get Reworz!'
     m_Metadata:
       m_Items: []
+  - m_Id: 21909001337151488
+    m_Localized: 'Newbie? No Go!
+
+      Verry Hard There!
+
+      Kom Bak Layter!'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
