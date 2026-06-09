@@ -1,27 +1,102 @@
 {
   "dialogId": "rikko",
-  "entryNodeId": "greeting",
+  "entryNodeId": "common",
+  "entryRules": [
+    { "nodeId": "intro_1" },
+    { "nodeId": "sabre_reaction", "conditions": [ { "type": "IsArmed" } ] },
+    { "nodeId": "common" }
+  ],
   "nodes": [
     {
-      "nodeId": "greeting",
+      "nodeId": "intro_1",
+      "speaker": "rikko",
+      "once": true,
+      "lines": [
+        { "textKey": "dialog.rikko.intro.r1", "soundId": "speech1" }
+      ],
+      "choices": [ { "textKey": "dialog.rikko.intro.p1", "nextNodeId": "intro_2" } ]
+    },
+    {
+      "nodeId": "intro_2",
       "speaker": "rikko",
       "lines": [
-        { "textKey": "dialog.rikko.greeting.line_01", "soundId": "speech1" },
-        { "textKey": "dialog.rikko.greeting.line_02", "soundId": "speech2" }
+        { "textKey": "dialog.rikko.intro.r2", "soundId": "speech2" }
+      ],
+      "choices": [ { "textKey": "dialog.rikko.intro.p2", "nextNodeId": "intro_3" } ]
+    },
+    {
+      "nodeId": "intro_3",
+      "speaker": "rikko",
+      "lines": [
+        { "textKey": "dialog.rikko.intro.r3", "soundId": "speech1" },
+        { "textKey": "dialog.rikko.intro.r4", "soundId": "speech2" }
+      ],
+      "choices": [ { "textKey": "dialog.rikko.intro.p3", "nextNodeId": "intro_4" } ]
+    },
+    {
+      "nodeId": "intro_4",
+      "speaker": "rikko",
+      "lines": [
+        { "textKey": "dialog.rikko.intro.r5", "soundId": "speech1" },
+        { "textKey": "dialog.rikko.intro.r6", "soundId": "speech2" },
+        { "textKey": "dialog.rikko.intro.r7", "soundId": "speech3" }
       ],
       "choices": [
-        {
-          "textKey": "dialog.rikko.greeting.choice_shop",
-          "actions": [{ "type": "OpenShop", "stringParam": "RikkoShopDef" }]
-        },
-        { "textKey": "dialog.rikko.greeting.choice_02", "nextNodeId": "farewell" }
+        { "textKey": "dialog.rikko.intro.p-show-shop", "actions": [ { "type": "OpenShop", "stringParam": "RikkoShopDef" } ], "nextNodeId": "post_shop" },
+        { "textKey": "dialog.rikko.intro.p-not-now", "nextNodeId": "farewell_no_shopping" }
       ]
     },
     {
-      "nodeId": "farewell",
+      "nodeId": "sabre_reaction",
+      "speaker": "rikko",
+      "once": true,
+      "lines": [
+        { "textKey": "dialog.rikko.sabre_reaction.r1", "soundId": "speech2" }
+      ],
+      "choices": [ { "textKey": "", "nextNodeId": "common" } ]
+    },
+    {
+      "nodeId": "common",
       "speaker": "rikko",
       "lines": [
-        { "textKey": "dialog.rikko.farewell.line_01", "soundId": "speech3" }
+        { "textKey": "dialog.rikko.common.r1", "soundId": "speech1" }
+      ],
+      "choices": [
+        { "textKey": "dialog.rikko.intro.p-show-shop", "actions": [ { "type": "OpenShop", "stringParam": "RikkoShopDef" } ], "nextNodeId": "post_shop" },
+        { "textKey": "dialog.rikko.intro.p-not-now", "nextNodeId": "farewell_no_shopping" }
+      ]
+    },
+    {
+      "nodeId": "post_shop",
+      "speaker": "rikko",
+      "choices": [
+        { "textKey": "", "conditions": [ { "type": "FlagSet", "stringParam": "shop_bought" } ], "nextNodeId": "farewell_bought" },
+        { "textKey": "", "conditions": [ { "type": "FlagNotSet", "stringParam": "shop_bought" } ], "nextNodeId": "farewell_not_bought" }
+      ]
+    },
+    {
+      "nodeId": "farewell_bought",
+      "speaker": "rikko",
+      "onEnterActions": [ { "type": "ClearFlag", "stringParam": "shop_bought" } ],
+      "lines": [
+        { "textKey": "dialog.rikko.farewell.player-bought", "soundId": "speech1" }
+      ],
+      "choices": []
+    },
+    {
+      "nodeId": "farewell_not_bought",
+      "speaker": "rikko",
+      "onEnterActions": [ { "type": "ClearFlag", "stringParam": "shop_bought" } ],
+      "lines": [
+        { "textKey": "dialog.rikko.farewell.player-not-bought", "soundId": "speech2" }
+      ],
+      "choices": []
+    },
+    {
+      "nodeId": "farewell_no_shopping",
+      "speaker": "rikko",
+      "lines": [
+        { "textKey": "dialog.rikko.farewell.player-no-shopping", "soundId": "speech3" }
       ],
       "choices": []
     }

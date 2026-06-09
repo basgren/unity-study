@@ -19,50 +19,200 @@ MonoBehaviour:
     m_Key: dialog.rikko.speaker.rikko
     m_Metadata:
       m_Items: []
-  - m_Id: 16244863356929
-    m_Key: dialog.rikko.greeting.line_01
+  - m_Id: 23575386542526464
+    m_Key: dialog.rikko.intro.r1
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449548
+  - m_Id: 23575386567692288
+    m_Key: dialog.rikko.intro.p1
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449549
+  - m_Id: 23575386567692289
+    m_Key: dialog.rikko.intro.r2
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449550
+  - m_Id: 23575386571886592
+    m_Key: dialog.rikko.intro.p2
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449551
+  - m_Id: 23575386571886593
+    m_Key: dialog.rikko.intro.r3
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449552
+  - m_Id: 23575386571886594
+    m_Key: dialog.rikko.intro.r4
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449553
+  - m_Id: 23575386571886595
+    m_Key: dialog.rikko.intro.p3
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449554
+  - m_Id: 23575386571886596
+    m_Key: dialog.rikko.intro.r5
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449555
+  - m_Id: 23575386571886597
+    m_Key: dialog.rikko.intro.r6
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449556
+  - m_Id: 23575386571886598
+    m_Key: dialog.rikko.intro.r7
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449557
+  - m_Id: 23575386571886599
+    m_Key: dialog.rikko.intro.p-show-shop
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449558
+  - m_Id: 23592423188811776
+    m_Key: dialog.rikko.intro.p-not-now
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449590
+  - m_Id: 23575386571886600
+    m_Key: dialog.rikko.farewell.player-bought
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449559
+  - m_Id: 23575386571886601
+    m_Key: dialog.rikko.farewell.player-not-bought
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449560
+  - m_Id: 23575386571886602
+    m_Key: dialog.rikko.farewell.player-no-shopping
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449561
+  - m_Id: 23575386571886603
+    m_Key: dialog.rikko.common.r1
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449562
+  - m_Id: 23575386571886604
+    m_Key: dialog.rikko.sabre_reaction.r1
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449563
+  - m_Id: 23586744164110336
+    m_Key: dialog.clank.speaker.clank
     m_Metadata:
       m_Items: []
-  - m_Id: 16244863356930
-    m_Key: dialog.rikko.greeting.line_02
+  - m_Id: 23575386571886605
+    m_Key: dialog.clank.intro.r1
     m_Metadata:
-      m_Items: []
-  - m_Id: 16244863356931
-    m_Key: dialog.rikko.greeting.choice_01
+      m_Items:
+      - rid: 8964740715536449564
+  - m_Id: 23588971280814080
+    m_Key: dialog.clank.intro.p1
     m_Metadata:
-      m_Items: []
-  - m_Id: 16244863356932
-    m_Key: dialog.rikko.greeting.choice_02
+      m_Items:
+      - rid: 8964740715536449587
+  - m_Id: 23575386571886607
+    m_Key: dialog.clank.intro.r2
     m_Metadata:
-      m_Items: []
-  - m_Id: 16244863356933
-    m_Key: dialog.rikko.offer.line_01
+      m_Items:
+      - rid: 8964740715536449566
+  - m_Id: 23588971285008384
+    m_Key: dialog.clank.intro.p2
     m_Metadata:
-      m_Items: []
-  - m_Id: 16244863356934
-    m_Key: dialog.rikko.offer.choice_buy
+      m_Items:
+      - rid: 8964740715536449588
+  - m_Id: 23575386571886608
+    m_Key: dialog.clank.intro.r3
     m_Metadata:
-      m_Items: []
-  - m_Id: 16244863356935
-    m_Key: dialog.rikko.offer.choice_decline
+      m_Items:
+      - rid: 8964740715536449567
+  - m_Id: 23575386571886609
+    m_Key: dialog.clank.intro.r4
     m_Metadata:
-      m_Items: []
-  - m_Id: 16244863356936
-    m_Key: dialog.rikko.buy_sword.line_01
+      m_Items:
+      - rid: 8964740715536449568
+  - m_Id: 23588971285008385
+    m_Key: dialog.clank.intro.p3
     m_Metadata:
-      m_Items: []
-  - m_Id: 16244863356937
-    m_Key: dialog.rikko.no_coins.line_01
+      m_Items:
+      - rid: 8964740715536449589
+  - m_Id: 23575386571886610
+    m_Key: dialog.clank.intro.r5
     m_Metadata:
-      m_Items: []
-  - m_Id: 16244863356938
-    m_Key: dialog.rikko.farewell.line_01
+      m_Items:
+      - rid: 8964740715536449569
+  - m_Id: 23575386571886611
+    m_Key: dialog.clank.common.r1
     m_Metadata:
-      m_Items: []
-  - m_Id: 1853243752665088
-    m_Key: dialog.rikko.greeting.choice_shop
+      m_Items:
+      - rid: 8964740715536449570
+  - m_Id: 23575386571886612
+    m_Key: dialog.clank.common.r2
     m_Metadata:
-      m_Items: []
+      m_Items:
+      - rid: 8964740715536449571
+  - m_Id: 23575386571886613
+    m_Key: dialog.clank.success.r1
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449572
+  - m_Id: 23575386571886614
+    m_Key: dialog.clank.success.p1
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449573
+  - m_Id: 23575386571886615
+    m_Key: dialog.clank.success.r2
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449574
+  - m_Id: 23575386571886616
+    m_Key: dialog.clank.success.p2
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449575
+  - m_Id: 23575386571886617
+    m_Key: dialog.clank.success.r3
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449576
+  - m_Id: 23575386571886618
+    m_Key: dialog.clank.success.r4
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449577
+  - m_Id: 23575386571886619
+    m_Key: dialog.clank.success.p3
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449578
+  - m_Id: 23883947063595008
+    m_Key: dialog.clank.success.p4
+    m_Metadata:
+      m_Items:
+      - rid: 8964740735559270402
+  - m_Id: 23575386571886620
+    m_Key: dialog.clank.success.r5
+    m_Metadata:
+      m_Items:
+      - rid: 8964740715536449579
+  - m_Id: 23883947092955136
+    m_Key: dialog.clank.success.r6
+    m_Metadata:
+      m_Items:
+      - rid: 8964740735559270403
+  - m_Id: 23886215922012160
+    m_Key: dialog.clank.success.r7
+    m_Metadata:
+      m_Items:
+      - rid: 8964740735559270404
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
@@ -75,3 +225,155 @@ MonoBehaviour:
         asm: Unity.Localization}
       data:
         m_CustomEpoch: 1775344729513
+    - rid: 8964740715536449548
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449549
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740715536449550
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449551
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740715536449552
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449553
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449554
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740715536449555
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449556
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449557
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449558
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740715536449559
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449560
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449561
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449562
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449563
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Rikko
+    - rid: 8964740715536449564
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449566
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449567
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449568
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449569
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449570
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449571
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449572
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449573
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740715536449574
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449575
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740715536449576
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449577
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449578
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740715536449579
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740715536449587
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740715536449588
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740715536449589
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740715536449590
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740735559270402
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Player
+    - rid: 8964740735559270403
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank
+    - rid: 8964740735559270404
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Clank

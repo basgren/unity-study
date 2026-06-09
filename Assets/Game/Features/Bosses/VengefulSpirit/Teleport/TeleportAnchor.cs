@@ -1,4 +1,4 @@
-using Core.Components.Base2D;
+using Game.Core.Components.Base2D;
 using UnityEngine;
 
 namespace Game.Features.Bosses.VengefulSpirit.Teleport {

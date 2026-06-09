@@ -16,6 +16,9 @@ namespace Game.Core.Services.SceneState.Savers {
         private const string KeyStatMelee = "stat_melee";
         private const string KeyStatThrow = "stat_throw";
         private const string KeyCurrentHealth = "currentHealth";
+        private const string KeyFlags = "flags";
+        private const string KeySeenNodes = "seenNodes";
+        private const string ListSeparator = "\n";
 
         private PlayerController controller;
 
@@ -33,6 +36,8 @@ namespace Game.Core.Services.SceneState.Savers {
             w.SetInt(KeyStatMelee, state.GetStatLevel(StatId.MeleeDamage));
             w.SetInt(KeyStatThrow, state.GetStatLevel(StatId.ThrowDamage));
             w.SetFloat(KeyCurrentHealth, state.currentHealth);
+            w.SetString(KeyFlags, string.Join(ListSeparator, state.Flags));
+            w.SetString(KeySeenNodes, string.Join(ListSeparator, state.SeenDialogNodes));
         }
 
         public override void Restore(IStateReader r) {
@@ -57,9 +62,25 @@ namespace Game.Core.Services.SceneState.Savers {
                 state.currentHealth = hp;
             }
 
+            if (r.TryGetString(KeyFlags, out var flagsStr)) {
+                state.RestoreFlags(SplitList(flagsStr));
+            }
+
+            if (r.TryGetString(KeySeenNodes, out var seenStr)) {
+                state.RestoreSeenDialogNodes(SplitList(seenStr));
+            }
+
             // Push restored stats and HP to the live damager/health components.
             controller.ApplyCurrentStats();
             controller.Damageable.SetHealth(state.currentHealth);
+        }
+
+        private static string[] SplitList(string value) {
+            if (string.IsNullOrEmpty(value)) {
+                return System.Array.Empty<string>();
+            }
+
+            return value.Split(new[] { ListSeparator }, System.StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

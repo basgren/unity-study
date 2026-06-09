@@ -1,5 +1,5 @@
-﻿using Core.Components.Base2D;
-using Game.Core.Bootstrap;
+﻿using Game.Core.Bootstrap;
+using Game.Core.Components.Base2D;
 using Game.Core.Services.Pool;
 using UnityEngine;
 

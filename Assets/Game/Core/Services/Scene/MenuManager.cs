@@ -46,6 +46,19 @@ namespace Game.Core.Services.Scene {
         public event Action OnMenuClosed;
 
         /// <summary>
+        /// Fires when the background-dim requirement changes (true = should be dimmed).
+        /// Driven by the <see cref="MenuWindow.DimsBackground"/> flags of the open windows.
+        /// </summary>
+        public event Action<bool> OnDimStateChanged;
+
+        private bool currentDimState;
+
+        /// <summary>
+        /// Whether the background should currently be dimmed (any open window requests it).
+        /// </summary>
+        public bool ShouldDimBackground => ComputeShouldDim();
+
+        /// <summary>
         /// The canvas used to host menu windows. Lazily created.
         /// </summary>
         public Canvas Canvas => ResolveMenuCanvas();
@@ -488,6 +501,7 @@ namespace Game.Core.Services.Scene {
 
         private void ExitMenuMode() {
             OnMenuClosed?.Invoke();
+            NotifyDimState();
 
             Time.timeScale = 1f;
 
@@ -517,6 +531,32 @@ namespace Game.Core.Services.Scene {
             }
 
             Time.timeScale = shouldPause ? 0f : 1f;
+            NotifyDimState();
+        }
+
+        private bool ComputeShouldDim() {
+            for (var i = 0; i < windowEntries.Count; i++) {
+                var window = windowEntries[i].Window;
+                if (window == null || !window.gameObject.activeSelf) {
+                    continue;
+                }
+
+                if (window.DimsBackground) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void NotifyDimState() {
+            var shouldDim = ComputeShouldDim();
+            if (shouldDim == currentDimState) {
+                return;
+            }
+
+            currentDimState = shouldDim;
+            OnDimStateChanged?.Invoke(shouldDim);
         }
 
         private void RemoveEntry(WindowEntry entry) {

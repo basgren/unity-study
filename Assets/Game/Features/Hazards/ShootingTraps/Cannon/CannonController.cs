@@ -1,7 +1,7 @@
 ﻿using Core.Audio;
-using Core.Components.Base2D;
 using Core.Utils;
 using Game.Core.Bootstrap;
+using Game.Core.Components.Base2D;
 using Game.Core.Components.Damage;
 using Game.Core.Components.GameObjects;
 using Game.Core.Services.SceneState.Savers;

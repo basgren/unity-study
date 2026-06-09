@@ -1,6 +1,6 @@
 ﻿using System;
-using Core.Components.Base2D;
 using Core.Utils;
+using Game.Core.Components.Base2D;
 using Game.Core.Utils;
 using UnityEngine;
 

@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using Core.Audio;
-using Core.Components.Base2D;
 using Game.Core.Bootstrap;
+using Game.Core.Components.Base2D;
 using Game.Core.Components.Damage;
 using Game.Core.Services.Scene;
 using Game.Features.Bosses._Shared;

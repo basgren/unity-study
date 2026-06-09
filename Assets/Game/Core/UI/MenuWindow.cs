@@ -19,8 +19,14 @@ namespace Game.Core.UI {
         [SerializeField]
         private bool pausesGame = true;
 
+        [SerializeField]
+        [Tooltip("When enabled, opening this window fades in the full-screen dim overlay behind it. " +
+                 "Disable for windows that should stay over the live world (e.g. NPC dialog).")]
+        private bool dimsBackground = true;
+
         public bool CloseOnCancel => closeOnCancel;
         public bool PausesGame => pausesGame;
+        public bool DimsBackground => dimsBackground;
         public GameObject FirstSelected => firstSelected;
 
         /// <summary>
