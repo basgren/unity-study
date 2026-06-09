@@ -1,0 +1,104 @@
+{
+  "dialogId": "clank",
+  "entryNodeId": "reminder",
+  "entryRules": [
+    { "nodeId": "success_1", "conditions": [ { "type": "HasItem", "stringParam": "GoldenSkull" } ] },
+    { "nodeId": "success_return", "conditions": [ { "type": "FlagSet", "stringParam": "quest_skull_declined" } ] },
+    { "nodeId": "intro_1" },
+    { "nodeId": "reminder", "conditions": [ { "type": "FlagSet", "stringParam": "quest_skull_started" }, { "type": "FlagNotSet", "stringParam": "quest_skull_done" } ] }
+  ],
+  "nodes": [
+    {
+      "nodeId": "intro_1",
+      "speaker": "clank",
+      "once": true,
+      "onEnterActions": [ { "type": "SetFlag", "stringParam": "quest_skull_started" } ],
+      "lines": [
+        { "textKey": "dialog.clank.intro.r1", "soundId": "speech1" }
+      ],
+      "choices": [ { "textKey": "dialog.clank.intro.p1", "nextNodeId": "intro_2" } ]
+    },
+    {
+      "nodeId": "intro_2",
+      "speaker": "clank",
+      "lines": [
+        { "textKey": "dialog.clank.intro.r2", "soundId": "speech1" },
+        { "textKey": "dialog.clank.intro.r3", "soundId": "speech2" },
+        { "textKey": "dialog.clank.intro.r4", "soundId": "speech1" },
+        { "textKey": "dialog.clank.intro.r5", "soundId": "speech3" }
+      ],
+      "choices": []
+    },
+    {
+      "nodeId": "reminder",
+      "speaker": "clank",
+      "lines": [
+        { "textKey": "dialog.clank.common.r1", "soundId": "speech1" },
+        { "textKey": "dialog.clank.common.r2", "soundId": "speech2" }
+      ],
+      "choices": []
+    },
+    {
+      "nodeId": "success_1",
+      "speaker": "clank",
+      "once": true,
+      "onEnterActions": [
+        { "type": "RemoveItem", "stringParam": "GoldenSkull", "intParam": 1 },
+        { "type": "SetFlag", "stringParam": "quest_skull_done" }
+      ],
+      "lines": [
+        { "textKey": "dialog.clank.success.r1", "soundId": "speech1" }
+      ],
+      "choices": [ { "textKey": "dialog.clank.success.p1", "nextNodeId": "success_2" } ]
+    },
+    {
+      "nodeId": "success_2",
+      "speaker": "clank",
+      "lines": [
+        { "textKey": "dialog.clank.success.r2", "soundId": "speech2" }
+      ],
+      "choices": [ { "textKey": "dialog.clank.success.p2", "nextNodeId": "success_3" } ]
+    },
+    {
+      "nodeId": "success_3",
+      "speaker": "clank",
+      "lines": [
+        { "textKey": "dialog.clank.success.r3", "soundId": "speech1" },
+        { "textKey": "dialog.clank.success.r4", "soundId": "speech2" }
+      ],
+      "choices": [
+        { "textKey": "dialog.clank.success.p4", "nextNodeId": "success_decline" },
+        { "textKey": "dialog.clank.success.p3", "nextNodeId": "success_4" }
+      ]
+    },
+    {
+      "nodeId": "success_4",
+      "speaker": "clank",
+      "onEnterActions": [ { "type": "RaiseEvent", "stringParam": "clank_ship_departure" } ],
+      "lines": [
+        { "textKey": "dialog.clank.success.r5", "soundId": "speech3" }
+      ],
+      "choices": []
+    },
+    {
+      "nodeId": "success_decline",
+      "speaker": "clank",
+      "onEnterActions": [ { "type": "SetFlag", "stringParam": "quest_skull_declined" } ],
+      "lines": [
+        { "textKey": "dialog.clank.success.r6", "soundId": "speech2" }
+      ],
+      "choices": []
+    },
+    {
+      "nodeId": "success_return",
+      "speaker": "clank",
+      "lines": [
+        { "textKey": "dialog.clank.success.r7", "soundId": "speech1" }
+      ],
+      "choices": [
+        { "textKey": "dialog.clank.success.p4", "nextNodeId": "success_decline" },
+        { "textKey": "dialog.clank.success.p3", "nextNodeId": "success_4" }
+      ]
+    }
+  ]
+}

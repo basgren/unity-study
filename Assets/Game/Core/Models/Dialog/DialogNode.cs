@@ -5,6 +5,7 @@ namespace Game.Core.Models.Dialog {
     public class DialogNode {
         public string nodeId;
         public string speaker;
+        public bool once;
         public DialogLine[] lines;
         public DialogChoice[] choices;
         public DialogAction[] onEnterActions;

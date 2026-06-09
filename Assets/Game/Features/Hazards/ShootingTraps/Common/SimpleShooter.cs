@@ -1,6 +1,6 @@
 ﻿using Core.Audio;
-using Core.Components.Base2D;
 using Game.Core.Bootstrap;
+using Game.Core.Components.Base2D;
 using Game.Core.Components.Damage;
 using Game.Core.Components.GameObjects;
 using Game.Features.Characters._Shared;

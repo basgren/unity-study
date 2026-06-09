@@ -1,5 +1,5 @@
 using System.Collections;
-using Core.Components.Base2D;
+using Game.Core.Components.Base2D;
 using Game.Features.Bosses.VengefulSpirit.Teleport;
 using Game.Features.Characters._Shared;
 using UnityEngine;

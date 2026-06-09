@@ -6,6 +6,7 @@ namespace Game.Core.Models.Dialog {
         DoesNotHaveItem,
         FlagSet,
         FlagNotSet,
+        IsArmed,
     }
 
     [Serializable]

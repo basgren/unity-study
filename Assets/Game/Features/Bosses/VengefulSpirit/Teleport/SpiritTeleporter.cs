@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Core.Components.Base2D;
 using UnityEngine;
 
 namespace Game.Features.Bosses.VengefulSpirit.Teleport {

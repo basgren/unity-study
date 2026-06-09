@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Core.Components.Base2D {
+namespace Game.Core.Components.Base2D {
     /// <summary>
     /// Logical left/right orientation for a 2D object.
     /// </summary>
@@ -22,6 +22,14 @@ namespace Core.Components.Base2D {
     public class Facing2D : MonoBehaviour {
         [SerializeField]
         private FacingDir dir = FacingDir.Right;
+
+        [SerializeField]
+        [Tooltip("Enable when the source sprite/art is drawn facing LEFT.\n\n" +
+                 "Facing2D flips the object via localScale.x and assumes the art is authored " +
+                 "facing RIGHT by default. If your sprite is drawn facing left, check this so the " +
+                 "logical Right/Left directions still match what the player sees. " +
+                 "Only the visual flip is inverted; DirSign / DirVector keep their logical meaning.")]
+        private bool spriteFacedLeft;
 
         /// <summary>
         /// Current logical direction.
@@ -91,7 +99,11 @@ namespace Core.Components.Base2D {
                 absX = 1f;
             }
 
-            scale.x = absX * DirSign;
+            // Invert the flip when the art is authored facing left, so logical Right/Left
+            // still match the visible orientation.
+            int artSign = spriteFacedLeft ? -1 : 1;
+
+            scale.x = absX * DirSign * artSign;
             transform.localScale = scale;
         }
 

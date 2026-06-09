@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 namespace Game.Core.UI {
     /// <summary>
-    /// Full-screen semi-transparent overlay that fades in when any menu window opens
-    /// and fades out when all windows are closed.
+    /// Full-screen semi-transparent overlay that fades in while at least one open window
+    /// requests background dimming (see <see cref="MenuWindow.DimsBackground"/>) and fades
+    /// out otherwise. Windows that opt out (e.g. NPC dialog) keep the world fully visible.
     ///
     /// Created as the first child of the menu canvas so it always renders behind
-    /// windows on that same canvas. Subscribes to <see cref="Services.Scene.MenuManager"/>
-    /// boundary events so consecutive window switches never flicker the overlay.
+    /// windows on that same canvas. Subscribes to <see cref="Services.Scene.MenuManager"/>'s
+    /// dim-state event so consecutive window switches never flicker the overlay.
     ///
     /// Place this component on any GameObject in the Hud scene.
     /// </summary>
@@ -34,19 +35,25 @@ namespace Game.Core.UI {
                 return;
             }
 
-            G.Menu.OnMenuOpened += FadeIn;
-            G.Menu.OnMenuClosed += FadeOut;
+            G.Menu.OnDimStateChanged += HandleDimStateChanged;
 
-            canvasGroup.alpha = G.Menu.IsAnyWindowOpen ? targetAlpha : 0f;
+            canvasGroup.alpha = G.Menu.ShouldDimBackground ? targetAlpha : 0f;
         }
 
         private void OnDisable() {
             if (G.Menu != null) {
-                G.Menu.OnMenuOpened -= FadeIn;
-                G.Menu.OnMenuClosed -= FadeOut;
+                G.Menu.OnDimStateChanged -= HandleDimStateChanged;
             }
 
             tweenHandle?.Stop();
+        }
+
+        private void HandleDimStateChanged(bool shouldDim) {
+            if (shouldDim) {
+                FadeIn();
+            } else {
+                FadeOut();
+            }
         }
 
         private void OnDestroy() {

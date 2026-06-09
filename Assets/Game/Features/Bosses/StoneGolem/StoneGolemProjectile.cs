@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Core.Audio;
-using Core.Components.Base2D;
 using Game.Core.Bootstrap;
+using Game.Core.Components.Base2D;
 using Game.Core.Services.Scene;
 using UnityEngine;
 

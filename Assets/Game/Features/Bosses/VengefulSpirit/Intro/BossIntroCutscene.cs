@@ -1,7 +1,7 @@
 using System.Collections;
 using Core.Audio;
-using Core.Components.Base2D;
 using Game.Core.Bootstrap;
+using Game.Core.Components.Base2D;
 using Game.Features.Bosses.VengefulSpirit.Teleport;
 using Game.Features.Characters.Hero;
 using Game.Features.Hero;

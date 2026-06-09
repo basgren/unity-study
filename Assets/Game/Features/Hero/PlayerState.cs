@@ -14,6 +14,9 @@ namespace Game.Features.Characters.Hero {
         [SerializeField]
         private List<string> flags = new();
 
+        [SerializeField]
+        private List<string> seenDialogNodes = new();
+
         /// <summary>
         /// Tracks how many times each item was purchased per shop.
         /// Parallel lists: keys are "shopId:itemId", values are purchase counts.
@@ -72,6 +75,34 @@ namespace Game.Features.Characters.Hero {
             flags.Remove(flag);
         }
 
+        /// <summary>All raised flags. Exposed for persistence.</summary>
+        public IReadOnlyList<string> Flags => flags;
+
+        /// <summary>Global keys ("dialogId.nodeId") of one-shot dialog nodes already shown.</summary>
+        public IReadOnlyList<string> SeenDialogNodes => seenDialogNodes;
+
+        public bool HasSeenNode(string key) {
+            return seenDialogNodes.Contains(key);
+        }
+
+        public void MarkNodeSeen(string key) {
+            if (!seenDialogNodes.Contains(key)) {
+                seenDialogNodes.Add(key);
+            }
+        }
+
+        /// <summary>Replaces all flags with the given set (used by save/restore).</summary>
+        public void RestoreFlags(IEnumerable<string> values) {
+            flags.Clear();
+            flags.AddRange(values);
+        }
+
+        /// <summary>Replaces all seen-node keys with the given set (used by save/restore).</summary>
+        public void RestoreSeenDialogNodes(IEnumerable<string> values) {
+            seenDialogNodes.Clear();
+            seenDialogNodes.AddRange(values);
+        }
+
         /// <summary>
         /// Current max health taking into accounts all buffs and level-ups.
         /// </summary>
@@ -123,6 +154,21 @@ namespace Game.Features.Characters.Hero {
             var key = $"{shopId}:{itemId}";
             int index = shopPurchaseKeys.IndexOf(key);
             return index >= 0 ? shopPurchaseValues[index] : 0;
+        }
+
+        /// <summary>
+        /// Total number of purchases made in the given shop, across all of its items.
+        /// </summary>
+        public int GetTotalShopPurchases(string shopId) {
+            var prefix = shopId + ":";
+            int total = 0;
+            for (int i = 0; i < shopPurchaseKeys.Count; i++) {
+                if (shopPurchaseKeys[i].StartsWith(prefix)) {
+                    total += shopPurchaseValues[i];
+                }
+            }
+
+            return total;
         }
 
         /// <summary>

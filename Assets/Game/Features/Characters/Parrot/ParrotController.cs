@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Core.Components.Base2D;
 using Core.Components.Collisions;
+using Game.Core.Components.Base2D;
 using Game.Core.Components.Collisions;
 using Game.Core.Components.Damage;
 using UnityEngine;

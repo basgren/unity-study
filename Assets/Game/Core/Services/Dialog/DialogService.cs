@@ -37,6 +37,13 @@ namespace Game.Core.Services.Dialog {
     public sealed class DialogService : MonoBehaviour {
         public event Action<DialogViewState> StateChanged;
 
+        /// <summary>
+        /// Fires when a <see cref="DialogActionType.RaiseEvent"/> action runs; the argument is
+        /// the action's stringParam (the event id). Scene/world systems (e.g. cutscenes) can
+        /// subscribe to react to specific dialog nodes without the dialog system depending on them.
+        /// </summary>
+        public event Action<string> EventRaised;
+
         private DialogDef currentDialog;
         private DialogNode currentNode;
         private int currentLineIndex;
@@ -47,6 +54,14 @@ namespace Game.Core.Services.Dialog {
         private bool showingChoices;
         private IAudioLoopHandle activeSpeechSound;
         private string pendingShopId;
+        private string pendingShopReturnDialogId;
+        private string pendingShopReturnNodeId;
+        private string pendingShopReturnShopId;
+        private int shopPurchaseBaseline;
+
+        // Reserved flag the service raises after a shop visit so dialog nodes can
+        // branch on whether the player bought anything. Cleared by the farewell nodes.
+        private const string ShopBoughtFlag = "shop_bought";
 
         public bool IsActive => currentDialog != null;
         public DialogViewState CurrentViewState => currentViewState;
@@ -64,7 +79,7 @@ namespace Game.Core.Services.Dialog {
             }
 
             G.Menu.OpenMenu(G.Config.DialogPanel);
-            EnterNode(currentDialog.entryNodeId);
+            EnterNode(DialogEntryResolver.Resolve(currentDialog, G.Game.playerState));
         }
 
         public void Advance() {
@@ -105,6 +120,17 @@ namespace Game.Core.Services.Dialog {
             var choice = visibleChoices[choiceIndex];
             ExecuteActions(choice.actions);
 
+            // If the choice opened a shop and also has a follow-up node, defer that
+            // node until the shop window closes (see HandleShopClosedResume).
+            if (pendingShopId != null && !string.IsNullOrEmpty(choice.nextNodeId)) {
+                pendingShopReturnDialogId = currentDialog.dialogId;
+                pendingShopReturnNodeId = choice.nextNodeId;
+                pendingShopReturnShopId = pendingShopId;
+                shopPurchaseBaseline = G.Game.playerState.GetTotalShopPurchases(pendingShopId);
+                EndDialog();
+                return;
+            }
+
             if (!string.IsNullOrEmpty(choice.nextNodeId)) {
                 EnterNode(choice.nextNodeId);
             } else {
@@ -142,6 +168,53 @@ namespace Game.Core.Services.Dialog {
             if (shop is ShopInventory shopInventory) {
                 shopInventory.LoadShop(shopId);
             }
+
+            // If this shop was opened from a choice that wants to resume the dialog,
+            // wait for the shop window to close, then re-open the dialog at the
+            // follow-up node.
+            if (pendingShopReturnNodeId != null) {
+                G.Menu.OnMenuClosed += HandleShopClosedResume;
+            }
+        }
+
+        private void HandleShopClosedResume() {
+            G.Menu.OnMenuClosed -= HandleShopClosedResume;
+
+            var dialogId = pendingShopReturnDialogId;
+            var nodeId = pendingShopReturnNodeId;
+            var shopId = pendingShopReturnShopId;
+            var baseline = shopPurchaseBaseline;
+
+            pendingShopReturnDialogId = null;
+            pendingShopReturnNodeId = null;
+            pendingShopReturnShopId = null;
+            shopPurchaseBaseline = 0;
+
+            // Branch the farewell on whether the player bought anything this visit.
+            var state = G.Game.playerState;
+            if (state.GetTotalShopPurchases(shopId) > baseline) {
+                state.SetFlag(ShopBoughtFlag);
+            } else {
+                state.ClearFlag(ShopBoughtFlag);
+            }
+
+            StartCoroutine(ResumeDialogDeferred(dialogId, nodeId));
+        }
+
+        private IEnumerator ResumeDialogDeferred(string dialogId, string nodeId) {
+            // Wait until the shop close transition finishes and the menu stack is
+            // clear before opening the dialog panel again.
+            while (G.Menu.IsAnyWindowOpen) {
+                yield return null;
+            }
+
+            currentDialog = DialogLoader.Load(dialogId);
+            if (currentDialog == null) {
+                yield break;
+            }
+
+            G.Menu.OpenMenu(G.Config.DialogPanel);
+            EnterNode(nodeId);
         }
 
         private void EnterNode(string nodeId) {
@@ -151,6 +224,11 @@ namespace Game.Core.Services.Dialog {
                 Debug.LogError($"DialogService: node '{nodeId}' not found in dialog '{currentDialog.dialogId}'.");
                 EndDialog();
                 return;
+            }
+
+            if (currentNode.once) {
+                G.Game.playerState.MarkNodeSeen(
+                    DialogEntryResolver.SeenKey(currentDialog.dialogId, currentNode.nodeId));
             }
 
             currentLineIndex = 0;
@@ -294,49 +372,12 @@ namespace Game.Core.Services.Dialog {
             }
 
             for (int i = 0; i < choices.Length; i++) {
-                if (AreConditionsMet(choices[i].conditions, state)) {
+                if (DialogConditionEvaluator.AreConditionsMet(choices[i].conditions, state)) {
                     result.Add(choices[i]);
                 }
             }
 
             return result;
-        }
-
-        private static bool AreConditionsMet(DialogCondition[] conditions, PlayerState state) {
-            if (conditions == null || conditions.Length == 0) {
-                return true;
-            }
-
-            for (int i = 0; i < conditions.Length; i++) {
-                if (!EvaluateCondition(conditions[i], state)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private static bool EvaluateCondition(DialogCondition cond, PlayerState state) {
-            switch (cond.type) {
-                case ConditionType.HasItem:
-                    var minCount = Mathf.Max(cond.intParam, 1);
-                    return state.InventoryModel.GetCount(cond.stringParam) >= minCount;
-
-                case ConditionType.DoesNotHaveItem:
-                    // If intParam is set, treat this as "has fewer than N items" for dialog fallback branches.
-                    var maxCountExclusive = Mathf.Max(cond.intParam, 1);
-                    return state.InventoryModel.GetCount(cond.stringParam) < maxCountExclusive;
-
-                case ConditionType.FlagSet:
-                    return state.HasFlag(cond.stringParam);
-
-                case ConditionType.FlagNotSet:
-                    return !state.HasFlag(cond.stringParam);
-
-                default:
-                    Debug.LogWarning($"DialogService: unknown condition type '{cond.type}'.");
-                    return false;
-            }
         }
 
         private void ExecuteActions(DialogAction[] actions) {
@@ -371,6 +412,10 @@ namespace Game.Core.Services.Dialog {
 
                 case DialogActionType.OpenShop:
                     pendingShopId = action.stringParam;
+                    break;
+
+                case DialogActionType.RaiseEvent:
+                    EventRaised?.Invoke(action.stringParam);
                     break;
 
                 default:

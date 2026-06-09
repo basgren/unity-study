@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Globalization;
-using Core.Components.Base2D;
 using Game.Core.Bootstrap;
+using Game.Core.Components.Base2D;
 using Game.Core.Services.Scene;
 using Game.Core.Utils;
 using Game.Features.Portals.Common;
