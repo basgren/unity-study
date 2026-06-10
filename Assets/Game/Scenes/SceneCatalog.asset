@@ -63,3 +63,5 @@ MonoBehaviour:
     scenePath: Assets/Game/Scenes/Warmrocks/WR_SidePath.unity
   - sceneGuid: 16e764cb2a715bd439a21c2498c2fbf3
     scenePath: Assets/Game/Scenes/SkullkeeperHollow/SH_LastWarmFloor.unity
+  - sceneGuid: 456c56cd1c566d04eb13df9abbf658d0
+    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_AlmostPirateShip.unity
