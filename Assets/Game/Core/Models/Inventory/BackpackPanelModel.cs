@@ -17,62 +17,94 @@ namespace Game.Core.Models.Inventory {
         public int SelectedItemUid => selectedItem?.Uid ?? -1;
         public InventoryItem SelectedItem => selectedItem;
         
-        private static readonly ItemType[] HandledItemTypes = { ItemType.Usable, ItemType.Consumable };
-        
+        // Item types shown in the backpack panel. Keys are displayed for reference but cannot be selected.
+        private static readonly ItemType[] DisplayedItemTypes = { ItemType.Usable, ItemType.Consumable, ItemType.Key };
+
+        // Subset of displayed types the selection cursor can land on. Keys are intentionally excluded.
+        private static readonly ItemType[] SelectableItemTypes = { ItemType.Usable, ItemType.Consumable };
+
         public BackpackPanelModel(InventoryModel inventoryModel) {
             this.inventoryModel = inventoryModel;
             inventoryModel.OnChange += OnInventoryChange;
             Update();
         }
-        
+
         private void OnInventoryChange(InventoryChangeEvent eventInfo) {
             var itemDef = DefsFacade.I.Items.Get(eventInfo.ItemId);
 
-            if (HandledItemTypes.Contains(itemDef.Type)) {
+            if (DisplayedItemTypes.Contains(itemDef.Type)) {
                 Update();
             }
         }
-        
+
         private void Update() {
-            items = inventoryModel.GetAll(HandledItemTypes);
+            items = inventoryModel.GetAll(DisplayedItemTypes);
 
             if (IsAnyItemSelected && items.All(i => i.Uid != selectedItem.Uid)) {
                 selectedItem = null;
             }
-            
-            if (items.Count > 0) {
-                if (!IsAnyItemSelected) {
-                    selectedItem = items[0];
-                }
-            } else {
-                selectedItem = null;
+
+            // Only land the selection on a selectable item; keys stay visible but never get auto-selected.
+            if (!IsAnyItemSelected) {
+                selectedItem = FirstSelectable();
             }
-            
+
             ItemsUpdated?.Invoke(items);
         }
 
         public void NextItem() {
-            if (items.Count == 0) {
+            var selectable = GetSelectableItems();
+            if (selectable.Count == 0) {
                 return;
             }
 
             var prevSelection = selectedItem;
-            var index = items.IndexOf(selectedItem);
-            
-            selectedItem = items[(index + 1) % items.Count];
+            var index = selectable.IndexOf(selectedItem);
+
+            selectedItem = selectable[(index + 1) % selectable.Count];
             SelectionUpdated?.Invoke(selectedItem, prevSelection);
         }
 
         public void PrevItem() {
-            if (items.Count == 0) {
+            var selectable = GetSelectableItems();
+            if (selectable.Count == 0) {
                 return;
             }
 
             var prevSelection = selectedItem;
-            var index = items.IndexOf(selectedItem);
-            
-            selectedItem = items[(items.Count + index - 1) % items.Count];
+            var index = selectable.IndexOf(selectedItem);
+            if (index < 0) {
+                index = 0;
+            }
+
+            selectedItem = selectable[(selectable.Count + index - 1) % selectable.Count];
             SelectionUpdated?.Invoke(selectedItem, prevSelection);
+        }
+
+        private InventoryItem FirstSelectable() {
+            foreach (var item in items) {
+                if (IsSelectable(item)) {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+
+        private List<InventoryItem> GetSelectableItems() {
+            var result = new List<InventoryItem>();
+            foreach (var item in items) {
+                if (IsSelectable(item)) {
+                    result.Add(item);
+                }
+            }
+
+            return result;
+        }
+
+        private static bool IsSelectable(InventoryItem item) {
+            var type = DefsFacade.I.Items.Get(item.id).Type;
+            return SelectableItemTypes.Contains(type);
         }
     }
 }

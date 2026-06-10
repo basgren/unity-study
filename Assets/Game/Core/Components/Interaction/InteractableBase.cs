@@ -41,9 +41,44 @@ namespace Game.Core.Components.Interaction {
         public int InteractionPriority => interactionPriority;
         public LocalizedString ActionText => actionText;
 
+        // Optional gates on this object that can block activation at interact time (e.g. a key lock).
+        // Cached in Awake; empty for the common case so gateless interactables pay nothing extra.
+        private IInteractionGate[] interactionGates;
+
         public void Interact() {
+            if (!PassesGates()) {
+                return;
+            }
+
+            Activate();
+        }
+
+        /// <summary>
+        /// Runs the actual interaction (the <c>onInteract</c> event and <see cref="DoInteract"/>), bypassing
+        /// gates. Called by <see cref="Interact"/> when gates allow, or by a gate after a deferred sequence
+        /// completes (e.g. a key lock that opens the door once its unlock animation/SFX has played).
+        /// </summary>
+        public void Activate() {
             onInteract?.Invoke();
             DoInteract();
+        }
+
+        /// <summary>
+        /// Consults optional <see cref="IInteractionGate"/> components on this object. Returns false when any
+        /// gate rejects or defers the interaction (a deferring gate runs activation itself, asynchronously).
+        /// </summary>
+        private bool PassesGates() {
+            if (interactionGates == null) {
+                return true;
+            }
+
+            foreach (var gate in interactionGates) {
+                if (gate.OnInteractRequested() != InteractionGateResult.Allow) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -72,6 +107,7 @@ namespace Game.Core.Components.Interaction {
 
         protected virtual void Awake() {
             interactionCollider.isTrigger = true;
+            interactionGates = GetComponents<IInteractionGate>();
         }
 
         /// <summary>

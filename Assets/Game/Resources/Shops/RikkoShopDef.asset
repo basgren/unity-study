@@ -14,21 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   items:
   - itemId:
-      value: Sword
+      value: RustyKey
     price: 10
-    maxCount: 5
+    maxCount: 1
     description:
       m_TableReference:
         m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
       m_TableEntryReference:
-        m_KeyId: 125821734912
+        m_KeyId: 22063990298333184
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
   - itemId:
       value: Parrot
-    price: 50
+    price: 150
     maxCount: 1
     description:
       m_TableReference:
@@ -41,20 +41,7 @@ MonoBehaviour:
       m_LocalVariables: []
   - itemId:
       value: ProtectionMask
-    price: 25
-    maxCount: 1
-    description:
-      m_TableReference:
-        m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
-      m_TableEntryReference:
-        m_KeyId: 308169101312
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-  - itemId:
-      value: GrapplingHook
-    price: 25
+    price: 100
     maxCount: 1
     description:
       m_TableReference:

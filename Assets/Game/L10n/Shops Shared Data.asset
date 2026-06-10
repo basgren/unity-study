@@ -39,6 +39,10 @@ MonoBehaviour:
     m_Key: stats.throw_damage
     m_Metadata:
       m_Items: []
+  - m_Id: 22063990298333184
+    m_Key: rikko.desc.rusty_key
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

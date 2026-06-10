@@ -45,6 +45,10 @@ MonoBehaviour:
     m_Localized: Throw damage
     m_Metadata:
       m_Items: []
+  - m_Id: 22063990298333184
+    m_Localized: Jusht a rushty key. It opensh door to ship on a sheashore.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
