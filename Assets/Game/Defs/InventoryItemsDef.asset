@@ -58,6 +58,11 @@ MonoBehaviour:
     type: 0
     cooldown: 0
     uid: f96470f1e4b14e21b2d3838a8d859cef
+  - id: RustyKey
+    icon: {fileID: 21300000, guid: 6eaec242aa40f1c488484a4c754c4d28, type: 3}
+    type: 5
+    cooldown: 0
+    uid: 4b126d368fb84d33be713aa6d370bc81
   generateCSharpClass: 1
   csharpClassFile: Assets/Game/Defs/ItemIds.cs
   csharpClassName: ItemIds

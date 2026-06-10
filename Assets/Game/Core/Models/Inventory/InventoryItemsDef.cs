@@ -68,6 +68,11 @@ namespace Game.Core.Models.Inventory {
 
         // Activatable perk (mask, parrot, etc.). Shown in a separate perk panel, not the backpack.
         Perk,
+
+        // Quest/key item (rusty key, etc.). Stored and shown in the backpack for reference, but cannot be
+        // selected or used by the player. Removed from the inventory by the system that consumes it
+        // (e.g. when its matching door is opened).
+        Key,
     }
 
     [Serializable]

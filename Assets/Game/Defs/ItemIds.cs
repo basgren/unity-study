@@ -10,6 +10,7 @@ namespace Game.Defs {
         public static readonly ItemId MediumHealthPotion = new("MediumHealthPotion");
         public static readonly ItemId Parrot = new("Parrot");
         public static readonly ItemId ProtectionMask = new("ProtectionMask");
+        public static readonly ItemId RustyKey = new("RustyKey");
         public static readonly ItemId SmallHealthPotion = new("SmallHealthPotion");
         public static readonly ItemId Sword = new("Sword");
     }
