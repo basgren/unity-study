@@ -2316,7 +2316,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 347892254}
   - {fileID: 2132113252}
   - {fileID: 1143494580}
   - {fileID: 1911214263}
@@ -4719,8 +4718,43 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 739812682}
+    m_TransformParent: {fileID: 1933317284}
     m_Modifications:
+    - target: {fileID: -8210172917913802512, guid: 432d500089f462b4eaecce0030fa4c59,
+        type: 3}
+      propertyPath: heightFraction
+      value: 0.837
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334236441884144511, guid: 432d500089f462b4eaecce0030fa4c59,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 61.91932
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334236441884144511, guid: 432d500089f462b4eaecce0030fa4c59,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 7.6005044
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334236441884144511, guid: 432d500089f462b4eaecce0030fa4c59,
+        type: 3}
+      propertyPath: m_Offset.x
+      value: 31.009659
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334236441884144511, guid: 432d500089f462b4eaecce0030fa4c59,
+        type: 3}
+      propertyPath: m_Offset.y
+      value: 3.8002522
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334236441884144511, guid: 432d500089f462b4eaecce0030fa4c59,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 62.019318
+      objectReference: {fileID: 0}
+    - target: {fileID: 1334236441884144511, guid: 432d500089f462b4eaecce0030fa4c59,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 9.08065
+      objectReference: {fileID: 0}
     - target: {fileID: 5987060372524391741, guid: 432d500089f462b4eaecce0030fa4c59,
         type: 3}
       propertyPath: m_Size.x
@@ -4734,12 +4768,12 @@ PrefabInstance:
     - target: {fileID: 6479891832033970759, guid: 432d500089f462b4eaecce0030fa4c59,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 35.5
+      value: 4.55
       objectReference: {fileID: 0}
     - target: {fileID: 6479891832033970759, guid: 432d500089f462b4eaecce0030fa4c59,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.3359375
+      value: -8.51
       objectReference: {fileID: 0}
     - target: {fileID: 6479891832033970759, guid: 432d500089f462b4eaecce0030fa4c59,
         type: 3}
@@ -4754,17 +4788,17 @@ PrefabInstance:
     - target: {fileID: 6479891832033970759, guid: 432d500089f462b4eaecce0030fa4c59,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6479891832033970759, guid: 432d500089f462b4eaecce0030fa4c59,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6479891832033970759, guid: 432d500089f462b4eaecce0030fa4c59,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6479891832033970759, guid: 432d500089f462b4eaecce0030fa4c59,
         type: 3}
@@ -4785,6 +4819,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Water
+      objectReference: {fileID: 0}
+    - target: {fileID: 7482582642839508657, guid: 432d500089f462b4eaecce0030fa4c59,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610874973081010058, guid: 432d500089f462b4eaecce0030fa4c59,
+        type: 3}
+      propertyPath: damage
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6059,7 +6103,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 347892254}
   m_Father: {fileID: 1857425453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1940279374

@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 6479891832033970759}
   - component: {fileID: 5987060372524391741}
   - component: {fileID: 1289521737508546681}
+  - component: {fileID: 1334236441884144511}
+  - component: {fileID: -8210172917913802512}
+  - component: {fileID: 3482883757393534457}
   m_Layer: 0
   m_Name: Water
   m_TagString: Untagged
@@ -109,3 +112,79 @@ MonoBehaviour:
   onComplete:
     m_PersistentCalls:
       m_Calls: []
+--- !u!61 &1334236441884144511
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7482582642839508657}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 12.50966, y: 2.2076626}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 1.25}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 3, y: 3}
+    newSize: {x: 25.01932, y: 8.83065}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 2
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 24.91932, y: 4.415325}
+  m_EdgeRadius: 0
+--- !u!114 &-8210172917913802512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7482582642839508657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c2790165ad8992458b68b179427e3de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceRenderer: {fileID: 5987060372524391741}
+  horizontalPadding: 0.05
+  heightFraction: 0.5
+  alignToBottom: 1
+--- !u!114 &3482883757393534457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7482582642839508657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b52d918f8da3f4dad466f871aae20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 512

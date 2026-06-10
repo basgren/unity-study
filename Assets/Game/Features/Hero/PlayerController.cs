@@ -121,6 +121,23 @@ namespace Game.Features.Hero {
         [SerializeField, Tooltip("Brief window in seconds after the hero lands a hit on something OR takes a hit. While the timer is active, movement input is ignored (decel/accel still run) and no further pushback impulse is applied. Prevents double-pushback when a swing hits multiple targets and lets the impact register.")]
         private float hitStunTime = 0.1f;
 
+        [Header("Respawn")]
+        [SerializeField, Tooltip("Duration in seconds of each half of the fade-out/fade-in that hides the safe-point respawn teleport (used by water and RespawnOnContact damagers).")]
+        private float respawnFadeTime = 0.2f;
+
+        [Header("Water")]
+        [SerializeField, Tooltip("Seconds the hero bobs at the water surface before respawning at the last safe point.")]
+        private float waterFloatTime = 1.5f;
+
+        [SerializeField, Tooltip("How far below the water surface the hero settles while floating, in world units.")]
+        private float waterSubmergeDepth = 0.25f;
+
+        [SerializeField, Tooltip("Duration of one buoyancy bob oscillation in seconds. Smaller = snappier bobbing.")]
+        private float waterBobPeriod = 0.8f;
+
+        [SerializeField, Range(0f, 1f), Tooltip("Buoyancy damping ratio. 0 = endless bobbing, 1 = settles without overshoot.")]
+        private float waterBobDamping = 0.35f;
+
         [SerializeField]
         private RuntimeAnimatorController armedAnimator;
 
@@ -167,6 +184,7 @@ namespace Game.Features.Hero {
         private bool isHookSwinging;
         private bool isAttacking;
         private bool isAttackAnimationInitiated;
+        private bool isFloatingInWater;
         private readonly float attackCooldownTime = 0.2f;
         private float attackCooldownTimer;
 
@@ -996,14 +1014,84 @@ namespace Game.Features.Hero {
 
         private IEnumerator WaitAndRespawn(float seconds) {
             yield return new WaitForSeconds(seconds);
-            RespawnAtSafePoint();
+            yield return RespawnAtSafePoint();
         }
 
-        private void RespawnAtSafePoint() {
+        private IEnumerator RespawnAtSafePoint() {
+            // Hide the camera cut behind a quick fade-out/fade-in, matching the water respawn.
+            yield return G.Screen.RunWhenFadeOut(
+                respawnFadeTime,
+                respawnFadeTime,
+                TeleportToSafePointWhileFaded
+            );
+
             isDead = false;
-            TeleportAndNotifyCamera(safePointTracker.LastSafePosition);
             damageable.IgnoreDamage = false;
             Actions.Enable();
+        }
+
+        /// <summary>
+        /// Called by <see cref="Game.Features.Props.Water.Water"/> when the hero falls into a water body.
+        /// The hero loses control and bobs at the water surface for <see cref="waterFloatTime"/> seconds,
+        /// then respawns at the last safe ground position. Deals no damage. Ignored if the hero is already
+        /// floating or dead.
+        /// </summary>
+        /// <param name="surfaceY">World Y of the water surface (top edge of the water collider).</param>
+        public void FallIntoWater(float surfaceY) {
+            if (isFloatingInWater || isDead) {
+                return;
+            }
+
+            StartCoroutine(FloatAndRespawn(surfaceY));
+        }
+
+        private IEnumerator FloatAndRespawn(float surfaceY) {
+            isFloatingInWater = true;
+            Actions.Disable();
+            CancelAttack();
+            // Suspend gravity and the normal movement ramp so the buoyancy spring fully owns the motion.
+            BeginScriptedFlight(disableGravity: true);
+
+            float targetY = surfaceY - waterSubmergeDepth;
+            // Damped spring toward the surface: angular frequency from the desired bob period, damping
+            // coefficient from the dimensionless ratio. Produces a natural settle-to-surface bob without
+            // exposing raw stiffness/damping rates in the Inspector.
+            float omega = 2f * Mathf.PI / Mathf.Max(waterBobPeriod, 0.0001f);
+            float stiffness = omega * omega;
+            float dampingCoeff = 2f * waterBobDamping * omega;
+
+            float elapsed = 0f;
+            while (elapsed < waterFloatTime) {
+                float dt = Time.fixedDeltaTime;
+                float displacement = transform.position.y - targetY;
+                float vy = MyRigidbody.velocity.y;
+                vy += (-stiffness * displacement - dampingCoeff * vy) * dt;
+                // Bob is purely vertical; horizontal velocity is removed so the hero settles in place.
+                SetVelocity(new Vector2(0f, vy));
+
+                elapsed += dt;
+                yield return new WaitForFixedUpdate();
+            }
+
+            SetVelocity(Vector2.zero);
+
+            // Quick fade-out, reposition to the last safe point while the screen is fully black, then
+            // fade back in. Gravity stays suspended through the fade so the hero doesn't sink before the
+            // teleport happens.
+            yield return G.Screen.RunWhenFadeOut(
+                respawnFadeTime,
+                respawnFadeTime,
+                TeleportToSafePointWhileFaded
+            );
+
+            EndScriptedFlight();
+            isFloatingInWater = false;
+            Actions.Enable();
+        }
+
+        private IEnumerator TeleportToSafePointWhileFaded() {
+            TeleportAndNotifyCamera(safePointTracker.LastSafePosition);
+            yield break;
         }
 
         /// <summary>
