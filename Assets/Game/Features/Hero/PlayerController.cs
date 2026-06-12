@@ -266,8 +266,16 @@ namespace Game.Features.Hero {
                     SetControlsEnabled(true);
                 }
             } else {
-                // Fresh scene load (including post-death scene reload). The shared input
-                // action map is disabled globally when the hero dies, so re-enable it here.
+                // Fresh scene load (including post-death scene reload). A no-checkpoint death
+                // reloads the scene with currentHealth persisted at 0 (only the checkpoint paths
+                // restore it), so the hero would otherwise spawn dead. Revive to full when health
+                // is non-positive; genuine fresh starts and cross-scene transitions carry positive
+                // health and are left untouched.
+                if (state.currentHealth <= 0f) {
+                    RestoreHealthAfterRespawn();
+                }
+
+                // The shared input action map is disabled globally when the hero dies, so re-enable it here.
                 SetControlsEnabled(true);
             }
         }
