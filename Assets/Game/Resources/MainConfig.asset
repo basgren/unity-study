@@ -47,3 +47,5 @@ MonoBehaviour:
     FadeToBlackDuration: 0.4
     TotalRespawnDelay: 2.5
   EscQuitsImmediately: 0
+  DebugSystems:
+    EnableDebugInventory: 1
