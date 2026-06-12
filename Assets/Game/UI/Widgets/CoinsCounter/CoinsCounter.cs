@@ -16,6 +16,11 @@ namespace Game.UI.Widgets.CoinsCounter {
             valueTextComps = GetComponentsInChildren<TextMeshProUGUI>();
             inventory = G.Game.playerState.InventoryModel;
             inventory.OnChange += OnChange;
+
+            // The HUD scene loads additively after the inventory is already
+            // populated, so seed the display with the current count instead of
+            // waiting for the next change event.
+            SetDisplayedCount(inventory.GetCount(itemIdToCount));
         }
 
         private void OnDestroy() {
@@ -24,9 +29,13 @@ namespace Game.UI.Widgets.CoinsCounter {
 
         private void OnChange(InventoryChangeEvent eventInfo) {
             if (eventInfo.ItemId == itemIdToCount) {
-                foreach (var value in valueTextComps) {
-                    value.text = eventInfo.NewCount.ToString();
-                }
+                SetDisplayedCount(eventInfo.NewCount);
+            }
+        }
+
+        private void SetDisplayedCount(int count) {
+            foreach (var value in valueTextComps) {
+                value.text = count.ToString();
             }
         }
     }
