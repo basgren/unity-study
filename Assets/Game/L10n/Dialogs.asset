@@ -34,8 +34,8 @@ MonoBehaviour:
         m_Columns:
         - rid: 8964740715536449538
         - rid: 8964740715536449541
-        - rid: 8964740715536449539
         - rid: 8964740715536449540
+        - rid: 8964740715536449539
         m_RemoveMissingPulledKeys: 1
     - rid: 8964740715536449538
       type: {class: KeyColumn, ns: UnityEditor.Localization.Plugins.Google.Columns,
@@ -46,7 +46,7 @@ MonoBehaviour:
       type: {class: LocaleColumn, ns: UnityEditor.Localization.Plugins.Google.Columns,
         asm: Unity.Localization.Editor}
       data:
-        m_Column: C
+        m_Column: D
         m_LocaleIdentifier:
           m_Code: en
         m_IncludeComments: 0
@@ -54,7 +54,7 @@ MonoBehaviour:
       type: {class: LocaleColumn, ns: UnityEditor.Localization.Plugins.Google.Columns,
         asm: Unity.Localization.Editor}
       data:
-        m_Column: D
+        m_Column: C
         m_LocaleIdentifier:
           m_Code: ru
         m_IncludeComments: 0

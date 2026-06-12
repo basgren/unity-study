@@ -30,6 +30,174 @@ MonoBehaviour:
     m_Localized: Not now
     m_Metadata:
       m_Items: []
+  - m_Id: 23575386542526464
+    m_Localized: "Hey, little travelur... come closher, don\u2019t be shy-shy. Where\u2019d
+      you crawl out from?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386567692288
+    m_Localized: "I don\u2019t remember. I woke up on the beach, covered in seaweed."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386567692289
+    m_Localized: "Ah, sho that\u2019s where all that trash washed ashore from! Looksh
+      like your ship ish done for!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886592
+    m_Localized: Looks like it... How do I get out of here?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886593
+    m_Localized: "Don\u2019t know, never thought about it. But you can ashk Captain
+      Clank. He\u2019sh on the other shide of the island."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886594
+    m_Localized: "Only you won\u2019t get there like thish. The thicketsh block the
+      way. No shaber, no passh."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886595
+    m_Localized: And where do I get one?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886596
+    m_Localized: "You can check the Wrong Ship, but you won\u2019t get in there sho
+      eashy either."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886597
+    m_Localized: "You need a key. And by a very lucky coinshidensh, I can shell you
+      one. I\u2019m not going there myshelf anyway \u2014 shomething\u2019s growling
+      in there!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886598
+    m_Localized: "Anyway, I\u2019ve got goodsh for every tashte \u2014 cutty onesh,
+      stabby onesh, and onesh you better not ashk about."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886599
+    m_Localized: Show me what you have.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886600
+    m_Localized: A pleashure doing bushinessh with you!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886601
+    m_Localized: "Well then. Come back when you\u2019ve made up your mind!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886602
+    m_Localized: Have it your way, land-crawler.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886603
+    m_Localized: Wanna take a look at the goodsh?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886604
+    m_Localized: "What a sharp blade! I\u2019d bet my own tail it\u2019ll let you
+      shlice through any thicketsh!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886605
+    m_Localized: Ahoy, landlubber! Looking for a ship, or just admiring my sails?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23588971280814080
+    m_Localized: Both! I want to sail away from this island.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886607
+    m_Localized: "I\u2019d gladly help. I wouldn\u2019t mind seeing the horizon again
+      myself, but the island won\u2019t let us go."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23588971285008384
+    m_Localized: What do you mean?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886608
+    m_Localized: Every ship that sails out to sea comes back here by dawn. Same rocks,
+      same shore.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886609
+    m_Localized: "My grandfather used to say there\u2019s a Golden Skull in the heart
+      of the island. That\u2019s what keeps us moored here."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23588971285008385
+    m_Localized: "Then I\u2019ll find it."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886610
+    m_Localized: "Bring me the Skull, and I\u2019ll sail you to the ends of the world."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886611
+    m_Localized: Without the Golden Skull, the sea will spit us right back onto this
+      shore.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886612
+    m_Localized: Bring it to me, and my ship will take you wherever you wish.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886613
+    m_Localized: "What have you got there?.. By the tide, that\u2019s the Golden
+      Skull!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886614
+    m_Localized: I found it!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886615
+    m_Localized: Ha-ha! So the old legend was true! That shiny scoundrel kept us
+      trapped here far too long.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886616
+    m_Localized: Can we sail away now?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886617
+    m_Localized: 'That we can! The wind is fresh, the sea is free, and my ship has
+      been aching to sail.
+
+'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886618
+    m_Localized: "Climb aboard, brave one. Captain Clank will take you wherever you
+      wish \u2014 just name the course!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886619
+    m_Localized: Far away from here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23883947063595008
+    m_Localized: Wait, I still have some things to do here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23575386571886620
+    m_Localized: "Fine course! Hold fast. We\u2019re setting sail!\r"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23883947092955136
+    m_Localized: "As you wish. The sails are ready, and the wind is with us. Come
+      back, and we\u2019ll weigh anchor at once."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23886215922012160
+    m_Localized: On deck, brave one! Name the course, and my ship will carry us there.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
