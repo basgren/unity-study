@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4456035130756314615}
   - component: {fileID: -6453643495484219292}
   - component: {fileID: 7795062330840424892}
+  - component: {fileID: 6464918706985020951}
   m_Layer: 0
   m_Name: DoorWooden
   m_TagString: Untagged
@@ -323,6 +324,24 @@ MonoBehaviour:
   - id: close
     cue: {fileID: 11400000, guid: 062a3d0ea6da4924bbb87be2ed3294a5, type: 2}
   playAs2D: 1
+  playWhenEnabled: 0
+--- !u!114 &6464918706985020951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012684767289418787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5af708c4225621a45a3107dd5d35c566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requiredKey:
+    value: 
+  lockedSound: {fileID: 11400000, guid: 532ed4526ebb7d043833e3bc6021be65, type: 2}
+  unlockSound: {fileID: 11400000, guid: 4dc31e0ffdf7a9246b1d51b5ade3c612, type: 2}
+  openDelayAfterUnlock: 1.2
 --- !u!1 &7295454675820478039
 GameObject:
   m_ObjectHideFlags: 0
