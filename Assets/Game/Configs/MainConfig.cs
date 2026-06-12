@@ -42,5 +42,17 @@ namespace Game.Configs {
 
         [Header("Debug")]
         public bool EscQuitsImmediately;
+
+        [Header("Debug Systems")]
+        public DebugSystemsConfig DebugSystems = new();
+    }
+
+    /// <summary>
+    /// Toggles for optional debug-only systems loaded at startup. Each enabled system is announced
+    /// with a runtime warning so it is not accidentally left on in a build. Add new debug toggles here.
+    /// </summary>
+    [System.Serializable]
+    public class DebugSystemsConfig {
+        public bool EnableDebugInventory;
     }
 }

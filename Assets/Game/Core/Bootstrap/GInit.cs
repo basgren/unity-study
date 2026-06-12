@@ -1,5 +1,6 @@
 using Game.Configs;
 using Game.Core.Audio;
+using Game.Core.DebugTools;
 using Game.Core.Services;
 using Game.Core.Services.Input;
 using Game.Core.Services.SceneState;
@@ -60,6 +61,10 @@ namespace Game.Core.Bootstrap {
             G.BossFight = GetOrCreate<BossFightService>("BossFightService");
             G.Game.playerConfig = mainConfig.Player;
             G.Game.Init();
+
+            // Seed any enabled debug systems once the player state exists. No-op in production
+            // (when all toggles are off); logs a warning listing whatever is active.
+            DebugSystemsLoader.Apply(mainConfig);
 
             // SceneTravelService must be created before Init() so SceneStateService can subscribe.
             sceneStateService.Init();

@@ -1648,7 +1648,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 3756431542036381293}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1726855762}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6953c59d3c030045828c0db95d3b260, type: 3}
@@ -3327,28 +3327,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1857425453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1726855762 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3756431542319373574, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
-    type: 3}
-  m_PrefabInstance: {fileID: 3756431542036381293}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1726855779
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1726855762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be9b4b8206ad25a4c99517a420d9d881, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  items:
-  - itemId:
-      value: RustyKey
-    count: 1
 --- !u!1 &1764477357
 GameObject:
   m_ObjectHideFlags: 0
@@ -12718,11 +12696,7 @@ PrefabInstance:
     - {fileID: 3349247672257884837, guid: 6c479488e0ddb3c4f85cd96714b9c18a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3756431542319373574, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1726855779}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c479488e0ddb3c4f85cd96714b9c18a, type: 3}
 --- !u!1001 &6836785097521198313
 PrefabInstance:

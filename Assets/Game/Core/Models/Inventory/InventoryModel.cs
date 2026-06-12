@@ -110,6 +110,9 @@ namespace Game.Core.Models.Inventory {
             return item;
         }
 
+        /// <summary>All items currently held, unfiltered. Read-only; mutate via Add/Remove/Set.</summary>
+        public IReadOnlyList<InventoryItem> Items => items;
+
         public List<InventoryItem> GetAll(params ItemType[] usable) {
             return items.FindAll((item) => {
                 var type = DefsFacade.I.Items.Get(item.id).Type;
