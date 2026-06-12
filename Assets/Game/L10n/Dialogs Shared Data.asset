@@ -18,7 +18,8 @@ MonoBehaviour:
   - m_Id: 16244863356928
     m_Key: dialog.rikko.speaker.rikko
     m_Metadata:
-      m_Items: []
+      m_Items:
+      - rid: 8964740794479017986
   - m_Id: 23575386542526464
     m_Key: dialog.rikko.intro.r1
     m_Metadata:
@@ -107,7 +108,8 @@ MonoBehaviour:
   - m_Id: 23586744164110336
     m_Key: dialog.clank.speaker.clank
     m_Metadata:
-      m_Items: []
+      m_Items:
+      - rid: 8964740794479017987
   - m_Id: 23575386571886605
     m_Key: dialog.clank.intro.r1
     m_Metadata:
@@ -377,3 +379,11 @@ MonoBehaviour:
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_CommentText: Clank
+    - rid: 8964740794479017986
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Label
+    - rid: 8964740794479017987
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: Label

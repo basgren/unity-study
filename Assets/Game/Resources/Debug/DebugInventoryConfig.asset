@@ -16,3 +16,6 @@ MonoBehaviour:
   - itemId:
       value: RustyKey
     count: 1
+  - itemId:
+      value: Coin
+    count: 21
