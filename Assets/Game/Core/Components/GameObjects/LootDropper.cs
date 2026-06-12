@@ -57,7 +57,7 @@ namespace Game.Core.Components.GameObjects {
             }
 
             if (loot.Count == 0) {
-                throw new Exception("LootDropper has no loot entries configured");
+                throw new Exception($"LootDropper has no loot entries configured for ${gameObject.name}");
             }
 
             SpawnItems(loot[0].prefab, lootCount);

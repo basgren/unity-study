@@ -2187,6 +2187,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoorWooden_1
       objectReference: {fileID: 0}
+    - target: {fileID: 6464918706985020951, guid: a165caa9ca2d62e449b54e2afffe7bfa,
+        type: 3}
+      propertyPath: requiredKey.value
+      value: RustyKey
+      objectReference: {fileID: 0}
     - target: {fileID: 7795062330840424892, guid: a165caa9ca2d62e449b54e2afffe7bfa,
         type: 3}
       propertyPath: playWhenEnabled
@@ -2195,11 +2200,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1012684767289418787, guid: a165caa9ca2d62e449b54e2afffe7bfa,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1541114109}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a165caa9ca2d62e449b54e2afffe7bfa, type: 3}
 --- !u!4 &1541114107 stripped
 Transform:
@@ -2207,29 +2208,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1541114106}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1541114108 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1012684767289418787, guid: a165caa9ca2d62e449b54e2afffe7bfa,
-    type: 3}
-  m_PrefabInstance: {fileID: 1541114106}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1541114109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1541114108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5af708c4225621a45a3107dd5d35c566, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  requiredKey:
-    value: RustyKey
-  lockedSound: {fileID: 0}
-  unlockSound: {fileID: 0}
-  openDelayAfterUnlock: 0.6
 --- !u!1 &1555089195
 GameObject:
   m_ObjectHideFlags: 0
@@ -6443,12 +6421,12 @@ PrefabInstance:
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.0362816
+      value: -8.48
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.73920953
+      value: 0.7299895
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -6458,22 +6436,22 @@ PrefabInstance:
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.009202454
+      value: 0.03033268
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.009090909
+      value: 0.029565219
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.98159504
+      value: 0.93933463
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.9818182
+      value: 0.9391304
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097959352688, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
