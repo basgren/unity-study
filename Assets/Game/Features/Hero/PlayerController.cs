@@ -1148,28 +1148,20 @@ namespace Game.Features.Hero {
             var checkpointSceneName = checkpointRef.Scene.GetSceneName();
             var currentScene = SceneManager.GetActiveScene().name;
 
+            // Always reload (or cross-load) the scene so transient encounter state resets — an
+            // in-progress boss fight, a swapped camera confiner, a broken arena floor, etc. A
+            // same-scene reposition without a reload would leave that state running (e.g. the
+            // Stone Golem would keep chasing and the camera confiner would stay widened). The
+            // fresh load's Start() consumes this pending respawn: it teleports the hero to the
+            // bonfire spawn, restores health, re-enables control, and the new scene's
+            // LevelEntryPoint reassigns the level music.
+            G.Checkpoint.RequestRespawn();
+
             if (checkpointSceneName == currentScene) {
-                var bonfire = BonfireUtils.FindByIdInScene(gameObject.scene, checkpointRef.LocalId);
-                if (bonfire != null) {
-                    RespawnAtPosition(bonfire.GetSpawnPosition());
-                    // Same-scene respawn does not trigger AfterTransition, so clear overlay manually.
-                    G.DeathEffect.ResetVisuals();
-                } else {
-                    Debug.LogWarning($"Checkpoint bonfire '{checkpointRef.LocalId}' not found in scene '{currentScene}'.");
-                }
+                G.SceneTravel.ReloadActiveScene();
             } else {
-                G.Checkpoint.RequestRespawn();
                 G.SceneTravel.LoadScene(checkpointSceneName);
             }
-        }
-
-        private void RespawnAtPosition(Vector2 position) {
-            TeleportAndNotifyCamera(position);
-            RestoreHealthAfterRespawn();
-            SetCanTakeDamage(true);
-            SetControlsEnabled(true);
-            // Same-scene respawn keeps the existing music assignment; bring it back.
-            G.Audio.StartLevelMusic();
         }
 
         private void RestoreHealthAfterRespawn() {

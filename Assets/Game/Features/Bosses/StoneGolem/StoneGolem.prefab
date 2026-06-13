@@ -234,6 +234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dir: 1
+  spriteFacedLeft: 0
 --- !u!212 &4627695913510707986
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -496,8 +497,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bbb9950d091b50438d5ec322d3cd97a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 100
+  maxHealth: 60
+  currentHealth: 60
   invulnerabilityTime: 0
   hasKnockback: 0
   knockbackForce: 13
@@ -505,7 +506,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4336316197779992064}
-        m_TargetAssemblyTypeName: Game.Features.Bosses.StoneGolem.Common.StoneGolemHitEffect, Assembly-CSharp
+        m_TargetAssemblyTypeName: Game.Features.Bosses.StoneGolem.Common.StoneGolemHitEffect,
+          Assembly-CSharp
         m_MethodName: OnHit
         m_Mode: 0
         m_Arguments:
@@ -513,7 +515,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument:
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
   onDeath:
@@ -521,19 +523,6 @@ MonoBehaviour:
       m_Calls: []
   hitSound: {fileID: 11400000, guid: 3c4caebfbc8caf5449026c85a0317376, type: 2}
   destroySound: {fileID: 0}
---- !u!114 &4336316197779992064
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2753235458893642660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ab574ed912b4261b935c730b7fb417a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  effectPrefab: {fileID: 9214471557366289847, guid: b500605416bf0824f861058177a17a3e, type: 3}
 --- !u!114 &-2247300596940162351
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,6 +537,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   prefab: {fileID: 0}
+--- !u!114 &4336316197779992064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2753235458893642660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ab574ed912b4261b935c730b7fb417a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectPrefab: {fileID: 9214471557366289847, guid: b500605416bf0824f861058177a17a3e,
+    type: 3}
 --- !u!1 &4670318284787850429
 GameObject:
   m_ObjectHideFlags: 0

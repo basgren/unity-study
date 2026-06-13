@@ -11328,11 +11328,6 @@ PrefabInstance:
       propertyPath: cueRefs.Array.data[1].name
       value: landGrass
       objectReference: {fileID: 0}
-    - target: {fileID: 1925743917410454019, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
-        type: 3}
-      propertyPath: damage
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 2945355596670905074, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
         type: 3}
       propertyPath: m_Name
