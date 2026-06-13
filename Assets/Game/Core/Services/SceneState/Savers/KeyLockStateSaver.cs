@@ -17,10 +17,20 @@ namespace Game.Core.Services.SceneState.Savers {
         }
 
         public override void Capture(IStateWriter w) {
+            // A lock with no required key is always open — there is no unlock state worth persisting.
+            if (!keyLock.HasRequiredKey) {
+                return;
+            }
+
             w.SetBool("unlocked", keyLock.IsUnlocked);
         }
 
         public override void Restore(IStateReader r) {
+            // Mirror Capture: ignore any saved state for always-open (keyless) locks.
+            if (!keyLock.HasRequiredKey) {
+                return;
+            }
+
             if (r.TryGetBool("unlocked", out var unlocked)) {
                 keyLock.IsUnlocked = unlocked;
             }

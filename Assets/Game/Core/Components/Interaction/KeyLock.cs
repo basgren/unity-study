@@ -43,6 +43,12 @@ namespace Game.Core.Components.Interaction {
         /// </summary>
         public bool IsUnlocked { get; set; }
 
+        /// <summary>
+        /// True when a key is required to open this lock. An empty <c>requiredKey</c> means the door is
+        /// always open, so it has no unlock state worth persisting (see <c>KeyLockStateSaver</c>).
+        /// </summary>
+        public bool HasRequiredKey => !requiredKey.IsEmpty;
+
         private void Awake() {
             interactable = GetComponent<InteractableBase>();
         }

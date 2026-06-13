@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: -6453643495484219292}
   - component: {fileID: 7795062330840424892}
   - component: {fileID: 6464918706985020951}
+  - component: {fileID: 3398073693694311559}
+  - component: {fileID: 2446853265062802369}
   m_Layer: 0
   m_Name: DoorWooden
   m_TagString: Untagged
@@ -342,6 +344,33 @@ MonoBehaviour:
   lockedSound: {fileID: 11400000, guid: 532ed4526ebb7d043833e3bc6021be65, type: 2}
   unlockSound: {fileID: 11400000, guid: 4dc31e0ffdf7a9246b1d51b5ade3c612, type: 2}
   openDelayAfterUnlock: 1.2
+--- !u!114 &3398073693694311559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012684767289418787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5c73f5a36c302541a2e19ec4d53a9ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveId: 
+  skipSave: 0
+  tier: 1
+--- !u!114 &2446853265062802369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012684767289418787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615c3a27e244bf940a1d3e307dab199d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7295454675820478039
 GameObject:
   m_ObjectHideFlags: 0
