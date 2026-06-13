@@ -345,7 +345,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ComponentVersion: 1
   m_LightType: 3
-  m_BlendStyleIndex: 0
+  m_BlendStyleIndex: 1
   m_FalloffIntensity: 0.804
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
@@ -482,6 +482,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dir: 1
+  spriteFacedLeft: 0
 --- !u!212 &3756431542319373568
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -576,6 +577,11 @@ MonoBehaviour:
   speedBuildUpTime: 0.05
   speedDecayTime: 0.12
   hitStunTime: 0.1
+  respawnFadeTime: 0.2
+  waterFloatTime: 1.5
+  waterSubmergeDepth: 0.25
+  waterBobPeriod: 0.8
+  waterBobDamping: 0.35
   armedAnimator: {fileID: 9100000, guid: 15452c8f5b5d1294aae1e2825f20f3fc, type: 2}
   unarmedAnimator: {fileID: 9100000, guid: da7b63019bcab78479068d687e4267ef, type: 2}
   confusionSound: {fileID: 11400000, guid: fbfc28ed2ab065a4b849cd13c10aaa44, type: 2}

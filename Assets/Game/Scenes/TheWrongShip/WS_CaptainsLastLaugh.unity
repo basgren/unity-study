@@ -3367,7 +3367,7 @@ MonoBehaviour:
   m_LightType: 4
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.20125782, g: 0.20125782, b: 0.20125782, a: 1}
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
@@ -3666,12 +3666,12 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 7.6101027, y: -2.349732}
-      - {x: 7.953569, y: 15.828561}
-      - {x: -8.99345, y: 15.825708}
-      - {x: -9.087152, y: 6.327384}
-      - {x: -7.6920033, y: 4.7302537}
-      - {x: -7.696067, y: -2.366858}
+    - - {x: 7.75, y: -2.25}
+      - {x: 7.75, y: 15.75}
+      - {x: -9, y: 15.75}
+      - {x: -9, y: 6.25}
+      - {x: -7.75, y: 4.75}
+      - {x: -7.75, y: -2.25}
   m_UseDelaunayMesh: 0
 --- !u!1001 &1246692870
 PrefabInstance:
@@ -4976,14 +4976,14 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 11.860103, y: -2.349732}
-      - {x: 11.844896, y: 4.13194}
-      - {x: 8.597269, y: 7.7741284}
-      - {x: 8.703569, y: 15.828561}
-      - {x: -8.99345, y: 15.825708}
-      - {x: -9.087152, y: 6.327384}
-      - {x: -7.6920033, y: 4.7302537}
-      - {x: -7.696067, y: -2.366858}
+    - - {x: 11.75, y: -2.25}
+      - {x: 11.75, y: 4.25}
+      - {x: 7.75, y: 7.75}
+      - {x: 7.75, y: 15.75}
+      - {x: -9, y: 15.75}
+      - {x: -9, y: 6.25}
+      - {x: -7.75, y: 4.75}
+      - {x: -7.75, y: -2.25}
   m_UseDelaunayMesh: 0
 --- !u!4 &1593137218
 Transform:
@@ -11614,12 +11614,12 @@ PrefabInstance:
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.5210538
+      value: -1.4799862
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 10.716859
+      value: 10.73
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -11629,22 +11629,22 @@ PrefabInstance:
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.009202454
+      value: 0.03033268
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.009090909
+      value: 0.029565219
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.98159504
+      value: 0.93933463
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.9818182
+      value: 0.9391304
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097959352688, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
