@@ -33,6 +33,7 @@
 * make coins collide with barrels when they are dropped.
 * debris - enhance directoion calculation - if projectile met wall, debris should burst in the direction opposite
     to wall.
+* when player doesn't have hook, anchors should not be highlighted.
 
 ## Textures
 * `ultra-far-bg` - has gray pixel in the top middle

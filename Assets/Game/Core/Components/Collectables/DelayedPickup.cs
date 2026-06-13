@@ -1,5 +1,4 @@
-﻿using Core.Utils;
-using Game.Core.Utils;
+﻿using Game.Core.Utils;
 using UnityEngine;
 
 namespace Game.Core.Components.Collectables {
