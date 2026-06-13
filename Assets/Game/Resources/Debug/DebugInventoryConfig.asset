@@ -19,3 +19,6 @@ MonoBehaviour:
   - itemId:
       value: Coin
     count: 21
+  - itemId:
+      value: GrapplingHook
+    count: 1
