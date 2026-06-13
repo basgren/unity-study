@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Configs;
 using Game.Core.Bootstrap;
+using Game.Defs;
 using UnityEngine;
 
 namespace Game.Core.DebugTools {
@@ -50,6 +51,16 @@ namespace Game.Core.DebugTools {
                 }
 
                 inventory.Add(entry.itemId, entry.count);
+            }
+
+            // Debug seeding runs during bootstrap, before the hero subscribes to inventory changes,
+            // so the normal "first sword becomes the equipped weapon" rule
+            // (PlayerController.OnInventoryChanged) never fires for seeded swords. Reproduce it here:
+            // if swords were seeded and the hero is not armed yet, arm the hero and consume one sword
+            // as the equipped weapon. Any remaining swords stay in the inventory as throwables.
+            if (!playerState.IsArmed && inventory.GetCount(ItemIds.Sword) > 0) {
+                playerState.IsArmed = true;
+                inventory.Remove(ItemIds.Sword, 1);
             }
 
             return true;

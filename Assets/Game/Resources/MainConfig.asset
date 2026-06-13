@@ -50,4 +50,4 @@ MonoBehaviour:
     TotalRespawnDelay: 2.5
   EscQuitsImmediately: 0
   DebugSystems:
-    EnableDebugInventory: 0
+    EnableDebugInventory: 1
