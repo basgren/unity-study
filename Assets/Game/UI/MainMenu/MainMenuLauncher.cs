@@ -21,12 +21,10 @@ namespace Game.UI.MainMenu {
         [SerializeField]
         private AudioCue mainMenuMusic;
         
-        private IAudioLoopHandle musicHandle;
-
         private void Awake() {
-            if (mainMenuMusic != null) {
-                musicHandle = G.Audio.PlayLoopAt(mainMenuMusic, transform.position, false);
-            }
+            // Route through the central music service so menu music shares the single
+            // persistent handle (prevents gameplay music playing over the menu).
+            G.Audio.SetLevelMusic(mainMenuMusic);
         }
         
         private IEnumerator Start() {
@@ -45,13 +43,6 @@ namespace Game.UI.MainMenu {
                 default:
                     StartCoroutine(ShowMainMenu(mainMenuDelay));
                     break;
-            }
-        }
-
-        private void OnDestroy() {
-            if (musicHandle != null) {
-                musicHandle.Stop();
-                musicHandle = null;
             }
         }
 

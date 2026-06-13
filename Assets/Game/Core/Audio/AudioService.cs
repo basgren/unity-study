@@ -37,7 +37,14 @@ namespace Game.Core.Audio {
 
         private AudioCue currentMusicCue;
         private IAudioLoopHandle musicHandle;
-        
+
+        // Music transition tuning, populated from MainConfig in Init().
+        private float musicFadeOutTime = 0.5f;
+        private float musicFadeInTime = 0.5f;
+
+        // Active fade-out-then-fade-in coroutine; cancelled when a new transition starts.
+        private Coroutine musicTransitionRoutine;
+
         /// <summary>
         /// Initializes the pool root and pre-creates a set of AudioSources.
         /// </summary>
@@ -61,6 +68,8 @@ namespace Game.Core.Audio {
         public void Init() {
             if (G.Config != null) {
                 defaultMixerGroup = G.Config.SfxMixerGroup;
+                musicFadeOutTime = G.Config.musicFadeOutTime;
+                musicFadeInTime = G.Config.musicFadeInTime;
             }
         }
 
@@ -165,8 +174,14 @@ namespace Game.Core.Audio {
         }
 
         public void SetLevelMusic(AudioCue cue) {
+            // Requirement: the same track must keep playing across scene loads without
+            // restarting. If the requested cue is already the live track, do nothing.
+            if (cue == currentMusicCue && IsMusicPlaying()) {
+                return;
+            }
+
             currentMusicCue = cue;
-            StartLevelMusic();
+            BeginMusicTransition(cue);
         }
 
         public void ClearLevelMusic(float fadeOutSeconds = 0.25f) {
@@ -175,6 +190,12 @@ namespace Game.Core.Audio {
         }
 
         public void StopLevelMusic(float fadeOutSeconds = 0.25f) {
+            // Cancel any pending fade-in so a queued track does not resurrect after a stop.
+            if (musicTransitionRoutine != null) {
+                StopCoroutine(musicTransitionRoutine);
+                musicTransitionRoutine = null;
+            }
+
             if (musicHandle == null) {
                 return;
             }
@@ -184,14 +205,72 @@ namespace Game.Core.Audio {
         }
 
         public void StartLevelMusic() {
-            // Always drop a previous handle so we end up with a single active loop.
-            StopLevelMusic(0f);
-
+            // Explicit restart of the assigned cue (e.g. same-scene respawn). Unlike
+            // SetLevelMusic this does not honor the "same track keeps playing" guard.
             if (currentMusicCue == null) {
                 return;
             }
 
-            musicHandle = PlayLoopAt(currentMusicCue, Vector3.zero, is3D: false);
+            BeginMusicTransition(currentMusicCue);
+        }
+
+        /// <summary>
+        /// True when a music loop is currently assigned and its source is still alive.
+        /// </summary>
+        private bool IsMusicPlaying() {
+            return musicHandle != null && musicHandle.IsValid;
+        }
+
+        /// <summary>
+        /// Starts a fresh fade-out-then-fade-in transition to the given cue, cancelling any
+        /// transition already in flight. A null cue means "fade to silence".
+        /// </summary>
+        private void BeginMusicTransition(AudioCue cue) {
+            if (musicTransitionRoutine != null) {
+                StopCoroutine(musicTransitionRoutine);
+                musicTransitionRoutine = null;
+            }
+
+            musicTransitionRoutine = StartCoroutine(MusicTransitionRoutine(cue));
+        }
+
+        private IEnumerator MusicTransitionRoutine(AudioCue cue) {
+            // Sequential fade: fully fade out the current track before starting the new one.
+            if (musicHandle != null) {
+                var handleToStop = musicHandle;
+                musicHandle = null;
+                handleToStop.Stop(musicFadeOutTime);
+
+                if (musicFadeOutTime > 0f) {
+                    yield return new WaitForSecondsRealtime(musicFadeOutTime);
+                }
+            }
+
+            if (cue == null) {
+                musicTransitionRoutine = null;
+                yield break;
+            }
+
+            musicHandle = PlayLoopAt(cue, Vector3.zero, is3D: false);
+
+            // Fade-in is inline so cancelling musicTransitionRoutine also cancels the fade.
+            var internalHandle = musicHandle as AudioLoopHandle;
+            var source = internalHandle != null ? internalHandle.Source : null;
+
+            if (source != null && musicFadeInTime > 0f) {
+                source.volume = 0f;
+                float t = 0f;
+
+                while (t < musicFadeInTime) {
+                    t += Time.unscaledDeltaTime;
+                    source.volume = Mathf.Lerp(0f, cue.Volume, Mathf.Clamp01(t / musicFadeInTime));
+                    yield return null;
+                }
+
+                source.volume = cue.Volume;
+            }
+
+            musicTransitionRoutine = null;
         }
 
         public IAudioLoopHandle PlayLoopFollow(AudioCue cue, Transform follow, bool is3D = true) {
