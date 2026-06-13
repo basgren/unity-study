@@ -87,10 +87,11 @@ MonoBehaviour:
   firstSelected: {fileID: 6613601663467126247}
   closeOnCancel: 1
   pausesGame: 0
+  dimsBackground: 1
   autoOpenOnCreation: 0
   startScene:
-    sceneGuid: 2cda990e2423bbf4892e6590ba056729
-    scenePath: Assets/Game/Scenes/IntroLevel.unity
+    sceneGuid: ea49b7ca52fe8834ca1cc6d11af8573a
+    scenePath: Assets/Game/Scenes/DriftwoodShore/DS_DriftInSand.unity
 --- !u!1 &6085323544304514467
 GameObject:
   m_ObjectHideFlags: 0

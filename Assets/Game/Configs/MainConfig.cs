@@ -20,6 +20,15 @@ namespace Game.Configs {
         public AudioMixerGroup SfxMixerGroup;
         public DialogSoundLibrary DialogSoundLibrary;
 
+        [Header("Music")]
+        [Tooltip("Seconds to fade the current track out before a different track starts.")]
+        [Min(0f)]
+        public float musicFadeOutTime = 0.5f;
+
+        [Tooltip("Seconds for a newly started track to fade in to its target volume.")]
+        [Min(0f)]
+        public float musicFadeInTime = 0.5f;
+
         [Header("Menus")]
         public MenuWindow MainMenu;
         public MenuWindow OptionsMenu;
