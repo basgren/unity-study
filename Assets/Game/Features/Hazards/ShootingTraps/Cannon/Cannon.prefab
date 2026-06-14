@@ -181,6 +181,7 @@ Transform:
   m_Children:
   - {fileID: 3664229135028021040}
   - {fileID: 3664229135569229143}
+  - {fileID: 7935121986412932397}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &184931839147198084
@@ -196,6 +197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dir: 1
+  spriteFacedLeft: 0
 --- !u!212 &5960544006214852103
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -404,7 +406,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileSpawner: {fileID: 3664229135569229136}
   shootCooldown: 4
+  fuseDelay: 2
+  fuseEffect: {fileID: 5684226549986581743}
   shotSound: {fileID: 11400000, guid: 42979bba7e308094bac546746bfc845c, type: 2}
+  fuseSound: {fileID: 11400000, guid: bc92dfc3c40379f4bacf951e645199f3, type: 2}
 --- !u!114 &4728321442296951619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -432,3 +437,83 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 193622ed0d77dbc4ab2a7b43dcb1c804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &6412830827499443914
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3664229136581394779}
+    m_Modifications:
+    - target: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.252
+      objectReference: {fileID: 0}
+    - target: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.677
+      objectReference: {fileID: 0}
+    - target: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9214471557366289847, guid: 249c760dda86093478116f712a3b76d9,
+        type: 3}
+      propertyPath: m_Name
+      value: FuseEffect
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 249c760dda86093478116f712a3b76d9, type: 3}
+--- !u!198 &5684226549986581743 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: -7630049638828209627, guid: 249c760dda86093478116f712a3b76d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 6412830827499443914}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7935121986412932397 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3954658339607002087, guid: 249c760dda86093478116f712a3b76d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 6412830827499443914}
+  m_PrefabAsset: {fileID: 0}
