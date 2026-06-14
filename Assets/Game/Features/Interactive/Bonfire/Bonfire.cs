@@ -82,7 +82,7 @@ namespace Game.Features.Interactive.Bonfire {
                 hero.SetCanTakeDamage(false);
             }
 
-            G.SceneState.OnBonfireRest();
+            G.SceneState.ClearSessionState();
             G.Checkpoint.BeginBonfireRestTransition();
             G.Screen.RunWhenFadeOut(
                 RestFadeDuration,

@@ -23,6 +23,10 @@ namespace Game.Core.Services.SceneState {
         private SceneCatalog catalog;
         private int restoreDepth;
 
+        // One-shot: set by ClearSessionState so the imminent reload's BeforeUnload capture does not
+        // re-save session-tier objects into the store we just cleared. Consumed by the next CaptureScene.
+        private bool suppressSessionCapture;
+
         /// <summary>
         /// True while saved state is being applied to live scene objects.
         /// Runtime side effects should be suppressed during this phase.
@@ -60,6 +64,11 @@ namespace Game.Core.Services.SceneState {
 
         /// <summary>Captures the current state of every StateRoot in the given scene.</summary>
         public void CaptureScene(UnityEngine.SceneManagement.Scene scene) {
+            // Consume the one-shot flag set by ClearSessionState. When set, session-tier objects are
+            // not re-captured on this pass so a freshly reset store stays reset across the reload.
+            var skipSession = suppressSessionCapture;
+            suppressSessionCapture = false;
+
             if (catalog == null) {
                 return;
             }
@@ -71,6 +80,10 @@ namespace Game.Core.Services.SceneState {
 
             foreach (var root in FindStateRootsInScene(scene)) {
                 if (root.SkipSave) {
+                    continue;
+                }
+
+                if (skipSession && root.Tier == SaveTier.Session) {
                     continue;
                 }
 
@@ -99,9 +112,20 @@ namespace Game.Core.Services.SceneState {
             write(blob.Writer(slot));
         }
 
-        /// <summary>Called when the player rests at a bonfire. Clears all session-tier state.</summary>
-        public void OnBonfireRest() {
+        /// <summary>
+        /// Clears all session-tier state. Called when transient world progress (weakened/killed
+        /// enemies, moved barrels) must reset to its default state: when the player rests at a
+        /// bonfire and when the player dies and respawns. Persistent state is left untouched.
+        ///
+        /// Must be called immediately before a scene reload. The reload fires BeforeUnload →
+        /// CaptureScene, which would otherwise re-save still-present session objects (e.g. a dead
+        /// enemy whose corpse lingers in the scene with destroyed = true) straight back into the
+        /// store we just cleared. To prevent that, session-tier capture is suppressed for that one
+        /// unload pass.
+        /// </summary>
+        public void ClearSessionState() {
             sessionStore.Clear();
+            suppressSessionCapture = true;
         }
 
         /// <summary>

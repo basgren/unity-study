@@ -1006,6 +1006,9 @@ namespace Game.Features.Hero {
             isDiedThisFrame = true;
             damageable.IgnoreDamage = true;
             PlayDeathJingle();
+            // Reset transient world state (weakened/killed enemies, moved barrels) so the reloaded
+            // scene starts fresh, matching a bonfire rest. Persistent state is left untouched.
+            G.SceneState.ClearSessionState();
             // TODO: [BG] Leave for refactor - move to some service like game manager.
             //   player should not manage own death or even respawn. I should throw some message
             //   and game manager should decide what to do.
@@ -1155,6 +1158,10 @@ namespace Game.Features.Hero {
             // fresh load's Start() consumes this pending respawn: it teleports the hero to the
             // bonfire spawn, restores health, re-enables control, and the new scene's
             // LevelEntryPoint reassigns the level music.
+            //
+            // Reset transient world state (weakened/killed enemies, moved barrels) so the reloaded
+            // or cross-loaded scene starts fresh, matching a bonfire rest. Persistent state is kept.
+            G.SceneState.ClearSessionState();
             G.Checkpoint.RequestRespawn();
 
             if (checkpointSceneName == currentScene) {

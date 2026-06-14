@@ -35,7 +35,7 @@ Set on each `StateRoot` instance via the `Tier` field.
 
 | Tier         | Cleared when                                       | Use for                                                  |
 |--------------|----------------------------------------------------|----------------------------------------------------------|
-| `Session`    | The player rests at a bonfire (`OnBonfireRest`).   | Weakened enemies, moved barrels, transient progress.     |
+| `Session`    | The player rests at a bonfire or dies (`ClearSessionState`). | Weakened enemies, moved barrels, transient progress.     |
 | `Persistent` | Never within a playthrough.                        | Opened doors, consumed Helms, permanently destroyed props.|
 
 Tier is per-instance, not per-prefab: the same prefab can be `Session` in one
@@ -147,6 +147,23 @@ The per-object container of saved data. Layout: `slot → field → value`.
   that leaks in.
 
 The user never types a Save ID. The inspector shows it read-only.
+
+> **Duplicate IDs.** Duplicating a GameObject (Ctrl+D) copies its `saveId`, and
+> the assigner only fills *empty* IDs — so two objects can end up sharing one
+> save slot and overwriting each other's state. This is caught two ways:
+> - On every scene save, `StateRootIdAssigner` logs a console **error** for any
+>   duplicate (after assigning missing IDs).
+> - `Tools ▸ Scene State ▸ Validate StateRoot Ids (Open Scenes)` runs the same
+>   check on demand (`StateRootValidator.cs`).
+>
+> To repair flagged duplicates, either:
+> - **One at a time:** select the offending instance and press **Clear** next to
+>   its Save ID in the inspector, then save the scene.
+> - **In bulk:** run `Tools ▸ Scene State ▸ Fix Duplicate StateRoot Ids (Open
+>   Scenes)`, which reassigns a fresh unique id to every duplicate (the first
+>   occurrence keeps its id), then save the scene(s).
+>
+> Either way the assigner's `"{PrefabName}_{N}"` scheme produces the new id.
 
 ### `SceneCatalog` (`SceneCatalog.cs`)
 
@@ -375,9 +392,14 @@ the flag when re-saving an already-destroyed (hidden) instance.
   to this. Triggers `CaptureScene(scene)` for every scene transition.
 - **`SceneTravelService.LoadScene(name, SceneLoadOptions { SkipStateCapture = true })`** —
   opt out of capture for destinations with no gameplay (e.g. main menu).
-- **`SceneStateService.OnBonfireRest()`** — called by `Bonfire.DoInteract` to
-  clear the Session store; the scene then reloads and Session-tier objects
-  return to their default state.
+- **`SceneStateService.ClearSessionState()`** — called by `Bonfire.DoInteract`
+  (rest) and by `PlayerController` death/respawn to clear the Session store; the
+  scene then reloads and Session-tier objects return to their default state.
+  It must be called immediately before the reload: the reload's `BeforeUnload →
+  CaptureScene` would otherwise re-save still-present Session objects (e.g. a
+  killed enemy whose corpse lingers in the scene with `destroyed = true`) back
+  into the just-cleared store, so `ClearSessionState` suppresses Session-tier
+  capture for that single unload pass.
 - **`SceneStateService.IsRestoring`** — `true` while saved state is being
   applied to live objects. Useful for suppressing one-shot side effects in
   setters.
@@ -390,8 +412,10 @@ the flag when re-saving an already-destroyed (hidden) instance.
 
 | Tool                                                 | Where it lives                          | What it does                                                                                  |
 |------------------------------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------|
-| **StateRoot custom inspector**                       | `StateRootEditor.cs`                    | Shows the auto-assigned `Save ID` read-only; clearly labels prefab-asset case.                |
-| **Auto Save ID assignment**                          | `StateRootIdAssigner.cs`                | On every scene save, generates `"{PrefabName}_{N}"` for any `StateRoot` without an ID.        |
+| **StateRoot custom inspector**                       | `StateRootEditor.cs`                    | Shows the auto-assigned `Save ID` read-only; **Clear** button regenerates it on next save.    |
+| **Auto Save ID assignment**                          | `StateRootIdAssigner.cs`                | On every scene save, generates `"{PrefabName}_{N}"` for any `StateRoot` without an ID; logs an error on any duplicate id. |
+| **Tools → Scene State → Validate StateRoot Ids**     | `StateRootValidator.cs` / `StateRootValidationMenu.cs` | On-demand check for missing or duplicate `saveId`s across all open scenes.       |
+| **Tools → Scene State → Fix Duplicate StateRoot Ids**| `StateRootIdAssigner.ReassignDuplicateIds` / `StateRootValidationMenu.cs` | Reassigns a fresh unique id to every duplicate in open scenes (first keeps its id); save to persist. |
 | **Tools → Scene State → Rebuild Scene Catalog**      | `SceneCatalogBuilder.cs`                | Rebuilds `SceneCatalog` from build settings.                                                  |
 | **Pre-build catalog rebuild**                        | `SceneCatalogBuilder.OnPreprocessBuild` | Automatic before every player build.                                                          |
 | **Pre-Play-mode catalog rebuild**                    | `SceneCatalogPlayModeRebuild`           | Catches scene renames that would otherwise break GUID lookup at the next playtest.            |

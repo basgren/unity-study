@@ -139,9 +139,9 @@ Scene B playing
     └── Each saver's Restore() is called with previously captured data
 ```
 
-On **bonfire rest**, `SceneStateService.OnBonfireRest()` clears the Session store and the scene
-reloads. Session-tier objects return to their default scene state; Persistent-tier objects are
-re-applied via `StateRoot.Start`.
+On **bonfire rest** and on **player death/respawn**, `SceneStateService.ClearSessionState()` clears
+the Session store and the scene reloads. Session-tier objects return to their default scene state;
+Persistent-tier objects are re-applied via `StateRoot.Start`.
 
 ---
 
@@ -158,6 +158,6 @@ G.SceneTravel.LoadScene("MainMenu", new SceneLoadOptions { SkipStateCapture = tr
 // Push a single slot immediately (useful in response to events, before scene unload)
 G.SceneState.PushSlot(stateRoot, "mySlot", w => w.SetBool("key", value));
 
-// Clear session state (called automatically by Bonfire.DoInteract)
-G.SceneState.OnBonfireRest();
+// Clear session state (called automatically by Bonfire.DoInteract and on player death/respawn)
+G.SceneState.ClearSessionState();
 ```
