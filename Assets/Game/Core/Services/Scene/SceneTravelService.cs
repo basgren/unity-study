@@ -28,6 +28,13 @@ namespace Game.Core.Services.Scene {
     /// is destroyed.
     /// </summary>
     public class SceneTravelService : MonoBehaviour {
+        /// <summary>
+        /// True while a scene transition (unload + load) is in progress. Lets per-scene components
+        /// tell a real teardown from in-scene behavior — e.g. music zones suppress their revert so a
+        /// track can continue seamlessly across the load instead of restarting.
+        /// </summary>
+        public bool IsTransitioning { get; private set; }
+
         /// <summary>Fires just before the outgoing scene is unloaded. Last chance to read scene objects.</summary>
         public event Action<UnityEngine.SceneManagement.Scene> BeforeUnload;
 
@@ -79,24 +86,33 @@ namespace Game.Core.Services.Scene {
             Func<string, UnityEngine.SceneManagement.Scene> resolveLoadedScene,
             SceneLoadOptions options
         ) {
-            var fromScene = SceneManager.GetActiveScene();
+            // Held true across the whole unload+load so teardown-time callbacks in the outgoing scene
+            // (e.g. a music zone's collider being destroyed) can tell this is a transition, not the
+            // player acting. Cleared in finally so an early-out or exception cannot leave it stuck.
+            IsTransitioning = true;
 
-            if (!options.SkipStateCapture) {
-                BeforeUnload?.Invoke(fromScene);
+            try {
+                var fromScene = SceneManager.GetActiveScene();
+
+                if (!options.SkipStateCapture) {
+                    BeforeUnload?.Invoke(fromScene);
+                }
+
+                var op = SceneManager.LoadSceneAsync(targetIdentifier, LoadSceneMode.Single);
+                while (!op.isDone) {
+                    yield return null;
+                }
+
+                var toScene = resolveLoadedScene(targetIdentifier);
+
+                if (options.PostLoad != null) {
+                    yield return options.PostLoad(toScene);
+                }
+
+                AfterTransition?.Invoke(fromScene, toScene);
+            } finally {
+                IsTransitioning = false;
             }
-
-            var op = SceneManager.LoadSceneAsync(targetIdentifier, LoadSceneMode.Single);
-            while (!op.isDone) {
-                yield return null;
-            }
-
-            var toScene = resolveLoadedScene(targetIdentifier);
-
-            if (options.PostLoad != null) {
-                yield return options.PostLoad(toScene);
-            }
-
-            AfterTransition?.Invoke(fromScene, toScene);
         }
     }
 }

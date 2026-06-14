@@ -36,8 +36,22 @@ namespace Game.Core.Audio {
         void SetLevelMusic(AudioCue cue);
 
         /// <summary>
-        /// Stops the current level music (with optional fade-out) and forgets the assigned cue.
-        /// Called when the level is torn down.
+        /// Pushes a temporary music override (e.g. a music zone the player just entered). The most
+        /// recently pushed override is the track that plays; remove it with
+        /// <see cref="RemoveMusicOverride"/> to fall back to the next override or the level music.
+        /// A null cue is a deliberate silence override.
+        /// </summary>
+        void PushMusicOverride(AudioCue cue);
+
+        /// <summary>
+        /// Removes a previously pushed music override and transitions to whatever should play next
+        /// (a lower override, the assigned level music, or silence when there is no level music).
+        /// </summary>
+        void RemoveMusicOverride(AudioCue cue);
+
+        /// <summary>
+        /// Stops the current level music (with optional fade-out) and forgets the assigned cue and
+        /// any active zone overrides. Called when the level is torn down.
         /// </summary>
         void ClearLevelMusic(float fadeOutSeconds = 0.25f);
 

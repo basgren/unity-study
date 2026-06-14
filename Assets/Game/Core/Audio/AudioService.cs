@@ -35,7 +35,15 @@ namespace Game.Core.Audio {
         private AudioListener cachedListener;
         private Transform cachedListenerTransform;
 
-        private AudioCue currentMusicCue;
+        // Scene-wide base track (set by LevelEntryPoint via SetLevelMusic) plus a stack of temporary
+        // overrides pushed by music zones. The effective track is the top override, or the default
+        // when no zone is active. activeMusicCue tracks what the live transition is playing so we can
+        // skip redundant restarts (e.g. a zone whose track equals the scene default).
+        private AudioCue defaultMusicCue;
+        private readonly List<AudioCue> musicOverrides = new List<AudioCue>();
+        private AudioCue activeMusicCue;
+        // Set when a music change is requested mid scene-transition; flushed once the transition ends.
+        private bool musicApplyPending;
         private IAudioLoopHandle musicHandle;
 
         // Music transition tuning, populated from MainConfig in Init().
@@ -174,19 +182,39 @@ namespace Game.Core.Audio {
         }
 
         public void SetLevelMusic(AudioCue cue) {
-            // Requirement: the same track must keep playing across scene loads without
-            // restarting. If the requested cue is already the live track, do nothing.
-            if (cue == currentMusicCue && IsMusicPlaying()) {
+            // A new scene (or cutscene) sets the base track and starts a fresh zone context, so any
+            // overrides left over from the previous scene are dropped. RequestMusicApply then skips
+            // the transition when this track is already the one playing — e.g. the player leaves a
+            // music zone into a level whose default is that same track — so it continues seamlessly
+            // instead of restarting.
+            defaultMusicCue = cue;
+            musicOverrides.Clear();
+            RequestMusicApply();
+        }
+
+        public void PushMusicOverride(AudioCue cue) {
+            // A music zone the player entered. The top of the stack wins, so this becomes the live
+            // track until it is removed. A null cue is a deliberate "silence" zone.
+            musicOverrides.Add(cue);
+            RequestMusicApply();
+        }
+
+        public void RemoveMusicOverride(AudioCue cue) {
+            // Remove the most recently pushed matching entry so overlapping zones unwind in order.
+            int index = musicOverrides.LastIndexOf(cue);
+            if (index < 0) {
                 return;
             }
 
-            currentMusicCue = cue;
-            BeginMusicTransition(cue);
+            musicOverrides.RemoveAt(index);
+            RequestMusicApply();
         }
 
         public void ClearLevelMusic(float fadeOutSeconds = 0.25f) {
+            defaultMusicCue = null;
+            musicOverrides.Clear();
+            activeMusicCue = null;
             StopLevelMusic(fadeOutSeconds);
-            currentMusicCue = null;
         }
 
         public void StopLevelMusic(float fadeOutSeconds = 0.25f) {
@@ -205,13 +233,75 @@ namespace Game.Core.Audio {
         }
 
         public void StartLevelMusic() {
-            // Explicit restart of the assigned cue (e.g. same-scene respawn). Unlike
-            // SetLevelMusic this does not honor the "same track keeps playing" guard.
-            if (currentMusicCue == null) {
+            // Explicit restart of the live track (e.g. same-scene respawn). Unlike SetLevelMusic
+            // this does not honor the "same track keeps playing" guard.
+            AudioCue cue = EffectiveMusic;
+            if (cue == null) {
                 return;
             }
 
-            BeginMusicTransition(currentMusicCue);
+            activeMusicCue = cue;
+            BeginMusicTransition(cue);
+        }
+
+        // Effective track: a silence override (a zone with no cue) wins over any music regardless of
+        // stack order, so a silence zone keeps the music off even while it overlaps a music zone.
+        // Otherwise the most recently entered zone override wins, or the scene default when no zone
+        // is active.
+        private AudioCue EffectiveMusic {
+            get {
+                for (int i = 0; i < musicOverrides.Count; i++) {
+                    if (musicOverrides[i] == null) {
+                        return null;
+                    }
+                }
+
+                return musicOverrides.Count > 0
+                    ? musicOverrides[musicOverrides.Count - 1]
+                    : defaultMusicCue;
+            }
+        }
+
+        // Applies the effective track now, or defers it while a scene transition is in progress.
+        // During a transition the scene default (LevelEntryPoint, in Start) and any override from a
+        // zone the player spawns inside (a few frames later, during the arrival cinematic) arrive at
+        // different times. Applying each immediately would thrash the track — drop to the scene
+        // default, then restart the zone track. Deferring keeps the live track playing untouched and
+        // FlushPendingMusic applies the final effective track once the transition settles, so a track
+        // that should continue (zone -> same-music level, or back again) does so seamlessly.
+        private void RequestMusicApply() {
+            if (G.SceneTravel != null && G.SceneTravel.IsTransitioning) {
+                musicApplyPending = true;
+                return;
+            }
+
+            ApplyEffectiveMusic();
+        }
+
+        private void FlushPendingMusic() {
+            if (!musicApplyPending) {
+                return;
+            }
+
+            if (G.SceneTravel != null && G.SceneTravel.IsTransitioning) {
+                return;
+            }
+
+            musicApplyPending = false;
+            ApplyEffectiveMusic();
+        }
+
+        // Transitions to whatever the effective track currently is, unless it is already live. This
+        // preserves the cross-scene "same track keeps playing" behavior and makes a zone enter/exit
+        // a no-op when its cue matches what is already playing.
+        private void ApplyEffectiveMusic() {
+            AudioCue cue = EffectiveMusic;
+            if (cue == activeMusicCue && IsMusicPlaying()) {
+                return;
+            }
+
+            activeMusicCue = cue;
+            BeginMusicTransition(cue);
         }
 
         /// <summary>
@@ -297,6 +387,7 @@ namespace Game.Core.Audio {
         /// Reclaims finished AudioSources back into the pool.
         /// </summary>
         private void Update() {
+            FlushPendingMusic();
             UpdateLoopFollow();
             ReclaimFinishedSources();
         }
