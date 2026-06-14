@@ -118,6 +118,12 @@ namespace Game.Features.Props.Ship {
 
             hero.SetControlsEnabled(false);
 
+            // Fade the HUD out for the departure. No matching Show(): this cutscene ends by fading
+            // to the main menu, which tears the HUD scene down.
+            if (G.Hud != null) {
+                G.Hud.Hide();
+            }
+
             yield return WalkHeroToX(hero, playerStandPoint.position.x);
 
             // Music swells while Clank delivers his final line.

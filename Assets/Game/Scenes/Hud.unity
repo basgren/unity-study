@@ -1428,6 +1428,8 @@ GameObject:
   - component: {fileID: 2045891376}
   - component: {fileID: 2045891375}
   - component: {fileID: 2045891379}
+  - component: {fileID: 2045891381}
+  - component: {fileID: 2045891380}
   m_Layer: 5
   m_Name: HUDCanvas
   m_TagString: Untagged
@@ -1542,6 +1544,31 @@ MonoBehaviour:
   planeDistance: 5
   pixelPerfect: 1
   sortingLayerName: UI
+--- !u!114 &2045891380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045891374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63c353c75783e664db88c99e4a0aa888, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeDuration: 0.5
+--- !u!225 &2045891381
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045891374}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1349759567267556160
 PrefabInstance:
   m_ObjectHideFlags: 0

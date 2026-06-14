@@ -125,6 +125,11 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
                 hero.SetControlsEnabled(false);
             }
 
+            // Fade the HUD out while the cutscene owns the screen; restored when controls return.
+            if (G.Hud != null) {
+                G.Hud.Hide();
+            }
+
             yield return new WaitForSeconds(beforeFirstRow);
             
             if (laughSource != null) {
@@ -164,6 +169,11 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
 
             if (hero != null) {
                 hero.SetControlsEnabled(true);
+            }
+
+            // Bring the HUD back as the fight begins.
+            if (G.Hud != null) {
+                G.Hud.Show();
             }
 
             if (boss != null && boss.Damageable != null && G.BossFight != null) {
