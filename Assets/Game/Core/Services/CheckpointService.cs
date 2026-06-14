@@ -37,6 +37,18 @@ namespace Game.Core.Services {
         }
 
         /// <summary>
+        /// Fully clears all checkpoint progress. Used when starting a new game.
+        /// Forgets the active checkpoint and every discovered bonfire and cancels any pending respawn.
+        /// </summary>
+        public void Reset() {
+            Current = null;
+            discovered.Clear();
+            HasPendingRespawn = false;
+            IsBonfireRestTransitionActive = false;
+            OnCheckpointChanged?.Invoke(Current);
+        }
+
+        /// <summary>
         /// Returns the visual state of a bonfire in the given scene.
         /// </summary>
         public BonfireState GetBonfireState(string sceneName, string localId) {

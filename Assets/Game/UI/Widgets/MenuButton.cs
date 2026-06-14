@@ -7,7 +7,7 @@ namespace Game.UI.Widgets {
         Normal,
         Accent,
         Danger
-    }
+    } 
 
     public class MenuButton : Button {
         [SerializeField]

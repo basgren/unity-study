@@ -6,9 +6,7 @@ namespace Game.UI.PauseMenu {
     public class PauseMenu : AnimatedWindow {
         public void OnExitToMenuClick() {
             // SkipStateCapture: the main menu has no gameplay state to preserve.
-            G.Menu.CloseAll(() => {
-                G.SceneTravel.LoadScene("MainMenu", new SceneLoadOptions { SkipStateCapture = true });
-            });
+            SceneTransition.FadeToScene("MainMenu", new SceneLoadOptions { SkipStateCapture = true });
         }
 
         public void OnOptionsClick() {
