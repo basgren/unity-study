@@ -67,6 +67,10 @@ namespace Game.Features.Props.Ship {
         [Tooltip("How long the hero stands on the ship before the sails are raised.")]
         [SerializeField]
         private float standDuration = 2f;
+        
+        [SerializeField]
+        [Tooltip("Time after ship starts sailing and before credits start rolling.")]
+        private float timeBeforeCredits = 3f;
 
         [Tooltip("How long the ship sails to the right before the screen fades out. The credits " +
                  "roll plays concurrently within this window, so the sail still happens even if " +
@@ -81,7 +85,7 @@ namespace Game.Features.Props.Ship {
         [Tooltip("Duration of the fade-in once the main menu scene has loaded.")]
         [SerializeField]
         private float menuFadeInDuration = 1f;
-
+        
         private bool started;
 
         private void OnEnable() {
@@ -102,11 +106,6 @@ namespace Game.Features.Props.Ship {
         }
 
         private IEnumerator Run() {
-            // Music swells while Clank delivers his final line.
-            if (departureMusic != null && G.Audio != null) {
-                G.Audio.SetLevelMusic(departureMusic);
-            }
-
             // Let the dialog's last line play and the menu fully close before taking over.
             // The menu re-enables player controls on close, so we wait it out and then disable
             // them ourselves to avoid a one-frame window where the player could move.
@@ -121,6 +120,11 @@ namespace Game.Features.Props.Ship {
 
             yield return WalkHeroToX(hero, playerStandPoint.position.x);
 
+            // Music swells while Clank delivers his final line.
+            if (departureMusic != null && G.Audio != null) {
+                G.Audio.SetLevelMusic(departureMusic);
+            }
+            
             // Seat the hero on the ship's stand point and stop his movement/gravity so he stands put.
             hero.BeginScriptedFlight(true);
             hero.SetVelocity(Vector2.zero);
@@ -136,6 +140,8 @@ namespace Game.Features.Props.Ship {
             AttachRider(hero.transform);
             AttachRider(captainClack);
 
+            yield return new WaitForSeconds(timeBeforeCredits);
+            
             // Roll the credits concurrently within the sail window (don't block on them), so the
             // ship sails for the full sailDuration whether or not credits are assigned/filled in.
             if (creditsRoll != null) {

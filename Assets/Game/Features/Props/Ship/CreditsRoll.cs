@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace Game.Features.Props.Ship {
     /// <summary>
@@ -16,10 +17,11 @@ namespace Game.Features.Props.Ship {
         [SerializeField]
         private TextMeshProUGUI text;
 
-        [SerializeField, TextArea(2, 6),
-         Tooltip("Each entry is one on-screen page. Use line breaks within an entry for multiple " +
-                 "lines on the same page. Pages are shown in order.")]
-        private string[] pages;
+        [SerializeField,
+         Tooltip("Each entry is one on-screen page, referenced as a localization string. Use line " +
+                 "breaks within an entry's translation for multiple lines on the same page. Pages " +
+                 "are shown in order.")]
+        private LocalizedString[] pages;
 
         [Header("Timing (seconds)")]
         [SerializeField]
@@ -48,7 +50,7 @@ namespace Game.Features.Props.Ship {
             }
 
             for (int i = 0; i < pages.Length; i++) {
-                text.text = pages[i];
+                text.text = pages[i].GetLocalizedString();
                 yield return FadeCanvas(0f, 1f, fadeInDuration);
                 yield return new WaitForSeconds(holdDuration);
                 yield return FadeCanvas(1f, 0f, fadeOutDuration);
