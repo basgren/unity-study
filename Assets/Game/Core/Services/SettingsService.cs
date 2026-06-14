@@ -18,6 +18,10 @@ namespace Game.Core.Services {
 
         private AudioMixer mixer;
 
+        // Per-channel ceilings (dB at slider value 10), from MainConfig. 0 = unity gain.
+        private float musicMaxDecibels;
+        private float sfxMaxDecibels;
+
         public GameSettings Current { get; private set; }
 
         private string FilePath => Path.Combine(Application.persistentDataPath, FileName);
@@ -33,6 +37,8 @@ namespace Game.Core.Services {
         public void Init() {
             if (G.Config != null) {
                 mixer = G.Config.AudioMixer;
+                musicMaxDecibels = G.Config.musicMaxDecibels;
+                sfxMaxDecibels = G.Config.sfxMaxDecibels;
             }
         }
 
@@ -79,20 +85,22 @@ namespace Game.Core.Services {
                 return;
             }
 
-            mixer.SetFloat(MusicVolumeParam, ToDecibels(Current.MusicVolume));
-            mixer.SetFloat(SfxVolumeParam, ToDecibels(Current.SfxVolume));
+            mixer.SetFloat(MusicVolumeParam, ToDecibels(Current.MusicVolume, musicMaxDecibels));
+            mixer.SetFloat(SfxVolumeParam, ToDecibels(Current.SfxVolume, sfxMaxDecibels));
         }
 
         /// <summary>
-        /// Converts a linear 0–10 slider value to decibels.
-        /// 0 = silence (−80 dB), 10 = full volume (0 dB).
+        /// Converts a linear 0–10 slider value to decibels. 0 = silence (−80 dB); the maximum
+        /// (slider value 10) maps to <paramref name="maxDecibels"/> instead of always 0 dB. The
+        /// perceptual log curve is preserved and simply offset, so lowering a channel's ceiling
+        /// makes the whole channel quieter without changing the slider's feel.
         /// </summary>
-        private float ToDecibels(int value) {
+        private float ToDecibels(int value, float maxDecibels) {
             if (value <= 0) {
                 return MinDecibels;
             }
 
-            return Mathf.Log10(value / 10f) * 20f;
+            return Mathf.Log10(value / 10f) * 20f + maxDecibels;
         }
     }
 }

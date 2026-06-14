@@ -17,6 +17,8 @@ MonoBehaviour:
   SfxMixerGroup: {fileID: 2757630577671673946, guid: 9ad9472c7ade3b841aecbb7dbc94d08a,
     type: 2}
   DialogSoundLibrary: {fileID: 11400000, guid: fca8f4a01aa6c9b43aa9af122e2b3be8, type: 2}
+  musicMaxDecibels: -8
+  sfxMaxDecibels: 0
   musicFadeOutTime: 0.5
   musicFadeInTime: 0.5
   MainMenu: {fileID: 8618158011026402637, guid: 162c5fe0c44ee984388015517b40d157,
@@ -38,6 +40,8 @@ MonoBehaviour:
   eventSystem: {fileID: 148805550643421190, guid: 88f8a27aef0d544489c8eb0aff769c02,
     type: 3}
   SceneCatalog: {fileID: 11400000, guid: a3f9cedcb3d4f074db420c3534bc9ceb, type: 2}
+  sceneFadeOutTime: 0.5
+  sceneFadeInTime: 0.5
   DeathScreen:
     SlowTimeScale: 0.7
     DesaturateDuration: 1

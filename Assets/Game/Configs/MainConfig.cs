@@ -20,6 +20,16 @@ namespace Game.Configs {
         public AudioMixerGroup SfxMixerGroup;
         public DialogSoundLibrary DialogSoundLibrary;
 
+        [Tooltip("dB the music slider maps to at maximum (slider value 10). 0 = unity gain (no " +
+                 "change). Lower it (e.g. -5) when mastered music is too loud at full volume.")]
+        [Range(-40f, 0f)]
+        public float musicMaxDecibels = 0f;
+
+        [Tooltip("dB the SFX slider maps to at maximum (slider value 10). 0 = unity gain. Tune " +
+                 "independently of music to balance the two.")]
+        [Range(-40f, 0f)]
+        public float sfxMaxDecibels = 0f;
+
         [Header("Music")]
         [Tooltip("Seconds to fade the current track out before a different track starts.")]
         [Min(0f)]
