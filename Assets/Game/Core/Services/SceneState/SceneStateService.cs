@@ -104,6 +104,16 @@ namespace Game.Core.Services.SceneState {
             sessionStore.Clear();
         }
 
+        /// <summary>
+        /// Clears ALL captured scene state, both session and persistent tiers.
+        /// Used when starting a new game so no world progress (opened doors, destroyed
+        /// objects, weakened enemies, etc.) carries over from the previous run.
+        /// </summary>
+        public void ResetAll() {
+            sessionStore.Clear();
+            persistentStore.Clear();
+        }
+
         // ---- Internal (called by StateRoot) ----
 
         internal void RestoreInto(StateRoot root, IStateSaver[] savers) {

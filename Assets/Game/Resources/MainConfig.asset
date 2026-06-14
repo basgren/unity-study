@@ -25,6 +25,8 @@ MonoBehaviour:
     type: 3}
   PauseMenu: {fileID: 181822652088074092, guid: 2b7950c000bc2fd4d80d6062bfa90f8f,
     type: 3}
+  ConfirmDialog: {fileID: 7084010342549731251, guid: 92eb05866aae84941b79b7ceb1aa92ef,
+    type: 3}
   InventoryPanel: {fileID: 6962322086487646681, guid: c6a0ea478465499448f9bab2a0fba667,
     type: 3}
   DialogPanel: {fileID: 6452827198061851914, guid: 655108a08afd1894ebb4cb5c4f8f217d,

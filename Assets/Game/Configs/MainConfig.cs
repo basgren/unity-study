@@ -33,6 +33,7 @@ namespace Game.Configs {
         public MenuWindow MainMenu;
         public MenuWindow OptionsMenu;
         public MenuWindow PauseMenu;
+        public MenuWindow ConfirmDialog;
 
         [Header("In-Game UI")]
         public MenuWindow InventoryPanel;
@@ -45,6 +46,15 @@ namespace Game.Configs {
         
         [Header("Scene State")]
         public SceneCatalog SceneCatalog;
+
+        [Header("Scene Transitions")]
+        [Tooltip("Seconds to fade to black before a menu-driven scene change (Continue, New Game, Exit to Menu).")]
+        [Min(0f)]
+        public float sceneFadeOutTime = 0.5f;
+
+        [Tooltip("Seconds to fade back in after the new scene has loaded.")]
+        [Min(0f)]
+        public float sceneFadeInTime = 0.5f;
 
         [Header("Effects")]
         public DeathScreenSettings DeathScreen = new DeathScreenSettings();
