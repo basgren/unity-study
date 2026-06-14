@@ -3435,6 +3435,80 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c149d1ca663943f409e18b25df01fa0a, type: 3}
+--- !u!1001 &404310768
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1864179049}
+    m_Modifications:
+    - target: {fileID: 2654456578130713227, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_Name
+      value: GrapplingHookAnchor_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1303e80dbbc6fff45a16c63c686f1a9d, type: 3}
+--- !u!4 &404310769 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3064770671058540405, guid: 1303e80dbbc6fff45a16c63c686f1a9d,
+    type: 3}
+  m_PrefabInstance: {fileID: 404310768}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &587350378 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3756431542319373571, guid: 6c479488e0ddb3c4f85cd96714b9c18a,
@@ -3633,6 +3707,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DoorWooden_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3398073693694311559, guid: a165caa9ca2d62e449b54e2afffe7bfa,
+        type: 3}
+      propertyPath: saveId
+      value: DoorWooden_10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5587,6 +5666,7 @@ Transform:
   m_Children:
   - {fileID: 672094629}
   - {fileID: 2084822090}
+  - {fileID: 404310769}
   m_Father: {fileID: 1857425453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1923856815
@@ -11080,22 +11160,22 @@ PrefabInstance:
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.03033268
+      value: 0.047169812
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.029565219
+      value: 0.046979867
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.93933463
+      value: 0.9056604
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.9391304
+      value: 0.90604025
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097959352688, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
