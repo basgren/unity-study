@@ -318,6 +318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dir: 1
+  spriteFacedLeft: 0
 --- !u!212 &6189892179132693589
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -601,7 +602,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 6
   currentHealth: 6
-  invulnerabilityTime: 0.5
+  invulnerabilityTime: 0
   hasKnockback: 1
   knockbackForce: 5
   onHit:
