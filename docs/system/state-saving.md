@@ -70,8 +70,9 @@ death, and bonfire rests, and is reset only by starting a new game
 > bitten twice: dropped event flags after death/rest (fixed by removing flags +
 > seen nodes from `PlayerStateSaver`), and the sword vanishing on scene change
 > because `IsArmed` — plus HP and stat levels — reverted to a scene's pre-pickup
-> snapshot. The correct home for all of it is the persistent `PlayerState`;
-> `PlayerStateSaver` is the historical offender and is now inert (see below).
+> snapshot. The correct home for all of it is the persistent `PlayerState`. The
+> historical offender — a per-scene `PlayerStateSaver` on the hero — has been
+> removed.
 
 ---
 
@@ -284,25 +285,12 @@ Saves the active state of any `SwitchableBase` (e.g. `StoneDoor`).
 - **Snapshot-on-leave only.**
 - **Typical tier:** `Persistent` — opened doors stay open.
 
-### `PlayerStateSaver`
-
-**Inert — contributes nothing.** Attached to the hero prefab, but its `Capture`
-and `Restore` are intentionally empty no-ops.
-
-All hero state is global playthrough progression that belongs on the persistent
-`PlayerState`, not in a per-scene blob — see
-[Global vs Per-Scene State](#global-vs-per-scene-state). This saver previously
-round-tripped `IsArmed`, stat upgrade levels, and current HP through the
-`"player"` slot, which made those values revert when re-entering a scene last
-left in a different state (the sword-disappears bug). Event flags and seen
-dialog nodes had already been removed for the same reason; `PlayerController`
-re-applies HP and stats from `PlayerState` on load (`Awake → InitFromState`), so
-nothing here was needed.
-
-The component (and its `StateRoot`, if the hero gains no other savers) can be
-removed from `Hero.prefab` via the Unity Editor — **not** by hand-editing
-prefab/scene YAML, because the hero's `StateRoot` carries a per-scene-instance
-`saveId` and YAML surgery would corrupt every scene's Hero instance.
+> **No player saver.** The hero deliberately has no `*StateSaver` and no
+> `StateRoot`. All hero state is global progression on the persistent
+> `PlayerState` — see [Global vs Per-Scene State](#global-vs-per-scene-state).
+> A former `PlayerStateSaver` round-tripped `IsArmed`, stat levels, and HP
+> through a per-scene blob and caused them to revert on scene revisit (the
+> sword-disappears bug); it has been removed.
 
 ---
 
@@ -491,7 +479,6 @@ Runtime (`Assets/Game/Core/Services/SceneState/`):
 - `Savers/DamageableStateSaver.cs`
 - `Savers/SwitchStateSaver.cs`
 - `Savers/SwitchableStateSaver.cs`
-- `Savers/PlayerStateSaver.cs`
 
 Editor (`Assets/Game/Editor/SceneState/`):
 - `StateRootIdAssigner.cs` — auto-assigns `SaveId` on scene save.

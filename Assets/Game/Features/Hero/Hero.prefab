@@ -433,8 +433,6 @@ GameObject:
   - component: {fileID: 4568076159340871885}
   - component: {fileID: 1266754735666246184}
   - component: {fileID: 2612335251790394289}
-  - component: {fileID: 7834512391048576123}
-  - component: {fileID: 6241105983401267754}
   - component: {fileID: 8307416079011052655}
   - component: {fileID: 749494336027276938}
   - component: {fileID: 6226199600357803642}
@@ -556,6 +554,7 @@ MonoBehaviour:
   coyoteJumpTime: 0.06
   dropThroughDuration: 0.3
   dropThroughDownThreshold: 0.5
+  dropThroughHopHeight: 0.3
   runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
     type: 3}
   jumpDustPrefab: {fileID: 3098811724734425490, guid: 4b4d55e5d41acf745acbdd5c44a9e5d3,
@@ -821,33 +820,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: 7c67248475c3a374985666a74530e9ec, type: 2}
---- !u!114 &7834512391048576123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3756431542319373574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5c73f5a36c302541a2e19ec4d53a9ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  saveId: 
-  skipSave: 0
-  tier: 1
---- !u!114 &6241105983401267754
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3756431542319373574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d89993df61d4204b411fe71983edcef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8307416079011052655
 MonoBehaviour:
   m_ObjectHideFlags: 0
