@@ -215,7 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd9a81366750d4c4686954634f7ca857, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 5
+  damage: 3
   targetLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -293,3 +293,4 @@ MonoBehaviour:
   defaultCue: {fileID: 11400000, guid: 542e59bef885957428d6ededcbdfdc2f, type: 2}
   cueRefs: []
   playAs2D: 0
+  playWhenEnabled: 0

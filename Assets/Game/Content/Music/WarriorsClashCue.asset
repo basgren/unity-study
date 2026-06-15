@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b188c172f33459faafc5fa729cdb132, type: 3}
-  m_Name: TriumphantReturn
+  m_Name: WarriorsClashCue
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 5d076323469e96244b56e287bfc4dee0, type: 3}
+  - {fileID: 8300000, guid: 219606611c0262440b423840cada8ebc, type: 3}
   mixerGroup: {fileID: -6267908494152717907, guid: 9ad9472c7ade3b841aecbb7dbc94d08a,
     type: 2}
-  volume: 0.6
+  volume: 1
   randomizePitch: 0
   pitchMin: 1
   pitchMax: 1

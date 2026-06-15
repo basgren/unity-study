@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b1d3f5a7c9e1b3d5f7a9c1e3b5d7f9a, type: 3}
   m_Name: DebugFlagConfig
   m_EditorClassIdentifier: 
-  initialFlags:
-  - VengefulSpiritDefeated
+  initialFlags: []

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b188c172f33459faafc5fa729cdb132, type: 3}
-  m_Name: ResonantCaverns
+  m_Name: DepthsOfDespairCue
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: a3dea52598bc24e40b258c8b7236bbb8, type: 3}
+  - {fileID: 8300000, guid: 77ab03f3853608f4b9ab69d923eaa676, type: 3}
   mixerGroup: {fileID: -6267908494152717907, guid: 9ad9472c7ade3b841aecbb7dbc94d08a,
     type: 2}
   volume: 1
