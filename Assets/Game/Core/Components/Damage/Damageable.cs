@@ -61,6 +61,13 @@ namespace Game.Core.Components.Damage {
         public event Action<float> OnHealthChanged;
         public event Action<float> OnMaxHealthChanged;
 
+        /// <summary>
+        /// Fires when a real attack (positive damage, target alive) is rejected specifically because
+        /// <see cref="IgnoreDamage"/> is set. Lets systems react to a "blocked" hit (e.g. a dodge)
+        /// without any health change.
+        /// </summary>
+        public event Action<Damager> DamageBlocked;
+
         private SpriteRenderer spriteRenderer;
         private float nextAllowedDamageTime;
         private Collider2D myCollider;
@@ -106,7 +113,16 @@ namespace Game.Core.Components.Damage {
         /// Tries to apply damage, respecting the internal cooldown.
         /// </summary>
         public bool TryTakeDamage(Damager damager) {
-            if (IgnoreDamage || damager.Damage <= 0 || IsDead || IsInvulnerable()) {
+            if (damager.Damage <= 0 || IsDead) {
+                return false;
+            }
+
+            if (IgnoreDamage) {
+                DamageBlocked?.Invoke(damager);
+                return false;
+            }
+
+            if (IsInvulnerable()) {
                 return false;
             }
 

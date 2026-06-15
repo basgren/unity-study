@@ -1,6 +1,5 @@
 ﻿using System;
 using Core.Audio;
-using Core.Components.Collisions;
 using Game.Core.Bootstrap;
 using Game.Core.Components.Collisions;
 using Game.Core.Components.Damage;
@@ -51,7 +50,16 @@ namespace Game.Features.Characters.PinkStar {
 
         [SerializeField]
         private GameObject touchDamager;
-        
+
+        [Header("Hit Reaction")]
+        [SerializeField]
+        [Tooltip("Stun time after being hit before Pinky can turn/move again (delay before charging the player).")]
+        private float knockbackStunTime = 0.6f;
+
+        [SerializeField]
+        [Tooltip("Upward impulse applied when a player hit lands during the roll attack (dodge leap over the player).")]
+        private float dodgeHopImpulse = 10f;
+
         [Header("Effects")]
         [SerializeField]
         private GameObject runDustPrefab;
@@ -61,7 +69,11 @@ namespace Game.Features.Characters.PinkStar {
         
         [SerializeField]
         private AudioCue deadGroundedSound;
-        
+
+        [SerializeField]
+        [Tooltip("Plays when a player hit lands on Pinky during the roll attack (the dodge leap instead of taking damage).")]
+        private AudioCue rollHitSound;
+
         private GameObject visionObject;
         private LayerCheck vision;
         private bool isAttacking;
@@ -71,7 +83,6 @@ namespace Game.Features.Characters.PinkStar {
         private bool hasKnockback;
         private bool wasHit;
 
-        private float knockbackStunTime = 0.2f;
         private float knockbackStunTimer;
         private bool isDiedThisFrame;
         private bool isDead;
@@ -97,6 +108,7 @@ namespace Game.Features.Characters.PinkStar {
 
             ai = GetComponent<PinkyAI>();
             damageable = GetComponent<Damageable>();
+            damageable.DamageBlocked += OnDamageBlocked;
 
             dustSpawnPoint = transform.Find(DustPositionObjectName);
             if (vision == null) {
@@ -112,6 +124,12 @@ namespace Game.Features.Characters.PinkStar {
             G.StateMachines.Register(state, this);
 
             CloseDamageWindow();
+        }
+
+        private void OnDestroy() {
+            if (damageable != null) {
+                damageable.DamageBlocked -= OnDamageBlocked;
+            }
         }
 
         protected override void Update() {
@@ -346,6 +364,24 @@ namespace Game.Features.Characters.PinkStar {
         public void OnHit() {
             // TODO: [BG] simplify this hit detection chain.
             wasHit = true;
+        }
+
+        /// <summary>
+        /// Called when a player hit is registered but blocked by <c>IgnoreDamage</c>. During the roll
+        /// attack this means a well-timed hit: Pinky leaps upward (dodge) over the player instead of
+        /// taking damage, keeping its horizontal roll momentum.
+        /// </summary>
+        private void OnDamageBlocked(Damager damager) {
+            if (isDead || state.State != PinkyState.Attacking) {
+                return;
+            }
+
+            MyRigidbody.velocity = new Vector2(MyRigidbody.velocity.x, 0f);
+            MyRigidbody.AddForce(Vector2.up * dodgeHopImpulse, ForceMode2D.Impulse);
+
+            if (rollHitSound != null) {
+                G.Audio.PlayAt(rollHitSound, transform.position);
+            }
         }
         
         public void OnAfterHit() {

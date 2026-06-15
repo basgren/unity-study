@@ -566,10 +566,13 @@ MonoBehaviour:
   damageAreaObject: {fileID: 7461146306808350787}
   bodyColliderWhenAttacking: {fileID: 6189892179132693583}
   touchDamager: {fileID: 4115264955693280413}
+  knockbackStunTime: 0.6
+  dodgeHopImpulse: 10
   runDustPrefab: {fileID: 8215283007083111118, guid: be91400be3793914bac2dfa7cb62a4e8,
     type: 3}
   attackSound: {fileID: 11400000, guid: f71e2c61406d1c64e91558e5e8a0662b, type: 2}
   deadGroundedSound: {fileID: 11400000, guid: fdb1d3fc59767e946b3a45afa7b5805c, type: 2}
+  rollHitSound: {fileID: 11400000, guid: 3c4caebfbc8caf5449026c85a0317376, type: 2}
 --- !u!114 &84240078499934250
 MonoBehaviour:
   m_ObjectHideFlags: 0
