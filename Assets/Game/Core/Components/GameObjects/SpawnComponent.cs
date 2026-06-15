@@ -6,6 +6,7 @@ using UnityEngine;
 namespace Game.Core.Components.GameObjects {
     public class SpawnComponent: MonoBehaviour {
         [SerializeField]
+        [Tooltip("Where to spawn the prefab. Leave empty to spawn at this object's own transform.")]
         private Transform target;
 
         [SerializeField]
@@ -32,9 +33,13 @@ namespace Game.Core.Components.GameObjects {
         /// </summary>
         /// <returns></returns>
         public GameObject SpawnInstance() {
+            // Fall back to this object's own transform when no explicit target is wired,
+            // so an unassigned target never throws (e.g. spawning hit debris from a prop).
+            var spawnAt = target != null ? target : transform;
+
             var instance = usePool
-                ? G.Spawner.SpawnPooled(prefab, target.position)
-                : G.Spawner.SpawnVfx(prefab, target.position);
+                ? G.Spawner.SpawnPooled(prefab, spawnAt.position)
+                : G.Spawner.SpawnVfx(prefab, spawnAt.position);
 
             // As Facing2D is new source of truth, let's use it.
             var myFacing = GetComponent<Facing2D>();
@@ -45,7 +50,7 @@ namespace Game.Core.Components.GameObjects {
             } else {
                 // Fallback to the old implementation
                 // Make sure the spawned object is directed in the same direction as the target object.
-                instance.transform.localScale = target.lossyScale;
+                instance.transform.localScale = spawnAt.lossyScale;
             }
 
             return instance;
