@@ -45,6 +45,36 @@ Defined in `SaveTier.cs`.
 
 ---
 
+## Global vs Per-Scene State
+
+This system saves **per-scene / world state** only — state that belongs to a
+specific room and is keyed by `(sceneGuid, saveId)`: opened doors, destroyed
+props, moved barrels, weakened enemies.
+
+**Global, playthrough-wide player progression does NOT belong here.** That data
+lives in the in-memory `PlayerState` held by the `DontDestroyOnLoad`
+`GameManager` (`G.Game.playerState`), which already survives scene reloads,
+death, and bonfire rests, and is reset only by starting a new game
+(`ResetPlayerState`). `PlayerController` re-applies it on every scene load
+(`Awake → InitFromState` / `UpdateAnimatorController`). It includes:
+
+- equipped-weapon flag (`IsArmed`),
+- stat upgrade levels (Health / MeleeDamage / ThrowDamage),
+- current HP and inventory,
+- event flags (e.g. `VengefulSpiritDefeated`) and seen dialog nodes.
+
+> **Rule: never round-trip global player state through a per-scene saver.**
+> A per-scene blob is captured on scene unload and kept for the whole
+> playthrough. Routing global state through it means re-entering an *older* scene
+> restores that scene's **stale snapshot** and clobbers the live value. This has
+> bitten twice: dropped event flags after death/rest (fixed by removing flags +
+> seen nodes from `PlayerStateSaver`), and the sword vanishing on scene change
+> because `IsArmed` — plus HP and stat levels — reverted to a scene's pre-pickup
+> snapshot. The correct home for all of it is the persistent `PlayerState`;
+> `PlayerStateSaver` is the historical offender and is now inert (see below).
+
+---
+
 ## End-to-End Flow
 
 The service is wired up in `GInit.cs` and subscribes to `SceneTravelService.BeforeUnload`.
@@ -256,25 +286,23 @@ Saves the active state of any `SwitchableBase` (e.g. `StoneDoor`).
 
 ### `PlayerStateSaver`
 
-Specialised saver attached to the hero prefab. Carries hero state across scene
-reloads.
+**Inert — contributes nothing.** Attached to the hero prefab, but its `Capture`
+and `Restore` are intentionally empty no-ops.
 
-- **Slot:** `"player"`
-- **Captures:** `IsArmed` flag, stat upgrade levels (Health / MeleeDamage /
-  ThrowDamage), and current HP.
-- **On restore:** writes stats into `G.Game.playerState`, then calls
-  `controller.ApplyCurrentStats()` and `controller.Damageable.SetHealth(...)`
-  so the live components reflect the restored values.
-- **Tier choice** is per-hero-prefab Inspector setting.
+All hero state is global playthrough progression that belongs on the persistent
+`PlayerState`, not in a per-scene blob — see
+[Global vs Per-Scene State](#global-vs-per-scene-state). This saver previously
+round-tripped `IsArmed`, stat upgrade levels, and current HP through the
+`"player"` slot, which made those values revert when re-entering a scene last
+left in a different state (the sword-disappears bug). Event flags and seen
+dialog nodes had already been removed for the same reason; `PlayerController`
+re-applies HP and stats from `PlayerState` on load (`Awake → InitFromState`), so
+nothing here was needed.
 
-> **Not saved here: event flags and seen dialog nodes.** These are global,
-> monotonic progression (e.g. `VengefulSpiritDefeated`) that must persist for the
-> whole playthrough. They live in the in-memory `PlayerState` held by the
-> `DontDestroyOnLoad` `GameManager`, which already survives scene reloads, death,
-> and bonfire rests, and is reset only by a new game (`ResetPlayerState`).
-> Do **not** route them through this per-scene saver: a per-scene snapshot is
-> stale on revisit and would clobber the live global set (re-entering an older
-> scene could drop a flag raised after that scene was last left).
+The component (and its `StateRoot`, if the hero gains no other savers) can be
+removed from `Hero.prefab` via the Unity Editor — **not** by hand-editing
+prefab/scene YAML, because the hero's `StateRoot` carries a per-scene-instance
+`saveId` and YAML surgery would corrupt every scene's Hero instance.
 
 ---
 
@@ -444,6 +472,7 @@ the flag when re-saving an already-destroyed (hidden) instance.
 | State never restores after entering a new scene.                                                          | `G.SceneState == null` at `StateRoot.Start` — `SceneStateService` wasn't initialised, or `MainConfig.SceneCatalog` is unassigned.                            | Verify `GInit` ran and `MainConfig.SceneCatalog` is wired in the project's `MainConfig` asset.                                                                    |
 | Dynamically spawned prefab instances overwrite the saved slot of the scene-placed copy.                  | The runtime spawn carries the prefab's `StateRoot` and shares its slot accounting.                                                                          | Set `StateRoot.SkipSave = true` on the spawned instance.                                                                                                          |
 | Side effects (SFX, analytics) fire when entering a scene where state is restored.                        | Component setters run normally during `Restore`.                                                                                                            | Guard with `if (G.SceneState != null && G.SceneState.IsRestoring) return;` in the setter.                                                                         |
+| Player loses a permanent gain (sword/`IsArmed`, stat upgrade, raised flag, HP) after entering another scene. | Global player progression was routed through a per-scene saver; re-entering an older scene restored its stale snapshot and clobbered the live value.        | Keep global state on the persistent `PlayerState` only — never capture/restore it in a per-scene saver. See [Global vs Per-Scene State](#global-vs-per-scene-state). |
 
 ---
 
