@@ -17,6 +17,7 @@ MonoBehaviour:
       value: RustyKey
     price: 10
     maxCount: 1
+    requiredFlag: 
     description:
       m_TableReference:
         m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
@@ -30,6 +31,7 @@ MonoBehaviour:
       value: Parrot
     price: 150
     maxCount: 1
+    requiredFlag: 
     description:
       m_TableReference:
         m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
@@ -43,11 +45,40 @@ MonoBehaviour:
       value: ProtectionMask
     price: 100
     maxCount: 1
+    requiredFlag: 
     description:
       m_TableReference:
         m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
       m_TableEntryReference:
         m_KeyId: 308169101312
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+  - itemId:
+      value: MediumHealthPotion
+    price: 10
+    maxCount: 10
+    requiredFlag: VengefulSpiritDefeated
+    description:
+      m_TableReference:
+        m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
+      m_TableEntryReference:
+        m_KeyId: 23576523312156672
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+  - itemId:
+      value: Sword
+    price: 20
+    maxCount: 4
+    requiredFlag: VengefulSpiritDefeated
+    description:
+      m_TableReference:
+        m_TableCollectionName: GUID:199e22bf19b37964597bcd43518a730d
+      m_TableEntryReference:
+        m_KeyId: 125821734912
         m_Key: 
       m_FallbackState: 0
       m_WaitForCompletion: 0

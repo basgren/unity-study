@@ -74,6 +74,12 @@ namespace Game.UI.ShopInventory {
 
             // Collect visible entries and sort by price ascending
             foreach (var entry in shopDef.Items) {
+                // Flag-gated entries stay hidden until the player has unlocked them.
+                if (!string.IsNullOrEmpty(entry.requiredFlag)
+                    && !G.Game.playerState.HasFlag(entry.requiredFlag)) {
+                    continue;
+                }
+
                 int remaining = GetRemainingStock(entry);
                 if (remaining == 0) {
                     continue;

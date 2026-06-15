@@ -9437,6 +9437,9 @@ MonoBehaviour:
   bigConfinerId: Big
   finalConfinerId: Final
   sanctuaryDoor: {fileID: 2087540684}
+  bossMusicCue: {fileID: 11400000, guid: 61a016b01a623bb4ea06985dbade6117, type: 2}
+  musicStartDelay: 1.5
+  musicFadeOutSeconds: 2
 --- !u!4 &369315574
 Transform:
   m_ObjectHideFlags: 0
@@ -31690,34 +31693,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c187a43edb895045a4ee2ff32a112cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1692308828 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2753235458893642660, guid: 6d5c0664377b3464baf18f7959d692cb,
-    type: 3}
-  m_PrefabInstance: {fileID: 7222305198235984586}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1692308829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1692308828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1a2b3c4d5e6071829304a5b6c7d8e90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveTargetDistance: 5
-  startWithAi: 0
-  enableLogging: 1
 --- !u!114 &1692308831 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4648442921305805388, guid: 6d5c0664377b3464baf18f7959d692cb,
     type: 3}
   m_PrefabInstance: {fileID: 7222305198235984586}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1692308828}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56aa84e49c213d94d964f63144c58bfd, type: 3}
@@ -31729,7 +31711,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 7222305198235984586}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1692308828}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5f607182930405263a7b8c9d0e1f234, type: 3}
@@ -45586,12 +45568,12 @@ PrefabInstance:
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.8797
+      value: -16.979986
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.492379
+      value: 9.573489
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028649, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -45939,11 +45921,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2753235458893642660, guid: 6d5c0664377b3464baf18f7959d692cb,
-        type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 1692308829}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d5c0664377b3464baf18f7959d692cb, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

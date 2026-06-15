@@ -88,6 +88,13 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
         [SerializeField]
         private float musicFadeOutSeconds = 2f;
 
+        [Header("Progression")]
+        [Tooltip("Player-state flag raised when this boss is defeated. Persists in the save " +
+                 "file and is readable from other scenes (e.g. to unlock shop stock). Empty " +
+                 "raises no flag.")]
+        [SerializeField]
+        private string defeatedFlag = "VengefulSpiritDefeated";
+
         private bool started;
         private bool defeated;
         private bool subscribedToDisengage;
@@ -231,6 +238,7 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
         /// </summary>
         public void MarkDefeated() {
             defeated = true;
+            RaiseDefeatedFlag();
         }
 
         /// <summary>
@@ -240,6 +248,9 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
         /// </summary>
         public void ApplyDefeatedInstant() {
             defeated = true;
+            // Restoring a cleared room: ensure the progression flag is set too, in case a
+            // save predates the flag. SetFlag is idempotent so re-raising is harmless.
+            RaiseDefeatedFlag();
             // Block the intro from running this scene-load even if the trigger is somehow crossed.
             started = true;
 
@@ -258,6 +269,14 @@ namespace Game.Features.Bosses.VengefulSpirit.Intro {
             // engages and no death animation plays on a returning visit.
             if (boss != null) {
                 boss.gameObject.SetActive(false);
+            }
+        }
+
+        // Raises the defeated flag on the persistent player state so other scenes
+        // (e.g. Rikko's shop) can react to this boss being beaten.
+        private void RaiseDefeatedFlag() {
+            if (!string.IsNullOrEmpty(defeatedFlag) && G.Game != null) {
+                G.Game.playerState.SetFlag(defeatedFlag);
             }
         }
 

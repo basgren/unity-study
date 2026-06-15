@@ -4,6 +4,7 @@
   "entryRules": [
     { "nodeId": "intro_1" },
     { "nodeId": "sabre_reaction", "conditions": [ { "type": "IsArmed" } ] },
+    { "nodeId": "spirit_defeated", "conditions": [ { "type": "FlagSet", "stringParam": "VengefulSpiritDefeated" } ] },
     { "nodeId": "common" }
   ],
   "nodes": [
@@ -52,6 +53,15 @@
       "once": true,
       "lines": [
         { "textKey": "dialog.rikko.sabre_reaction.r1", "soundId": "speech2" }
+      ],
+      "choices": [ { "textKey": "", "nextNodeId": "common" } ]
+    },
+    {
+      "nodeId": "spirit_defeated",
+      "speaker": "rikko",
+      "once": true,
+      "lines": [
+        { "textKey": "dialog.rikko.common.spirit_defeated", "soundId": "speech1" }
       ],
       "choices": [ { "textKey": "", "nextNodeId": "common" } ]
     },

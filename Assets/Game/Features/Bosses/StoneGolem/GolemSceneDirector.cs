@@ -1,4 +1,8 @@
+using System.Collections;
+using Core.Audio;
+using Game.Core.Bootstrap;
 using Game.Core.Components.Camera;
+using Game.Core.Components.Damage;
 using Game.Core.Components.Interaction;
 using UnityEngine;
 
@@ -60,7 +64,24 @@ namespace Game.Features.Bosses.StoneGolem {
                  "encounter's Defeated flag, so it needs no separate state saver.")]
         private SwitchableBase sanctuaryDoor;
 
+        [Header("Audio")]
+        [SerializeField]
+        [Tooltip("Battle music started shortly after the golem drops in (engages the fight). " +
+                 "None = no music.")]
+        private AudioCue bossMusicCue;
+
+        [SerializeField]
+        [Tooltip("Beat between the golem dropping in and the battle music starting.")]
+        private float musicStartDelay = 1.5f;
+
+        [SerializeField]
+        [Tooltip("How long the battle music takes to fade out when the boss is defeated or the " +
+                 "player is killed.")]
+        private float musicFadeOutSeconds = 2f;
+
         private bool defeated;
+        private Coroutine musicStartRoutine;
+        private bool subscribedToBossFight;
 
         /// <summary>True once the boss has been defeated. The single fact the encounter saver persists.</summary>
         public bool Defeated => defeated;
@@ -71,6 +92,25 @@ namespace Game.Features.Bosses.StoneGolem {
                 Debug.LogWarning("GolemSceneDirector: confinerSelector is not assigned — the camera " +
                                  "confiner will not switch on floor-broken or defeat.", this);
             }
+        }
+
+        // Subscribe in Start (not Awake): GInit creates G.BossFight in its own Awake, and the fight
+        // can only be engaged by a later player action, so the engage signal is never missed.
+        private void Start() {
+            if (G.BossFight != null) {
+                G.BossFight.OnBossEngaged += HandleBossEngaged;
+                G.BossFight.OnBossDisengaged += HandleBossDisengaged;
+                subscribedToBossFight = true;
+            }
+        }
+
+        private void OnDestroy() {
+            if (subscribedToBossFight && G.BossFight != null) {
+                G.BossFight.OnBossEngaged -= HandleBossEngaged;
+                G.BossFight.OnBossDisengaged -= HandleBossDisengaged;
+            }
+
+            subscribedToBossFight = false;
         }
 
         /// <summary>
@@ -143,6 +183,44 @@ namespace Game.Features.Bosses.StoneGolem {
             // and no death animation plays on a returning visit.
             if (golem != null) {
                 golem.gameObject.SetActive(false);
+            }
+        }
+
+        // The golem has dropped in and the fight engaged: swell the battle music after a short beat.
+        private void HandleBossEngaged(Damageable boss) {
+            if (bossMusicCue == null) {
+                return;
+            }
+
+            if (musicStartRoutine != null) {
+                StopCoroutine(musicStartRoutine);
+            }
+
+            musicStartRoutine = StartCoroutine(StartBossMusicDelayed());
+        }
+
+        private IEnumerator StartBossMusicDelayed() {
+            if (musicStartDelay > 0f) {
+                yield return new WaitForSeconds(musicStartDelay);
+            }
+
+            if (G.Audio != null) {
+                G.Audio.SetLevelMusic(bossMusicCue);
+            }
+
+            musicStartRoutine = null;
+        }
+
+        // Fires when the boss is defeated and also on scene unload (e.g. the player was killed and
+        // the scene is reloading). Cancel any pending music start and fade out what is playing.
+        private void HandleBossDisengaged() {
+            if (musicStartRoutine != null) {
+                StopCoroutine(musicStartRoutine);
+                musicStartRoutine = null;
+            }
+
+            if (G.Audio != null) {
+                G.Audio.ClearLevelMusic(musicFadeOutSeconds);
             }
         }
 

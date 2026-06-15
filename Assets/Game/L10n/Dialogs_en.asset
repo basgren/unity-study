@@ -74,8 +74,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 23575386571886598
-    m_Localized: "Anyway, I\u2019ve got goodsh for every tashte \u2014 cutty onesh,
-      stabby onesh, and onesh you better not ashk about."
+    m_Localized: "Anyway, I\u2019ve got goodsh for every tashte. Of courshe if you
+      have tashte."
     m_Metadata:
       m_Items: []
   - m_Id: 23575386571886599
@@ -196,6 +196,11 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 23886215922012160
     m_Localized: On deck, brave one! Name the course, and my ship will carry us there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25762105694048256
+    m_Localized: Good job! Wrong Ship iz not sho wrong now. Rikko poked around the
+      cornerz and found shomeshing shiny.
     m_Metadata:
       m_Items: []
   references:

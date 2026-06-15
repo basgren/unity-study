@@ -27,6 +27,13 @@ namespace Game.Core.Models.Shop {
         /// </summary>
         public int maxCount = 1;
 
+        /// <summary>
+        /// Optional gate: when set, this entry only appears in the shop once the player
+        /// has the matching flag raised (see <c>PlayerState.HasFlag</c>). Empty means the
+        /// entry is always available.
+        /// </summary>
+        public string requiredFlag;
+
         public LocalizedString description;
     }
 }

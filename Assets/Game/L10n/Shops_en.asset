@@ -49,6 +49,11 @@ MonoBehaviour:
     m_Localized: Jusht a rushty key. It opensh door to ship on a sheashore.
     m_Metadata:
       m_Items: []
+  - m_Id: 23576523312156672
+    m_Localized: Inshide iz healing goo. Tashtes nashty, but your bonez stop hurting
+      again. Moshtly.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

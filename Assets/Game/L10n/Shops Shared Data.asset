@@ -43,6 +43,10 @@ MonoBehaviour:
     m_Key: rikko.desc.rusty_key
     m_Metadata:
       m_Items: []
+  - m_Id: 23576523312156672
+    m_Key: rikko.desc.meduim_health_potion
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

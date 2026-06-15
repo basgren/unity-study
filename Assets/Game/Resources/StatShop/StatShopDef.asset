@@ -24,8 +24,8 @@ MonoBehaviour:
       m_WaitForCompletion: 0
       m_LocalVariables: []
     icon: {fileID: 512784286, guid: 51fef382c9646d44ea4313ab12987e33, type: 3}
-    maxLevel: 5
-    costPerLevel: 0100000002000000030000000400000005000000
+    maxLevel: 3
+    costPerLevel: 010000000200000003000000
   - id: 1
     displayName:
       m_TableReference:
@@ -37,8 +37,8 @@ MonoBehaviour:
       m_WaitForCompletion: 0
       m_LocalVariables: []
     icon: {fileID: -555571321, guid: 51fef382c9646d44ea4313ab12987e33, type: 3}
-    maxLevel: 3
-    costPerLevel: 010000000300000005000000
+    maxLevel: 2
+    costPerLevel: 0100000003000000
   - id: 2
     displayName:
       m_TableReference:
@@ -50,8 +50,8 @@ MonoBehaviour:
       m_WaitForCompletion: 0
       m_LocalVariables: []
     icon: {fileID: 1250446835, guid: 51fef382c9646d44ea4313ab12987e33, type: 3}
-    maxLevel: 3
-    costPerLevel: 020000000400000006000000
+    maxLevel: 2
+    costPerLevel: 0200000004000000
   references:
     version: 2
     RefIds: []
