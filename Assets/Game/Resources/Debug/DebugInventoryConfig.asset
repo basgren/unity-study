@@ -12,7 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8640348a5a3ccc4c97f107666266e02, type: 3}
   m_Name: DebugInventoryConfig
   m_EditorClassIdentifier: 
-  initialItems:
-  - itemId:
-      value: Sword
-    count: 1
+  initialItems: []

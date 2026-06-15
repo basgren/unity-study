@@ -62,4 +62,4 @@ MonoBehaviour:
   DebugSystems:
     EnableDebugInventory: 1
     EnableDebugStats: 1
-    EnableDebugFlags: 0
+    EnableDebugFlags: 1

@@ -12,10 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3a9c1e8b2d4f6a0c5e7b9d1f3a5c7e, type: 3}
   m_Name: DebugStatsConfig
   m_EditorClassIdentifier: 
-  initialStats:
-  - statId: 0
-    level: 0
-  - statId: 1
-    level: 2
-  - statId: 2
-    level: 0
+  initialStats: []

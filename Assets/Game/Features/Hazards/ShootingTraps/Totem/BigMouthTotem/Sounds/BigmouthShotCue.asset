@@ -21,7 +21,7 @@ MonoBehaviour:
   pitchMax: 1.05
   maxInstances: 0
   cooldownSeconds: 0
-  spatialBlend: 0.5
+  spatialBlend: 1
   minDistance: 1
   maxDistance: 30
   forceMaxDistance: 0
