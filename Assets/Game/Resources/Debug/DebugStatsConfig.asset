@@ -16,6 +16,6 @@ MonoBehaviour:
   - statId: 0
     level: 0
   - statId: 1
-    level: 0
+    level: 2
   - statId: 2
     level: 0

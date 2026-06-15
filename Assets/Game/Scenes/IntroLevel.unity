@@ -63869,6 +63869,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1412460154440293129, guid: 8ec4f58fd160889468d78c3c0717a076,
         type: 3}
+      propertyPath: portalId
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1412460154440293129, guid: 8ec4f58fd160889468d78c3c0717a076,
+        type: 3}
       propertyPath: portalDest
       value: 
       objectReference: {fileID: 263254982}
@@ -108371,6 +108376,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1864179049}
     m_Modifications:
+    - target: {fileID: 1412460154440293129, guid: 8ec4f58fd160889468d78c3c0717a076,
+        type: 3}
+      propertyPath: portalId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1412460154440293129, guid: 8ec4f58fd160889468d78c3c0717a076,
         type: 3}
       propertyPath: portalDest
