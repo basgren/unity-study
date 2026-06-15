@@ -69,6 +69,10 @@ namespace Game.Configs {
         [Header("Effects")]
         public DeathScreenSettings DeathScreen = new DeathScreenSettings();
 
+        [Tooltip("Hit spark VFX prefabs. One is picked at random and spawned at the contact point " +
+                 "whenever a Damageable takes damage (unless that Damageable opts out).")]
+        public GameObject[] HitSparks;
+
         [Header("Debug")]
         public bool EscQuitsImmediately;
 

@@ -8,10 +8,6 @@ namespace Game.Features.Bosses.StoneGolem.Common {
     /// when the golem takes damage. Wired in the prefab to Damageable.onHit (dynamic Damager call).
     /// </summary>
     public class StoneGolemHitEffect : MonoBehaviour {
-        // Rejection-sampling budget for picking a point inside both colliders. The AABB overlap
-        // of two box-ish colliders is mostly filled, so a handful of tries almost always lands.
-        private const int MaxSampleAttempts = 10;
-
         [SerializeField]
         [Tooltip("One-shot effect spawned at the contact point. The prefab must destroy itself when finished.")]
         private GameObject effectPrefab;
@@ -29,35 +25,9 @@ namespace Game.Features.Bosses.StoneGolem.Common {
                 return;
             }
 
-            G.Spawner.SpawnVfx(effectPrefab, FindSpawnPoint(damager.DamageCollider));
-        }
-
-        /// <summary>
-        /// Picks a random point inside the intersection of the golem body and the damager collider,
-        /// so repeated hits spark in slightly different spots. Trigger contacts expose no real
-        /// contact point, so the area is sampled: random points in the AABB overlap are tested
-        /// against both actual shapes. Falls back to the closest point on the damager's collider
-        /// to the golem center when sampling fails (degenerate sliver of overlap).
-        /// </summary>
-        private Vector2 FindSpawnPoint(Collider2D damagerCollider) {
             Collider2D body = GetActiveBodyCollider();
-            if (body != null) {
-                Vector2 min = Vector2.Max(body.bounds.min, damagerCollider.bounds.min);
-                Vector2 max = Vector2.Min(body.bounds.max, damagerCollider.bounds.max);
-
-                if (min.x <= max.x && min.y <= max.y) {
-                    for (int i = 0; i < MaxSampleAttempts; i++) {
-                        Vector2 p = new Vector2(Random.Range(min.x, max.x), Random.Range(min.y, max.y));
-                        if (body.OverlapPoint(p) && damagerCollider.OverlapPoint(p)) {
-                            return p;
-                        }
-                    }
-                }
-            }
-
-            // The damager's collider is used for the fallback (not the golem's own) because it is
-            // guaranteed enabled during the hit and so can answer ClosestPoint queries.
-            return damagerCollider.ClosestPoint(transform.position);
+            Vector2 point = HitEffectPlacement.FindSpawnPoint(body, damager.DamageCollider, transform.position);
+            G.Spawner.SpawnVfx(effectPrefab, point);
         }
 
         private Collider2D GetActiveBodyCollider() {

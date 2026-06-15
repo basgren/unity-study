@@ -54,6 +54,10 @@ MonoBehaviour:
     UseDither: 1
     FadeToBlackDuration: 0.4
     TotalRespawnDelay: 2.5
+  HitSparks:
+  - {fileID: 9214471557366289847, guid: a7ea67456b238a948a61c2f9851b2ba2, type: 3}
+  - {fileID: 9214471557366289847, guid: c174360f7e78d4e4d80c7bd93cb952c6, type: 3}
+  - {fileID: 9214471557366289847, guid: 317f34062d8226d419ff56c963885b7d, type: 3}
   EscQuitsImmediately: 0
   DebugSystems:
     EnableDebugInventory: 1

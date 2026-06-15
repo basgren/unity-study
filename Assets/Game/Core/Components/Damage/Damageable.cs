@@ -35,6 +35,12 @@ namespace Game.Core.Components.Damage {
         [SerializeField]
         private OnHitEvent onDeath;
         
+        [Header("Effects")]
+        [SerializeField, Tooltip("Spawn a random hit spark VFX (from MainConfig.HitSparks) at the " +
+                                 "contact point when this entity takes damage. Disable for entities " +
+                                 "that provide their own hit feedback (e.g. the Stone Golem).")]
+        private bool spawnHitSpark = true;
+
         [Header("Sounds")]
         [SerializeField]
         private AudioCue hitSound;
@@ -184,18 +190,23 @@ namespace Game.Core.Components.Damage {
                 ApplyKnockback(damager.DamageCollider);
             }
 
-            // Call on hit at the end 
+            if (spawnHitSpark) {
+                SpawnHitSpark(damager);
+            }
+
+            // Call on hit at the end
             onHit?.Invoke(damager);
+
+            // Hit sound plays on every hit, including the fatal one; the death sound layers on top.
+            if (hitSound != null) {
+                G.Audio.PlayAt(hitSound, transform.position);
+            }
 
             if (IsDead) {
                 onDeath?.Invoke(damager);
 
                 if (destroySound != null) {
                     G.Audio.PlayAt(destroySound, transform.position);
-                }
-            } else {
-                if (hitSound != null) {
-                    G.Audio.PlayAt(hitSound, transform.position);
                 }
             }
         }
@@ -206,8 +217,27 @@ namespace Game.Core.Components.Damage {
             Vector2 direction = (selfCenter - hitPoint).normalized;
 
             if (myCollider.attachedRigidbody != null) {
-                myCollider.attachedRigidbody.velocity = direction * knockbackForce;                
+                myCollider.attachedRigidbody.velocity = direction * knockbackForce;
             }
+        }
+
+        /// <summary>
+        /// Spawns a randomly picked hit spark VFX (from MainConfig.HitSparks) at a point inside
+        /// the overlap of this entity's collider and the damager's collider.
+        /// </summary>
+        private void SpawnHitSpark(Damager damager) {
+            GameObject[] sparks = G.Config != null ? G.Config.HitSparks : null;
+            if (sparks == null || sparks.Length == 0 || damager.DamageCollider == null) {
+                return;
+            }
+
+            GameObject prefab = sparks[UnityEngine.Random.Range(0, sparks.Length)];
+            if (prefab == null) {
+                return;
+            }
+
+            Vector2 point = HitEffectPlacement.FindSpawnPoint(myCollider, damager.DamageCollider, transform.position);
+            G.Spawner.SpawnVfx(prefab, point);
         }
     }
 }
