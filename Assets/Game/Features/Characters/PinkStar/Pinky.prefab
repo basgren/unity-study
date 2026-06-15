@@ -639,6 +639,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  spawnHitSpark: 1
   hitSound: {fileID: 11400000, guid: 6126ab6b84b56f5488445f781a909f70, type: 2}
   destroySound: {fileID: 11400000, guid: 77c549ee2873530459b99a1421871aed, type: 2}
 --- !u!114 &4378280901850321434
@@ -655,7 +656,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveId: 
   skipSave: 0
-  tier: 1
+  tier: 0
 --- !u!114 &-2887701082741740285
 MonoBehaviour:
   m_ObjectHideFlags: 0

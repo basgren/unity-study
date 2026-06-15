@@ -16695,7 +16695,7 @@ PrefabInstance:
     - target: {fileID: 7007661368979973105, guid: 684f3a08ce5cb9d4480ab909bdb04b37,
         type: 3}
       propertyPath: saveId
-      value: StoneDoor_11
+      value: StoneDoor_29
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

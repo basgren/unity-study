@@ -153,15 +153,18 @@ The user never types a Save ID. The inspector shows it read-only.
 > save slot and overwriting each other's state. This is caught two ways:
 > - On every scene save, `StateRootIdAssigner` logs a console **error** for any
 >   duplicate (after assigning missing IDs).
-> - `Tools ▸ Scene State ▸ Validate StateRoot Ids (Open Scenes)` runs the same
->   check on demand (`StateRootValidator.cs`).
+> - The **Scene Tools** window (`Tools ▸ Scene Tools`) runs the same check on
+>   demand via the *Validate StateRoot Ids* operation (`StateRootValidator.cs`),
+>   over the selected scenes — open or not. See
+>   [scene-tools-window.md](scene-tools-window.md).
 >
 > To repair flagged duplicates, either:
 > - **One at a time:** select the offending instance and press **Clear** next to
 >   its Save ID in the inspector, then save the scene.
-> - **In bulk:** run `Tools ▸ Scene State ▸ Fix Duplicate StateRoot Ids (Open
->   Scenes)`, which reassigns a fresh unique id to every duplicate (the first
->   occurrence keeps its id), then save the scene(s).
+> - **In bulk:** run the *Fix Duplicate StateRoot Ids* operation in the **Scene
+>   Tools** window (`Tools ▸ Scene Tools`), which reassigns a fresh unique id to
+>   every duplicate (the first occurrence keeps its id) and saves each changed
+>   scene automatically.
 >
 > Either way the assigner's `"{PrefabName}_{N}"` scheme produces the new id.
 
@@ -263,6 +266,15 @@ reloads.
   `controller.ApplyCurrentStats()` and `controller.Damageable.SetHealth(...)`
   so the live components reflect the restored values.
 - **Tier choice** is per-hero-prefab Inspector setting.
+
+> **Not saved here: event flags and seen dialog nodes.** These are global,
+> monotonic progression (e.g. `VengefulSpiritDefeated`) that must persist for the
+> whole playthrough. They live in the in-memory `PlayerState` held by the
+> `DontDestroyOnLoad` `GameManager`, which already survives scene reloads, death,
+> and bonfire rests, and is reset only by a new game (`ResetPlayerState`).
+> Do **not** route them through this per-scene saver: a per-scene snapshot is
+> stale on revisit and would clobber the live global set (re-entering an older
+> scene could drop a flag raised after that scene was last left).
 
 ---
 
@@ -414,8 +426,8 @@ the flag when re-saving an already-destroyed (hidden) instance.
 |------------------------------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------|
 | **StateRoot custom inspector**                       | `StateRootEditor.cs`                    | Shows the auto-assigned `Save ID` read-only; **Clear** button regenerates it on next save.    |
 | **Auto Save ID assignment**                          | `StateRootIdAssigner.cs`                | On every scene save, generates `"{PrefabName}_{N}"` for any `StateRoot` without an ID; logs an error on any duplicate id. |
-| **Tools → Scene State → Validate StateRoot Ids**     | `StateRootValidator.cs` / `StateRootValidationMenu.cs` | On-demand check for missing or duplicate `saveId`s across all open scenes.       |
-| **Tools → Scene State → Fix Duplicate StateRoot Ids**| `StateRootIdAssigner.ReassignDuplicateIds` / `StateRootValidationMenu.cs` | Reassigns a fresh unique id to every duplicate in open scenes (first keeps its id); save to persist. |
+| **Tools → Scene Tools → Validate StateRoot Ids**     | `StateRootValidator.cs` / `Editor/SceneTools/Operations/ValidateStateRootIdsOperation.cs` | On-demand check for missing or duplicate `saveId`s across the selected scenes (open or not). |
+| **Tools → Scene Tools → Fix Duplicate StateRoot Ids**| `StateRootIdAssigner.ReassignDuplicateIds` / `Editor/SceneTools/Operations/FixStateRootIdsOperation.cs` | Reassigns a fresh unique id to every duplicate in the selected scenes (first keeps its id); changed scenes are saved automatically. |
 | **Tools → Scene State → Rebuild Scene Catalog**      | `SceneCatalogBuilder.cs`                | Rebuilds `SceneCatalog` from build settings.                                                  |
 | **Pre-build catalog rebuild**                        | `SceneCatalogBuilder.OnPreprocessBuild` | Automatic before every player build.                                                          |
 | **Pre-Play-mode catalog rebuild**                    | `SceneCatalogPlayModeRebuild`           | Catches scene renames that would otherwise break GUID lookup at the next playtest.            |

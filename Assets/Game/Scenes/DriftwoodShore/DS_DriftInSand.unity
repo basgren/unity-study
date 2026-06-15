@@ -2486,7 +2486,7 @@ PrefabInstance:
     - target: {fileID: 2892182496107737644, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}
       propertyPath: saveId
-      value: CoinSilver_3
+      value: CoinSilver_13
       objectReference: {fileID: 0}
     - target: {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1,
         type: 3}

@@ -4919,6 +4919,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4378280901850321434, guid: f18bc96b8c80a2d48a741127ca059f3f,
         type: 3}
+      propertyPath: tier
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4378280901850321434, guid: f18bc96b8c80a2d48a741127ca059f3f,
+        type: 3}
       propertyPath: saveId
       value: Pinky_3
       objectReference: {fileID: 0}
@@ -10878,22 +10883,22 @@ PrefabInstance:
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.047169812
+      value: 0.09322034
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.046979867
+      value: 0.09337349
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.9056604
+      value: 0.8135593
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.90604025
+      value: 0.813253
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097959352688, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}

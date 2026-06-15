@@ -45317,6 +45317,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8330942763009112072, guid: 3cccea9d165af274d868ab2df879f737,
+        type: 3}
+      propertyPath: saveId
+      value: SkullFake_10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -45583,22 +45588,22 @@ PrefabInstance:
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.047169812
+      value: 0.09322034
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.046979867
+      value: 0.09337349
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.9056604
+      value: 0.8135593
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097826028694, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.90604025
+      value: 0.813253
       objectReference: {fileID: 0}
     - target: {fileID: 6836785097959352688, guid: 35df2b69266849a429e35d7c3aeda7f7,
         type: 3}
@@ -45623,6 +45628,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 617943194}
     m_Modifications:
+    - target: {fileID: -8874794258717016591, guid: 6d5c0664377b3464baf18f7959d692cb,
+        type: 3}
+      propertyPath: saveId
+      value: StoneGolem_9
+      objectReference: {fileID: 0}
     - target: {fileID: 1827974660846759109, guid: 6d5c0664377b3464baf18f7959d692cb,
         type: 3}
       propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.size

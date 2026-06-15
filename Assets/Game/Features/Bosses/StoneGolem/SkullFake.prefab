@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 2889467007453758089}
   - component: {fileID: 9066495111007551659}
   - component: {fileID: 4497213426956713050}
-  - component: {fileID: 3689859469406145658}
+  - component: {fileID: 8330942763009112072}
+  - component: {fileID: 5671073887972464496}
   m_Layer: 13
   m_Name: SkullFake
   m_TagString: Untagged
@@ -199,10 +200,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 3689859469406145658}
-        m_TargetAssemblyTypeName: Core.Components.GameObjects.DestroyObjectComponent,
+      - m_Target: {fileID: 5671073887972464496}
+        m_TargetAssemblyTypeName: Game.Core.Services.SceneState.Savers.DestructionStateSaver,
           Assembly-CSharp
-        m_MethodName: DestroySelf
+        m_MethodName: MarkDestroyedAndDestroy
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -212,7 +213,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3689859469406145658
+--- !u!114 &8330942763009112072
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -221,7 +222,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 4168528124340832330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8901e5bbb747eef46bf0facf6bd92ff3, type: 3}
+  m_Script: {fileID: 11500000, guid: b5c73f5a36c302541a2e19ec4d53a9ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToDestroy: {fileID: 0}
+  saveId: 
+  skipSave: 0
+  tier: 1
+--- !u!114 &5671073887972464496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4168528124340832330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 193622ed0d77dbc4ab2a7b43dcb1c804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

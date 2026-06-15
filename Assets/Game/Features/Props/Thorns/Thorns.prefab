@@ -301,8 +301,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  hitSound: {fileID: 0}
-  destroySound: {fileID: 0}
+  spawnHitSpark: 1
+  hitSound: {fileID: 11400000, guid: cc9dd74b2f4e7d546b462b9309500bfb, type: 2}
+  destroySound: {fileID: 11400000, guid: 6e3483c643b6f2847a9cae3bab47cd70, type: 2}
 --- !u!114 &4520451759802565025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,7 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  prefab: {fileID: 0}
+  prefab: {fileID: 2078077186309150018, guid: 9f04aa514984b4e4f939e3d8ce29ef53, type: 3}
 --- !u!50 &9103505794009943150
 Rigidbody2D:
   serializedVersion: 4

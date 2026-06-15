@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   categories:
   - name: Decor
+    parentPath: 
     items:
     - {fileID: 6478272287130362765, guid: 4c33795a780584945b21a7f063101f94, type: 3}
     - {fileID: 2156707060366320906, guid: 0f7811a2a8a65a649878030967bb8e13, type: 3}
     - {fileID: 7455611019846627372, guid: 2234ba39a8f43c54181dc4e048f047a6, type: 3}
   - name: Collectables
+    parentPath: 
     items:
     - {fileID: 4915699577960438696, guid: 8dea58ace78f33d4fba9d846c763fde1, type: 3}
     - {fileID: 7731894230931129541, guid: 6c68941588b8e714ebb69081c50949f6, type: 3}
@@ -29,12 +31,14 @@ MonoBehaviour:
     - {fileID: 7929554061555327308, guid: cc6c8709ce7c00f4991b5e6569695ac5, type: 3}
     - {fileID: 4915699577960438696, guid: 67362a727138a7040b4a5b7e86c0edb0, type: 3}
   - name: Dynamic
+    parentPath: 
     items:
     - {fileID: 3090776278357301044, guid: a3a751dd178ec0d48951dcdb7d8cd024, type: 3}
     - {fileID: 4510978738050660014, guid: 1e5d1bc24318daa44bea7ac491aced74, type: 3}
     - {fileID: 2986219559809948899, guid: c149d1ca663943f409e18b25df01fa0a, type: 3}
     - {fileID: 3681022674314975363, guid: af4d519e0fa8fb44fba1527c795b706b, type: 3}
   - name: Interactive
+    parentPath: 
     items:
     - {fileID: 1703046495728465378, guid: 1767eec503b79f84181a5e8e0e86f9a1, type: 3}
     - {fileID: 6495505865386133413, guid: 684f3a08ce5cb9d4480ab909bdb04b37, type: 3}
@@ -44,6 +48,7 @@ MonoBehaviour:
     - {fileID: 3552171503975015586, guid: f87a385a23caf2f44af0d7d4035fd86f, type: 3}
     - {fileID: 1743008448954065553, guid: e9b20969fa49ef74783aa7ebb7bb121d, type: 3}
   - name: Hazards
+    parentPath: 
     items:
     - {fileID: 743628953579289945, guid: 6e14bd769941c5c408100f4ee88af0e9, type: 3}
     - {fileID: 3664229136581394778, guid: 83c66b5d8681fc4468ad111364888566, type: 3}
@@ -54,7 +59,9 @@ MonoBehaviour:
     - {fileID: 3664229136581394778, guid: 5e399b1b6af1baa48955c4dbe8435eae, type: 3}
     - {fileID: 3664229136581394778, guid: 479e9f1e470492149b2933e241088252, type: 3}
     - {fileID: 3664229136581394778, guid: 56335f93fd2c8804396315d8642b2f3f, type: 3}
+    - {fileID: 5197851794951795295, guid: 121b77d8a4d7c504698f86ee9acfb6fe, type: 3}
   - name: Enemies
+    parentPath: 
     items:
     - {fileID: 6189892179132693591, guid: f18bc96b8c80a2d48a741127ca059f3f, type: 3}
     - {fileID: 3756431542319373574, guid: 4152606e3052ee04dbf17395fb5ab019, type: 3}

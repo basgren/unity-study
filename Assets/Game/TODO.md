@@ -37,3 +37,6 @@
 
 ## Textures
 * `ultra-far-bg` - has gray pixel in the top middle
+
+## Shop
+* Shop menu lacks sounds
