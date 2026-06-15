@@ -22,6 +22,14 @@ namespace Game.Core.DebugTools {
                 active.Add("Debug Inventory");
             }
 
+            if (config.DebugSystems.EnableDebugStats && ApplyDebugStats()) {
+                active.Add("Debug Stats");
+            }
+
+            if (config.DebugSystems.EnableDebugFlags && ApplyDebugFlags()) {
+                active.Add("Debug Flags");
+            }
+
             if (active.Count > 0) {
                 Debug.LogWarning(
                     "[DebugSystems] ACTIVE debug systems (disable before shipping): " +
@@ -61,6 +69,62 @@ namespace Game.Core.DebugTools {
             if (!playerState.IsArmed && inventory.GetCount(ItemIds.Sword) > 0) {
                 playerState.IsArmed = true;
                 inventory.Remove(ItemIds.Sword, 1);
+            }
+
+            return true;
+        }
+
+        private static bool ApplyDebugStats() {
+            var debugStats = Resources.Load<DebugStatsConfig>(DebugStatsConfig.ResourcePath);
+            if (debugStats == null) {
+                Debug.LogError(
+                    "[DebugSystems] Debug Stats is enabled but no asset was found at " +
+                    "Resources/" + DebugStatsConfig.ResourcePath + ".");
+                return false;
+            }
+
+            var playerState = G.Game != null ? G.Game.playerState : null;
+            if (playerState == null) {
+                Debug.LogError("[DebugSystems] Cannot seed debug stats: player state is not initialized.");
+                return false;
+            }
+
+            foreach (var entry in debugStats.InitialStats) {
+                if (entry.level <= 0) {
+                    continue;
+                }
+
+                playerState.SetStatLevel(entry.statId, entry.level);
+            }
+
+            // Seeded levels can raise the max health; this runs at bootstrap (before the hero reads
+            // its starting health), so top current health up to the new max for a clean debug start.
+            playerState.currentHealth = playerState.GetMaxHealth();
+
+            return true;
+        }
+
+        private static bool ApplyDebugFlags() {
+            var debugFlags = Resources.Load<DebugFlagConfig>(DebugFlagConfig.ResourcePath);
+            if (debugFlags == null) {
+                Debug.LogError(
+                    "[DebugSystems] Debug Flags is enabled but no asset was found at " +
+                    "Resources/" + DebugFlagConfig.ResourcePath + ".");
+                return false;
+            }
+
+            var playerState = G.Game != null ? G.Game.playerState : null;
+            if (playerState == null) {
+                Debug.LogError("[DebugSystems] Cannot set debug flags: player state is not initialized.");
+                return false;
+            }
+
+            foreach (var flag in debugFlags.InitialFlags) {
+                if (string.IsNullOrWhiteSpace(flag)) {
+                    continue;
+                }
+
+                playerState.SetFlag(flag);
             }
 
             return true;

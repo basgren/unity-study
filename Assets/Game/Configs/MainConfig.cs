@@ -83,5 +83,7 @@ namespace Game.Configs {
     [System.Serializable]
     public class DebugSystemsConfig {
         public bool EnableDebugInventory;
+        public bool EnableDebugStats;
+        public bool EnableDebugFlags;
     }
 }
