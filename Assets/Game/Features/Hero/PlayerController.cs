@@ -47,6 +47,11 @@ namespace Game.Features.Hero {
         private const float MinFallHeightForDustEffect = 2.8f;
         private const float WaitBeforeRespawn = 1.5f;
 
+        // Emergency-only cap on how long one-way platform collision stays suspended during a
+        // drop-through, in case the hero never clears the platform (e.g. wedged under a ceiling).
+        // Normal re-solidify happens via the feet-below-surface check, well before this fires.
+        private const float DropThroughMaxDuration = 1f;
+
         [Header("Jump")]
         [SerializeField]
         private float jumpSpeed = 15f;
@@ -65,6 +70,9 @@ namespace Game.Features.Hero {
 
         [SerializeField, Tooltip("Minimum downward magnitude on the Move input (analog stick / D-pad) required to treat a jump press as a drop-through. 0..1, higher = more deliberate down-press needed.")]
         private float dropThroughDownThreshold = 0.5f;
+
+        [SerializeField, Tooltip("Small upward pop applied when dropping through a one-way platform with Down+Jump, in world units (≈ blocks). Makes the drop read as a deliberate hop-off. 0 disables the hop.")]
+        private float dropThroughHopHeight = 0.3f;
 
         [Header("Effects")]
         [SerializeField]
@@ -171,7 +179,7 @@ namespace Game.Features.Hero {
         private bool isJumpPressedBuffer;
 
         private Collider2D dropThroughCollider;
-        private float dropThroughTimer;
+        private float dropThroughElapsed;
 
         // TODO: [BG] Refactor - it's getting too many flags to manage. At the same time it would be nice to
         //  keep animation state update in one place. Probably we could use FSM to store player's state and
@@ -872,29 +880,56 @@ namespace Game.Features.Hero {
                 }
 
                 Physics2D.IgnoreCollision(MyCollider, platformCollider, true);
+                // The ground checker is raycast-based and so unaffected by IgnoreCollision; exclude
+                // the platform from it too, otherwise it re-detects the platform as the hop carries
+                // the hero back down through it, firing a false landing (grounded state + sound + dust).
+                GroundChecker.ExcludeColliders(platformCollider);
                 dropThroughCollider = platformCollider;
-                dropThroughTimer = dropThroughDuration;
+                dropThroughElapsed = 0f;
+                ApplyDropThroughHop();
                 return true;
             }
 
             return false;
         }
 
+        // Small upward pop so a Down+Jump drop-through reads as a deliberate hop-off rather
+        // than the hero simply falling. Height is converted to launch speed via v = sqrt(2*g*h).
+        private void ApplyDropThroughHop() {
+            if (dropThroughHopHeight <= 0f) {
+                return;
+            }
+
+            var gravity = Mathf.Abs(Physics2D.gravity.y) * MyRigidbody.gravityScale;
+            var hopSpeed = Mathf.Sqrt(2f * gravity * dropThroughHopHeight);
+            MyRigidbody.velocity = new Vector2(MyRigidbody.velocity.x, hopSpeed);
+        }
+
         private void UpdateDropThrough() {
-            if (dropThroughTimer <= 0f) {
+            // Also covers the platform being destroyed mid-drop: Unity's == null returns true for
+            // destroyed colliders, so the suspended collision is simply dropped (nothing to restore).
+            if (dropThroughCollider == null) {
                 return;
             }
 
-            dropThroughTimer -= Time.deltaTime;
-            if (dropThroughTimer > 0f) {
+            dropThroughElapsed += Time.deltaTime;
+
+            // Re-solidify only once the hero's feet are back below the platform's top surface.
+            // A one-way PlatformEffector2D lets a downward-penetrating body pass on its own, so
+            // restoring collision while the hero is descending past the surface is safe; doing it
+            // during the hop's rise (feet still above the surface) would snap the hero back on top.
+            // dropThroughDuration is the minimum hold (preserves the plain-drop feel when there is
+            // no hop); the safety cap prevents a permanent ignore if the hero never clears.
+            var reachedMinHold = dropThroughElapsed >= dropThroughDuration;
+            var feetBelowSurface = MyCollider.bounds.min.y <= dropThroughCollider.bounds.max.y;
+            var safetyTimeout = dropThroughElapsed >= DropThroughMaxDuration;
+
+            if (!safetyTimeout && !(reachedMinHold && feetBelowSurface)) {
                 return;
             }
 
-            // Platform may have been destroyed mid-drop; Unity's == null returns true for
-            // destroyed colliders, and Physics2D.IgnoreCollision throws if either side is gone.
-            if (dropThroughCollider != null) {
-                Physics2D.IgnoreCollision(MyCollider, dropThroughCollider, false);
-            }
+            Physics2D.IgnoreCollision(MyCollider, dropThroughCollider, false);
+            GroundChecker.ExcludeColliders();
             dropThroughCollider = null;
         }
 

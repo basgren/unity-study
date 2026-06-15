@@ -241,8 +241,8 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.010910643, y: 0.095289715}
-  m_Size: {x: 1.1614794, y: 0.727055}
+  m_Offset: {x: 0.07775875, y: 0.09528971}
+  m_Size: {x: 1.2951783, y: 0.7270564}
   m_Direction: 1
 --- !u!114 &1925743917410454019
 MonoBehaviour:
@@ -713,6 +713,7 @@ MonoBehaviour:
   onDeath:
     m_PersistentCalls:
       m_Calls: []
+  spawnHitSpark: 1
   hitSound: {fileID: 11400000, guid: 6126ab6b84b56f5488445f781a909f70, type: 2}
   destroySound: {fileID: 11400000, guid: 624eb10b06e1e5f4dae7fb8e71fecd88, type: 2}
 --- !u!114 &649388069741242861
