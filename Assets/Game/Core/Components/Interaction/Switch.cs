@@ -100,8 +100,15 @@ namespace Game.Core.Components.Interaction {
                 var pos = Geometry.GetColliderCenter(gameObject);
 
                 foreach (var switchable in switchables) {
+                    // A referenced switchable may have been destroyed at runtime
+                    // (e.g. a one-shot trigger); Unity's overloaded == reports it
+                    // as null, so skip it before dereferencing gameObject.
+                    if (switchable == null) {
+                        continue;
+                    }
+
                     var targetPos = Geometry.GetColliderCenter(switchable.gameObject);
-                    Gizmos.DrawLine(pos, targetPos);                    
+                    Gizmos.DrawLine(pos, targetPos);
                 }
             }
         }

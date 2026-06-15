@@ -67,6 +67,7 @@ GameObject:
   - component: {fileID: -1235615325016542932}
   - component: {fileID: -5327817487012736327}
   - component: {fileID: -481518214379475497}
+  - component: {fileID: -5064215945891919166}
   m_Layer: 11
   m_Name: BirdTotem
   m_TagString: Untagged
@@ -103,6 +104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dir: 1
+  spriteFacedLeft: 0
 --- !u!212 &5960544006214852103
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -359,6 +361,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: -5064215945891919166}
+        m_TargetAssemblyTypeName: Game.Core.Components.GameObjects.LootDropper, Assembly-CSharp
+        m_MethodName: DropLoot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   hitSound: {fileID: 11400000, guid: 5692a58f0658d94469b28ad02980d603, type: 2}
   destroySound: {fileID: 11400000, guid: 595278f78f7fdce43a4828bf52b7532f, type: 2}
 --- !u!114 &-1235615325016542932
@@ -421,3 +435,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e98a7f79d9f38d7438c4e5218f6c0a32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-5064215945891919166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3664229136581394778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62684d56dc67f6c42862656659c4a483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loot:
+  - prefab: {fileID: 389717885744418158, guid: a442b7edb1b27fb4b86fd21d80bffed8, type: 3}
+    count: 5
+  initialSpeed: 3
+  speedRandomFactor: 0
+  randomDirection: 1

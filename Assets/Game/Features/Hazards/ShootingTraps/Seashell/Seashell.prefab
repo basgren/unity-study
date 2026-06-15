@@ -462,6 +462,7 @@ GameObject:
   - component: {fileID: -8922686484826777971}
   - component: {fileID: 5488970526600631103}
   - component: {fileID: 2758217128438993380}
+  - component: {fileID: 3386323875014417717}
   m_Layer: 15
   m_Name: Seashell
   m_TagString: Untagged
@@ -502,6 +503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dir: 1
+  spriteFacedLeft: 0
 --- !u!70 &3664229136581394773
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -617,6 +619,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 3386323875014417717}
+        m_TargetAssemblyTypeName: Game.Core.Components.GameObjects.LootDropper, Assembly-CSharp
+        m_MethodName: DropLoot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   hitSound: {fileID: 11400000, guid: 092b99814347dd64da7db284656e8049, type: 2}
   destroySound: {fileID: 11400000, guid: 595278f78f7fdce43a4828bf52b7532f, type: 2}
 --- !u!114 &-8922686484826777971
@@ -660,3 +674,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 193622ed0d77dbc4ab2a7b43dcb1c804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3386323875014417717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3664229136581394778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62684d56dc67f6c42862656659c4a483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loot:
+  - prefab: {fileID: 389717885744418158, guid: a442b7edb1b27fb4b86fd21d80bffed8, type: 3}
+    count: 5
+  initialSpeed: 3
+  speedRandomFactor: 0
+  randomDirection: 1

@@ -484,7 +484,19 @@ MonoBehaviour:
         m_CallState: 2
   onDeath:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 649388069741242861}
+        m_TargetAssemblyTypeName: Game.Core.Components.GameObjects.LootDropper, Assembly-CSharp
+        m_MethodName: DropLoot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   hitSound: {fileID: 11400000, guid: c80017687a387af4b942fc9bc4d3d032, type: 2}
   destroySound: {fileID: 11400000, guid: d8e01514afb100b4c80477f0d14d563c, type: 2}
 --- !u!114 &649388069741242861
@@ -501,8 +513,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loot:
   - prefab: {fileID: 389717885744418158, guid: a442b7edb1b27fb4b86fd21d80bffed8, type: 3}
-    count: 1
-  initialSpeed: 7
+    count: 5
+  initialSpeed: 5
   speedRandomFactor: 0
   randomDirection: 1
 --- !u!114 &4568076159340871885

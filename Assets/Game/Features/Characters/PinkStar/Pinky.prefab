@@ -279,6 +279,7 @@ GameObject:
   - component: {fileID: 5711656976162200658}
   - component: {fileID: 4378280901850321434}
   - component: {fileID: -2887701082741740285}
+  - component: {fileID: 9129701398661668424}
   m_Layer: 15
   m_Name: Pinky
   m_TagString: Untagged
@@ -622,7 +623,19 @@ MonoBehaviour:
         m_CallState: 2
   onDeath:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 9129701398661668424}
+        m_TargetAssemblyTypeName: Game.Core.Components.GameObjects.LootDropper, Assembly-CSharp
+        m_MethodName: DropLoot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   hitSound: {fileID: 11400000, guid: 6126ab6b84b56f5488445f781a909f70, type: 2}
   destroySound: {fileID: 11400000, guid: 77c549ee2873530459b99a1421871aed, type: 2}
 --- !u!114 &4378280901850321434
@@ -652,6 +665,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 193622ed0d77dbc4ab2a7b43dcb1c804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &9129701398661668424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6189892179132693591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62684d56dc67f6c42862656659c4a483, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loot:
+  - prefab: {fileID: 389717885744418158, guid: a442b7edb1b27fb4b86fd21d80bffed8, type: 3}
+    count: 5
+  initialSpeed: 5
+  speedRandomFactor: 0
+  randomDirection: 1
 --- !u!1 &7461146306808350787
 GameObject:
   m_ObjectHideFlags: 0
