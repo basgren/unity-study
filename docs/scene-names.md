@@ -51,7 +51,7 @@ Good map names should answer at least one question:
 |---|---|---|---|
 | Intro Beach / Intro Jungle Route | Driftwood Shore | Коряжий Берег | Local name for a shore where things and people wash up. |
 | Island Hub / Rikko Camp | Warmrocks | Тёплые Камни | Local-sounding hub name around heat, rest, and trade. |
-| Wrecked Pirate Ship | The Wrong Ship | Не Тот Корабль | Humorous, memorable, and ominous. |
+| Wrecked Pirate Ship | The Wrong Ship | Неправильный Корабль | Humorous, memorable, and ominous. |
 | Hook Ruins / Upper Jungle / Cliffs | Cloud Mountain | Облачная Гора | Mysterious and natural; suggests height without naming traversal tools. |
 | Golden Skull Sanctuary | Skullkeeper Hollow | Лощина Сторожа Черепа | Sacred, old, and easy to understand. |
 
@@ -82,7 +82,7 @@ These are the recommended names if the project follows the lite plan.
 | Candle Gate | Little-Star Mouth | Пасть Малых Звёзд | LittleStarMouth | Refers to small lights and a passage mouth, not the mechanic. |
 | Sanctuary Approach | Skullwatch Stones | Камни Черепьего Дозора | SkullwatchStones | Strong final-area name visible early. |
 
-### The Wrong Ship / Не Тот Корабль
+### The Wrong Ship / Неправильный Корабль
 
 | Working Scene | Map Name | Russian Map Name | Scene Id Suggestion | Notes |
 |---|---|---|---|---|
@@ -133,7 +133,7 @@ anchors for the world identity:
 |---|---|
 | Driftwood Shore | Коряжий Берег |
 | Warmrocks | Тёплые Камни |
-| The Wrong Ship | Не Тот Корабль |
+| The Wrong Ship | Неправильный Корабль |
 | Bad Floor | Плохой Пол |
 | Captain's Last Laugh | Последний Смех Капитана |
 | Sighing Shaft | Вздыхающая Шахта |

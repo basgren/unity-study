@@ -26,7 +26,7 @@ Map location: Driftwood Shore / Коряжий Берег.
 
 Map location: Warmrocks / Тёплые Камни.
 
-1. Rikko Camp (Rikko's Porch / Крыльцо Рикко) - main NPC, Golden Skull objective, and ending return.
+1. Rikko Camp (Rikko's Porch / Крыльцо Рикко) - main NPC and Golden Skull objective; the hub also holds Captain Clack's beached escape ship (reachable once the player has the sabre), where the Golden Skull is handed over and the ending plays.
 2. Campfire and Shop (The Warm Deal / Тёплая Сделка) - campfire, teleporter, supplies, and optional perks.
 3. Training and Upgrade Yard (Hardhead Yard / Твердолобый Двор) - training dummy and diamond upgrade statue.
 4. Upper Anchor Path (Cloud Steps / Облачные Ступени) - hook-gated route to the ruins.
@@ -35,7 +35,7 @@ Map location: Warmrocks / Тёплые Камни.
 
 ### Wrecked Pirate Ship
 
-Map location: The Wrong Ship / Не Тот Корабль.
+Map location: The Wrong Ship / Неправильный Корабль.
 
 1. Ship Approach (Dead Captain's Landing / Пристань Мёртвого Капитана) - entry scene and sabre pickup or confirmation.
 2. Deck Skirmish (Bitefoot Deck / Кусающая Палуба) - first walking shark melee encounter.

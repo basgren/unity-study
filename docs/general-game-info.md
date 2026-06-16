@@ -5,9 +5,10 @@
 The project is a small 2D pixel-art platformer / light metroidvania with a cartoon pirate adventure tone.
 
 The player controls a small pirate kid, formerly a clown, who is stranded on a strange island after a
-shipwreck. The main goal is simple: escape the island. To do that, the player must find Rikko, a lizard
-merchant who owns or controls access to a ship. Rikko agrees to help the hero leave the island, but only
-in exchange for the Golden Skull — an ancient treasure hidden deep inside the island’s sanctuary.
+shipwreck. The main goal is simple: escape the island. Rikko, a lizard merchant in the island hub, points
+the hero to Captain Clack — a pirate captain who can sail the hero off the island. The captain becomes
+reachable only once the player has found the sabre, and he agrees to leave, but only in exchange for the
+Golden Skull — an ancient treasure hidden deep inside the island’s sanctuary.
 
 The game is designed as a compact but complete adventure with:
 
@@ -41,7 +42,7 @@ Find Rikko
   → open the sanctuary
   → defeat the Stone Golem 
   → take the Golden Skull
-  → return to Rikko
+  → return to Captain Clack
   → escape the island.
 
 
@@ -70,15 +71,15 @@ Rikko serves several roles:
 * merchant;
 * guide;
 * source of light humor;
-* progression marker;
-* final escape provider.
+* progression marker.
 
-Rikko explains that the player needs the Golden Skull to leave the island.
+Rikko explains that the player needs the Golden Skull to leave the island and that Captain Clack is the
+one who can actually sail the hero away.
 
 Possible Rikko line:
 
 ```text
-Want to leave the island? Sure. Bring me the Golden Skull, and I’ll pretend I never saw you on my ship.
+Want to leave the island? Bring the Golden Skull to old Clack down at the beached ship. He’ll sail you out — for a price you already paid in blood.
 ```
 
 Rikko can sell:
@@ -92,6 +93,21 @@ Rikko can sell:
 * possibly hints.
 
 Rikko should be in or near the central hub so the player naturally returns to buy supplies and continue progression.
+
+## Captain Clack
+
+Captain Clack is a pirate captain whose ship sits beached on the shore. He is the hero's actual way off
+the island.
+
+Captain Clack serves several roles:
+
+* final escape provider;
+* end-of-game progression marker;
+* payoff for the whole adventure.
+
+The captain becomes reachable only after the player has found the sabre. He agrees to sail the hero away,
+but only in exchange for the Golden Skull. Handing over the Skull triggers the departure cutscene and the
+ending.
 
 ---
 
@@ -111,7 +127,7 @@ Player-facing map location names:
 |---|---|---|
 | Intro Beach / Jungle Route | Driftwood Shore | Коряжий Берег |
 | Island Hub / Rikko Camp | Warmrocks | Тёплые Камни |
-| Wrecked Pirate Ship | The Wrong Ship | Не Тот Корабль |
+| Wrecked Pirate Ship | The Wrong Ship | Неправильный Корабль |
 | Hook Ruins / Cliffs | Cloud Mountain | Облачная Гора |
 | Golden Skull Sanctuary | Skullkeeper Hollow | Лощина Сторожа Черепа |
 
@@ -252,7 +268,10 @@ Requires activating mechanisms in the ruins.
 Player-facing map name:
 
 * EN: The Wrong Ship
-* RU: Не Тот Корабль
+* RU: Неправильный Корабль
+
+The Russian name reflects the in-world lore: this is not the ship that gets the hero home. It washed
+ashore long ago and was gradually buried in sand — the "wrong" ship the hero hoped for.
 
 This is the first major combat location.
 
@@ -433,7 +452,7 @@ Sanctuary Entrance
 → Stone Golem boss
 → Golden Skull chamber
 → Teleporter back to hub
-→ Return to Rikko
+→ Return to Captain Clack
 → Ending
 ```
 
@@ -802,11 +821,11 @@ It is found after defeating the Stone Golem in the final sanctuary.
 
 ### Function
 
-The player gives the Golden Skull to Rikko in exchange for escape from the island.
+The player gives the Golden Skull to Captain Clack in exchange for passage off the island.
 
 ### Narrative Role
 
-The Golden Skull is the treasure Rikko wants. It motivates the entire adventure.
+The Golden Skull is the price Captain Clack demands for the voyage home. It motivates the entire adventure.
 
 ---
 
@@ -1801,15 +1820,15 @@ Golden Skull
 
 ### Opens Final
 
-Return to Rikko and escape.
+Return to Captain Clack and escape.
 
 ---
 
 # 17. Ending
 
-The player returns to Rikko with the Golden Skull.
+The player returns to Captain Clack with the Golden Skull.
 
-Rikko accepts the Skull as payment and allows the player to leave the island.
+Captain Clack accepts the Skull as payment and sails the hero off the island.
 
 Possible final line:
 
@@ -1861,7 +1880,7 @@ Candle puzzle
 Golden Skull Sanctuary
 Stone Golem
 Golden Skull
-Final return to Rikko
+Final return to Captain Clack
 Escape ending
 ```
 
@@ -1896,7 +1915,7 @@ If the project needs to be reduced, the smallest complete version is:
 3. Wrecked Ship with sabre, enemies, Vengeful Spirit, and grappling hook.
 4. Hook Ruins with hook traversal and one firefly candle puzzle.
 5. Sanctuary with final traps, Stone Golem, and Golden Skull.
-6. Return to Rikko and escape.
+6. Return to Captain Clack and escape.
 ```
 
 This is enough to feel like a full small game.
@@ -1905,7 +1924,7 @@ This is enough to feel like a full small game.
 
 # 22. Final One-Paragraph Pitch
 
-This game is a compact 2D pixel-art pirate metroidvania about a small pirate kid stranded on a strange island. To escape, the hero must bring the Golden Skull to Rikko, a lizard merchant with a ship. The player begins with simple platforming, then finds a sabre, explores a wrecked pirate ship, defeats the Vengeful Spirit, obtains a grappling hook, returns to earlier locations for secrets, uses fireflies to light candles and reveal dark paths, opens ancient ruins, defeats the Stone Golem guarding the Golden Skull, and finally returns to Rikko to leave the island. The game focuses on readable platforming, clear enemies, light backtracking, useful upgrades, humorous notes, and a complete adventure structure built from a small set of strong mechanics.
+This game is a compact 2D pixel-art pirate metroidvania about a small pirate kid stranded on a strange island. To escape, the hero must bring the Golden Skull to Captain Clack, a pirate captain with a beached ship. The player begins with simple platforming, then finds a sabre, explores a wrecked pirate ship, defeats the Vengeful Spirit, obtains a grappling hook, returns to earlier locations for secrets, uses fireflies to light candles and reveal dark paths, opens ancient ruins, defeats the Stone Golem guarding the Golden Skull, and finally returns to Captain Clack to leave the island. The game focuses on readable platforming, clear enemies, light backtracking, useful upgrades, humorous notes, and a complete adventure structure built from a small set of strong mechanics.
 
 ```
 ```

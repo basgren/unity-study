@@ -20,7 +20,7 @@ Russian names are adapted from `docs/scene-names.md`.
 |---|---|---|---:|---:|---:|
 | Intro Beach / Intro Jungle Route | Driftwood Shore | Коряжий Берег | 8 | 7 | 13% |
 | Island Hub / Rikko Camp | Warmrocks | Тёплые Камни | 9 | 6 | 33% |
-| Wrecked Pirate Ship | The Wrong Ship | Не Тот Корабль | 14 | 10 | 29% |
+| Wrecked Pirate Ship | The Wrong Ship | Неправильный Корабль | 14 | 10 | 29% |
 | Hook Ruins / Upper Jungle / Cliffs | Cloud Mountain | Облачная Гора | 13 | 9 | 31% |
 | Golden Skull Sanctuary | Skullkeeper Hollow | Лощина Сторожа Черепа | 12 | 8 | 33% |
 
@@ -39,7 +39,7 @@ Main progression by location:
 9. Golden Skull Sanctuary opened
 10. Stone Golem boss
 11. Golden Skull chamber
-12. Return to Rikko and escape
+12. Return to Captain Clack with the Golden Skull and escape
 
 The lite structure should still feel connected, but it should require fewer
 separate Unity scenes. Scenes can contain several POIs as long as the player can
@@ -50,6 +50,7 @@ read the objective clearly.
 | Gate | Opens With | Main or Optional | Design Purpose |
 |---|---|---|---|
 | Vine-covered POI | Sabre | Optional | Teases combat utility before the player has a weapon. |
+| Captain Clack (escape ship) | Sabre | Main | The captain's beached ship becomes reachable once the player is armed; he leaves the island in exchange for the Golden Skull. |
 | High anchor POIs | Grappling Hook | Main and optional | Makes the hook a major traversal upgrade. |
 | Candle POIs | Fireflies | Main and optional | Makes fireflies a remote activation tool, not only light. |
 | Ship lower hold exit | Grappling Hook | Main | Forces immediate use of the boss reward. |
@@ -137,7 +138,7 @@ Notes:
 Map location name:
 
 - EN: The Wrong Ship.
-- RU: Не Тот Корабль.
+- RU: Неправильный Корабль.
 
 Player state:
 
