@@ -88,6 +88,9 @@ namespace Game.Features.Bosses.StoneGolem {
         [SerializeField]
         private Collider2D immuneCollider;
 
+        [SerializeField]
+        private GameObject bodyDamager;
+        
         [Header("Un-ball")]
         [SerializeField]
         [Tooltip("Time of the upward lift played while the un-ball animation runs, so the taller " +
@@ -723,6 +726,11 @@ namespace Game.Features.Bosses.StoneGolem {
         private void HandleDeath() {
             isDead = true;
 
+            // Disable the contact damager immediately so a dead golem stops hurting the player,
+            // regardless of the death animation. The OnDeath animation event is kept as a
+            // redundant hook, but the disable must not depend on the clip firing it.
+            DisableBodyDamager();
+
             if (activeAction != null) {
                 // Capture before Cancel so subscribers still see which action ended.
                 EnemyAction cancelled = activeAction;
@@ -748,6 +756,17 @@ namespace Game.Features.Bosses.StoneGolem {
         
         public void OnPlayDeathSound() {
             G.Audio.PlayAt(deathSound, transform.position);
+        }
+
+        /// <summary>Animation event: kept as a redundant hook; the real disable runs in <see cref="HandleDeath"/>.</summary>
+        public void OnDeath() {
+            DisableBodyDamager();
+        }
+
+        private void DisableBodyDamager() {
+            if (bodyDamager != null) {
+                bodyDamager.SetActive(false);
+            }
         }
 
         private void OnDisable() {

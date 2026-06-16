@@ -425,6 +425,7 @@ MonoBehaviour:
   speedDecayTime: 0.4
   normalCollider: {fileID: -7189267625471913312}
   immuneCollider: {fileID: 8716217444555174241}
+  bodyDamager: {fileID: 5428459033055684612}
   unballLiftTime: 0.3
   unballEventTimeout: 1.5
   collapseSound: {fileID: 11400000, guid: a6ed8686835758d4eaa021e82a31eff7, type: 2}
@@ -500,8 +501,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bbb9950d091b50438d5ec322d3cd97a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 60
-  currentHealth: 60
+  maxHealth: 100
+  currentHealth: 100
   invulnerabilityTime: 0
   hasKnockback: 0
   knockbackForce: 13
@@ -523,7 +524,19 @@ MonoBehaviour:
         m_CallState: 2
   onDeath:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4648442921305805388}
+        m_TargetAssemblyTypeName: Game.Features.Bosses.StoneGolem.StoneGolem, Assembly-CSharp
+        m_MethodName: OnDeath
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   spawnHitSpark: 1
   hitSound: {fileID: 11400000, guid: 3c4caebfbc8caf5449026c85a0317376, type: 2}
   destroySound: {fileID: 0}

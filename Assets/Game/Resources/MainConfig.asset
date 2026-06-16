@@ -60,6 +60,6 @@ MonoBehaviour:
   - {fileID: 9214471557366289847, guid: 317f34062d8226d419ff56c963885b7d, type: 3}
   EscQuitsImmediately: 0
   DebugSystems:
-    EnableDebugInventory: 1
-    EnableDebugStats: 1
-    EnableDebugFlags: 1
+    EnableDebugInventory: 0
+    EnableDebugStats: 0
+    EnableDebugFlags: 0
