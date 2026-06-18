@@ -220,7 +220,7 @@ namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
                     break;
 
                 case FlyState.Dying:
-                    rb.velocity = Vector2.zero;
+                    rb.linearVelocity = Vector2.zero;
                     break;
             }
 
@@ -247,7 +247,7 @@ namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
             float sway = Mathf.Sin((Time.time + fluctuationSeed) * patrolFluctuationFrequency) * patrolFluctuationAmplitude;
             var moveDir = new Vector2(facing.DirSign, sway).normalized;
             var targetVelocity = moveDir * linearSpeed;
-            rb.velocity = Vector2.Lerp(rb.velocity, targetVelocity, patrolResponsiveness * dt);
+            rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, targetVelocity, patrolResponsiveness * dt);
         }
 
         private void UpdateAttack(float dt) {
@@ -280,9 +280,9 @@ namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
             }
 
             Vector2 desiredVelocity = desiredDir * attackSpeed;
-            rb.velocity = Vector2.Lerp(rb.velocity, desiredVelocity, attackSteering * dt);
+            rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, desiredVelocity, attackSteering * dt);
 
-            var checkDir = rb.velocity.sqrMagnitude > 0.0001f ? rb.velocity.normalized : desiredDir;
+            var checkDir = rb.linearVelocity.sqrMagnitude > 0.0001f ? rb.linearVelocity.normalized : desiredDir;
             if (IsObstacleAhead(checkDir, obstacleCheckDistance)) {
                 blockedTimer += dt;
                 if (blockedTimer >= attackBlockedDestroyDelay) {
@@ -313,7 +313,7 @@ namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
                 preExplodeNextShakeTime = stateMachine.TimeInState + shakeInterval;
             }
 
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
         }
 
         private bool ShouldEnterAttackFromPatrol() {
@@ -343,7 +343,7 @@ namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
         private void OnStateTransition(FlyState toState, FlyState _) {
             switch (toState) {
                 case FlyState.Patrol:
-                    rb.velocity = Vector2.zero;
+                    rb.linearVelocity = Vector2.zero;
                     break;
 
                 case FlyState.Attack:
@@ -392,11 +392,11 @@ namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
             hasPendingPreExplodeAnchor = false;
             preExplodeNextShakeTime = 0f;
             
-            rb.velocity *= 0.25f;
+            rb.linearVelocity *= 0.25f;
         }
 
         private void EnterDyingState() {
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             anim.SetClip("destroy");
 
             if (mainCollider != null) {
@@ -420,7 +420,10 @@ namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
                 return false;
             }
 
-            int count = Physics2D.OverlapCircleNonAlloc(rb.position, sightRadius, sightResults, sightLayer);
+            // OverlapCircleNonAlloc was deprecated in Unity 6; replicate it via ContactFilter2D.
+            var filter = new ContactFilter2D { useTriggers = Physics2D.queriesHitTriggers };
+            filter.SetLayerMask(sightLayer);
+            int count = Physics2D.OverlapCircle(rb.position, sightRadius, filter, sightResults);
             if (count <= 0) {
                 return false;
             }
@@ -483,7 +486,10 @@ namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
                 radius = Mathf.Max(radius, colliderRadius);
             }
 
-            int count = Physics2D.OverlapCircleNonAlloc(center, radius, damageTriggerResults, damageTriggerLayer);
+            // OverlapCircleNonAlloc was deprecated in Unity 6; replicate it via ContactFilter2D.
+            var filter = new ContactFilter2D { useTriggers = Physics2D.queriesHitTriggers };
+            filter.SetLayerMask(damageTriggerLayer);
+            int count = Physics2D.OverlapCircle(center, radius, filter, damageTriggerResults);
             return count > 0;
         }
 
@@ -525,7 +531,7 @@ namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.GiantFly {
             }
 
             preExplodeAnchor = rb != null ? rb.position : (Vector2)transform.position;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
 
             stateMachine?.ResetTo(FlyState.Patrol);
             EnsureMoveAnimation();

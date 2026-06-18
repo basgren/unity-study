@@ -217,7 +217,7 @@ namespace Game.Core.Components.Damage {
             Vector2 direction = (selfCenter - hitPoint).normalized;
 
             if (myCollider.attachedRigidbody != null) {
-                myCollider.attachedRigidbody.velocity = direction * knockbackForce;
+                myCollider.attachedRigidbody.linearVelocity = direction * knockbackForce;
             }
         }
 

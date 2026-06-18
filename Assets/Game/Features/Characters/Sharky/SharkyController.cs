@@ -128,7 +128,7 @@ namespace Game.Features.Characters.Sharky {
             damageAreaObject.SetActive(true);
 
             Vector2 dir = Vector2.right * transform.lossyScale.x;
-            MyRigidbody.velocity = dir * 1f + Vector2.up * 1f;
+            MyRigidbody.linearVelocity = dir * 1f + Vector2.up * 1f;
             
             G.Audio.PlayAt(biteSound, transform.position);
         }
@@ -151,7 +151,7 @@ namespace Game.Features.Characters.Sharky {
         }
         
         public void SpawnRunDust() {
-            if (Math.Abs(MyRigidbody.velocity.x) > 1f) {
+            if (Math.Abs(MyRigidbody.linearVelocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
 
                 var spawnedFacing = instance.GetComponent<Facing2D>();
@@ -181,7 +181,7 @@ namespace Game.Features.Characters.Sharky {
                 
                 // Disable all collisions with other dynamic objects and leave body in place.
                 MyCollider.enabled = false;
-                MyRigidbody.velocity = Vector2.zero;
+                MyRigidbody.linearVelocity = Vector2.zero;
                 MyRigidbody.angularVelocity = 0f;
                 MyRigidbody.simulated = false;
                 

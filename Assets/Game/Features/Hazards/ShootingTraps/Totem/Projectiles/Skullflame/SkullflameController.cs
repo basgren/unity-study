@@ -97,9 +97,9 @@ namespace Game.Features.Hazards.ShootingTraps.Totem.Projectiles.Skullflame {
 
         private void UpdateSpeed() {
             var speed = isDying ? 0f : linearSpeed;
-            rb.velocity = new Vector2(
+            rb.linearVelocity = new Vector2(
                 speed * facing.DirSign,
-                isDying ? 0 : rb.velocity.y
+                isDying ? 0 : rb.linearVelocity.y
             );
         }
 

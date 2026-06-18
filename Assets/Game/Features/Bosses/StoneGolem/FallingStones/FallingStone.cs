@@ -54,10 +54,10 @@ namespace Game.Features.Bosses.StoneGolem.FallingStones {
             }
 
             // Clamp terminal velocity after gravity has been applied for this physics step.
-            var velocity = body.velocity;
+            var velocity = body.linearVelocity;
             if (velocity.y < -maxFallSpeed) {
                 velocity.y = -maxFallSpeed;
-                body.velocity = velocity;
+                body.linearVelocity = velocity;
             }
         }
 

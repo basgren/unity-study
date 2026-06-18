@@ -27,7 +27,7 @@ namespace Game.Core.Services.SceneState.Savers {
                 // Clear velocity to avoid overlap forces when the barrel is restored mid-air.
                 var rb = GetComponent<Rigidbody2D>();
                 if (rb != null) {
-                    rb.velocity = Vector2.zero;
+                    rb.linearVelocity = Vector2.zero;
                 }
             }
 

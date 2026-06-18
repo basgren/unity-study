@@ -420,7 +420,7 @@ namespace Game.Features.Bosses.StoneGolem {
                 speed = Mathf.Min(speed, dist / dt);
 
                 walkVelocityCommand = Mathf.Sign(remaining) * speed;
-                myRigidbody.velocity = new Vector2(walkVelocityCommand, myRigidbody.velocity.y);
+                myRigidbody.linearVelocity = new Vector2(walkVelocityCommand, myRigidbody.linearVelocity.y);
                 yield return wait;
             }
 
@@ -443,7 +443,7 @@ namespace Game.Features.Bosses.StoneGolem {
                 walkVelocityCommand = targetVx;
             }
 
-            myRigidbody.velocity = new Vector2(walkVelocityCommand, myRigidbody.velocity.y);
+            myRigidbody.linearVelocity = new Vector2(walkVelocityCommand, myRigidbody.linearVelocity.y);
         }
 
         /// <summary>Orients the golem toward the given world X without moving. No-op while dead or if the target is dead-ahead.</summary>
@@ -461,7 +461,7 @@ namespace Game.Features.Bosses.StoneGolem {
             // WalkTo coroutine was killed externally, e.g. by an action force-complete).
             isWalking = false;
             walkVelocityCommand = 0f;
-            myRigidbody.velocity = new Vector2(0f, myRigidbody.velocity.y);
+            myRigidbody.linearVelocity = new Vector2(0f, myRigidbody.linearVelocity.y);
         }
 
         /// <summary>
@@ -472,7 +472,7 @@ namespace Game.Features.Bosses.StoneGolem {
         public void SetGravityActive(bool active) {
             myRigidbody.gravityScale = active ? defaultGravityScale : 0f;
             if (!active) {
-                myRigidbody.velocity = Vector2.zero;
+                myRigidbody.linearVelocity = Vector2.zero;
             }
         }
 

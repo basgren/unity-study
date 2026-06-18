@@ -34,13 +34,13 @@ namespace Game.Components.Abilities {
         private bool DetectStairAlongTheWay(out Vector2 stepDistance) {
             stepDistance = Vector2.zero;
 
-            if (rb.velocity.x == 0f) {
+            if (rb.linearVelocity.x == 0f) {
                 return false;
             }
             
             Vector2 moveDir = GetMoveDir();
             Bounds bounds = bodyCollider.bounds;
-            var moveDistance = Math.Abs(rb.velocity.x) * Time.fixedDeltaTime;
+            var moveDistance = Math.Abs(rb.linearVelocity.x) * Time.fixedDeltaTime;
 
             float skin = CoreConst.HalfPixelSize;
             float edgeX = moveDir.x > 0f
@@ -74,7 +74,7 @@ namespace Game.Components.Abilities {
         }
 
         private Vector2 GetMoveDir() {
-            return new Vector2(Mathf.Sign(rb.velocity.x), 0f);
+            return new Vector2(Mathf.Sign(rb.linearVelocity.x), 0f);
         }
     }
 }

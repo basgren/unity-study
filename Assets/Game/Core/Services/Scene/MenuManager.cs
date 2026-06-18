@@ -341,7 +341,7 @@ namespace Game.Core.Services.Scene {
         }
 
         private bool EnsureEventSystem() {
-            var existingEventSystem = EventSystem.current ?? FindObjectOfType<EventSystem>();
+            var existingEventSystem = EventSystem.current ?? FindAnyObjectByType<EventSystem>();
             if (existingEventSystem != null) {
                 return EnsureUiInputModule(existingEventSystem.gameObject);
             }

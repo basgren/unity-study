@@ -801,11 +801,11 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 return;
             }
             if (direction.sqrMagnitude < 0.0001f) {
-                myRigidbody.velocity = Vector2.zero;
+                myRigidbody.linearVelocity = Vector2.zero;
                 return;
             }
             Vector2 dir = direction.normalized;
-            myRigidbody.velocity = dir * speed;
+            myRigidbody.linearVelocity = dir * speed;
             if (Mathf.Abs(dir.x) > 0.01f) {
                 facing.SetByX(dir.x);
             }
@@ -954,7 +954,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 if ((dashDir > 0f && curX >= targetX) || (dashDir < 0f && curX <= targetX)) {
                     break;
                 }
-                myRigidbody.velocity = new Vector2(dashDir * chargeDashSpeed, 0f);
+                myRigidbody.linearVelocity = new Vector2(dashDir * chargeDashSpeed, 0f);
                 yield return null;
             }
             SetChargeDamagerActive(false);
@@ -1401,7 +1401,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
                 input.Normalize();
             }
 
-            myRigidbody.velocity = input * moveSpeed;
+            myRigidbody.linearVelocity = input * moveSpeed;
 
             if (xDir != 0) {
                 facing.SetByX(xDir);
@@ -1409,7 +1409,7 @@ namespace Game.Features.Bosses.VengefulSpirit {
         }
 
         private void StopMovement() {
-            myRigidbody.velocity = Vector2.zero;
+            myRigidbody.linearVelocity = Vector2.zero;
         }
 
         private void UpdateAnimator() {

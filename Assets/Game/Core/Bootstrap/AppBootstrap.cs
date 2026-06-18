@@ -7,7 +7,7 @@ namespace Game.Core.Bootstrap {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init() {
             // Prevent duplicates (domain reload on/off, etc.)
-            var existing = Object.FindObjectOfType<GInit>();
+            var existing = Object.FindAnyObjectByType<GInit>();
             if (existing != null) {
                 Debug.Log("Already initialized.");
                 return;

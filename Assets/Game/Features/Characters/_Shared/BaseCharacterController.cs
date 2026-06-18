@@ -87,7 +87,7 @@ namespace Game.Features.Characters._Shared {
         public void SetDirection(Vector2 dir, bool preserveSpriteOrientation = false) {
             Direction = dir;
             var vx = Math.Sign(dir.x) * GetMoveSpeed();
-            MyRigidbody.velocity = new Vector2(vx, MyRigidbody.velocity.y);
+            MyRigidbody.linearVelocity = new Vector2(vx, MyRigidbody.linearVelocity.y);
 
             if (!preserveSpriteOrientation) {
                 facing.SetByX(dir.x);
@@ -112,7 +112,7 @@ namespace Game.Features.Characters._Shared {
         protected virtual void UpdateAnimator() {
             MyAnimator.SetBool(BaseCharacterAnimKeys.IsGrounded, IsGrounded);
             MyAnimator.SetBool(BaseCharacterAnimKeys.IsRunning, IsRunning());
-            var velocityY = MyRigidbody.velocity.y;
+            var velocityY = MyRigidbody.linearVelocity.y;
 
             // Adjustments to compensate for floating point precision errors and physics jitter.
             if (Math.Abs(velocityY) < 0.001f) {
@@ -127,7 +127,7 @@ namespace Game.Features.Characters._Shared {
         }
         
         protected bool IsRunning() {
-            return Math.Abs(MyRigidbody.velocity.x) > 0.01f;
+            return Math.Abs(MyRigidbody.linearVelocity.x) > 0.01f;
         }
         
         // ---=== Private Methods ===---

@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine;
 
 namespace Game.Core.Components.Camera {
@@ -79,9 +79,9 @@ namespace Game.Core.Components.Camera {
                 return;
             }
 
-            confiner.m_BoundingShape2D = expandedShape;
+            confiner.BoundingShape2D = expandedShape;
             // The confiner caches the computed bounds, so it ignores the new shape until invalidated.
-            confiner.InvalidateCache();
+            confiner.InvalidateBoundingShapeCache();
             isExpanded = true;
         }
     }

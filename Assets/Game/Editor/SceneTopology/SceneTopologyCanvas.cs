@@ -520,8 +520,11 @@ namespace Game.Editor.SceneTopology {
         }
 
         private void ApplyTransform() {
-            world.transform.position = new Vector3(translation.x, translation.y, 0f);
-            world.transform.scale = new Vector3(zoom, zoom, 1f);
+            // VisualElement.transform was deprecated in Unity 6; use style.translate / style.scale.
+            // transform-origin is pinned to top-left (see world creation), so scale still pivots
+            // about (0,0) to match the zoom-to-cursor math in OnWheel.
+            world.style.translate = new Translate(translation.x, translation.y);
+            world.style.scale = new Scale(new Vector2(zoom, zoom));
         }
 
         private void OnWheel(WheelEvent evt) {

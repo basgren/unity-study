@@ -140,7 +140,7 @@ namespace Game.Features.Characters.Parrot {
                 vx = 0f;
             }
 
-            rb.velocity = new Vector2(vx, rb.velocity.y);
+            rb.linearVelocity = new Vector2(vx, rb.linearVelocity.y);
             facing.SetByX(xDir);
         }
 
@@ -151,7 +151,7 @@ namespace Game.Features.Characters.Parrot {
         public void SmoothFlyToward(Vector2 target) {
             var current = (Vector2)transform.position;
             var smoothed = Vector2.SmoothDamp(current, target, ref smoothVelocity, followSmoothTime);
-            rb.velocity = (smoothed - current) / Time.deltaTime;
+            rb.linearVelocity = (smoothed - current) / Time.deltaTime;
 
             // Only change facing when there's meaningful horizontal movement
             if (Mathf.Abs(smoothVelocity.x) > 0.1f) {
@@ -166,11 +166,11 @@ namespace Game.Features.Characters.Parrot {
         public void FlyToward(Vector2 target, float speed) {
             var delta = target - (Vector2)transform.position;
             if (delta.sqrMagnitude < 0.01f) {
-                rb.velocity = Vector2.zero;
+                rb.linearVelocity = Vector2.zero;
                 return;
             }
 
-            rb.velocity = delta.normalized * speed;
+            rb.linearVelocity = delta.normalized * speed;
             facing.SetByX(delta.x);
         }
 
@@ -178,7 +178,7 @@ namespace Game.Features.Characters.Parrot {
         /// Stops all movement immediately and resets smooth follow state.
         /// </summary>
         public void Stop() {
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             smoothVelocity = Vector2.zero;
         }
 
@@ -272,7 +272,7 @@ namespace Game.Features.Characters.Parrot {
             }
 
             overlapResults.Clear();
-            visionCollider.OverlapCollider(enemyFilter, overlapResults);
+            visionCollider.Overlap(enemyFilter, overlapResults);
 
             Damageable closest = null;
             var closestDist = float.MaxValue;
@@ -319,8 +319,8 @@ namespace Game.Features.Characters.Parrot {
 
             var isFlying = Mode == ParrotMode.Follow;
             animator.SetBool(IsFlying, isFlying);
-            animator.SetBool(IsRunning, !isFlying && Mathf.Abs(rb.velocity.x) > 0.01f);
-            animator.SetBool(IsFlyMoving, Mathf.Abs(rb.velocity.x) > 0.5f);
+            animator.SetBool(IsRunning, !isFlying && Mathf.Abs(rb.linearVelocity.x) > 0.01f);
+            animator.SetBool(IsFlyMoving, Mathf.Abs(rb.linearVelocity.x) > 0.5f);
         }
     }
 }

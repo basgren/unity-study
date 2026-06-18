@@ -269,11 +269,16 @@ namespace Game.Features.Hero.Abilities {
         }
 
         private DraggableBarrel GetBarrelAtInteractPoint() {
-            int count = Physics2D.OverlapCircleNonAlloc(
+            // OverlapCircleNonAlloc was deprecated in Unity 6. Replicate its behavior:
+            // useTriggers mirrors the old global Physics2D.queriesHitTriggers, and
+            // SetLayerMask restores the barrel layer filter.
+            var filter = new ContactFilter2D { useTriggers = Physics2D.queriesHitTriggers };
+            filter.SetLayerMask(barrelLayer);
+            int count = Physics2D.OverlapCircle(
                 interactPoint.position,
                 interactRadius,
-                barrelOverlapBuffer,
-                barrelLayer
+                filter,
+                barrelOverlapBuffer
             );
 
             Vector2 origin = interactPoint.position;
@@ -399,7 +404,7 @@ namespace Game.Features.Hero.Abilities {
 
         private void SetPlayerVelocityX(float vx) {
             if (playerRb != null) {
-                playerRb.velocity = new Vector2(vx, playerRb.velocity.y);
+                playerRb.linearVelocity = new Vector2(vx, playerRb.linearVelocity.y);
             }
         }
 
@@ -478,7 +483,7 @@ namespace Game.Features.Hero.Abilities {
             public LocalizedString ActionText => ability.actionText;
             public float SqrDistanceFromGrabPoint => sqrDistance;
             public bool IsValid => barrel != null && barrel.IsGrounded;
-            public int StableId => barrel != null ? barrel.GetInstanceID() : 0;
+            public EntityId StableId => barrel != null ? barrel.GetEntityId() : default;
 
             public void OnHoverEnter() {
                 ability.OnCandidateHoverEnter(barrel);

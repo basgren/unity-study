@@ -18,9 +18,15 @@ namespace Core.Components.Collisions {
         private readonly Collider2D[] overlapTargets = new Collider2D[10];
         
         public bool Check(List<GameObject> targets) {
-            var size = Physics2D.OverlapCircleNonAlloc(
+            // OverlapCircleNonAlloc was deprecated in Unity 6. Replicate its behavior:
+            // useTriggers mirrors the old global Physics2D.queriesHitTriggers; DefaultRaycastLayers
+            // matches the old no-layerMask overload (excludes Ignore Raycast).
+            var filter = new ContactFilter2D { useTriggers = Physics2D.queriesHitTriggers };
+            filter.SetLayerMask(Physics2D.DefaultRaycastLayers);
+            var size = Physics2D.OverlapCircle(
                 transform.position,
                 radius,
+                filter,
                 overlapTargets
             );
 

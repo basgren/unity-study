@@ -1,5 +1,5 @@
 using System.Collections;
-using Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine;
 
 namespace Game.Features.Effects.Camera {
@@ -21,8 +21,9 @@ namespace Game.Features.Effects.Camera {
         private float stopTime;
 
         private void Awake() {
-            var vCamera = FindObjectOfType<CinemachineVirtualCamera>();
-            noise = vCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            var vCamera = FindAnyObjectByType<CinemachineCamera>();
+            // CM3: noise is a plain component on the vcam GameObject (was GetCinemachineComponent in CM2).
+            noise = vCamera.GetComponent<CinemachineBasicMultiChannelPerlin>();
 
             if (shakeOnAwake) {
                 Shake();
@@ -36,14 +37,14 @@ namespace Game.Features.Effects.Camera {
 
         private IEnumerator StartShaking() {
             stopTime = Time.time + duration;
-            noise.m_FrequencyGain = frequency;
+            noise.FrequencyGain = frequency;
 
             float remainingProgress;
 
             do {
                 remainingProgress = (stopTime - Time.time) / duration;
                 var amp = Mathf.Lerp(0f, amplitude, remainingProgress);
-                noise.m_AmplitudeGain = amp;
+                noise.AmplitudeGain = amp;
                 yield return null;
             } while (remainingProgress > 0);
 
@@ -55,8 +56,8 @@ namespace Game.Features.Effects.Camera {
                 return;
             }
 
-            noise.m_FrequencyGain = 0f;
-            noise.m_AmplitudeGain = 0f;
+            noise.FrequencyGain = 0f;
+            noise.AmplitudeGain = 0f;
 
             StopCoroutine(coroutine);
             coroutine = null;

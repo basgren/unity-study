@@ -63,7 +63,7 @@ namespace Game.Core.Audio {
 
             WarmupPool();
 
-            cachedListener = FindObjectOfType<AudioListener>();
+            cachedListener = FindAnyObjectByType<AudioListener>();
 
             if (cachedListener != null) {
                 cachedListenerTransform = cachedListener.transform;

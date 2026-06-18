@@ -97,7 +97,7 @@ namespace Game.Core.Bootstrap {
         }
 
         private bool HasExistingInitializers() {
-            var inits = FindObjectsOfType<GInit>();
+            var inits = FindObjectsByType<GInit>();
             foreach (var sysInit in inits) {
                 if (sysInit != this) {
                     return true;
@@ -108,7 +108,7 @@ namespace Game.Core.Bootstrap {
         }
 
         private void EnsureEventSystem() {
-            EventSystem existing = FindFirstObjectByType<EventSystem>();
+            EventSystem existing = FindAnyObjectByType<EventSystem>();
 
             if (existing != null) {
                 return;

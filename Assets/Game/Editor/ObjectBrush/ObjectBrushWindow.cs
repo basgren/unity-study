@@ -145,6 +145,10 @@ namespace Editor.ObjectBrush {
         }
 
         private void OnEnable() {
+            // Set here (not only in Open) so the tab title is reapplied on every reconstruction:
+            // GetWindow(title) only sets it on first creation, so a window restored from a saved
+            // layout keeps its stale/empty title and falls back to the full type name.
+            titleContent = new GUIContent("Object Brush");
             SceneView.duringSceneGui += OnSceneGUI;
             EditorSceneManager.activeSceneChangedInEditMode += OnActiveSceneChanged;
             config = ObjectBrushUtility.LoadOrCreateConfig(true);

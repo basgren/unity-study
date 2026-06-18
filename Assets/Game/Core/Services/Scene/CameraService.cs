@@ -1,5 +1,5 @@
 using System.Collections;
-using Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine;
 
 namespace Game.Core.Services.Scene {
@@ -72,19 +72,13 @@ namespace Game.Core.Services.Scene {
         }
 
         private bool TryNotifyTargetTeleported(Transform target, Vector3 positionDelta) {
-            var cinemachineCore = CinemachineCore.Instance;
-            if (cinemachineCore == null) {
-                return false;
-            }
+            // CM3 removed the CinemachineCore.Instance registry enumeration; query the vcams directly.
+            // CinemachineVirtualCameraBase exposes Follow/LookAt/PreviousStateIsValid/OnTargetObjectWarped.
+            var cameras = FindObjectsByType<CinemachineVirtualCameraBase>(FindObjectsInactive.Exclude);
 
             bool applied = false;
-            int cameraCount = cinemachineCore.VirtualCameraCount;
-            for (int i = 0; i < cameraCount; i++) {
-                var cam = cinemachineCore.GetVirtualCamera(i);
-                if (cam == null) {
-                    continue;
-                }
-
+            for (int i = 0; i < cameras.Length; i++) {
+                var cam = cameras[i];
                 if (cam.Follow != target && cam.LookAt != target) {
                     continue;
                 }
@@ -204,7 +198,7 @@ namespace Game.Core.Services.Scene {
             float stopTime = Time.time + settings.duration;
             float decayStartTime = stopTime - decay;
 
-            noise.m_FrequencyGain = settings.frequency;
+            noise.FrequencyGain = settings.frequency;
             currentShakeFrequency = settings.frequency;
 
             while (Time.time < stopTime) {
@@ -222,7 +216,7 @@ namespace Game.Core.Services.Scene {
                 }
 
                 currentShakeAmplitude = amp;
-                noise.m_AmplitudeGain = amp;
+                noise.AmplitudeGain = amp;
                 yield return null;
             }
 
@@ -236,28 +230,12 @@ namespace Game.Core.Services.Scene {
                 return cachedNoise;
             }
 
-            var cinemachineCore = CinemachineCore.Instance;
-            if (cinemachineCore == null) {
-                return null;
-            }
-
-            // The noise-equipped vcam lives in the per-scene GlobalRoot, so the cache goes
-            // stale on scene change and we re-resolve from the registered cameras.
-            int cameraCount = cinemachineCore.VirtualCameraCount;
-            for (int i = 0; i < cameraCount; i++) {
-                var cam = cinemachineCore.GetVirtualCamera(i) as CinemachineVirtualCamera;
-                if (cam == null) {
-                    continue;
-                }
-
-                var noise = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-                if (noise != null) {
-                    cachedNoise = noise;
-                    return noise;
-                }
-            }
-
-            return null;
+            // CM3 makes the Perlin noise a plain component on the vcam GameObject, so we locate it
+            // directly. CinemachineCore.Instance and the GetVirtualCamera enumeration were removed in
+            // CM3. The noise-equipped vcam lives in the per-scene GlobalRoot, so the cache goes stale
+            // on scene change and we re-resolve here.
+            cachedNoise = FindAnyObjectByType<CinemachineBasicMultiChannelPerlin>();
+            return cachedNoise;
         }
 
         private void ResetNoise() {
@@ -265,8 +243,8 @@ namespace Game.Core.Services.Scene {
                 return;
             }
 
-            cachedNoise.m_AmplitudeGain = 0f;
-            cachedNoise.m_FrequencyGain = 0f;
+            cachedNoise.AmplitudeGain = 0f;
+            cachedNoise.FrequencyGain = 0f;
         }
     }
 }

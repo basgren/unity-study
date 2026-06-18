@@ -23,7 +23,7 @@ namespace Game.Features.Characters.Hero.Interaction {
         public LocalizedString ActionText => interactable.ActionText;
         public float SqrDistanceFromGrabPoint => sqrDistance;
         public bool IsValid => interactable != null && interactable.CanInteract();
-        public int StableId => interactable != null ? interactable.GetInstanceID() : 0;
+        public EntityId StableId => interactable != null ? interactable.GetEntityId() : default;
 
         public void OnHoverEnter() {
             if (interactable != null) {

@@ -36,7 +36,7 @@ namespace Game.Core.Components.Collisions {
                 return false;
             }
 
-            var hitCount = myCollider.OverlapCollider(filter, results);
+            var hitCount = myCollider.Overlap(filter, results);
 
             for (var i = 0; i < hitCount; i++) {
                 var other = results[i];

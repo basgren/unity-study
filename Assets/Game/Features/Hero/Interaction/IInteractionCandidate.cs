@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.Localization;
 
 namespace Game.Features.Characters.Hero.Interaction {
@@ -38,9 +39,9 @@ namespace Game.Features.Characters.Hero.Interaction {
         /// <summary>
         /// Stable identity used by the resolver to detect "same target" across frames
         /// even when the candidate object itself is rebuilt. Typically the underlying
-        /// component's instance id.
+        /// component's entity id.
         /// </summary>
-        int StableId { get; }
+        EntityId StableId { get; }
 
         /// <summary>Called by the resolver when this candidate becomes the selected one.</summary>
         void OnHoverEnter();

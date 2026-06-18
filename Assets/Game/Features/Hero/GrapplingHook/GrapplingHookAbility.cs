@@ -233,7 +233,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             // Radial velocity along the rope: > 0 means the hero is moving away from the
             // anchor (pulling the rope taut); < 0 means he is still falling inward.
             var ropeDir = toHero / distance;
-            float radialVel = Vector2.Dot(playerRb.velocity, ropeDir);
+            float radialVel = Vector2.Dot(playerRb.linearVelocity, ropeDir);
 
             if (radialVel > 0f) {
                 // First outward pull — the rope is now holding the hero. Freeze the
@@ -286,8 +286,8 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             }
 
             // Apply swing drag; restored in CleanupAndGoIdle.
-            originalLinearDrag = playerRb.drag;
-            playerRb.drag = swingLinearDrag;
+            originalLinearDrag = playerRb.linearDamping;
+            playerRb.linearDamping = swingLinearDrag;
 
             player.SetHookSwingMode(true);
 
@@ -325,7 +325,7 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             isSubscribedToPlayerHealth = false;
 
             if (swingJoint != null) {
-                playerRb.drag = originalLinearDrag;
+                playerRb.linearDamping = originalLinearDrag;
                 Destroy(swingJoint);
                 swingJoint = null;
             }
@@ -369,8 +369,8 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
             }
 
             // Apply as a floor so existing upward swing momentum is never reduced.
-            var velocity = playerRb.velocity;
-            playerRb.velocity = new Vector2(velocity.x, Mathf.Max(velocity.y, oneWayLandHopSpeed));
+            var velocity = playerRb.linearVelocity;
+            playerRb.linearVelocity = new Vector2(velocity.x, Mathf.Max(velocity.y, oneWayLandHopSpeed));
         }
 
         private bool ShouldForceAbort() {
@@ -446,8 +446,13 @@ namespace Game.Features.Characters.Hero.GrapplingHook {
         }
 
         private GrapplingHookAnchor FindNearestAnchor() {
-            int count = Physics2D.OverlapCircleNonAlloc(
-                player.transform.position, maxRopeLength, anchorCandidates, anchorLayer
+            // OverlapCircleNonAlloc was deprecated in Unity 6. Replicate its behavior:
+            // useTriggers mirrors the old global Physics2D.queriesHitTriggers, and
+            // SetLayerMask restores the anchor layer filter.
+            var filter = new ContactFilter2D { useTriggers = Physics2D.queriesHitTriggers };
+            filter.SetLayerMask(anchorLayer);
+            int count = Physics2D.OverlapCircle(
+                player.transform.position, maxRopeLength, filter, anchorCandidates
             );
 
             if (count == 0) {

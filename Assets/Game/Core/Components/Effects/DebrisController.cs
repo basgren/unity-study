@@ -180,7 +180,7 @@ namespace Game.Core.Components.Effects {
                     continue;
                 }
 
-                rb.velocity = Vector2.zero;
+                rb.linearVelocity = Vector2.zero;
                 rb.angularVelocity = 0;
                 rb.transform.localPosition = data.initialPosition;
                 rb.transform.localRotation = data.initialRotation;
@@ -191,7 +191,7 @@ namespace Game.Core.Components.Effects {
                 var finalDirection = rotation * direction;
 
                 var speed = Random.Range(minSpeed, maxSpeed);
-                rb.velocity = finalDirection * speed;
+                rb.linearVelocity = finalDirection * speed;
 
                 var angularVelocity = Random.Range(minRotation, maxRotation);
                 rb.angularVelocity = angularVelocity;

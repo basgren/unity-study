@@ -25,7 +25,7 @@ namespace Core.Components.Collisions {
         }
 
         private void FixedUpdate() {
-            float y = rb.velocity.y;
+            float y = rb.linearVelocity.y;
             if (y >= 0f) {
                 return;
             }
@@ -44,7 +44,7 @@ namespace Core.Components.Collisions {
 
             if (y < maxFallSpeed) {
                 y = maxFallSpeed;
-                rb.velocity = new Vector2(rb.velocity.x, y);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, y);
             }
         }
     }

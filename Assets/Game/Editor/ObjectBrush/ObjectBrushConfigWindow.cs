@@ -209,7 +209,7 @@ namespace Editor.ObjectBrush {
                     EditorGUIUtility.singleLineHeight
                 );
 
-                string pathControl = "obPath_" + biome.GetInstanceID() + "_" + index;
+                string pathControl = "obPath_" + biome.GetEntityId() + "_" + index;
 
                 EditorGUI.BeginChangeCheck();
 

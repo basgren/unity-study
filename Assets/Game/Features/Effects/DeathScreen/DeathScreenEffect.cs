@@ -286,7 +286,9 @@ namespace Game.Features.Effects.DeathScreen {
 
             var cam = UnityEngine.Camera.main;
             if (cam != null) {
-                var pp = cam.GetComponent<PixelPerfectCamera>();
+                // Two PixelPerfectCamera types exist (URP + 2D package). The gameplay
+                // Main Camera carries the URP one, so qualify to disambiguate.
+                var pp = cam.GetComponent<UnityEngine.Rendering.Universal.PixelPerfectCamera>();
                 if (pp != null) {
                     refW = Mathf.Max(1, pp.refResolutionX);
                     refH = Mathf.Max(1, pp.refResolutionY);

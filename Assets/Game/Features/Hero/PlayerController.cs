@@ -316,8 +316,8 @@ namespace Game.Features.Hero {
             // value is in m/s and stays consistent regardless of Rigidbody2D mass.
             // Vertical velocity is left alone to keep jump/fall arcs intact.
             var pushDir = -GetFacingDirSign();
-            var velocity = MyRigidbody.velocity;
-            MyRigidbody.velocity = new Vector2(velocity.x + pushDir * attackHitPushbackSpeed, velocity.y);
+            var velocity = MyRigidbody.linearVelocity;
+            MyRigidbody.linearVelocity = new Vector2(velocity.x + pushDir * attackHitPushbackSpeed, velocity.y);
 
             hitStunTimer = hitStunTime;
         }
@@ -576,7 +576,7 @@ namespace Game.Features.Hero {
                 CancelAttack();
                 // Clear residual horizontal velocity so the convoy starts from rest; DragAbility
                 // drives velocity.x from here on.
-                MyRigidbody.velocity = new Vector2(0f, MyRigidbody.velocity.y);
+                MyRigidbody.linearVelocity = new Vector2(0f, MyRigidbody.linearVelocity.y);
                 // Face toward the barrel while dragging.
                 Facing.SetByX(barrelX - transform.position.x);
                 // Show unarmed visuals while dragging.
@@ -599,7 +599,7 @@ namespace Game.Features.Hero {
                 //   physics calculations. Probably CheckGround should be done on FixedUpdate.
                 // Minor adjustment, as by some reason when jumping on a higher platform lending speed
                 // may be something like 0.00015
-                if (MyRigidbody.velocity.y < 0.0005f) {
+                if (MyRigidbody.linearVelocity.y < 0.0005f) {
                     playSfxOnCall.Play("landGrass");
                 }
 
@@ -614,7 +614,7 @@ namespace Game.Features.Hero {
             //   that are not completely stable (for example, moving platforms, disappearing platforms,
             //   or one way platforms).
             if (!isDead) {
-                safePointTracker.Update(GroundChecker.IsAllCollide, transform.position, MyRigidbody.velocity,
+                safePointTracker.Update(GroundChecker.IsAllCollide, transform.position, MyRigidbody.linearVelocity,
                     Time.deltaTime);
             }
         }
@@ -668,7 +668,7 @@ namespace Game.Features.Hero {
 
             // Capture current vx before base SetDirection overwrites it. Base call still runs so that
             // Direction and facing stay synced through the same code path; we then write the ramped vx back.
-            var previousVx = MyRigidbody.velocity.x;
+            var previousVx = MyRigidbody.linearVelocity.x;
             SetDirection(dir, preserveFacing);
 
             var moveSpeed = GetMoveSpeed();
@@ -690,7 +690,7 @@ namespace Game.Features.Hero {
                 newVx = targetVx;
             }
 
-            MyRigidbody.velocity = new Vector2(newVx, MyRigidbody.velocity.y);
+            MyRigidbody.linearVelocity = new Vector2(newVx, MyRigidbody.linearVelocity.y);
         }
 
         // ---- Scripted movement (cinematic transitions) ----
@@ -760,7 +760,7 @@ namespace Game.Features.Hero {
         /// horizontal velocity management.
         /// </summary>
         public void SetVelocity(Vector2 velocity) {
-            MyRigidbody.velocity = velocity;
+            MyRigidbody.linearVelocity = velocity;
         }
 
         /// <summary>
@@ -779,7 +779,7 @@ namespace Game.Features.Hero {
         /// Current vertical velocity (m/s). Useful for cinematic systems that need to react to landing.
         /// </summary>
         public float GetVerticalVelocity() {
-            return MyRigidbody.velocity.y;
+            return MyRigidbody.linearVelocity.y;
         }
 
         #region Jump
@@ -845,7 +845,7 @@ namespace Game.Features.Hero {
         }
 
         private void Jump() {
-            MyRigidbody.velocity = new Vector2(MyRigidbody.velocity.x, jumpSpeed);
+            MyRigidbody.linearVelocity = new Vector2(MyRigidbody.linearVelocity.x, jumpSpeed);
         }
 
         private void ConsumeJumpBuffer() {
@@ -902,7 +902,7 @@ namespace Game.Features.Hero {
 
             var gravity = Mathf.Abs(Physics2D.gravity.y) * MyRigidbody.gravityScale;
             var hopSpeed = Mathf.Sqrt(2f * gravity * dropThroughHopHeight);
-            MyRigidbody.velocity = new Vector2(MyRigidbody.velocity.x, hopSpeed);
+            MyRigidbody.linearVelocity = new Vector2(MyRigidbody.linearVelocity.x, hopSpeed);
         }
 
         private void UpdateDropThrough() {
@@ -999,7 +999,7 @@ namespace Game.Features.Hero {
         }
 
         public void SpawnRunDust() {
-            if (Math.Abs(MyRigidbody.velocity.x) > 1f) {
+            if (Math.Abs(MyRigidbody.linearVelocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
                 Facing.ApplyTo(instance);
             }
@@ -1110,7 +1110,7 @@ namespace Game.Features.Hero {
             while (elapsed < waterFloatTime) {
                 float dt = Time.fixedDeltaTime;
                 float displacement = transform.position.y - targetY;
-                float vy = MyRigidbody.velocity.y;
+                float vy = MyRigidbody.linearVelocity.y;
                 vy += (-stiffness * displacement - dampingCoeff * vy) * dt;
                 // Bob is purely vertical; horizontal velocity is removed so the hero settles in place.
                 SetVelocity(new Vector2(0f, vy));

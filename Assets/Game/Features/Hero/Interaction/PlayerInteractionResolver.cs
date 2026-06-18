@@ -98,7 +98,7 @@ namespace Game.Features.Characters.Hero.Interaction {
             IInteractionCandidate best = null;
             int bestPriority = int.MinValue;
             float bestSqrDist = float.PositiveInfinity;
-            int bestStableId = int.MaxValue;
+            EntityId bestStableId = default;
 
             for (int i = 0; i < candidateBuffer.Count; i++) {
                 var candidate = candidateBuffer[i];
@@ -108,7 +108,7 @@ namespace Game.Features.Characters.Hero.Interaction {
 
                 int priority = candidate.Priority;
                 float sqrDist = candidate.SqrDistanceFromGrabPoint;
-                int stableId = candidate.StableId;
+                EntityId stableId = candidate.StableId;
 
                 if (priority > bestPriority
                     || (priority == bestPriority && sqrDist < bestSqrDist)

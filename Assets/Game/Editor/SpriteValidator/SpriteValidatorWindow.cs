@@ -165,7 +165,7 @@ namespace Editor.SpriteValidator {
                 GUILayout.Label(preview, GUILayout.Width(64), GUILayout.Height(64));
             } else {
                 GUILayout.Box("No Preview", GUILayout.Width(64), GUILayout.Height(64));
-                if (AssetPreview.IsLoadingAssetPreview(result.SpriteAsset.GetInstanceID())) {
+                if (AssetPreview.IsLoadingAssetPreview(result.SpriteAsset.GetEntityId())) {
                     isPreviewLoading = true;
                 }
             }

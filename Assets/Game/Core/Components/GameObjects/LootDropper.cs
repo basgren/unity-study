@@ -90,7 +90,7 @@ namespace Game.Core.Components.GameObjects {
                     speed *= (1f + Random.Range(-speedRandomFactor, speedRandomFactor));
                 }
 
-                rigidBody.velocity = dir * speed;
+                rigidBody.linearVelocity = dir * speed;
             }
         }
     }

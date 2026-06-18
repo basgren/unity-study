@@ -97,7 +97,6 @@ namespace Game.Features.Characters.PinkStar {
         private int lastRequestedLookDirection = 1;
         private int currentAttackDirection = 1;
         private readonly float verticalHopImpulse = 10f;
-        private bool isHit = false;
 
         private int spottedPlayerDirection;
 
@@ -160,7 +159,7 @@ namespace Game.Features.Characters.PinkStar {
 
                 if (attackSoundHandle != null) {
                     var minPitch = 0.7f;
-                    float pitch = minPitch + MyRigidbody.velocity.magnitude / attackMaxSpeed * (1 - minPitch);
+                    float pitch = minPitch + MyRigidbody.linearVelocity.magnitude / attackMaxSpeed * (1 - minPitch);
                     attackSoundHandle.SetPitch(pitch);
                 }
             }
@@ -322,7 +321,7 @@ namespace Game.Features.Characters.PinkStar {
             Vector2 dir = spottedPlayerDirection > 0 ? Vector2.right : Vector2.left;
             spottedPlayerDirection = 0;
             SetDirection(dir);
-            MyRigidbody.velocity = dir * 1f + Vector2.up * 1f;
+            MyRigidbody.linearVelocity = dir * 1f + Vector2.up * 1f;
             MyRigidbody.gravityScale = 0.7f;
 
             if (attackSound != null) {
@@ -355,7 +354,7 @@ namespace Game.Features.Characters.PinkStar {
         }
 
         public void SpawnRunDust() {
-            if (Math.Abs(MyRigidbody.velocity.x) > 1f) {
+            if (Math.Abs(MyRigidbody.linearVelocity.x) > 1f) {
                 var instance = G.Spawner.SpawnVfx(runDustPrefab, dustSpawnPoint.position);
                 Facing.ApplyTo(instance);
             }
@@ -376,7 +375,7 @@ namespace Game.Features.Characters.PinkStar {
                 return;
             }
 
-            MyRigidbody.velocity = new Vector2(MyRigidbody.velocity.x, 0f);
+            MyRigidbody.linearVelocity = new Vector2(MyRigidbody.linearVelocity.x, 0f);
             MyRigidbody.AddForce(Vector2.up * dodgeHopImpulse, ForceMode2D.Impulse);
 
             if (rollHitSound != null) {
@@ -405,7 +404,7 @@ namespace Game.Features.Characters.PinkStar {
         }
 
         private int GetHitSourceDirectionFromKnockback() {
-            var knockbackDirX = Mathf.Sign(MyRigidbody.velocity.x);
+            var knockbackDirX = Mathf.Sign(MyRigidbody.linearVelocity.x);
             if (knockbackDirX > 0f) {
                 return -1;
             }

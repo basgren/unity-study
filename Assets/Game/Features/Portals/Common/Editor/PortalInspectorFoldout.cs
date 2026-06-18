@@ -13,7 +13,7 @@ namespace Game.Features.Portals.Common.Editor {
     public static class PortalInspectorFoldout {
         public static void DrawIdFoldout(UnityEngine.Object portalObj, string kindName, string currentId,
             Action<string> applyChangeId) {
-            var foldoutKey = $"PortalEditor.IdFoldout.{portalObj.GetInstanceID()}";
+            var foldoutKey = $"PortalEditor.IdFoldout.{portalObj.GetEntityId()}";
             var wasOpen = SessionState.GetBool(foldoutKey, false);
 
             var displayId = string.IsNullOrEmpty(currentId) ? "<unassigned>" : currentId;

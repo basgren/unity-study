@@ -20,12 +20,15 @@ namespace Game.Editor.SceneTopology {
         [MenuItem("Tools/Scene Topology")]
         public static void Open() {
             var window = GetWindow<SceneTopologyWindow>();
-            window.titleContent = new GUIContent("Scene Topology");
             window.minSize = new Vector2(600f, 400f);
             window.Show();
         }
 
         private void CreateGUI() {
+            // Set here (not just in Open) so the title survives domain reloads / layout restore,
+            // where Unity reconstructs the window without calling the menu Open() method.
+            titleContent = new GUIContent("Scene Topology");
+
             var root = rootVisualElement;
             root.style.flexGrow = 1f;
 
