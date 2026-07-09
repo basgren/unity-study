@@ -75,6 +75,7 @@ namespace Game.UI.MainMenu {
                     G.Game.ResetPlayerState();
                     G.Checkpoint.Reset();
                     G.SceneState.ResetAll();
+                    G.Save.DeleteSave();
                 }
             );
         }

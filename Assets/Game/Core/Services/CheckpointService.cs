@@ -49,6 +49,30 @@ namespace Game.Core.Services {
         }
 
         /// <summary>
+        /// All discovered checkpoint keys ("{sceneName}:{localId}"). Exposed for persistence.
+        /// </summary>
+        public IReadOnlyCollection<string> DiscoveredKeys => discovered;
+
+        /// <summary>
+        /// Replaces all checkpoint state from a loaded save: the active checkpoint (or null)
+        /// and the set of discovered bonfires. Cancels any pending respawn/transition and
+        /// notifies listeners so bonfire visuals refresh.
+        /// </summary>
+        public void RestoreState(CheckpointRef? current, IEnumerable<string> discoveredKeys) {
+            discovered.Clear();
+            if (discoveredKeys != null) {
+                foreach (var key in discoveredKeys) {
+                    discovered.Add(key);
+                }
+            }
+
+            Current = current;
+            HasPendingRespawn = false;
+            IsBonfireRestTransitionActive = false;
+            OnCheckpointChanged?.Invoke(Current);
+        }
+
+        /// <summary>
         /// Returns the visual state of a bonfire in the given scene.
         /// </summary>
         public BonfireState GetBonfireState(string sceneName, string localId) {

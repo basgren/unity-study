@@ -57,6 +57,15 @@ namespace Game.Features.Characters.Hero {
         public PlayerState(PlayerConfig config) {
             baseMaxHealth = config.BaseMaxHealth;
             currentHealth = baseMaxHealth;
+            RebuildTransient();
+        }
+
+        /// <summary>
+        /// Recreates the non-serialized panel models from the current inventory. Must be
+        /// called after this state is produced by deserialization (e.g. JsonUtility.FromJson),
+        /// which bypasses the constructor and leaves these models null.
+        /// </summary>
+        public void RebuildTransient() {
             backpackPanelModel = new(inventoryModel);
             perkPanelModel = new(inventoryModel);
         }

@@ -3,6 +3,7 @@ using Game.Core.Audio;
 using Game.Core.DebugTools;
 using Game.Core.Services;
 using Game.Core.Services.Input;
+using Game.Core.Services.Save;
 using Game.Core.Services.SceneState;
 using Game.Core.Services.Dialog;
 using Game.Core.Services.Locale;
@@ -43,6 +44,7 @@ namespace Game.Core.Bootstrap {
             G.SceneTravel = GetOrCreate<SceneTravelService>("SceneTravelService");
             var sceneStateService = GetOrCreate<SceneStateService>("SceneStateService");
             G.SceneState = sceneStateService;
+            G.Save = GetOrCreate<SaveGameService>("SaveGameService");
             G.Spawner = GetOrCreate<SpawnerService>("SpawnerService");
             G.Input = GetOrCreate<InputService>("InputService");
             G.Screen = GetOrCreate<ScreenService>("ScreenService");
@@ -62,12 +64,19 @@ namespace Game.Core.Bootstrap {
             G.Game.playerConfig = mainConfig.Player;
             G.Game.Init();
 
+            // Apply the disk save (if any) over the fresh player/checkpoint/world state before
+            // anything reads it. Must run before debug seeding and HUD init.
+            G.Save.LoadIntoServices();
+
             // Seed any enabled debug systems once the player state exists. No-op in production
             // (when all toggles are off); logs a warning listing whatever is active.
             DebugSystemsLoader.Apply(mainConfig);
 
             // SceneTravelService must be created before Init() so SceneStateService can subscribe.
             sceneStateService.Init();
+
+            // Init after SceneStateService so our BeforeUnload capture-then-save order is correct.
+            G.Save.Init();
             audioService.Init();
             G.Settings.Init();
             G.Locale.Init();

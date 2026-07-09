@@ -21,6 +21,25 @@ namespace Game.Core.Services.SceneState {
             return new SlotAccessor(data);
         }
 
+        /// <summary>
+        /// Raw slot map (slot → field → boxed primitive). Exposed for disk serialization only;
+        /// values are one of bool / int / float / string / float[2].
+        /// </summary>
+        internal IReadOnlyDictionary<string, Dictionary<string, object>> Slots => slots;
+
+        /// <summary>
+        /// Directly stores a boxed primitive into a slot field, bypassing the typed writer.
+        /// Used when rebuilding a blob from a loaded save so the exact value type is preserved.
+        /// </summary>
+        internal void RawSet(string slot, string field, object value) {
+            if (!slots.TryGetValue(slot, out var data)) {
+                data = new Dictionary<string, object>();
+                slots[slot] = data;
+            }
+
+            data[field] = value;
+        }
+
         /// <summary>Returns a reader for the given slot. Returns false if the slot has no data.</summary>
         public bool TryReader(string slot, out IStateReader reader) {
             if (slots.TryGetValue(slot, out var data)) {

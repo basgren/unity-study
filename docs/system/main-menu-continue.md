@@ -6,17 +6,20 @@ start over). Continue is shown only when a saved resting point exists.
 
 ## Persistence model
 
-In-session only. All save state lives in `DontDestroyOnLoad` services
-(`CheckpointService`, `SceneStateService`, `GameManager`) and survives exiting to the main
-menu within the same app run. There is **no disk persistence** — after a full app quit and
-relaunch, no resting point exists, so only **New Game** is shown. See
-[state-saving.md](state-saving.md) for the underlying in-memory save system.
+All save state lives in `DontDestroyOnLoad` services (`CheckpointService`,
+`SceneStateService`, `GameManager`) and survives exiting to the main menu within the same app
+run. It **also survives a full app quit and relaunch**: `SaveGameService` serializes those
+services to a disk file and reloads them on launch, so a resting point can exist on a fresh
+launch and **Continue** is shown. See [save-persistence.md](save-persistence.md) for the disk
+layer and [state-saving.md](state-saving.md) for the underlying in-memory save system.
 
 ## "Saved game exists" detection
 
 A saved resting point exists exactly when the player has rested at a bonfire, i.e.
-`G.Checkpoint.Current.HasValue`. `MainMenu` checks this in `OnEnable` (the window is freshly
-activated each time it is shown) and toggles the Continue button's `GameObject` active state.
+`G.Checkpoint.Current.HasValue`. On launch this is populated from disk by
+`SaveGameService.LoadIntoServices()` (in `GInit`) before the menu is shown. `MainMenu` checks
+it in `OnEnable` (the window is freshly activated each time it is shown) and toggles the
+Continue button's `GameObject` active state.
 
 ## Continue
 
@@ -59,6 +62,7 @@ unconditionally means New Game always starts from the very beginning, even on a 
 | `GameManager.ResetPlayerState()` | inventory, coins, stats, flags, seen dialog (fresh `PlayerState`) |
 | `CheckpointService.Reset()` | active checkpoint, discovered bonfires, pending-respawn flags |
 | `SceneStateService.ResetAll()` | both session and persistent scene-state tiers |
+| `SaveGameService.DeleteSave()` | the on-disk save file, so the wipe survives relaunch |
 
 ## Scene transition
 

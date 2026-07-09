@@ -138,6 +138,104 @@ namespace Game.Core.Services.SceneState {
             persistentStore.Clear();
         }
 
+        /// <summary>
+        /// Serializes the persistent-tier store into a JSON-friendly snapshot for disk saving.
+        /// The session tier is intentionally excluded — it is transient and always resets on
+        /// respawn, so it never belongs in a cross-session save.
+        /// </summary>
+        public SceneStateSaveData ExportPersistent() {
+            var data = new SceneStateSaveData();
+
+            foreach (var sceneKv in persistentStore) {
+                var sceneEntry = new SceneStateSaveData.SceneEntry { sceneId = sceneKv.Key };
+
+                foreach (var objKv in sceneKv.Value) {
+                    var objEntry = new SceneStateSaveData.ObjectEntry { saveId = objKv.Key };
+
+                    foreach (var slotKv in objKv.Value.Slots) {
+                        foreach (var fieldKv in slotKv.Value) {
+                            var field = new SceneStateSaveData.FieldEntry {
+                                slot = slotKv.Key,
+                                key = fieldKv.Key,
+                            };
+
+                            switch (fieldKv.Value) {
+                                case bool bv:
+                                    field.type = SceneStateSaveData.TypeBool;
+                                    field.b = bv;
+                                    break;
+                                case int iv:
+                                    field.type = SceneStateSaveData.TypeInt;
+                                    field.i = iv;
+                                    break;
+                                case float fv:
+                                    field.type = SceneStateSaveData.TypeFloat;
+                                    field.f = fv;
+                                    break;
+                                case string sv:
+                                    field.type = SceneStateSaveData.TypeString;
+                                    field.s = sv;
+                                    break;
+                                case float[] arr when arr.Length >= 2:
+                                    field.type = SceneStateSaveData.TypeVector2;
+                                    field.x = arr[0];
+                                    field.y = arr[1];
+                                    break;
+                                default:
+                                    // Unknown value type — skip rather than write garbage.
+                                    continue;
+                            }
+
+                            objEntry.fields.Add(field);
+                        }
+                    }
+
+                    if (objEntry.fields.Count > 0) {
+                        sceneEntry.objects.Add(objEntry);
+                    }
+                }
+
+                if (sceneEntry.objects.Count > 0) {
+                    data.scenes.Add(sceneEntry);
+                }
+            }
+
+            return data;
+        }
+
+        /// <summary>
+        /// Rebuilds the persistent-tier store from a loaded snapshot, replacing any current
+        /// contents. The session tier is left empty so transient world state starts fresh.
+        /// </summary>
+        public void ImportPersistent(SceneStateSaveData data) {
+            persistentStore.Clear();
+
+            if (data?.scenes == null) {
+                return;
+            }
+
+            foreach (var sceneEntry in data.scenes) {
+                foreach (var objEntry in sceneEntry.objects) {
+                    var blob = GetOrCreateBlob(persistentStore, sceneEntry.sceneId, objEntry.saveId);
+
+                    foreach (var field in objEntry.fields) {
+                        object value = field.type switch {
+                            SceneStateSaveData.TypeBool => field.b,
+                            SceneStateSaveData.TypeInt => field.i,
+                            SceneStateSaveData.TypeFloat => field.f,
+                            SceneStateSaveData.TypeString => field.s,
+                            SceneStateSaveData.TypeVector2 => new float[] { field.x, field.y },
+                            _ => null,
+                        };
+
+                        if (value != null) {
+                            blob.RawSet(field.slot, field.key, value);
+                        }
+                    }
+                }
+            }
+        }
+
         // ---- Internal (called by StateRoot) ----
 
         internal void RestoreInto(StateRoot root, IStateSaver[] savers) {

@@ -8,6 +8,11 @@ built-in savers available today, and the internals of the system.
 Related files live under `Assets/Game/Core/Services/SceneState/` and
 `Assets/Game/Editor/SceneState/`.
 
+> This document covers the **in-memory** save system that survives scene transitions and
+> bonfire rests. Persisting a playthrough across a full app quit (and reloading it on launch)
+> is layered on top by `SaveGameService` — see
+> [save-persistence.md](save-persistence.md).
+
 ---
 
 ## Quick Start
